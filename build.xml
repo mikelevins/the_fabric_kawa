@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="fabric" default="jar">
+
+  <path id="library.class.path">
+    <pathelement location="./lib/clj-ds-0.0.4.jar"/>
+    <pathelement location="./lib/eventbus-3.0.0.jar"/>
+    <pathelement location="./lib/hgbdbje-1.2.jar"/>
+    <pathelement location="./lib/hgdb-1.2.jar"/>
+    <pathelement location="./lib/j-ogg-oggd-3.0.0.jar"/>
+    <pathelement location="./lib/j-ogg-vorbisd-3.0.0.jar"/>
+    <pathelement location="./lib/jME3-blender.jar"/>
+    <pathelement location="./lib/jME3-core-3.0.0.jar"/>
+    <pathelement location="./lib/jME3-desktop-3.0.0.jar"/>
+    <pathelement location="./lib/jME3-effects-3.0.0.jar"/>
+    <pathelement location="./lib/jME3-jbullet-3.0.0.jar"/>
+    <pathelement location="./lib/jME3-jogg-3.0.0.jar"/>
+    <pathelement location="./lib/jME3-lwjgl-3.0.0.jar"/>
+    <pathelement location="./lib/jME3-lwjgl-natives-3.0.0.jar"/>
+    <pathelement location="./lib/jME3-networking-3.0.0.jar"/>
+    <pathelement location="./lib/jME3-niftygui-3.0.0.jar"/>
+    <pathelement location="./lib/jME3-plugins-3.0.0.jar"/>
+    <pathelement location="./lib/jME3-terrain-3.0.0.jar"/>
+    <pathelement location="./lib/jbullet-3.0.0.jar"/>
+    <pathelement location="./lib/je-5.0.34.jar"/>
+    <pathelement location="./lib/jinput-3.0.0.jar"/>
+    <pathelement location="./lib/lwjgl-3.0.0.jar"/>
+    <pathelement location="./lib/nifty-3.0.0.jar"/>
+    <pathelement location="./lib/nifty-default-controls-3.0.0.jar"/>
+    <pathelement location="./lib/nifty-style-black-3.0.0.jar"/>
+    <pathelement location="./lib/stack-alloc-3.0.0.jar"/>
+    <pathelement location="./lib/vecmath-3.0.0.jar"/>
+    <pathelement location="./lib/xmlpull-xpp3-3.0.0.jar"/>
+    <pathelement location="./lib/kawa-1.14.jar"/>
+    <pathelement location="./src"/>
+    <pathelement location="."/>
+  </path>
+
+
+  <!--client -->
+  <target name="client" depends="compile-client">
+    <jar destfile="Fabric.jar"
+         basedir="./src"
+         includes="**/*.class"
+         manifest="manifest-client.txt">
+      <zipfileset src="./lib/kawa-1.14.jar"/>
+      <zipfileset src="./lib/clj-ds-0.0.4.jar"/>
+      <zipfileset src="./lib/eventbus-3.0.0.jar"/>
+      <zipfileset src="./lib/hgbdbje-1.2.jar"/>
+      <zipfileset src="./lib/hgdb-1.2.jar"/>
+      <zipfileset src="./lib/j-ogg-oggd-3.0.0.jar"/>
+      <zipfileset src="./lib/j-ogg-vorbisd-3.0.0.jar"/>
+      <zipfileset src="./lib/jME3-blender.jar"/>
+      <zipfileset src="./lib/jME3-core-3.0.0.jar"/>
+      <zipfileset src="./lib/jME3-desktop-3.0.0.jar"/>
+      <zipfileset src="./lib/jME3-effects-3.0.0.jar"/>
+      <zipfileset src="./lib/jME3-jbullet-3.0.0.jar"/>
+      <zipfileset src="./lib/jME3-jogg-3.0.0.jar"/>
+      <zipfileset src="./lib/jME3-lwjgl-3.0.0.jar"/>
+      <zipfileset src="./lib/jME3-lwjgl-natives-3.0.0.jar"/>
+      <zipfileset src="./lib/jME3-networking-3.0.0.jar"/>
+      <zipfileset src="./lib/jME3-niftygui-3.0.0.jar"/>
+      <zipfileset src="./lib/jME3-plugins-3.0.0.jar"/>
+      <zipfileset src="./lib/jME3-terrain-3.0.0.jar"/>
+      <zipfileset src="./lib/jbullet-3.0.0.jar"/>
+      <zipfileset src="./lib/je-5.0.34.jar"/>
+      <zipfileset src="./lib/jinput-3.0.0.jar"/>
+      <zipfileset src="./lib/lwjgl-3.0.0.jar"/>
+      <zipfileset src="./lib/nifty-3.0.0.jar"/>
+      <zipfileset src="./lib/nifty-default-controls-3.0.0.jar"/>
+      <zipfileset src="./lib/nifty-style-black-3.0.0.jar"/>
+      <zipfileset src="./lib/stack-alloc-3.0.0.jar"/>
+      <zipfileset src="./lib/vecmath-3.0.0.jar"/>
+      <zipfileset dir="./assets"/>
+    </jar>
+  </target>
+
+  <!--server -->
+  <target name="server" depends="compile-server">
+    <jar destfile="FabricServer.jar"
+         basedir="./src"
+         includes="**/*.class"
+         manifest="manifest-server.txt">
+      <zipfileset src="./lib/kawa-1.14.jar"/>
+      <zipfileset src="./lib/clj-ds-0.0.4.jar"/>
+      <zipfileset src="./lib/eventbus-3.0.0.jar"/>
+      <zipfileset src="./lib/hgbdbje-1.2.jar"/>
+      <zipfileset src="./lib/hgdb-1.2.jar"/>
+      <zipfileset src="./lib/j-ogg-oggd-3.0.0.jar"/>
+      <zipfileset src="./lib/j-ogg-vorbisd-3.0.0.jar"/>
+      <zipfileset src="./lib/jME3-blender.jar"/>
+      <zipfileset src="./lib/jME3-core-3.0.0.jar"/>
+      <zipfileset src="./lib/jME3-desktop-3.0.0.jar"/>
+      <zipfileset src="./lib/jME3-effects-3.0.0.jar"/>
+      <zipfileset src="./lib/jME3-jbullet-3.0.0.jar"/>
+      <zipfileset src="./lib/jME3-jogg-3.0.0.jar"/>
+      <zipfileset src="./lib/jME3-lwjgl-3.0.0.jar"/>
+      <zipfileset src="./lib/jME3-lwjgl-natives-3.0.0.jar"/>
+      <zipfileset src="./lib/jME3-networking-3.0.0.jar"/>
+      <zipfileset src="./lib/jME3-niftygui-3.0.0.jar"/>
+      <zipfileset src="./lib/jME3-plugins-3.0.0.jar"/>
+      <zipfileset src="./lib/jME3-terrain-3.0.0.jar"/>
+      <zipfileset src="./lib/jbullet-3.0.0.jar"/>
+      <zipfileset src="./lib/je-5.0.34.jar"/>
+      <zipfileset src="./lib/jinput-3.0.0.jar"/>
+      <zipfileset src="./lib/lwjgl-3.0.0.jar"/>
+      <zipfileset src="./lib/nifty-3.0.0.jar"/>
+      <zipfileset src="./lib/nifty-default-controls-3.0.0.jar"/>
+      <zipfileset src="./lib/nifty-style-black-3.0.0.jar"/>
+      <zipfileset src="./lib/stack-alloc-3.0.0.jar"/>
+      <zipfileset src="./lib/vecmath-3.0.0.jar"/>
+      <zipfileset dir="./assets"/>
+    </jar>
+  </target>
+
+  <!--compile client -->
+  <target name="compile-client">
+    <java taskname="kawa"
+          classname="kawa.repl"
+          failOnError="true"
+          dir="./src"
+          fork="true">
+      <classpath refid="library.class.path"/>
+      <arg line="-C 'util-java.scm' 'util-random.scm' 'util-general.scm' 'util-lists.scm' 'init-config.scm'
+                 'model-id.scm' 'language-types.scm' 'language-gf.scm' 'model-frame.scm'
+                 'model-namegen-domains.scm' 'model-namegen.scm' 'model-kind.scm' 'model-entity.scm'
+                 'storage-hgtypes.scm' 'storage-store.scm' 'assets-general.scm' 'view-controls.scm'
+                 'view-colors.scm' 'view-shapes.scm' 'view-plasma.scm' 'view-name-cube.scm' 'view-player.scm' 
+                 'view-node.scm' 'app-client.scm' 'Fabric.scm'"/>
+    </java>
+  </target>
+
+  <!--compile server -->
+  <target name="compile-server">
+    <java taskname="kawa"
+          classname="kawa.repl"
+          failOnError="true"
+          dir="./src"
+          fork="true">
+      <classpath refid="library.class.path"/>
+      <arg line="-C 'util-java.scm' 'util-random.scm' 'util-general.scm' 'init-config.scm' 'model-id.scm'
+                 'model-frame.scm' 'model-namegen-domains.scm' 'model-namegen.scm'
+                 'model-kind.scm' 'model-entity.scm' 'storage-hgtypes.scm' 'storage-store.scm'
+                 'app-server.scm' 'FabricServer.scm'"/>
+    </java>
+  </target>
+
+  <!-- clean -->
+  <target name="clean"
+          description="Clean binary files">
+    <delete verbose="true">
+      <fileset dir="." includes="**/*.class"/>
+      <fileset dir="." includes="**/liblwjgl.dylib"/>
+      <fileset dir="." includes="**/openal.dylib"/>
+      <fileset dir="." includes="Fabric.jar"/>
+      <fileset dir="." includes="FabricServer.jar"/>
+    </delete>
+  </target>
+
+
+</project>
+
