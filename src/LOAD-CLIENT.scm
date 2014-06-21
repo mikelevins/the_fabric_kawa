@@ -25,8 +25,6 @@
 (require "model-namegen.scm")
 (require "model-kind.scm")
 (require "model-entity.scm")
-(require "storage-hgtypes.scm")
-(require "storage-store.scm")
 (require "assets-general.scm")
 (require "view-controls.scm")
 (require "view-colors.scm")
