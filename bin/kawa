@@ -3,7 +3,8 @@
 export PLATFORM="`uname`"
 export thisdir="`dirname \"$0\"`"
 export FABRIC_HOME="`( cd \"$thisdir/..\" && pwd )`"
-export FABRIC_LIB="${FABRIC_HOME}/lib"
+export FABRIC_LIB="`( cd \"$thisdir/../../the_fabric_libraries\" && pwd )`"
+export FABRIC_ASSETS="`( cd \"$thisdir/../../the_fabric_assets\" && pwd )`"
 export FABRIC_SOURCES="${FABRIC_HOME}/src"
 
 if [ "${PLATFORM}" == "Linux" ]
@@ -16,7 +17,8 @@ fi
 export JRE="${JAVA_HOME}/jre/lib/*"
 
 
-export FABRIC_CLASSPATH="${FABRIC_LIB}/*:${JRE}:${FABRIC_HOME}/assets:."
+export FABRIC_CLASSPATH="${FABRIC_LIB}/*:${JRE}:${FABRIC_ASSETS}:."
 
 exec java -Dfabric.home=${FABRIC_HOME} -cp ${FABRIC_CLASSPATH} kawa.repl --output-format readable-scheme "$@"
+
 

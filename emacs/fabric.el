@@ -33,7 +33,6 @@
 (defvar $fabric-root (expand-file-name (concat $fabric-emacs-path "../")))
 (defvar $fabric-bin (expand-file-name (concat $fabric-root "bin/")))
 (defvar $fabric-kawa-script (expand-file-name (concat $fabric-bin "kawa")))
-(defvar $fabric-database-root (expand-file-name (concat $fabric-root "db/")))
 
 ;;; adjust emacs
 (add-to-list 'load-path (expand-file-name $fabric-emacs-path))
@@ -73,22 +72,12 @@
 ;;; run the fabric's Scheme 
 ;;; ---------------------------------------------------------------------
 
-;;; run the fabric Scheme environment in cmuscheme mode
-;; (defun fab ()
-;;   (interactive)
-;;   (require 'cmuscheme)
-;;   (let ((scheme-program-name $kawa-script))
-;;     (setenv "FABRIC_ROOT" $fabric-root)
-;;     (setenv "DB_ROOT" $fabric-database-root)
-;;     (run-scheme scheme-program-name)))
-
 ;;; run the fabric Scheme environment in quack mode
-(defun qfab ()
+(defun run-the-fabric ()
   (interactive)
   (require 'quack)
   (let ((scheme-program-name $fabric-kawa-script))
     (setenv "FABRIC_ROOT" $fabric-root)
-    (setenv "DB_ROOT" $fabric-database-root)
     (run-scheme scheme-program-name)))
 
 

@@ -277,11 +277,12 @@
                             (Vector2f 15 (- height 220))
                             (Vector2f 400 200)))
            (nameplate (Label screen "nameplate"
-                             (Vector2f (/ width 3.0) (- height 44))
+                             (Vector2f (* 9 (/ width 24.0)) (- height 44))
                              (Vector2f 600 40))))
       (@ 'setText nameplate name-string)
       (@ 'setTextAlign nameplate Align:Center)
-      (@ 'setFont nameplate "Interface/Fonts/SourceCodePro.fnt")
+      ;;(@ 'setFont nameplate "Interface/Fonts/SourceCodePro.fnt")
+      (@ 'setFont nameplate "Interface/Fonts/Orbitron36.fnt")
       (@ 'setFontSize nameplate 32)
       (@ 'setFontColor nameplate ColorRGBA:Green)
 
