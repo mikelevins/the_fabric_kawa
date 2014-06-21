@@ -44,14 +44,12 @@
 (define-private-alias BloomFilter com.jme3.post.filters.BloomFilter)
 (define-private-alias CameraControl com.jme3.scene.control.CameraControl)
 (define-private-alias CameraNode com.jme3.scene.CameraNode)
-(define-private-alias ChatBox tonegod.gui.controls.extras.ChatBox)
 (define-private-alias ColorRGBA com.jme3.math.ColorRGBA)
 (define-private-alias Container com.simsilica.lemur.Container)
 (define-private-alias FilterPostProcessor com.jme3.post.FilterPostProcessor)
 (define-private-alias GuiGlobals com.simsilica.lemur.GuiGlobals)
 (define-private-alias KeyInput com.jme3.input.KeyInput)
 (define-private-alias KeyTrigger com.jme3.input.controls.KeyTrigger)
-;;(define-private-alias Label tonegod.gui.controls.text.Label)
 (define-private-alias Label com.simsilica.lemur.Label)
 (define-private-alias Mouse org.lwjgl.input.Mouse)
 (define-private-alias MouseAxisTrigger com.jme3.input.controls.MouseAxisTrigger)
@@ -63,15 +61,12 @@
 (define-private-alias PI com.jme3.math.FastMath:PI)
 (define-private-alias QuadBackgroundComponent com.simsilica.lemur.component.QuadBackgroundComponent)
 (define-private-alias Quaternion com.jme3.math.Quaternion)
-(define-private-alias Screen tonegod.gui.core.Screen)
 (define-private-alias SimpleApplication com.jme3.app.SimpleApplication)
 (define-private-alias Spatial com.jme3.scene.Spatial)
 (define-private-alias Styles com.simsilica.lemur.style.Styles)
-(define-private-alias TextField tonegod.gui.controls.text.TextField)
 (define-private-alias Vector2f com.jme3.math.Vector2f)
 (define-private-alias Vector3f com.jme3.math.Vector3f)
 (define-private-alias VideoRecorderAppState com.jme3.app.state.VideoRecorderAppState)
-(define-private-alias Window tonegod.gui.controls.windows.Window)
 
 ;;; ---------------------------------------------------------------------
 ;;; <fabric-client> - the main class in the client
@@ -265,38 +260,6 @@
     
     ;; add the player to the scene
     (@ 'attachChild (root-node app) player-node)))
-
-
-;;; (init-hud app ::SimpleApplication)
-;;; ---------------------------------------------------------------------
-;;; initialize the heads-up display
-
-;; (define (init-hud app ::SimpleApplication name-string)
-;;   (let ((screen (Screen app)))
-;;     (@ 'initialize screen)
-;;     (@ 'addControl (client-gui-node app) screen)
-;;     (let* ((Align BitmapFont:Align)
-;;            (VAlign BitmapFont:VAlign)
-;;            (width (@ 'getWidth (client-app-settings app)))
-;;            (height (@ 'getHeight (client-app-settings app)))
-;;            (chatbox (Window screen "chatbox"
-;;                             (Vector2f 15 (- height 220))
-;;                             (Vector2f 400 200)))
-;;            (nameplate (Label screen "nameplate"
-;;                              (Vector2f (* 9 (/ width 24.0)) (- height 44))
-;;                              (Vector2f 600 40))))
-;;       (@ 'setText nameplate name-string)
-;;       (@ 'setTextAlign nameplate Align:Center)
-;;       ;;(@ 'setFont nameplate "Interface/Fonts/SourceCodePro.fnt")
-;;       (@ 'setFont nameplate "Interface/Fonts/Orbitron36.fnt")
-;;       (@ 'setFontSize nameplate 32)
-;;       (@ 'setFontColor nameplate ColorRGBA:Green)
-
-;;       (@ 'setFontColor chatbox ColorRGBA:Green)
-;;       (@ 'setWindowTitle chatbox "Chat")
-      
-;;       (@ 'addElement screen nameplate)
-;;       (@ 'addElement screen chatbox))))
 
 (define (init-hud app ::SimpleApplication name-string)
   (GuiGlobals:initialize app)
