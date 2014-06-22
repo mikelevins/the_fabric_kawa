@@ -67,7 +67,6 @@
     ;; set up the look of the celestial object at the center of the skybox
     (invoke center 'setTextureMode Sphere:TextureMode:Projected)
     (@ 'setTexture center-mat "ColorMap" center-tex)
-    (format #t "~%center: ~A" center-tex)
     (@ 'setMaterial center-geom center-mat)
     (@ 'addControl center-geom center-rotator)
     center-geom))

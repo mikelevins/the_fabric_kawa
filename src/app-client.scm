@@ -64,6 +64,8 @@
 (define-private-alias SimpleApplication com.jme3.app.SimpleApplication)
 (define-private-alias Spatial com.jme3.scene.Spatial)
 (define-private-alias Styles com.simsilica.lemur.style.Styles)
+(define-private-alias TbtQuadBackgroundComponent com.simsilica.lemur.component.TbtQuadBackgroundComponent)
+(define-private-alias TextField com.simsilica.lemur.TextField)
 (define-private-alias Vector2f com.jme3.math.Vector2f)
 (define-private-alias Vector3f com.jme3.math.Vector3f)
 (define-private-alias VideoRecorderAppState com.jme3.app.state.VideoRecorderAppState)
@@ -97,6 +99,7 @@
   ((getAudioRenderer) audioRenderer)
   ((getViewport) viewPort)
   ((getInputManager) inputManager)
+  ((getStateManager) stateManager)
   ((getKeyInput) keyInput)
   ((getGuiFont) guiFont)
   ((getGuiNode) guiNode)
@@ -144,6 +147,7 @@
 (define (client-key-input app ::SimpleApplication)(@ 'getKeyInput app))
 (define (client-player app ::SimpleApplication)(@ 'getPlayer app))
 (define (client-player-node app ::SimpleApplication)(@ 'getPlayerNode app))
+(define (client-state-manager app ::SimpleApplication)(@ 'getStateManager app))
 (define (client-viewport app ::SimpleApplication)(@ 'getViewport app))
 
 (define (fly-by-camera app ::SimpleApplication)(@ 'getFlyByCamera app))
@@ -268,19 +272,27 @@
          (screen-width (@ 'getWidth settings))
          (gui-node (client-gui-node app))
          (styles :: Styles (@ 'getStyles (GuiGlobals:getInstance)))
-         (bgcolor :: ColorRGBA (ColorRGBA 0 0.25 0.25 0.5))
+         (bgcolor :: ColorRGBA (ColorRGBA 0.15 0.25 0.5 0.6))
          (background :: QuadBackgroundComponent (QuadBackgroundComponent bgcolor))
          (hud-panel (Container "glass"))
+         (chat-panel (Container "glass"))
          (asset-manager (get-asset-manager))
          (name-font (@ 'loadFont asset-manager "Interface/Fonts/Orbitron32.fnt"))
          (node-font (@ 'loadFont asset-manager "Interface/Fonts/Orbitron24.fnt"))
          (nameplate (Label name-string "glass"))
-         (nodeplate (Label (string-capitalize (center-name app)) "glass")))
+         (nodeplate (Label (string-capitalize (center-name app)) "glass"))
+         (chatbox (TextField "Welcome to The Fabric" "glass"))
+         (chatbox-background (TbtQuadBackgroundComponent:create
+                              "/com/simsilica/lemur/icons/border.png"
+                              1 2 2 3 3 0 #f)))
+
     (@ 'set (@ 'getSelector styles Panel:ELEMENT_ID "glass")
             "background" background)
-    (@ 'setLocalTranslation hud-panel 12 (- screen-height 12) 0)
-    (@ 'attachChild gui-node hud-panel)
 
+    (@ 'attachChild gui-node hud-panel)
+    (@ 'attachChild gui-node chat-panel)
+
+    (@ 'setLocalTranslation hud-panel 12 (- screen-height 12) 0)
     (@ 'setFont nameplate name-font)
     (@ 'setFontSize nameplate 32)
     (@ 'setColor nameplate ColorRGBA:Green)
@@ -289,7 +301,16 @@
     (@ 'setFont nodeplate node-font)
     (@ 'setFontSize nodeplate 24)
     (@ 'setColor nodeplate ColorRGBA:Green)
-    (@ 'addChild hud-panel nodeplate)))
+    (@ 'addChild hud-panel nodeplate)
+
+    (@ 'setLocalTranslation chat-panel (- screen-width 384 8) (+ 128 8) 0)
+    (@ 'setPreferredSize chat-panel (Vector3f 384.0 128.0 0))
+    (@ 'setBackground chat-panel chatbox-background)
+    (@ 'setPreferredSize chatbox (Vector3f 252.0 124.0 0))
+    (@ 'setColor chatbox ColorRGBA:Green)
+    (@ 'setSingleLine chatbox #f)
+    (@ 'setFontSize chatbox 16)
+    (@ 'addChild chat-panel chatbox)))
 
 
 
@@ -380,11 +401,16 @@
     (init-player-character app)
 
     (let* ((player (client-player app))
-           (player-name (format #f "~a" (fabric-name-strings (get-key player name: "")))))
+           (name-strings (fabric-name-strings (get-key player name: "")))
+           (player-name (call-with-output-string
+                         (lambda (out)
+                           (for-each (lambda (s)
+                                       (format out "~a " s))
+                                     name-strings)))))
       (init-hud app player-name))
 
     ;; uncomment to capture video to a file
-    ;;(@ 'attach stateManager (VideoRecorderAppState))
+    (@ 'attach (client-state-manager app) (VideoRecorderAppState))
     #!void))
 
 
@@ -472,18 +498,8 @@
   (cond
    ((@ 'equals name "leftButton")(set-left-button! app key-pressed?))
    ((@ 'equals name "rightButton")(set-right-button! app key-pressed?))
-   ;; add typed text characters to chat
-   (#t 
-    (if key-pressed?
-        #!void
-        (cond
-         ((@ 'equals name "SPACE")(let* ((old-text (@ 'getText (client-chat-hud app)))
-                                         (new-text (string-append old-text " ")))
-                                    (@ 'setText (client-chat-hud app) new-text)))
-         ((@ 'equals name "KEY_A")(let* ((old-text (@ 'getText (client-chat-hud app)))
-                                         (new-text (string-append old-text "A")))
-                                    (@ 'setText (client-chat-hud app) new-text)))
-         (#t #f))))))
+   ;; handle typing
+   (#t (format #t "~s" name))))
 
 
 ;;; ---------------------------------------------------------------------
