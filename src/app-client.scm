@@ -181,16 +181,16 @@
         make-enclosing-wire-cube
         make-enclosing-pyramid
         make-enclosing-sphere
-        make-enclosing-wire-sphere
-        make-any-plasma-generator))
+        make-enclosing-wire-sphere))
 
 ;;; (make-armors n)
 ;;; ---------------------------------------------------------------------
 ;;; make N randomly-chosen armors
 
 (define (make-armors n)
-  (let ((armorers (map (lambda (a)(choose-any $available-armorers))
-                       (iota n))))
+  (let ((armorers (cons make-any-plasma-generator
+                        (map (lambda (a)(choose-any $available-armorers))
+                             (iota n)))))
     (map (lambda (make-armor)
            (let ((armor (make-armor))
                  (rotator (any-rotator)))
@@ -371,6 +371,7 @@
 
 (define $center-names
   '("callisto"
+     "dione"
      "earth"
      "enceladus"
      "europa"
@@ -378,11 +379,17 @@
      "iapetus"
      "io"
      "jupiter"
+     "luna"
      "mars"
      "neptune"
      "pluto"
      "rhea"
-    "the_sun"))
+     "saturn"
+     "sedna"
+     "sol"
+     "titan"
+     "uranus"
+     "venus"))
 
 ;;; (init-client app)
 ;;; ---------------------------------------------------------------------
@@ -410,7 +417,7 @@
       (init-hud app player-name))
 
     ;; uncomment to capture video to a file
-    (@ 'attach (client-state-manager app) (VideoRecorderAppState))
+    ;; (@ 'attach (client-state-manager app) (VideoRecorderAppState))
     #!void))
 
 
