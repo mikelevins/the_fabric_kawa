@@ -13,10 +13,10 @@
 
 (require "util-java.scm")
 
-(define random-integer
-  (lambda (n)
-    (let ((rs::java.util.Random (java.util.Random (invoke (java.util.Date) 'getTime))))
-      (@ 'nextInt rs n))))
+(define $random-state (make-parameter (java.util.Random (invoke (java.util.Date) 'getTime))))
+
+(define (random-integer n)
+  (@ 'nextInt ($random-state) n))
 
 
 

@@ -9,7 +9,7 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export fabric-name-data fabric-name-bytes fabric-name-strings gen-name)
+(module-export fabric-name-data fabric-name-bytes fabric-name-strings fabric-name-bytestrings gen-name)
 
 (require 'list-lib)
 (require "util-java.scm")
@@ -19,21 +19,28 @@
 (require "model-namegen-domains.scm")
 
 (define-simple-class fabric-name ()
-  (data type: long init-keyword: data:)
+  (data type: gnu.math.IntNum init-keyword: data:)
   ((getData) data))
 
 (define (fabric-name-data nm::fabric-name)
   (@ 'getData nm))
 
 (define (fabric-name-bytes nm)
-  (long->bytes (fabric-name-data nm)))
+  (integer->bytes (fabric-name-data nm)))
+
+(define (bytes->strings bytes)
+  (map (lambda (b)(format #f "~2,'0x" b))
+       bytes))
+
+(define (fabric-name-bytestrings nm)
+  (bytes->strings (fabric-name-bytes nm)))
 
 (define (fabric-name-bit-patterns nm)
   (map (lambda (b)(format #f "~8,'0b" b))
        (fabric-name-bytes nm)))
 
 (define (fabric-name-strings nm)
-  (let* ((bytes (long->bytes (fabric-name-data nm)))
+  (let* ((bytes (integer->bytes (fabric-name-data nm)))
          (parts (map (lambda (b dom)(list-ref dom b))
                      bytes
                      (domain-name-lists))))
@@ -41,28 +48,23 @@
                                 (equal? p ""))))
             parts)))
 
+(define (gen-bytes n)
+  (map (lambda (i)(random-integer 255))
+       (iota n)))
+
 (define (gen-name)
-  (let* ((bytes (map (lambda (i)(+ 1 (random-integer 255)))
-                     (iota 8)))
-         (name-len (+ 1 (random-integer 4)))
-         (chosen-bytes (let loop ((in-bytes bytes))
-                         (if (> (length in-bytes) name-len)
-                             (loop (drop-any in-bytes))
-                             in-bytes)))
-         (zero-count (- 8 name-len))
-         (zeros (list-fill zero-count 0))
-         (long (bytes->long (shuffle (append chosen-bytes zeros)))))
-    (if (=  long 0)
+  (let* ((bytes (gen-bytes (choose-any '(1 2 3 4))))
+         (zeros (list-fill (- 8 (length bytes)) 0))
+         (num (apply bytes->integer (shuffle (append bytes zeros)))))
+    (if (zero? num)
         (gen-name)
-        (fabric-name data: long))))
+        (fabric-name data: num))))
 
 (define (show-names n)
   (let loop ((i 0))
     (when (< i n)
       (let ((nm (gen-name)))
-        (format #t "~%~S ~S"
-                (fabric-name-data nm)
-                (fabric-name-strings nm))
+        (format #t "~% ~S" (fabric-name-strings nm))
         (loop (+ i 1))))))
 
 

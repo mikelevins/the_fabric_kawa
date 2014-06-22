@@ -9,7 +9,7 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export type-of get-resource identity bytes->long long->bytes
+(module-export type-of get-resource identity bytes->integer integer->bytes
                byte->bool-vector string-split-at)
 
 (require 'list-lib)
@@ -39,26 +39,38 @@
 
 (define (identity x) x)
 
-(define (bytes->long b)
-  (let ((len (length b)))
-    (if (= len 8)
-        (let loop ((i 0)
-                   (result 0))
-          (if (< i len)
-              (loop (+ i 1)
-                    (+ result (bitwise-arithmetic-shift-left (list-ref b i) (* i 8))))
-              result))
-        (error "bytes->long requires 8 bytes, but found" len))))
+(define (bytes->integer a b c d e f g h)
+  (gnu.math.IntNum:make (int[] a b c d e f g h)))
 
-(define (long->bytes long)
-  (let loop ((i 0)
-             (bytes '()))
-    (if (< i 8)
-        (loop (+ i 1)
-              (cons (bitwise-and (bitwise-arithmetic-shift-right long (* i 8))
-                                 #b11111111)
-                    bytes))
-        (reverse bytes))))
+(define (integer->bytes num)
+  (let ((bytes num:words))
+    (if (eq? bytes #!null)
+        (let ((val num:ival))
+          (list (bitwise-and (bitwise-arithmetic-shift-right val (* 0 8)) #b11111111)
+                (bitwise-and (bitwise-arithmetic-shift-right val (* 1 8)) #b11111111)
+                (bitwise-and (bitwise-arithmetic-shift-right val (* 2 8)) #b11111111)
+                (bitwise-and (bitwise-arithmetic-shift-right val (* 3 8)) #b11111111)
+                (bitwise-and (bitwise-arithmetic-shift-right val (* 4 8)) #b11111111)
+                (bitwise-and (bitwise-arithmetic-shift-right val (* 5 8)) #b11111111)
+                (bitwise-and (bitwise-arithmetic-shift-right val (* 6 8)) #b11111111)
+                (bitwise-and (bitwise-arithmetic-shift-right val (* 7 8)) #b11111111)))
+        (let* ((byte-count num:ival)
+               (indexes (iota byte-count)))
+          (map (lambda (i)(bytes i))
+               indexes)))))
+
+;; (define (long->bytes long)
+;;   (let loop ((i 0)
+;;              (bytes '()))
+;;     (if (< i 8)
+;;         (loop (+ i 1)
+;;               (cons (bitwise-and (bitwise-arithmetic-shift-right long (* i 8))
+;;                                  #b11111111)
+;;                     bytes))
+;;         (reverse bytes))))
+
+              
+
 
 (define (byte->bool-vector b)
   (list->vector (reverse (map (lambda (i)(bitwise-bit-set? b i))
