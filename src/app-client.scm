@@ -277,8 +277,8 @@
          (hud-panel (Container "glass"))
          (chat-panel (Container "glass"))
          (asset-manager (get-asset-manager))
-         (name-font (@ 'loadFont asset-manager "Interface/Fonts/Orbitron32.fnt"))
-         (node-font (@ 'loadFont asset-manager "Interface/Fonts/Orbitron24.fnt"))
+         (name-font (@ 'loadFont asset-manager "Interface/Fonts/Laconic30.fnt"))
+         (node-font (@ 'loadFont asset-manager "Interface/Fonts/Laconic24.fnt"))
          (nameplate (Label name-string "glass"))
          (nodeplate (Label (string-capitalize (center-name app)) "glass"))
          (chatbox (TextField "Welcome to The Fabric" "glass"))
@@ -294,7 +294,7 @@
 
     (@ 'setLocalTranslation hud-panel 12 (- screen-height 12) 0)
     (@ 'setFont nameplate name-font)
-    (@ 'setFontSize nameplate 32)
+    (@ 'setFontSize nameplate 30)
     (@ 'setColor nameplate ColorRGBA:Green)
     (@ 'addChild hud-panel nameplate)
 
@@ -397,13 +397,14 @@
 
 (define (init-client app)
   (let* ((sky (make-sky app))
-        (center-name (choose-any $center-names))
-        (center-body (make-center-body app center-name)))
+         (center-body #f))
 
     (setup-lighting app)
     (setup-inputs app)
     (@ 'attachChild (root-node app) sky)
-    (set-center-name! app center-name)
+    (when (eq? #!null (center-name app))
+      (set-center-name! app (choose-any $center-names)))
+    (set! center-body (make-center-body app (center-name app)))
     (@ 'attachChild (root-node app) center-body)
     (init-player-character app)
 
@@ -517,9 +518,11 @@
 ;;; ---------------------------------------------------------------------
 ;;; puts everything together into a runnable client
 
-(define (make-client)
+(define (make-client #!optional (center #f))
   (let* ((client :: <fabric-client> (<fabric-client>))
 	 (settings::AppSettings (invoke client 'getAppSettings)))
+    (when center
+      (set-center-name! client center))
     (@ 'setResolution settings 1920 1200)
     (@ 'setTitle settings "The Fabric")
     (@ 'setSettingsDialogImage settings "Interface/icon.jpg")

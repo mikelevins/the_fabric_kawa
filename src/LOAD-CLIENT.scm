@@ -36,6 +36,7 @@
 (require "app-client.scm")
 
 ;;; (define $the-client (make-client))
+;;; (define $the-client (make-client "titan"))
 ;;; (invoke $the-client 'start)
 
 ;;; ($the-client:connectToServer)
