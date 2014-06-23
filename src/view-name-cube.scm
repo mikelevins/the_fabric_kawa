@@ -52,8 +52,8 @@
 (define (make-component-cube lit? color activity x y z)
   (let* ((asset-manager (get-asset-manager))
          (mat (Material asset-manager "Common/MatDefs/Misc/Unshaded.j3md"))
-         (dim-color color)
-         (bright-color (brighten color))
+         (dim-color (if lit? color (darken color)))
+         (bright-color (if lit? (brighten color) color))
          (flicker-color (ColorRGBA 0.9 0.9 1.0 0.6))
          (flickerer (<flicker-control>  dim-color flicker-color activity))
          (new-box (Box 0.4 0.4 0.4))
@@ -82,7 +82,7 @@
           (for-each
            (lambda (z)
              (let* ((lit? (bitwise-bit-set? bits i))
-                    (new-geom (make-component-cube lit? lit-color (+ 24 (random-integer 128)) x y z)))
+                    (new-geom (make-component-cube lit? lit-color (+ 24 (random-integer 96)) x y z)))
                
                (set! cubes (cons new-geom cubes))
                (set! i (+ i 1))))

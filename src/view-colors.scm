@@ -19,7 +19,7 @@
 (define-private-alias ColorRGBA com.jme3.math.ColorRGBA)
 
 (define (any-transparency)
-  (choose-any '( 0.4 0.5 0.6 )))
+  (choose-any '( 0.4 0.5 0.6 0.7)))
 
 (define (any-lit-color)
   (let ((transp (any-transparency))
