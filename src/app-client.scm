@@ -9,7 +9,7 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export make-client)
+(module-export make-client client-keys client-info set-client-info!)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -88,7 +88,6 @@
   (player-node :: Node init-form: #!null)
   (center-name ::java.lang.String init-form: #!null)
   (direction ::Vector3f init-form: (Vector3f))
-  (app-settings ::AppSettings init-form: (AppSettings #t))
   (network-client ::com.jme3.network.Client  init-form: #!null)
   (left-button? init-form: #f)
   (right-button? init-form: #f)
@@ -97,10 +96,10 @@
 
   ;; accessors
   ;; ---------
+  ((getClientInfo) client-info)
+  ((setClientInfo info) (set! client-info info))
   ((getDirection) direction)
   ((setDirection dir) (set! direction dir))
-  ((getAppSettings) app-settings)
-  ((setAppSettings settings) (set! app-settings settings))
   ((getCameraDirection) (@ 'getDirection cam))
   ((getAudioRenderer) audioRenderer)
   ((getViewport) viewPort)
@@ -124,6 +123,7 @@
 
   ;; methods
   ;; -------
+  ;; network client
   ((connectToServer) (connect-client-to-server (this)))
   ((disconnectFromServer)(network-client:close))
   ((setNetworkClient client)(set! network-client client))
@@ -132,17 +132,31 @@
   ((onAnalog name value tpf)(handle-analog-event (this) name value tpf))
   ((onAction name key-pressed? tpf)(handle-action-event (this) name key-pressed? tpf))
   ;; SimpleApplication implementation
+  ((*init*)(begin (invoke-special SimpleApplication (this) '*init*)
+                  (set-client-info! (this) app-settings: (AppSettings #t))))
   ((simpleInitApp)(init-client (this))))
+
 
 ;;; ---------------------------------------------------------------------
 ;;; <fabric-client> accessors
 ;;; ---------------------------------------------------------------------
 
+(define (client-info app :: <fabric-client> key #!optional default)
+  (get-key (@ 'getClientInfo app) key default))
+
+(define (set-client-info! app :: <fabric-client> key val)
+  (@ 'setClientInfo app
+                    (put-key (@ 'getClientInfo app)
+                             key val))
+  val)
+
+(define (client-keys  app :: <fabric-client>)
+  (keys (@ 'getClientInfo app)))
+
 (define (camera-direction app  :: <fabric-client>)(@ 'getCameraDirection app))
 (define (camera-left app  :: <fabric-client>)(@ 'getLeft (@ 'getCamera app)))
 (define (center-name app ::SimpleApplication)(@ 'getCenterName app))
 
-(define (client-app-settings app ::SimpleApplication)(@ 'getAppSettings app))
 (define (client-audio-renderer app ::SimpleApplication)(@ 'getAudioRenderer app))
 (define (client-camera app ::SimpleApplication)(@ 'getCamera app))
 (define (client-chat-hud app ::SimpleApplication)(@ 'getChatHud app))
@@ -163,7 +177,6 @@
 (define (root-node app ::SimpleApplication)(@ 'getRootNode app))
 
 (define (set-center-name! app ::SimpleApplication name :: java.lang.String)(@ 'setCenterName app name))
-(define (set-client-app-settings! app ::SimpleApplication settings)(@ 'setAppSettings app settings))
 (define (set-client-chat-hud! app ::SimpleApplication hud)(@ 'setChatHud app hud))
 (define (set-client-direction! app  :: <fabric-client> dir)(@ 'setDirection app dir))
 (define (set-client-player! app ::SimpleApplication player)(@ 'setPlayer app player))
@@ -281,10 +294,11 @@
   (let ((screen (Screen app)))
     (@ 'initialize screen)
     (@ 'addControl (client-gui-node app) screen)
-    (let* ((Align BitmapFont:Align)
+    (let* ((settings (client-info app app-settings:))
+           (Align BitmapFont:Align)
            (VAlign BitmapFont:VAlign)
-           (width (@ 'getWidth (client-app-settings app)))
-           (height (@ 'getHeight (client-app-settings app)))
+           (width (@ 'getWidth settings))
+           (height (@ 'getHeight settings))
            (chatbox (FabricChat screen "chatbox"
                                 (Vector2f 15 (- height 220))
                                 (Vector2f 400 200)))
@@ -492,7 +506,6 @@
 ;;; ---------------------------------------------------------------------
 ;;; handle keypresses, mouse clicks, and other discrete events
 
-
 (define-syntax on-action
   (syntax-rules (->)
     ((on-action (evt-name)
@@ -500,13 +513,6 @@
      (cond
       ((invoke evt-name 'equals s) expr) ...
       (#t #f)))))
-
-;; (define (handle-action-event app name key-pressed? tpf)
-;;   (cond
-;;    ((@ 'equals name "leftButton")(set-left-button! app key-pressed?))
-;;    ((@ 'equals name "rightButton")(set-right-button! app key-pressed?))
-;;    ;; handle typing
-;;    (#t (format #t "~s" name))))
 
 (define (handle-action-event app name key-pressed? tpf)
   (on-action (name)
@@ -524,7 +530,7 @@
 
 (define (make-client #!optional (center #f))
   (let* ((client :: <fabric-client> (<fabric-client>))
-	 (settings::AppSettings (invoke client 'getAppSettings)))
+	 (settings :: AppSettings (client-info client app-settings:)))
     (when center
       (set-center-name! client center))
     (@ 'setResolution settings 1920 1200)
