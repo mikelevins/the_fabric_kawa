@@ -76,7 +76,7 @@
 (define-private-alias Window tonegod.gui.controls.windows.Window)
 
 ;;; ---------------------------------------------------------------------
-;;; <fabric-client> - the main class in the client
+;;; <fabric-client> - the client class
 ;;; ---------------------------------------------------------------------
 
 (define-simple-class <fabric-client> (SimpleApplication AnalogListener ActionListener)
