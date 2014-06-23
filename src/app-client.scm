@@ -83,6 +83,7 @@
 
   ;; slots
   ;; -------
+  (client-info init-form: (empty-frame))
   (player init-form: #!null)
   (player-node :: Node init-form: #!null)
   (center-name ::java.lang.String init-form: #!null)
@@ -289,10 +290,10 @@
                                 (Vector2f 400 200)))
            (nameplate (TLabel screen "nameplate"
                               (Vector2f 8 8)
-                              (Vector2f 400 40)))
+                              (Vector2f 900 40)))
            (nodeplate (TLabel screen "nodeplate"
                               (Vector2f 8 48)
-                              (Vector2f 400 40))))
+                              (Vector2f 900 40))))
 
       (@ 'setText nameplate name-string)
       (@ 'setTextAlign nameplate Align:Left)
@@ -492,21 +493,25 @@
 ;;; handle keypresses, mouse clicks, and other discrete events
 
 
-;; (define-syntax on-action
-;;   (syntax-rules (->)
-;;     ((on-analog (evt-name)
-;;                 (s -> expr) ...)
-;;      (cond
-;;       ((invoke evt-name 'equals s) expr) ...
-;;       (#t #f)))))
+(define-syntax on-action
+  (syntax-rules (->)
+    ((on-action (evt-name)
+                (s -> expr) ...)
+     (cond
+      ((invoke evt-name 'equals s) expr) ...
+      (#t #f)))))
 
+;; (define (handle-action-event app name key-pressed? tpf)
+;;   (cond
+;;    ((@ 'equals name "leftButton")(set-left-button! app key-pressed?))
+;;    ((@ 'equals name "rightButton")(set-right-button! app key-pressed?))
+;;    ;; handle typing
+;;    (#t (format #t "~s" name))))
 
 (define (handle-action-event app name key-pressed? tpf)
-  (cond
-   ((@ 'equals name "leftButton")(set-left-button! app key-pressed?))
-   ((@ 'equals name "rightButton")(set-right-button! app key-pressed?))
-   ;; handle typing
-   (#t (format #t "~s" name))))
+  (on-action (name)
+             ("leftButton" -> (set-left-button! app key-pressed?))
+             ("rightButton" -> (set-right-button! app key-pressed?))))
 
 
 ;;; ---------------------------------------------------------------------
