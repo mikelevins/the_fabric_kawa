@@ -1,9 +1,9 @@
 ;;; ***********************************************************************
 ;;;; FILE IDENTIFICATION
 ;;;;
-;;;; Name:          tools-workshop.scm
+;;;; Name:          workshop.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
-;;;; Purpose:       workshop for tinkering with content
+;;;; Purpose:       workshop main program
 ;;;; Author:        mikel evins
 ;;;; Copyright:     2014 by mikel evins
 ;;;;
@@ -15,6 +15,7 @@
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
+
 (require 'list-lib)
 (require 'srfi-95) ; sorting
 
@@ -22,6 +23,7 @@
 (require "util-random.scm")
 (require "util-general.scm")
 (require "util-lists.scm")
+(require "init-config.scm")
 (require "model-id.scm")
 (require "language-types.scm")
 (require "language-gf.scm")
@@ -38,6 +40,7 @@
 (require "view-name-cube.scm")
 (require "view-player.scm")
 (require "view-node.scm")
+(require "app-client.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -50,6 +53,8 @@
 (define-private-alias BitmapFont com.jme3.font.BitmapFont)
 (define-private-alias BitmapText com.jme3.font.BitmapText)
 (define-private-alias BloomFilter com.jme3.post.filters.BloomFilter)
+(define-private-alias CameraControl com.jme3.scene.control.CameraControl)
+(define-private-alias CameraNode com.jme3.scene.CameraNode)
 (define-private-alias ColorRGBA com.jme3.math.ColorRGBA)
 (define-private-alias Container com.simsilica.lemur.Container)
 (define-private-alias FilterPostProcessor com.jme3.post.FilterPostProcessor)
@@ -83,12 +88,14 @@
 ;;; <fabric-workshop> - the workshop class
 ;;; ---------------------------------------------------------------------
 
-(define-simple-class <fabric-workshop> (SimpleApplication)
+(define-simple-class <fabric-workshop> (SimpleApplication AnalogListener ActionListener)
 
   ;; slots
   ;; -------
   (player init-form: #!null)
   (player-node :: Node init-form: #!null)
+  (sky :: Spatial init-form: #!null)
+  (center-name ::java.lang.String init-form: #!null)
   (direction ::Vector3f init-form: (Vector3f))
   (app-settings ::AppSettings init-form: (AppSettings #t))
   (left-button? init-form: #f)
@@ -101,6 +108,7 @@
   ((setDirection dir) (set! direction dir))
   ((getAppSettings) app-settings)
   ((setAppSettings settings) (set! app-settings settings))
+  ((getCameraDirection) (@ 'getDirection cam))
   ((getAudioRenderer) audioRenderer)
   ((getViewport) viewPort)
   ((getInputManager) inputManager)
@@ -112,6 +120,10 @@
   ((setPlayer p) (set! player p))
   ((getPlayerNode) player-node)
   ((setPlayerNode n) (set! player-node n))
+  ((getSky) sky)
+  ((setSky s) (set! sky s))
+  ((getCenterName) center-name)
+  ((setCenterName nm) (set! center-name nm))
   ((getLeftButton) left-button?)
   ((setLeftButton down?) (set! left-button? down?))
   ((getRightButton) right-button?)
@@ -119,6 +131,9 @@
 
   ;; methods
   ;; -------
+  ;; AnalogListener and ActionListener implementation
+  ((onAnalog name value tpf)(handle-analog-event (this) name value tpf))
+  ((onAction name key-pressed? tpf)(handle-action-event (this) name key-pressed? tpf))
   ;; SimpleApplication implementation
   ((simpleInitApp)(init-workshop (this))))
 
@@ -126,8 +141,13 @@
 ;;; <fabric-workshop> accessors
 ;;; ---------------------------------------------------------------------
 
+(define (camera-direction app  :: <fabric-workshop>)(@ 'getCameraDirection app))
+(define (camera-left app  :: <fabric-workshop>)(@ 'getLeft (@ 'getCamera app)))
+(define (center-name app ::SimpleApplication)(@ 'getCenterName app))
+
 (define (workshop-app-settings app ::SimpleApplication)(@ 'getAppSettings app))
 (define (workshop-audio-renderer app ::SimpleApplication)(@ 'getAudioRenderer app))
+(define (workshop-camera app ::SimpleApplication)(@ 'getCamera app))
 (define (workshop-direction app  :: <fabric-workshop>)(@ 'getDirection app))
 (define (workshop-gui-font app ::SimpleApplication)(@ 'getGuiFont app))
 (define (workshop-gui-node app ::SimpleApplication)(@ 'getGuiNode app))
@@ -137,18 +157,22 @@
 (define (workshop-player-node app ::SimpleApplication)(@ 'getPlayerNode app))
 (define (workshop-state-manager app ::SimpleApplication)(@ 'getStateManager app))
 (define (workshop-viewport app ::SimpleApplication)(@ 'getViewport app))
+(define (workshop-sky app)(@ 'getSky app))
 
 (define (fly-by-camera app ::SimpleApplication)(@ 'getFlyByCamera app))
 (define (left-button? app)(@ 'getLeftButton app))
+(define (normalize-camera! app)(@ 'normalizeLocal (camera-direction app)))
 (define (right-button? app)(@ 'getRightButton app))
 (define (root-node app ::SimpleApplication)(@ 'getRootNode app))
 
+(define (set-center-name! app ::SimpleApplication name :: java.lang.String)(@ 'setCenterName app name))
 (define (set-workshop-app-settings! app ::SimpleApplication settings)(@ 'setAppSettings app settings))
 (define (set-workshop-direction! app  :: <fabric-workshop> dir)(@ 'setDirection app dir))
 (define (set-workshop-player! app ::SimpleApplication player)(@ 'setPlayer app player))
 (define (set-workshop-player-node! app ::SimpleApplication node)(@ 'setPlayerNode app node))
 (define (set-left-button! app key-pressed?)(@ 'setLeftButton app key-pressed?))
 (define (set-right-button! app key-pressed?)(@ 'setRightButton app key-pressed?))
+(define (set-workshop-sky! app sky)(@ 'setSky app sky))
 
 
 ;;; ---------------------------------------------------------------------
@@ -196,6 +220,21 @@
             pc-armors))
 
 
+;;; (init-player-camera app player-node)
+;;; ---------------------------------------------------------------------
+
+(define (init-player-camera app player-node)
+  (let* ((camera::com.jme3.renderer.Camera (workshop-camera app))
+         (cam-node (CameraNode "camera" camera)))
+    (invoke cam-node 'setControlDir CameraControl:ControlDirection:SpatialToCamera)
+    (@ 'setFrustumFar (workshop-camera app) 20000)
+    ;; position the camera behind and above the player and look at the player
+    (@ 'setLocalTranslation cam-node (Vector3f 0 30 -30))
+    (@ 'lookAt cam-node (@ 'getLocalTranslation player-node) Vector3f:UNIT_Y)
+    ;; attach the camera to the player character
+    (@ 'attachChild player-node cam-node)))
+
+
 ;;; (init-player-character app ::SimpleApplication)
 ;;; ---------------------------------------------------------------------
 ;;; prepare a player character and present it in the scene
@@ -209,12 +248,27 @@
          (armor-count 0))
     (set-workshop-player! app player)
     (set-workshop-player-node! app player-node)
+    ;; don't seize the mouse from the player
+    (Mouse:setGrabbed #f)
+    ;; disable the fly-by camera
+    (@ 'setEnabled (fly-by-camera app) #f)
 
     ;; assemble the player character's parts
     (assemble-player-character player-node
                                player-cube
                                (list player-rotator)
                                (make-armors armor-count))
+    
+    ;; set up the player character's camera
+    (init-player-camera app player-node)
+
+    ;; move the character to its starting location and point it at the center
+    (@ 'setLocalTranslation player-node 0.0 8000.0 0.0)
+    (let ((rotation (Quaternion))
+          (pitch-axis (Vector3f 1 0 0)))
+      ;; PI/4 radians points us right at the center
+      (@ 'fromAngleAxis rotation (/ PI 4) pitch-axis)
+      (@ 'setLocalRotation player-node rotation))
     
     ;; add the player to the scene
     (@ 'attachChild (root-node app) player-node)))
@@ -240,6 +294,7 @@
       (@ 'setFontSize nameplate 30)
       (@ 'setFontColor nameplate ColorRGBA:Green)
 
+      (@ 'setText nodeplate (string-capitalize (center-name app)))
       (@ 'setTextAlign nodeplate Align:Left)
       (@ 'setFont nodeplate "Interface/Fonts/Laconic24.fnt")
       (@ 'setFontSize nodeplate 24)
@@ -247,6 +302,41 @@
 
       (@ 'addElement screen nameplate)
       (@ 'addElement screen nodeplate))))
+
+
+
+;;; (setup-inputs app ::SimpleApplication)
+;;; ---------------------------------------------------------------------
+;;; set up the player's controls
+
+(define (setup-inputs app ::SimpleApplication)
+  ;; set up the player's controls
+  (let ((key-input ::KeyInput (workshop-key-input app)))
+    (@ 'addMapping (workshop-input-manager app) "moveForward" (KeyTrigger key-input:KEY_UP))
+    (@ 'addMapping (workshop-input-manager app) "maybeMoveForward"
+                   (MouseButtonTrigger MouseInput:BUTTON_LEFT))
+    (@ 'addMapping (workshop-input-manager app) "leftButton"
+                   (MouseButtonTrigger MouseInput:BUTTON_LEFT))
+    (@ 'addMapping (workshop-input-manager app) "rightButton"
+                   (MouseButtonTrigger MouseInput:BUTTON_RIGHT))
+    (@ 'addMapping (workshop-input-manager app) "moveRight" (KeyTrigger key-input:KEY_RIGHT))
+    (@ 'addMapping (workshop-input-manager app) "mouseRotateRight" (MouseAxisTrigger 0 #f))
+    (@ 'addMapping (workshop-input-manager app) "moveLeft" (KeyTrigger key-input:KEY_LEFT))
+    (@ 'addMapping (workshop-input-manager app) "mouseRotateLeft" (MouseAxisTrigger 0 #t))
+    (@ 'addMapping (workshop-input-manager app) "mouseRotateUp" (MouseAxisTrigger 1 #f))
+    (@ 'addMapping (workshop-input-manager app) "moveBackward" (KeyTrigger key-input:KEY_DOWN))
+    (@ 'addMapping (workshop-input-manager app) "mouseRotateDown" (MouseAxisTrigger 1 #t))
+
+       ;;; text inputs
+    (@ 'addMapping (workshop-input-manager app) "SPACE" (KeyTrigger key-input:KEY_SPACE))
+    (@ 'addMapping (workshop-input-manager app) "KEY_A" (KeyTrigger key-input:KEY_A))
+
+
+    (@ 'addListener (workshop-input-manager app) app
+                    ;; motion controls
+                    "moveForward" "maybeMoveForward" "moveBackward" "moveRight" "moveLeft"
+                    "leftButton" "rightButton" "rotateRight" "rotateLeft" "rotateUp" "rotateDown"
+                    "mouseRotateRight" "mouseRotateLeft" "mouseRotateUp" "mouseRotateDown")))
 
 
 ;;; (setup-lighting app ::SimpleApplication)
@@ -263,13 +353,54 @@
     (@ 'addProcessor (workshop-viewport app) filter-processor)))
 
 
+;;; $center-names
+;;; ---------------------------------------------------------------------
+;;; the names of all available celestial bodies
+
+(define $center-names
+  '("callisto"
+     "dione"
+     "earth"
+     "enceladus"
+     "europa"
+     "ganymede"
+     "iapetus"
+     "io"
+     "jupiter"
+     "luna"
+     "mars"
+     "neptune"
+     "pluto"
+     "rhea"
+     "saturn"
+     "sedna"
+     "sol"
+     "titan"
+     "uranus"
+     "venus"))
+
 ;;; (init-workshop app)
 ;;; ---------------------------------------------------------------------
 ;;; set up the scene and add the player character
 
+(define (add-sky! app)
+  (let* ((sky (make-sky app)))
+    (set-workshop-sky! app sky)
+    (@ 'attachChild (root-node app) sky)))
+
+(define (remove-sky! app)
+  (let* ((sky (workshop-sky app)))
+    (@ 'detachChild (root-node app) sky)))
+
 (define (init-workshop app)
-  (let* ((fly-cam (fly-by-camera app)))
+  (let* ((center-body #f))
+
     (setup-lighting app)
+    (setup-inputs app)
+    (when (eq? #!null (center-name app))
+      (set-center-name! app (choose-any $center-names)))
+    (set! center-body (make-center-body app (center-name app)))
+    (@ 'attachChild (root-node app) center-body)
     (init-player-character app)
 
     (let* ((player (workshop-player app))
@@ -279,12 +410,7 @@
                            (for-each (lambda (s)
                                        (format out "~a " s))
                                      name-strings)))))
-      (init-hud app player-name)
-      (@ 'setEnabled fly-cam #t)
-      (@ 'setMoveSpeed fly-cam 30)
-      (@ 'setRotationSpeed fly-cam 2)
-      (@ 'setDragToRotate fly-cam #t)
-      (Mouse:setGrabbed #f))
+      (init-hud app player-name))
 
     ;; uncomment to capture video to a file
     ;; (@ 'attach (workshop-state-manager app) (VideoRecorderAppState))
@@ -304,6 +430,55 @@
       (#t #f)))))
 
 
+;;; (handle-analog-event app name value tpf)
+;;; ---------------------------------------------------------------------
+;;; handle mouse movements and other continuous events
+
+(define (handle-analog-event app name value tpf)
+  (on-analog (name)
+             ("moveForward" -> (begin (normalize-camera! app)
+                                      (set-workshop-direction! app (camera-direction app))
+                                      (@ 'multLocal (workshop-direction app) (* 300 tpf))
+                                      (@ 'move (workshop-player-node app) (workshop-direction app))))
+             ("maybeMoveForward" -> (when (right-button? app)
+                                      (normalize-camera! app)
+                                      (set-workshop-direction! app (camera-direction app))
+                                      (@ 'multLocal (workshop-direction app) (* 300 tpf))
+                                      (@ 'move (workshop-player-node app) (workshop-direction app))))
+             ("moveBackward" -> (begin (normalize-camera! app)
+                                       (set-workshop-direction! app (camera-direction app))
+                                       (@ 'multLocal (workshop-direction app) (* -200 tpf))
+                                       (@ 'move (workshop-player-node app) (workshop-direction app))))
+             ("moveRight" -> (begin (set-workshop-direction! app (@ 'normalizeLocal (@ 'getLeft (workshop-camera app))))
+                                    (@ 'multLocal (workshop-direction app) (* -150 tpf))
+                                    (@ 'move (workshop-player-node app) (workshop-direction app))))
+             ("moveLeft" -> (begin (set-workshop-direction! app (@ 'normalizeLocal (@ 'getLeft (workshop-camera app))))
+                                   (@ 'multLocal (workshop-direction app) (* 150 tpf))
+                                   (@ 'move (workshop-player-node app) (workshop-direction app))))
+             ("rotateRight" -> (@ 'rotate (workshop-player-node app) 0 (* -0.25 tpf) 0))
+             ("mouseRotateRight" -> (when (right-button? app)
+                                      (@ 'rotate (workshop-player-node app) 0 (* -1 value) 0)))
+             ("rotateLeft" -> (@ 'rotate (workshop-player-node app) 0 (* 0.25 tpf) 0))
+             ("mouseRotateLeft" -> (when (right-button? app)
+                                     (@ 'rotate (workshop-player-node app) 0 (* 1 value) 0)))
+             ("rotateUp" -> (@ 'rotate (workshop-player-node app) (* -0.125 tpf) 0 0))
+             ("mouseRotateUp" -> (when (right-button? app)
+                                   (@ 'rotate (workshop-player-node app) (* -1 value) 0 0)))
+             ("rotateDown" -> (@ 'rotate (workshop-player-node app) (* 0.125 tpf) 0 0))
+             ("mouseRotateDown" -> (when (right-button? app)
+                                     (@ 'rotate (workshop-player-node app) (* 1 value) 0 0)))))
+
+;;; (handle-action-event app name key-pressed? tpf)
+;;; ---------------------------------------------------------------------
+;;; handle keypresses, mouse clicks, and other discrete events
+
+(define (handle-action-event app name key-pressed? tpf)
+  (cond
+   ((@ 'equals name "leftButton")(set-left-button! app key-pressed?))
+   ((@ 'equals name "rightButton")(set-right-button! app key-pressed?))
+   ;; handle typing
+   (#t #!void)))
+
 ;;; ---------------------------------------------------------------------
 ;;; construct the workshop
 ;;; ---------------------------------------------------------------------
@@ -312,11 +487,12 @@
 ;;; ---------------------------------------------------------------------
 ;;; puts everything together into a runnable workshop
 
-(define (make-workshop)
+(define (make-workshop #!optional (center #f))
   (let* ((workshop :: <fabric-workshop> (<fabric-workshop>))
 	 (settings::AppSettings (invoke workshop 'getAppSettings)))
-
-    (@ 'setResolution settings 1400 1024)
+    (when center
+      (set-center-name! workshop center))
+    (@ 'setResolution settings 1920 1200)
     (@ 'setTitle settings "The Fabric")
     (@ 'setSettingsDialogImage settings "Interface/icon.jpg")
     (@ 'setSettings workshop settings)
@@ -328,3 +504,5 @@
 
 ;;; (define $the-workshop (make-workshop))
 ;;; (invoke $the-workshop 'start)
+;;; (add-sky! $the-workshop)
+;;; (remove-sky! $the-workshop)

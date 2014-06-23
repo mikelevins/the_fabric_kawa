@@ -18,7 +18,7 @@
 ;;; name is represented as a brightly-lit cube; each 0 bit is represented as
 ;;; a dark, translucent cube
 
-(module-export make-name-cube)
+(module-export make-component-cube make-name-cube)
 
 
 (require "util-java.scm")
