@@ -242,7 +242,8 @@
          (player (make-player-character (any-lit-color)))
          (player-cube (get-key player name-cube:))
          (player-rotator (any-rotator))
-         (armor-count (random-integer 3)))
+         ;;(armor-count (random-integer 3))
+         (armor-count 0))
     (set-client-player! app player)
     (set-client-player-node! app player-node)
     ;; don't seize the mouse from the player
@@ -288,10 +289,10 @@
                                 (Vector2f 400 200)))
            (nameplate (TLabel screen "nameplate"
                               (Vector2f 8 8)
-                              (Vector2f 200 40)))
+                              (Vector2f 400 40)))
            (nodeplate (TLabel screen "nodeplate"
                               (Vector2f 8 48)
-                              (Vector2f 200 40))))
+                              (Vector2f 400 40))))
 
       (@ 'setText nameplate name-string)
       (@ 'setTextAlign nameplate Align:Left)

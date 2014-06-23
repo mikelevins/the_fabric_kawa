@@ -37,6 +37,9 @@
   (let* ((name (gen-name))
          (name-bits (fabric-name-data name))
          (cube (make-name-cube name-bits lit-color)))
+    (format #t "~%name-data: ~A" (fabric-name-strings name))
+    (format #t "~%name-data: ~d" (fabric-name-data name))
+    (format #t "~%name-bytes: ~A~%" (fabric-name-bit-patterns name))
     (entity name: name
             lit-color: lit-color
             name-cube: cube)))

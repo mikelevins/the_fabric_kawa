@@ -9,7 +9,8 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export fabric-name-data fabric-name-bytes fabric-name-strings fabric-name-bytestrings gen-name)
+(module-export fabric-name-data fabric-name-bytes fabric-name-strings
+               fabric-name-bit-patterns fabric-name-bytestrings gen-name)
 
 (require 'list-lib)
 (require "util-java.scm")

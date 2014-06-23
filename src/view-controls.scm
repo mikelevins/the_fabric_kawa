@@ -53,7 +53,7 @@
 (define-simple-class <flicker-control> (AbstractControl)
   (dim-color::ColorRGBA init-value: #!null)
   (bright-color::ColorRGBA init-value: #!null)
-  (activity::int init-value: 24)
+  (activity::int init-value: 96)
   ((*init* dim bright act)(begin
                             (set! dim-color dim)
                             (set! bright-color bright)
