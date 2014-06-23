@@ -35,8 +35,8 @@
 (require "view-node.scm")
 (require "app-client.scm")
 
-;;; (define $the-client (make-client))
 ;;; (define $the-client (make-client "titan"))
+;;; (define $the-client (make-client))
 ;;; (invoke $the-client 'start)
 
 ;;; ($the-client:connectToServer)

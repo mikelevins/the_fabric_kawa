@@ -44,6 +44,7 @@
 (define-private-alias BloomFilter com.jme3.post.filters.BloomFilter)
 (define-private-alias CameraControl com.jme3.scene.control.CameraControl)
 (define-private-alias CameraNode com.jme3.scene.CameraNode)
+(define-private-alias ChatBox tonegod.gui.controls.extras.ChatBox)
 (define-private-alias ColorRGBA com.jme3.math.ColorRGBA)
 (define-private-alias Container com.simsilica.lemur.Container)
 (define-private-alias FilterPostProcessor com.jme3.post.FilterPostProcessor)
@@ -51,6 +52,7 @@
 (define-private-alias KeyInput com.jme3.input.KeyInput)
 (define-private-alias KeyTrigger com.jme3.input.controls.KeyTrigger)
 (define-private-alias Label com.simsilica.lemur.Label)
+(define-private-alias TLabel tonegod.gui.controls.text.Label)
 (define-private-alias Mouse org.lwjgl.input.Mouse)
 (define-private-alias MouseAxisTrigger com.jme3.input.controls.MouseAxisTrigger)
 (define-private-alias MouseButtonTrigger com.jme3.input.controls.MouseButtonTrigger)
@@ -61,14 +63,17 @@
 (define-private-alias PI com.jme3.math.FastMath:PI)
 (define-private-alias QuadBackgroundComponent com.simsilica.lemur.component.QuadBackgroundComponent)
 (define-private-alias Quaternion com.jme3.math.Quaternion)
+(define-private-alias Screen tonegod.gui.core.Screen)
 (define-private-alias SimpleApplication com.jme3.app.SimpleApplication)
 (define-private-alias Spatial com.jme3.scene.Spatial)
 (define-private-alias Styles com.simsilica.lemur.style.Styles)
 (define-private-alias TbtQuadBackgroundComponent com.simsilica.lemur.component.TbtQuadBackgroundComponent)
 (define-private-alias TextField com.simsilica.lemur.TextField)
+(define-private-alias TTextField tonegod.gui.controls.text.TextField)
 (define-private-alias Vector2f com.jme3.math.Vector2f)
 (define-private-alias Vector3f com.jme3.math.Vector3f)
 (define-private-alias VideoRecorderAppState com.jme3.app.state.VideoRecorderAppState)
+(define-private-alias Window tonegod.gui.controls.windows.Window)
 
 ;;; ---------------------------------------------------------------------
 ;;; <fabric-client> - the main class in the client
@@ -265,53 +270,46 @@
     ;; add the player to the scene
     (@ 'attachChild (root-node app) player-node)))
 
+(define-simple-class FabricChat (ChatBox)
+  ((*init* screen :: Screen id :: java.lang.String position :: Vector2f size :: Vector2f)
+   (invoke-special ChatBox (this) '*init* screen id position size))
+  ((onSendMsg msg::java.lang.String) #!void))
+
 (define (init-hud app ::SimpleApplication name-string)
-  (GuiGlobals:initialize app)
-  (let* ((settings::AppSettings (@ 'getAppSettings app))
-         (screen-height (@ 'getHeight settings))
-         (screen-width (@ 'getWidth settings))
-         (gui-node (client-gui-node app))
-         (styles :: Styles (@ 'getStyles (GuiGlobals:getInstance)))
-         (bgcolor :: ColorRGBA (ColorRGBA 0.15 0.25 0.5 0.6))
-         (background :: QuadBackgroundComponent (QuadBackgroundComponent bgcolor))
-         (hud-panel (Container "glass"))
-         (chat-panel (Container "glass"))
-         (asset-manager (get-asset-manager))
-         (name-font (@ 'loadFont asset-manager "Interface/Fonts/Laconic30.fnt"))
-         (node-font (@ 'loadFont asset-manager "Interface/Fonts/Laconic24.fnt"))
-         (nameplate (Label name-string "glass"))
-         (nodeplate (Label (string-capitalize (center-name app)) "glass"))
-         (chatbox (TextField "Welcome to The Fabric" "glass"))
-         (chatbox-background (TbtQuadBackgroundComponent:create
-                              "/com/simsilica/lemur/icons/border.png"
-                              1 2 2 3 3 0 #f)))
+  (let ((screen (Screen app)))
+    (@ 'initialize screen)
+    (@ 'addControl (client-gui-node app) screen)
+    (let* ((Align BitmapFont:Align)
+           (VAlign BitmapFont:VAlign)
+           (width (@ 'getWidth (client-app-settings app)))
+           (height (@ 'getHeight (client-app-settings app)))
+           (chatbox (FabricChat screen "chatbox"
+                                (Vector2f 15 (- height 220))
+                                (Vector2f 400 200)))
+           (nameplate (TLabel screen "nameplate"
+                              (Vector2f 8 8)
+                              (Vector2f 200 40)))
+           (nodeplate (TLabel screen "nodeplate"
+                              (Vector2f 8 48)
+                              (Vector2f 200 40))))
 
-    (@ 'set (@ 'getSelector styles Panel:ELEMENT_ID "glass")
-            "background" background)
+      (@ 'setText nameplate name-string)
+      (@ 'setTextAlign nameplate Align:Left)
+      (@ 'setFont nameplate "Interface/Fonts/Laconic30.fnt")
+      (@ 'setFontSize nameplate 30)
+      (@ 'setFontColor nameplate ColorRGBA:Green)
 
-    (@ 'attachChild gui-node hud-panel)
-    (@ 'attachChild gui-node chat-panel)
+      (@ 'setText nodeplate (string-capitalize (center-name app)))
+      (@ 'setTextAlign nodeplate Align:Left)
+      (@ 'setFont nodeplate "Interface/Fonts/Laconic24.fnt")
+      (@ 'setFontSize nodeplate 24)
+      (@ 'setFontColor nodeplate ColorRGBA:Green)
 
-    (@ 'setLocalTranslation hud-panel 12 (- screen-height 12) 0)
-    (@ 'setFont nameplate name-font)
-    (@ 'setFontSize nameplate 30)
-    (@ 'setColor nameplate ColorRGBA:Green)
-    (@ 'addChild hud-panel nameplate)
-
-    (@ 'setFont nodeplate node-font)
-    (@ 'setFontSize nodeplate 24)
-    (@ 'setColor nodeplate ColorRGBA:Green)
-    (@ 'addChild hud-panel nodeplate)
-
-    (@ 'setLocalTranslation chat-panel (- screen-width 384 8) (+ 128 8) 0)
-    (@ 'setPreferredSize chat-panel (Vector3f 384.0 128.0 0))
-    (@ 'setBackground chat-panel chatbox-background)
-    (@ 'setPreferredSize chatbox (Vector3f 252.0 124.0 0))
-    (@ 'setColor chatbox ColorRGBA:Green)
-    (@ 'setSingleLine chatbox #f)
-    (@ 'setFontSize chatbox 16)
-    (@ 'addChild chat-panel chatbox)))
-
+      (@ 'setFontColor chatbox ColorRGBA:Green)
+      
+      (@ 'addElement screen nameplate)
+      (@ 'addElement screen nodeplate)
+      (@ 'addElement screen chatbox))))
 
 
 
