@@ -57,7 +57,7 @@
   (let* ((arglist (array->list args))
          (argtypes (map (lambda (a)(a:getClass))
                         arglist))
-         (matching-method (invoke methods 'valAt argtypes #f)))
+         (matching-method (*:valAt methods argtypes #f)))
     (if matching-method
         (apply matching-method arglist)
         (apply default-method arglist))))
@@ -66,10 +66,10 @@
   (default-method::ProcedureN init-form: no-applicable-method)
   (methods::PersistentHashMap init-form: PersistentHashMap:EMPTY)
   ((applyN args::Object[]) (%apply-gf-to-args methods args default-method))
-  ((addMethod argtypes::gnu.lists.LList method::ProcedureN) (set! methods (invoke methods 'assoc argtypes method))))
+  ((addMethod argtypes::gnu.lists.LList method::ProcedureN) (set! methods (*:assoc methods argtypes method))))
 
 (define (assert-method! gf::generic-function types::gnu.lists.LList method::ProcedureN)
-  (invoke gf 'addMethod types method))
+  (*:addMethod gf types method))
 
 ;;; (define $gf (generic-function))
 ;;; (assert-method! $gf (list gnu.math.IntNum gnu.math.IntNum) (lambda (x y)(+ x y)))

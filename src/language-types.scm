@@ -23,18 +23,18 @@
 ;;; ---------------------------------------------------------------------
 
 (define (subclass? class1::Class class2::Class)
-  (if (invoke class2 'isAssignableFrom class1)
+  (if (*:isAssignableFrom class2 class1)
       #t
       #f))
 
 (define (get-superclass cl::Class)
-  (let ((sup (invoke cl 'getSuperclass)))
+  (let ((sup (*:getSuperclass cl)))
     (if (jnull? sup)
         #f
         sup)))
 
 (define (get-interfaces cl::Class)
-  (array->list (invoke cl 'getInterfaces)))
+  (array->list (*:getInterfaces cl)))
 
 (define (direct-superclasses cl::Class)
   (let* ((sup (get-superclass cl))

@@ -30,7 +30,7 @@
   (or (%asset-manager)
       (begin
         (%asset-manager (JmeSystem:newAssetManager
-                         (@ 'getResource (@ 'getContextClassLoader (Thread:currentThread))
+                         (*:getResource (*:getContextClassLoader (Thread:currentThread))
                                          "com/jme3/asset/Desktop.cfg")))
         (%asset-manager))))
 

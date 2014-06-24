@@ -9,11 +9,7 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export @ jnull?)
-
-
-(define (@ method-name object . args)
-  (apply invoke object method-name args))
+(module-export jnull?)
 
 (define (jnull? thing)
   (eqv? thing #!null))

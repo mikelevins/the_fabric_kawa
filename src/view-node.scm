@@ -46,12 +46,12 @@
 (define (make-sky app ::SimpleApplication)
   (let ((asset-manager::AssetManager (get-asset-manager)))
     (SkyFactory:createSky asset-manager 
-                          (@ 'loadTexture asset-manager "Textures/tycholeft.png")
-                          (@ 'loadTexture asset-manager "Textures/tychoright.png")
-                          (@ 'loadTexture asset-manager "Textures/tychofront.png")
-                          (@ 'loadTexture asset-manager "Textures/tychoback.png")
-                          (@ 'loadTexture asset-manager "Textures/tychotop.png")
-                          (@ 'loadTexture asset-manager "Textures/tychobottom.png"))))
+                          (*:loadTexture asset-manager "Textures/tycholeft.png")
+                          (*:loadTexture asset-manager "Textures/tychoright.png")
+                          (*:loadTexture asset-manager "Textures/tychofront.png")
+                          (*:loadTexture asset-manager "Textures/tychoback.png")
+                          (*:loadTexture asset-manager "Textures/tychotop.png")
+                          (*:loadTexture asset-manager "Textures/tychobottom.png"))))
 
 
 ;;; (make-center-body app ::SimpleApplication)
@@ -63,12 +63,12 @@
          (center-rotator (<rotate-control> 0.0 0.0 0.025))
          (center-geom (com.jme3.scene.Geometry "Center" center))
          (center-mat (com.jme3.material.Material asset-manager "Common/MatDefs/Misc/Unshaded.j3md"))
-         (center-tex (@ 'loadTexture asset-manager (string-append "Textures/" body-name ".png"))))
+         (center-tex (*:loadTexture asset-manager (string-append "Textures/" body-name ".png"))))
     ;; set up the look of the celestial object at the center of the skybox
-    (invoke center 'setTextureMode Sphere:TextureMode:Projected)
-    (@ 'setTexture center-mat "ColorMap" center-tex)
-    (@ 'setMaterial center-geom center-mat)
-    (@ 'addControl center-geom center-rotator)
+    (*:setTextureMode center Sphere:TextureMode:Projected)
+    (*:setTexture center-mat "ColorMap" center-tex)
+    (*:setMaterial center-geom center-mat)
+    (*:addControl center-geom center-rotator)
     center-geom))
 
 

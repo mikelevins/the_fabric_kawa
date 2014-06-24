@@ -32,10 +32,10 @@
 ;;; ---------------------------------------------------------------------
 
 (define (type-of thing)
-  (@ 'getClass thing))
+  (*:getClass thing))
 
 (define (get-resource resname)
-  (@ 'getResource (@ 'getContextClassLoader (Thread:currentThread)) resname))
+  (*:getResource (*:getContextClassLoader (Thread:currentThread)) resname))
 
 (define (identity x) x)
 

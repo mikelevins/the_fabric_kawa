@@ -22,8 +22,6 @@
 (require "app-server.scm")
 
 ;;; (define $the-server (make-server))
-;;; (start-server $the-server)
-;;; (stop-server $the-server)
 
 
 

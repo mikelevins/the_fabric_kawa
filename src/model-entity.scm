@@ -24,7 +24,7 @@
   (if (contains-key? f entity-id:)
       f
       (let ((id (or id (makeid))))
-	(invoke f 'assoc entity-id: id))))
+	(*:assoc f entity-id: id))))
 
 (define (empty-entity) 
   (ensure-entity-id (ensure-versioned (empty-frame)) 0))
@@ -36,7 +36,7 @@
 	(ensure-entity-id (ensure-versioned f))
 	(if (null? (cdr kv-list))
 	    (error "Odd number of arguments to entity: " inits)
-	    (loop (invoke f 'assoc (car kv-list)(cadr kv-list))
+	    (loop (*:assoc f (car kv-list)(cadr kv-list))
 		  (cddr kv-list))))))
 
 ;;; (empty-entity)

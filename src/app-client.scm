@@ -100,7 +100,7 @@
   ((setClientInfo info) (set! client-info info))
   ((getDirection) direction)
   ((setDirection dir) (set! direction dir))
-  ((getCameraDirection) (@ 'getDirection cam))
+  ((getCameraDirection) (*:getDirection cam))
   ((getAudioRenderer) audioRenderer)
   ((getViewport) viewPort)
   ((getInputManager) inputManager)
@@ -142,49 +142,49 @@
 ;;; ---------------------------------------------------------------------
 
 (define (client-info app :: <fabric-client> key #!optional default)
-  (get-key (@ 'getClientInfo app) key default))
+  (get-key (*:getClientInfo app) key default))
 
 (define (set-client-info! app :: <fabric-client> key val)
-  (@ 'setClientInfo app
-                    (put-key (@ 'getClientInfo app)
+  (*:setClientInfo app
+                    (put-key (*:getClientInfo app)
                              key val))
   val)
 
 (define (client-keys  app :: <fabric-client>)
-  (keys (@ 'getClientInfo app)))
+  (keys (*:getClientInfo app)))
 
-(define (camera-direction app  :: <fabric-client>)(@ 'getCameraDirection app))
-(define (camera-left app  :: <fabric-client>)(@ 'getLeft (@ 'getCamera app)))
-(define (center-name app ::SimpleApplication)(@ 'getCenterName app))
+(define (camera-direction app  :: <fabric-client>)(*:getCameraDirection app))
+(define (camera-left app  :: <fabric-client>)(*:getLeft (*:getCamera app)))
+(define (center-name app ::SimpleApplication)(*:getCenterName app))
 
-(define (client-audio-renderer app ::SimpleApplication)(@ 'getAudioRenderer app))
-(define (client-camera app ::SimpleApplication)(@ 'getCamera app))
-(define (client-chat-hud app ::SimpleApplication)(@ 'getChatHud app))
-(define (client-direction app  :: <fabric-client>)(@ 'getDirection app))
-(define (client-gui-font app ::SimpleApplication)(@ 'getGuiFont app))
-(define (client-gui-node app ::SimpleApplication)(@ 'getGuiNode app))
-(define (client-input-manager app ::SimpleApplication)(@ 'getInputManager app))
-(define (client-key-input app ::SimpleApplication)(@ 'getKeyInput app))
-(define (client-player app ::SimpleApplication)(@ 'getPlayer app))
-(define (client-player-node app ::SimpleApplication)(@ 'getPlayerNode app))
-(define (client-state-manager app ::SimpleApplication)(@ 'getStateManager app))
-(define (client-viewport app ::SimpleApplication)(@ 'getViewport app))
+(define (client-audio-renderer app ::SimpleApplication)(*:getAudioRenderer app))
+(define (client-camera app ::SimpleApplication)(*:getCamera app))
+(define (client-chat-hud app ::SimpleApplication)(*:getChatHud app))
+(define (client-direction app  :: <fabric-client>)(*:getDirection app))
+(define (client-gui-font app ::SimpleApplication)(*:getGuiFont app))
+(define (client-gui-node app ::SimpleApplication)(*:getGuiNode app))
+(define (client-input-manager app ::SimpleApplication)(*:getInputManager app))
+(define (client-key-input app ::SimpleApplication)(*:getKeyInput app))
+(define (client-player app ::SimpleApplication)(*:getPlayer app))
+(define (client-player-node app ::SimpleApplication)(*:getPlayerNode app))
+(define (client-state-manager app ::SimpleApplication)(*:getStateManager app))
+(define (client-viewport app ::SimpleApplication)(*:getViewport app))
 
-(define (fly-by-camera app ::SimpleApplication)(@ 'getFlyByCamera app))
-(define (left-button? app)(@ 'getLeftButton app))
-(define (normalize-camera! app)(@ 'normalizeLocal (camera-direction app)))
-(define (right-button? app)(@ 'getRightButton app))
-(define (root-node app ::SimpleApplication)(@ 'getRootNode app))
+(define (fly-by-camera app ::SimpleApplication)(*:getFlyByCamera app))
+(define (left-button? app)(*:getLeftButton app))
+(define (normalize-camera! app)(*:normalizeLocal (camera-direction app)))
+(define (right-button? app)(*:getRightButton app))
+(define (root-node app ::SimpleApplication)(*:getRootNode app))
 
-(define (set-center-name! app ::SimpleApplication name :: java.lang.String)(@ 'setCenterName app name))
-(define (set-client-chat-hud! app ::SimpleApplication hud)(@ 'setChatHud app hud))
-(define (set-client-direction! app  :: <fabric-client> dir)(@ 'setDirection app dir))
-(define (set-client-player! app ::SimpleApplication player)(@ 'setPlayer app player))
-(define (set-client-player-node! app ::SimpleApplication node)(@ 'setPlayerNode app node))
-(define (set-left-button! app key-pressed?)(@ 'setLeftButton app key-pressed?))
-(define (set-network-client! app  :: <fabric-client> client)(invoke app 'setNetworkClient client))
-(define (set-right-button! app key-pressed?)(@ 'setRightButton app key-pressed?))
-(define (start-network-client! app  :: <fabric-client>)(invoke app 'startNetworkClient))
+(define (set-center-name! app ::SimpleApplication name :: java.lang.String)(*:setCenterName app name))
+(define (set-client-chat-hud! app ::SimpleApplication hud)(*:setChatHud app hud))
+(define (set-client-direction! app  :: <fabric-client> dir)(*:setDirection app dir))
+(define (set-client-player! app ::SimpleApplication player)(*:setPlayer app player))
+(define (set-client-player-node! app ::SimpleApplication node)(*:setPlayerNode app node))
+(define (set-left-button! app key-pressed?)(*:setLeftButton app key-pressed?))
+(define (set-network-client! app  :: <fabric-client> client)(*:setNetworkClient app client))
+(define (set-right-button! app key-pressed?)(*:setRightButton app key-pressed?))
+(define (start-network-client! app  :: <fabric-client>)(*:startNetworkClient app))
 
 
 ;;; ---------------------------------------------------------------------
@@ -213,7 +213,7 @@
     (map (lambda (make-armor)
            (let ((armor (make-armor))
                  (rotator (any-rotator)))
-             (@ 'addControl armor rotator)
+             (*:addControl armor rotator)
              armor))
          armorers)))
 
@@ -222,13 +222,13 @@
 ;;; assemble a player-character's node, geometry, controls, and armors
 
 (define (assemble-player-character pc-node pc-geom pc-controls pc-armors)
-  (@ 'attachChild pc-node pc-geom)
+  (*:attachChild pc-node pc-geom)
   (for-each (lambda (ctrl)
-              (@ 'addControl pc-geom ctrl))
+              (*:addControl pc-geom ctrl))
             pc-controls)
   (for-each (lambda (armor)
-              (@ 'attachChild pc-node armor)
-              (@ 'setLocalTranslation armor 0 0 0))
+              (*:attachChild pc-node armor)
+              (*:setLocalTranslation armor 0 0 0))
             pc-armors))
 
 
@@ -238,13 +238,13 @@
 (define (init-player-camera app player-node)
   (let* ((camera::com.jme3.renderer.Camera (client-camera app))
          (cam-node (CameraNode "camera" camera)))
-    (invoke cam-node 'setControlDir CameraControl:ControlDirection:SpatialToCamera)
-    (@ 'setFrustumFar (client-camera app) 20000)
+    (*:setControlDir cam-node CameraControl:ControlDirection:SpatialToCamera)
+    (*:setFrustumFar (client-camera app) 20000)
     ;; position the camera behind and above the player and look at the player
-    (@ 'setLocalTranslation cam-node (Vector3f 0 30 -30))
-    (@ 'lookAt cam-node (@ 'getLocalTranslation player-node) Vector3f:UNIT_Y)
+    (*:setLocalTranslation cam-node (Vector3f 0 30 -30))
+    (*:lookAt cam-node (*:getLocalTranslation player-node) Vector3f:UNIT_Y)
     ;; attach the camera to the player character
-    (@ 'attachChild player-node cam-node)))
+    (*:attachChild player-node cam-node)))
 
 
 ;;; (init-player-character app ::SimpleApplication)
@@ -263,7 +263,7 @@
     ;; don't seize the mouse from the player
     (Mouse:setGrabbed #f)
     ;; disable the fly-by camera
-    (@ 'setEnabled (fly-by-camera app) #f)
+    (*:setEnabled (fly-by-camera app) #f)
 
     ;; assemble the player character's parts
     (assemble-player-character player-node
@@ -275,15 +275,15 @@
     (init-player-camera app player-node)
 
     ;; move the character to its starting location and point it at the center
-    (@ 'setLocalTranslation player-node 0.0 8000.0 0.0)
+    (*:setLocalTranslation player-node 0.0 8000.0 0.0)
     (let ((rotation (Quaternion))
           (pitch-axis (Vector3f 1 0 0)))
       ;; PI/4 radians points us right at the center
-      (@ 'fromAngleAxis rotation (/ PI 4) pitch-axis)
-      (@ 'setLocalRotation player-node rotation))
+      (*:fromAngleAxis rotation (/ PI 4) pitch-axis)
+      (*:setLocalRotation player-node rotation))
     
     ;; add the player to the scene
-    (@ 'attachChild (root-node app) player-node)))
+    (*:attachChild (root-node app) player-node)))
 
 (define-simple-class FabricChat (ChatBox)
   ((*init* screen :: Screen id :: java.lang.String position :: Vector2f size :: Vector2f)
@@ -292,13 +292,13 @@
 
 (define (init-hud app ::SimpleApplication name-string)
   (let ((screen (Screen app)))
-    (@ 'initialize screen)
-    (@ 'addControl (client-gui-node app) screen)
+    (*:initialize screen)
+    (*:addControl (client-gui-node app) screen)
     (let* ((settings (client-info app app-settings:))
            (Align BitmapFont:Align)
            (VAlign BitmapFont:VAlign)
-           (width (@ 'getWidth settings))
-           (height (@ 'getHeight settings))
+           (width (*:getWidth settings))
+           (height (*:getHeight settings))
            (chatbox (FabricChat screen "chatbox"
                                 (Vector2f 15 (- height 220))
                                 (Vector2f 400 200)))
@@ -309,23 +309,23 @@
                               (Vector2f 8 48)
                               (Vector2f 900 40))))
 
-      (@ 'setText nameplate name-string)
-      (@ 'setTextAlign nameplate Align:Left)
-      (@ 'setFont nameplate "Interface/Fonts/Laconic30.fnt")
-      (@ 'setFontSize nameplate 30)
-      (@ 'setFontColor nameplate ColorRGBA:Green)
+      (*:setText nameplate name-string)
+      (*:setTextAlign nameplate Align:Left)
+      (*:setFont nameplate "Interface/Fonts/Laconic30.fnt")
+      (*:setFontSize nameplate 30)
+      (*:setFontColor nameplate ColorRGBA:Green)
 
-      (@ 'setText nodeplate (string-capitalize (center-name app)))
-      (@ 'setTextAlign nodeplate Align:Left)
-      (@ 'setFont nodeplate "Interface/Fonts/Laconic24.fnt")
-      (@ 'setFontSize nodeplate 24)
-      (@ 'setFontColor nodeplate ColorRGBA:Green)
+      (*:setText nodeplate (string-capitalize (center-name app)))
+      (*:setTextAlign nodeplate Align:Left)
+      (*:setFont nodeplate "Interface/Fonts/Laconic24.fnt")
+      (*:setFontSize nodeplate 24)
+      (*:setFontColor nodeplate ColorRGBA:Green)
 
-      (@ 'setFontColor chatbox ColorRGBA:Green)
+      (*:setFontColor chatbox ColorRGBA:Green)
       
-      (@ 'addElement screen nameplate)
-      (@ 'addElement screen nodeplate)
-      (@ 'addElement screen chatbox))))
+      (*:addElement screen nameplate)
+      (*:addElement screen nodeplate)
+      (*:addElement screen chatbox))))
 
 
 
@@ -336,27 +336,27 @@
 (define (setup-inputs app ::SimpleApplication)
   ;; set up the player's controls
   (let ((key-input ::KeyInput (client-key-input app)))
-    (@ 'addMapping (client-input-manager app) "moveForward" (KeyTrigger key-input:KEY_UP))
-    (@ 'addMapping (client-input-manager app) "maybeMoveForward"
+    (*:addMapping (client-input-manager app) "moveForward" (KeyTrigger key-input:KEY_UP))
+    (*:addMapping (client-input-manager app) "maybeMoveForward"
                    (MouseButtonTrigger MouseInput:BUTTON_LEFT))
-    (@ 'addMapping (client-input-manager app) "leftButton"
+    (*:addMapping (client-input-manager app) "leftButton"
                    (MouseButtonTrigger MouseInput:BUTTON_LEFT))
-    (@ 'addMapping (client-input-manager app) "rightButton"
+    (*:addMapping (client-input-manager app) "rightButton"
                    (MouseButtonTrigger MouseInput:BUTTON_RIGHT))
-    (@ 'addMapping (client-input-manager app) "moveRight" (KeyTrigger key-input:KEY_RIGHT))
-    (@ 'addMapping (client-input-manager app) "mouseRotateRight" (MouseAxisTrigger 0 #f))
-    (@ 'addMapping (client-input-manager app) "moveLeft" (KeyTrigger key-input:KEY_LEFT))
-    (@ 'addMapping (client-input-manager app) "mouseRotateLeft" (MouseAxisTrigger 0 #t))
-    (@ 'addMapping (client-input-manager app) "mouseRotateUp" (MouseAxisTrigger 1 #f))
-    (@ 'addMapping (client-input-manager app) "moveBackward" (KeyTrigger key-input:KEY_DOWN))
-    (@ 'addMapping (client-input-manager app) "mouseRotateDown" (MouseAxisTrigger 1 #t))
+    (*:addMapping (client-input-manager app) "moveRight" (KeyTrigger key-input:KEY_RIGHT))
+    (*:addMapping (client-input-manager app) "mouseRotateRight" (MouseAxisTrigger 0 #f))
+    (*:addMapping (client-input-manager app) "moveLeft" (KeyTrigger key-input:KEY_LEFT))
+    (*:addMapping (client-input-manager app) "mouseRotateLeft" (MouseAxisTrigger 0 #t))
+    (*:addMapping (client-input-manager app) "mouseRotateUp" (MouseAxisTrigger 1 #f))
+    (*:addMapping (client-input-manager app) "moveBackward" (KeyTrigger key-input:KEY_DOWN))
+    (*:addMapping (client-input-manager app) "mouseRotateDown" (MouseAxisTrigger 1 #t))
 
        ;;; text inputs
-    (@ 'addMapping (client-input-manager app) "SPACE" (KeyTrigger key-input:KEY_SPACE))
-    (@ 'addMapping (client-input-manager app) "KEY_A" (KeyTrigger key-input:KEY_A))
+    (*:addMapping (client-input-manager app) "SPACE" (KeyTrigger key-input:KEY_SPACE))
+    (*:addMapping (client-input-manager app) "KEY_A" (KeyTrigger key-input:KEY_A))
 
 
-    (@ 'addListener (client-input-manager app) app
+    (*:addListener (client-input-manager app) app
                     ;; motion controls
                     "moveForward" "maybeMoveForward" "moveBackward" "moveRight" "moveLeft"
                     "leftButton" "rightButton" "rotateRight" "rotateLeft" "rotateUp" "rotateDown"
@@ -373,10 +373,10 @@
   (let* ((asset-manager::AssetManager (get-asset-manager))
          (bloom (BloomFilter BloomFilter:GlowMode:Objects))
          (filter-processor::FilterPostProcessor (FilterPostProcessor asset-manager)))
-    (@ 'setDownSamplingFactor bloom 2.0)
-    (@ 'setBloomIntensity bloom 2.0)
-    (@ 'addFilter filter-processor bloom)
-    (@ 'addProcessor (client-viewport app) filter-processor)))
+    (*:setDownSamplingFactor bloom 2.0)
+    (*:setBloomIntensity bloom 2.0)
+    (*:addFilter filter-processor bloom)
+    (*:addProcessor (client-viewport app) filter-processor)))
 
 
 ;;; $center-names
@@ -415,11 +415,11 @@
 
     (setup-lighting app)
     (setup-inputs app)
-    (@ 'attachChild (root-node app) sky)
+    (*:attachChild (root-node app) sky)
     (when (eq? #!null (center-name app))
       (set-center-name! app (choose-any $center-names)))
     (set! center-body (make-center-body app (center-name app)))
-    (@ 'attachChild (root-node app) center-body)
+    (*:attachChild (root-node app) center-body)
     (init-player-character app)
 
     (let* ((player (client-player app))
@@ -432,7 +432,7 @@
       (init-hud app player-name))
 
     ;; uncomment to capture video to a file
-    ;; (@ 'attach (client-state-manager app) (VideoRecorderAppState))
+    ;; (*:attach (client-state-manager app) (VideoRecorderAppState))
     #!void))
 
 
@@ -472,35 +472,35 @@
   (on-analog (name)
              ("moveForward" -> (begin (normalize-camera! app)
                                       (set-client-direction! app (camera-direction app))
-                                      (@ 'multLocal (client-direction app) (* 300 tpf))
-                                      (@ 'move (client-player-node app) (client-direction app))))
+                                      (*:multLocal (client-direction app) (* 300 tpf))
+                                      (*:move (client-player-node app) (client-direction app))))
              ("maybeMoveForward" -> (when (right-button? app)
                                       (normalize-camera! app)
                                       (set-client-direction! app (camera-direction app))
-                                      (@ 'multLocal (client-direction app) (* 300 tpf))
-                                      (@ 'move (client-player-node app) (client-direction app))))
+                                      (*:multLocal (client-direction app) (* 300 tpf))
+                                      (*:move (client-player-node app) (client-direction app))))
              ("moveBackward" -> (begin (normalize-camera! app)
                                        (set-client-direction! app (camera-direction app))
-                                       (@ 'multLocal (client-direction app) (* -200 tpf))
-                                       (@ 'move (client-player-node app) (client-direction app))))
-             ("moveRight" -> (begin (set-client-direction! app (@ 'normalizeLocal (@ 'getLeft (client-camera app))))
-                                    (@ 'multLocal (client-direction app) (* -150 tpf))
-                                    (@ 'move (client-player-node app) (client-direction app))))
-             ("moveLeft" -> (begin (set-client-direction! app (@ 'normalizeLocal (@ 'getLeft (client-camera app))))
-                                   (@ 'multLocal (client-direction app) (* 150 tpf))
-                                   (@ 'move (client-player-node app) (client-direction app))))
-             ("rotateRight" -> (@ 'rotate (client-player-node app) 0 (* -0.25 tpf) 0))
+                                       (*:multLocal (client-direction app) (* -200 tpf))
+                                       (*:move (client-player-node app) (client-direction app))))
+             ("moveRight" -> (begin (set-client-direction! app (*:normalizeLocal (*:getLeft (client-camera app))))
+                                    (*:multLocal (client-direction app) (* -150 tpf))
+                                    (*:move (client-player-node app) (client-direction app))))
+             ("moveLeft" -> (begin (set-client-direction! app (*:normalizeLocal (*:getLeft (client-camera app))))
+                                   (*:multLocal (client-direction app) (* 150 tpf))
+                                   (*:move (client-player-node app) (client-direction app))))
+             ("rotateRight" -> (*:rotate (client-player-node app) 0 (* -0.25 tpf) 0))
              ("mouseRotateRight" -> (when (right-button? app)
-                                      (@ 'rotate (client-player-node app) 0 (* -1 value) 0)))
-             ("rotateLeft" -> (@ 'rotate (client-player-node app) 0 (* 0.25 tpf) 0))
+                                      (*:rotate (client-player-node app) 0 (* -1 value) 0)))
+             ("rotateLeft" -> (*:rotate (client-player-node app) 0 (* 0.25 tpf) 0))
              ("mouseRotateLeft" -> (when (right-button? app)
-                                     (@ 'rotate (client-player-node app) 0 (* 1 value) 0)))
-             ("rotateUp" -> (@ 'rotate (client-player-node app) (* -0.125 tpf) 0 0))
+                                     (*:rotate (client-player-node app) 0 (* 1 value) 0)))
+             ("rotateUp" -> (*:rotate (client-player-node app) (* -0.125 tpf) 0 0))
              ("mouseRotateUp" -> (when (right-button? app)
-                                   (@ 'rotate (client-player-node app) (* -1 value) 0 0)))
-             ("rotateDown" -> (@ 'rotate (client-player-node app) (* 0.125 tpf) 0 0))
+                                   (*:rotate (client-player-node app) (* -1 value) 0 0)))
+             ("rotateDown" -> (*:rotate (client-player-node app) (* 0.125 tpf) 0 0))
              ("mouseRotateDown" -> (when (right-button? app)
-                                     (@ 'rotate (client-player-node app) (* 1 value) 0 0)))))
+                                     (*:rotate (client-player-node app) (* 1 value) 0 0)))))
 
 ;;; (handle-action-event app name key-pressed? tpf)
 ;;; ---------------------------------------------------------------------
@@ -533,14 +533,14 @@
 	 (settings :: AppSettings (client-info client app-settings:)))
     (when center
       (set-center-name! client center))
-    (@ 'setResolution settings 1920 1200)
-    (@ 'setTitle settings "The Fabric")
-    (@ 'setSettingsDialogImage settings "Interface/icon.jpg")
-    (@ 'setSettings client settings)
-    (@ 'setDisplayFps client #f) ; #t to show FPS
-    (@ 'setShowSettings client #t) ; #t to show settings dialog
-    (@ 'setDisplayStatView client #f) ; #t to show stats
-    (@ 'setPauseOnLostFocus client #f)
+    (*:setResolution settings 1920 1200)
+    (*:setTitle settings "The Fabric")
+    (*:setSettingsDialogImage settings "Interface/icon.jpg")
+    (*:setSettings client settings)
+    (*:setDisplayFps client #f) ; #t to show FPS
+    (*:setShowSettings client #t) ; #t to show settings dialog
+    (*:setDisplayStatView client #f) ; #t to show stats
+    (*:setPauseOnLostFocus client #f)
     client))
 
 

@@ -24,7 +24,7 @@
   ((getData) data))
 
 (define (fabric-name-data nm::fabric-name)
-  (@ 'getData nm))
+  (*:getData nm))
 
 (define (fabric-name-bytes nm)
   (integer->bytes (fabric-name-data nm)))

@@ -1,3 +1,7 @@
 /liblwjgl.dylib
 
 /openal.dylib
+
+/src/liblwjgl.dylib
+
+/src/openal.dylib

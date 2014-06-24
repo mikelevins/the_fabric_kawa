@@ -36,4 +36,4 @@
 (require "app-client.scm")
 
 ;;; (define $the-client (make-client))
-;;; (invoke $the-client 'start)
+;;; (*:start $the-client)

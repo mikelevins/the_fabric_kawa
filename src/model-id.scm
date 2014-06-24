@@ -27,11 +27,11 @@
   (UUID:randomUUID))
 
 (define (id=? id1 id2)
-  (@ 'equals id1 id2))
+  (*:equals id1 id2))
 
 (define (string->id uustr)
   (UUID:fromString uustr))
 
 (define (id->string uuid :: UUID)
-  (@ 'toString uuid))
+  (*:toString uuid))
 

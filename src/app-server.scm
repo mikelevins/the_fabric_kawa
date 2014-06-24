@@ -9,8 +9,13 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export server-port server-address make-server start-server stop-server)
+(module-export make-server)
 
+;;; ---------------------------------------------------------------------
+;;; required modules
+;;; ---------------------------------------------------------------------
+
+(require "util-java.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -22,42 +27,29 @@
 (define-private-alias Server com.jme3.network.Server)
 
 ;;; ---------------------------------------------------------------------
-;;; server parameters
-;;; ---------------------------------------------------------------------
-
-(define server-port (make-parameter 6143))
-(define server-address (make-parameter "localhost"))
-
-;;; ---------------------------------------------------------------------
 ;;; <fabric-server> - the server class
 ;;; ---------------------------------------------------------------------
 
 (define-simple-class <fabric-server> (SimpleApplication)
   ;; slots
   ;; -------
-  (network-server::Server init-form: #!null)
+  (network-listener::Server init-form: #!null)
 
   ;; accessors
   ;; ---------
-  ((getNetworkServer) network-server)
-  ((setNetworkServer server::Server) (set! network-server server))
+  ((getNetworkListener) network-listener)
+  ((setNetworkListener listener::Server) (set! network-listener listener))
 
   ;; methods
   ;; -------
-  ((simpleInitApp) (begin (set! network-server (Network:createServer (server-port)))
-                          (invoke network-server 'start)))
-  ((stopServer) (invoke network-server 'close)))
+  ((simpleInitApp) #!void)
+  ((stopServer) (@ 'close network-listener)))
 
 
 ;;; ---------------------------------------------------------------------
 ;;; accessors
 ;;; ---------------------------------------------------------------------
 
-(define (get-network-server server)
-  (@ 'getNetworkServer server))
-
-(define (set-network-server! server network-server)
-  (@ 'setNetworkServer server network-server))
 
 ;;; ---------------------------------------------------------------------
 ;;; initialization
@@ -71,12 +63,6 @@
 ;;; startup and shutdown
 ;;; ---------------------------------------------------------------------
 
-(define (start-server server::<fabric-server>)
-  (let ((context-type Context:Type))
-    (invoke server 'start context-type:Headless)))
-
-(define (stop-server server::<fabric-server>)
-  (server:stopServer))
 
 
 
