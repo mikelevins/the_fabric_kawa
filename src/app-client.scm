@@ -99,54 +99,36 @@
   ;; ---------
   ((getAppSettings) app-settings)
   ((setAppSettings settings) (set! app-settings settings))
-
   ((getDirection) direction)
   ((setDirection dir) (set! direction dir))
-
   ((getCameraDirection) (*:getDirection cam))
-
   ((getAudioRenderer) audioRenderer)
-
   ((getViewport) viewPort)
-
   ((getInputManager) inputManager)
-
   ((getStateManager) stateManager)
-
   ((getKeyInput) keyInput)
-
   ((getGuiFont) guiFont)
-
   ((getGuiNode) guiNode)
-
   ((getPlayer) player)
   ((setPlayer p) (set! player p))
-
   ((getPlayerNode) player-node)
   ((setPlayerNode n) (set! player-node n))
-
   ((getCenterName) center-name)
   ((setCenterName nm) (set! center-name nm))
-
   ((getLeftButton) left-button?)
   ((setLeftButton down?) (set! left-button? down?))
-
   ((getRightButton) right-button?)
   ((setRightButton down?) (set! right-button? down?))
-
   ((getChatHud) chat-hud)
   ((setChatHud hud) (set! chat-hud hud))
 
   ;; methods
   ;; -------
-
   ;; network client
   ((connectToServer) (connect-client-to-server (this)))
   ((disconnectFromServer)(network-client:close))
-
   ((getNetworkClient) network-client)
   ((setNetworkClient client)(set! network-client client))
-
   ((startNetworkClient)(network-client:start))
   ((stopNetworkClient)(network-client:close))
 
@@ -162,55 +144,42 @@
 ;;; <fabric-client> accessors
 ;;; ---------------------------------------------------------------------
 
-(define (client-app-settings app ::SimpleApplication)(*:getAppSettings app))
-(define (set-client-app-settings! app ::SimpleApplication settings)(*:setAppSettings app settings))
+(defgetter (client-app-settings <fabric-client>) getAppSettings)
+(defgetter (client-audio-renderer <fabric-client>) getAudioRenderer)
+(defgetter (client-camera <fabric-client>) getCamera)
+(defgetter (client-camera-direction <fabric-client>) getCameraDirection)
+(defgetter (client-center-name <fabric-client>) getCenterName)
+(defgetter (client-chat-hud <fabric-client>) getChatHud)
+(defgetter (client-direction <fabric-client>) getDirection)
+(defgetter (client-fly-by-camera <fabric-client>) getFlyByCamera)
+(defgetter (client-gui-font <fabric-client>) getGuiFont)
+(defgetter (client-gui-node <fabric-client>) getGuiNode)
+(defgetter (client-input-manager <fabric-client>) getInputManager)
+(defgetter (client-key-input <fabric-client>) getKeyInput)
+(defgetter (client-left-button? <fabric-client>) getLeftButton)
+(defgetter (client-network-client! <fabric-client>) getNetworkClient)
+(defgetter (client-player <fabric-client>) getPlayer)
+(defgetter (client-player-node <fabric-client>) getPlayerNode)
+(defgetter (client-right-button? <fabric-client>) getRightButton)
+(defgetter (client-root-node <fabric-client>) getRootNode)
+(defgetter (client-state-manager <fabric-client>) getStateManager)
+(defgetter (client-viewport <fabric-client>) getViewport)
 
-(define (client-camera-direction app  :: <fabric-client>)(*:getCameraDirection app))
+(defsetter (set-center-name! <fabric-client>) setCenterName)
+(defsetter (set-client-app-settings! <fabric-client>) setAppSettings)
+(defsetter (set-client-chat-hud! <fabric-client>) setChatHud)
+(defsetter (set-client-direction! <fabric-client>) setDirection)
+(defsetter (set-client-left-button! <fabric-client>) setLeftButton)
+(defsetter (set-client-player! <fabric-client>) setPlayer)
+(defsetter (set-client-player-node! <fabric-client>) setPlayerNode)
+(defsetter (set-client-right-button! <fabric-client>) setRightButton)
+(defsetter (set-network-client! <fabric-client>) setNetworkClient)
 
-(define (client-camera-left app  :: <fabric-client>)(*:getLeft (*:getCamera app)))
+(define (client-camera-left app :: <fabric-client>)
+  (*:getLeft (client-camera app)))
 
-(define (client-center-name app ::SimpleApplication)(*:getCenterName app))
-;;;(defgetter (client-center-name <fabric-client>)(*:setCenterName app name))
-(define (set-center-name! app ::SimpleApplication name :: java.lang.String)(*:setCenterName app name))
-
-(define (client-audio-renderer app ::SimpleApplication)(*:getAudioRenderer app))
-(define (client-camera app ::SimpleApplication)(*:getCamera app))
-
-(define (client-chat-hud app ::SimpleApplication)(*:getChatHud app))
-(define (set-client-chat-hud! app ::SimpleApplication hud)(*:setChatHud app hud))
-
-(define (client-direction app  :: <fabric-client>)(*:getDirection app))
-(define (set-client-direction! app  :: <fabric-client> dir)(*:setDirection app dir))
-
-(define (client-gui-font app ::SimpleApplication)(*:getGuiFont app))
-(define (client-gui-node app ::SimpleApplication)(*:getGuiNode app))
-(define (client-input-manager app ::SimpleApplication)(*:getInputManager app))
-(define (client-key-input app ::SimpleApplication)(*:getKeyInput app))
-
-(define (client-player app ::SimpleApplication)(*:getPlayer app))
-(define (set-client-player! app ::SimpleApplication player)(*:setPlayer app player))
-
-(define (client-player-node app ::SimpleApplication)(*:getPlayerNode app))
-(define (set-client-player-node! app ::SimpleApplication node)(*:setPlayerNode app node))
-
-(define (client-state-manager app ::SimpleApplication)(*:getStateManager app))
-(define (client-viewport app ::SimpleApplication)(*:getViewport app))
-(define (client-fly-by-camera app ::SimpleApplication)(*:getFlyByCamera app))
-
-(define (client-left-button? app)(*:getLeftButton app))
-(define (set-client-left-button! app key-pressed?)(*:setLeftButton app key-pressed?))
-
-(define (client-normalize-camera! app)(*:normalizeLocal (client-camera-direction app)))
-
-(define (client-right-button? app)(*:getRightButton app))
-(define (set-client-right-button! app key-pressed?)(*:setRightButton app key-pressed?))
-
-(define (client-root-node app ::SimpleApplication)(*:getRootNode app))
-
-(define (client-network-client! app  :: <fabric-client>)(*:getNetworkClient app))
-(define (set-network-client! app  :: <fabric-client> client)(*:setNetworkClient app client))
-
-
+(define (client-normalize-camera! app)
+  (*:normalizeLocal (client-camera-direction app)))
 
 ;;; ---------------------------------------------------------------------
 ;;; <fabric-client> initialization
@@ -255,7 +224,6 @@
               (*:attachChild pc-node armor)
               (*:setLocalTranslation armor 0 0 0))
             pc-armors))
-
 
 ;;; (init-player-camera app player-node)
 ;;; ---------------------------------------------------------------------
@@ -351,7 +319,6 @@
       (*:addElement screen nameplate)
       (*:addElement screen nodeplate)
       (*:addElement screen chatbox))))
-
 
 
 ;;; (setup-inputs app ::SimpleApplication)
@@ -552,5 +519,3 @@
     (*:setDisplayStatView client #f) ; #t to show stats
     (*:setPauseOnLostFocus client #f)
     client))
-
-
