@@ -9,11 +9,11 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export fabric-root)
+(module-export fabric-root server-name server-version server-port server-address)
 
 (define fabric-root (make-parameter (get-environment-variable "FABRIC_ROOT")))
 (define server-name (make-parameter "The Fabric Server"))
-(define server-version (make-parameter '(0 1 0)))
+(define server-version (make-parameter 1))
 (define server-port (make-parameter 6143))
 (define server-address (make-parameter "localhost"))
 

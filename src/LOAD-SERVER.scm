@@ -19,9 +19,12 @@
 (require "model-namegen.scm")
 (require "model-kind.scm")
 (require "model-entity.scm")
+(require "net-messaging.scm")
 (require "app-server.scm")
 
 ;;; (define $the-server (make-server))
+;;; (start-listener $the-server)
+;;; (stop-listener $the-server)
 
 
 
