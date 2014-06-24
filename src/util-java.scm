@@ -9,7 +9,23 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export jnull?)
+(module-export jnull? defgetter defsetter)
 
 (define (jnull? thing)
   (eqv? thing #!null))
+
+
+;;; (defgetter (app-settings <fabric-client>) getAppSettings)
+;;; (defsetter (app-settings <fabric-client>) setAppSettings)
+
+(define-syntax defgetter
+  (syntax-rules (::)
+    ((defgetter (getter-name classname) method-name)
+     (define (getter-name obj :: classname)
+       (invoke obj 'method-name)))))
+
+(define-syntax defsetter
+  (syntax-rules (:: val)
+    ((defsetter (setter-name classname) method-name)
+     (define (setter-name obj :: classname val)
+       (invoke obj 'method-name val)))))

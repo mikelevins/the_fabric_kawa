@@ -9,7 +9,7 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export make-client client-keys client-info set-client-info!)
+(module-export make-client)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -44,6 +44,7 @@
 (define-private-alias BloomFilter com.jme3.post.filters.BloomFilter)
 (define-private-alias CameraControl com.jme3.scene.control.CameraControl)
 (define-private-alias CameraNode com.jme3.scene.CameraNode)
+(define-private-alias Client com.jme3.network.Client)
 (define-private-alias ChatBox tonegod.gui.controls.extras.ChatBox)
 (define-private-alias ColorRGBA com.jme3.math.ColorRGBA)
 (define-private-alias Container com.simsilica.lemur.Container)
@@ -83,7 +84,7 @@
 
   ;; slots
   ;; -------
-  (client-info init-form: (empty-frame))
+  (app-settings init-form: (AppSettings #t))
   (player init-form: #!null)
   (player-node :: Node init-form: #!null)
   (center-name ::java.lang.String init-form: #!null)
@@ -96,44 +97,64 @@
 
   ;; accessors
   ;; ---------
-  ((getClientInfo) client-info)
-  ((setClientInfo info) (set! client-info info))
+  ((getAppSettings) app-settings)
+  ((setAppSettings settings) (set! app-settings settings))
+
   ((getDirection) direction)
   ((setDirection dir) (set! direction dir))
+
   ((getCameraDirection) (*:getDirection cam))
+
   ((getAudioRenderer) audioRenderer)
+
   ((getViewport) viewPort)
+
   ((getInputManager) inputManager)
+
   ((getStateManager) stateManager)
+
   ((getKeyInput) keyInput)
+
   ((getGuiFont) guiFont)
+
   ((getGuiNode) guiNode)
+
   ((getPlayer) player)
   ((setPlayer p) (set! player p))
+
   ((getPlayerNode) player-node)
   ((setPlayerNode n) (set! player-node n))
+
   ((getCenterName) center-name)
   ((setCenterName nm) (set! center-name nm))
+
   ((getLeftButton) left-button?)
   ((setLeftButton down?) (set! left-button? down?))
+
   ((getRightButton) right-button?)
   ((setRightButton down?) (set! right-button? down?))
+
   ((getChatHud) chat-hud)
   ((setChatHud hud) (set! chat-hud hud))
 
   ;; methods
   ;; -------
+
   ;; network client
   ((connectToServer) (connect-client-to-server (this)))
   ((disconnectFromServer)(network-client:close))
+
+  ((getNetworkClient) network-client)
   ((setNetworkClient client)(set! network-client client))
+
   ((startNetworkClient)(network-client:start))
+  ((stopNetworkClient)(network-client:close))
+
   ;; AnalogListener and ActionListener implementation
   ((onAnalog name value tpf)(handle-analog-event (this) name value tpf))
   ((onAction name key-pressed? tpf)(handle-action-event (this) name key-pressed? tpf))
+
   ;; SimpleApplication implementation
-  ((*init*)(begin (invoke-special SimpleApplication (this) '*init*)
-                  (set-client-info! (this) app-settings: (AppSettings #t))))
   ((simpleInitApp)(init-client (this))))
 
 
@@ -141,50 +162,54 @@
 ;;; <fabric-client> accessors
 ;;; ---------------------------------------------------------------------
 
-(define (client-info app :: <fabric-client> key #!optional default)
-  (get-key (*:getClientInfo app) key default))
+(define (client-app-settings app ::SimpleApplication)(*:getAppSettings app))
+(define (set-client-app-settings! app ::SimpleApplication settings)(*:setAppSettings app settings))
 
-(define (set-client-info! app :: <fabric-client> key val)
-  (*:setClientInfo app
-                    (put-key (*:getClientInfo app)
-                             key val))
-  val)
+(define (client-camera-direction app  :: <fabric-client>)(*:getCameraDirection app))
 
-(define (client-keys  app :: <fabric-client>)
-  (keys (*:getClientInfo app)))
+(define (client-camera-left app  :: <fabric-client>)(*:getLeft (*:getCamera app)))
 
-(define (camera-direction app  :: <fabric-client>)(*:getCameraDirection app))
-(define (camera-left app  :: <fabric-client>)(*:getLeft (*:getCamera app)))
-(define (center-name app ::SimpleApplication)(*:getCenterName app))
+(define (client-center-name app ::SimpleApplication)(*:getCenterName app))
+;;;(defgetter (client-center-name <fabric-client>)(*:setCenterName app name))
+(define (set-center-name! app ::SimpleApplication name :: java.lang.String)(*:setCenterName app name))
 
 (define (client-audio-renderer app ::SimpleApplication)(*:getAudioRenderer app))
 (define (client-camera app ::SimpleApplication)(*:getCamera app))
+
 (define (client-chat-hud app ::SimpleApplication)(*:getChatHud app))
+(define (set-client-chat-hud! app ::SimpleApplication hud)(*:setChatHud app hud))
+
 (define (client-direction app  :: <fabric-client>)(*:getDirection app))
+(define (set-client-direction! app  :: <fabric-client> dir)(*:setDirection app dir))
+
 (define (client-gui-font app ::SimpleApplication)(*:getGuiFont app))
 (define (client-gui-node app ::SimpleApplication)(*:getGuiNode app))
 (define (client-input-manager app ::SimpleApplication)(*:getInputManager app))
 (define (client-key-input app ::SimpleApplication)(*:getKeyInput app))
+
 (define (client-player app ::SimpleApplication)(*:getPlayer app))
+(define (set-client-player! app ::SimpleApplication player)(*:setPlayer app player))
+
 (define (client-player-node app ::SimpleApplication)(*:getPlayerNode app))
+(define (set-client-player-node! app ::SimpleApplication node)(*:setPlayerNode app node))
+
 (define (client-state-manager app ::SimpleApplication)(*:getStateManager app))
 (define (client-viewport app ::SimpleApplication)(*:getViewport app))
+(define (client-fly-by-camera app ::SimpleApplication)(*:getFlyByCamera app))
 
-(define (fly-by-camera app ::SimpleApplication)(*:getFlyByCamera app))
-(define (left-button? app)(*:getLeftButton app))
-(define (normalize-camera! app)(*:normalizeLocal (camera-direction app)))
-(define (right-button? app)(*:getRightButton app))
-(define (root-node app ::SimpleApplication)(*:getRootNode app))
+(define (client-left-button? app)(*:getLeftButton app))
+(define (set-client-left-button! app key-pressed?)(*:setLeftButton app key-pressed?))
 
-(define (set-center-name! app ::SimpleApplication name :: java.lang.String)(*:setCenterName app name))
-(define (set-client-chat-hud! app ::SimpleApplication hud)(*:setChatHud app hud))
-(define (set-client-direction! app  :: <fabric-client> dir)(*:setDirection app dir))
-(define (set-client-player! app ::SimpleApplication player)(*:setPlayer app player))
-(define (set-client-player-node! app ::SimpleApplication node)(*:setPlayerNode app node))
-(define (set-left-button! app key-pressed?)(*:setLeftButton app key-pressed?))
+(define (client-normalize-camera! app)(*:normalizeLocal (client-camera-direction app)))
+
+(define (client-right-button? app)(*:getRightButton app))
+(define (set-client-right-button! app key-pressed?)(*:setRightButton app key-pressed?))
+
+(define (client-root-node app ::SimpleApplication)(*:getRootNode app))
+
+(define (client-network-client! app  :: <fabric-client>)(*:getNetworkClient app))
 (define (set-network-client! app  :: <fabric-client> client)(*:setNetworkClient app client))
-(define (set-right-button! app key-pressed?)(*:setRightButton app key-pressed?))
-(define (start-network-client! app  :: <fabric-client>)(*:startNetworkClient app))
+
 
 
 ;;; ---------------------------------------------------------------------
@@ -263,7 +288,7 @@
     ;; don't seize the mouse from the player
     (Mouse:setGrabbed #f)
     ;; disable the fly-by camera
-    (*:setEnabled (fly-by-camera app) #f)
+    (*:setEnabled (client-fly-by-camera app) #f)
 
     ;; assemble the player character's parts
     (assemble-player-character player-node
@@ -283,7 +308,7 @@
       (*:setLocalRotation player-node rotation))
     
     ;; add the player to the scene
-    (*:attachChild (root-node app) player-node)))
+    (*:attachChild (client-root-node app) player-node)))
 
 (define-simple-class FabricChat (ChatBox)
   ((*init* screen :: Screen id :: java.lang.String position :: Vector2f size :: Vector2f)
@@ -294,7 +319,7 @@
   (let ((screen (Screen app)))
     (*:initialize screen)
     (*:addControl (client-gui-node app) screen)
-    (let* ((settings (client-info app app-settings:))
+    (let* ((settings (client-app-settings app))
            (Align BitmapFont:Align)
            (VAlign BitmapFont:VAlign)
            (width (*:getWidth settings))
@@ -315,7 +340,7 @@
       (*:setFontSize nameplate 30)
       (*:setFontColor nameplate ColorRGBA:Green)
 
-      (*:setText nodeplate (string-capitalize (center-name app)))
+      (*:setText nodeplate (string-capitalize (client-center-name app)))
       (*:setTextAlign nodeplate Align:Left)
       (*:setFont nodeplate "Interface/Fonts/Laconic24.fnt")
       (*:setFontSize nodeplate 24)
@@ -415,11 +440,11 @@
 
     (setup-lighting app)
     (setup-inputs app)
-    (*:attachChild (root-node app) sky)
-    (when (eq? #!null (center-name app))
+    (*:attachChild (client-root-node app) sky)
+    (when (eq? #!null (client-center-name app))
       (set-center-name! app (choose-any $center-names)))
-    (set! center-body (make-center-body app (center-name app)))
-    (*:attachChild (root-node app) center-body)
+    (set! center-body (make-center-body app (client-center-name app)))
+    (*:attachChild (client-root-node app) center-body)
     (init-player-character app)
 
     (let* ((player (client-player app))
@@ -434,21 +459,6 @@
     ;; uncomment to capture video to a file
     ;; (*:attach (client-state-manager app) (VideoRecorderAppState))
     #!void))
-
-
-;;; (init-network-client)
-;;; ---------------------------------------------------------------------
-;;; connect to the game server
-
-(define (init-network-client)
-  (com.jme3.network.Network:connectToServer (server-address)(server-port)))
-
-;;; (connect-client-to-server app)
-;;; ---------------------------------------------------------------------
-
-(define (connect-client-to-server app)
-  (begin (set-network-client! app (init-network-client))
-         (start-network-client! app)))
 
 
 ;;; ---------------------------------------------------------------------
@@ -470,17 +480,17 @@
 
 (define (handle-analog-event app name value tpf)
   (on-analog (name)
-             ("moveForward" -> (begin (normalize-camera! app)
-                                      (set-client-direction! app (camera-direction app))
+             ("moveForward" -> (begin (client-normalize-camera! app)
+                                      (set-client-direction! app (client-camera-direction app))
                                       (*:multLocal (client-direction app) (* 300 tpf))
                                       (*:move (client-player-node app) (client-direction app))))
-             ("maybeMoveForward" -> (when (right-button? app)
-                                      (normalize-camera! app)
-                                      (set-client-direction! app (camera-direction app))
+             ("maybeMoveForward" -> (when (client-right-button? app)
+                                      (client-normalize-camera! app)
+                                      (set-client-direction! app (client-camera-direction app))
                                       (*:multLocal (client-direction app) (* 300 tpf))
                                       (*:move (client-player-node app) (client-direction app))))
-             ("moveBackward" -> (begin (normalize-camera! app)
-                                       (set-client-direction! app (camera-direction app))
+             ("moveBackward" -> (begin (client-normalize-camera! app)
+                                       (set-client-direction! app (client-camera-direction app))
                                        (*:multLocal (client-direction app) (* -200 tpf))
                                        (*:move (client-player-node app) (client-direction app))))
              ("moveRight" -> (begin (set-client-direction! app (*:normalizeLocal (*:getLeft (client-camera app))))
@@ -490,16 +500,16 @@
                                    (*:multLocal (client-direction app) (* 150 tpf))
                                    (*:move (client-player-node app) (client-direction app))))
              ("rotateRight" -> (*:rotate (client-player-node app) 0 (* -0.25 tpf) 0))
-             ("mouseRotateRight" -> (when (right-button? app)
+             ("mouseRotateRight" -> (when (client-right-button? app)
                                       (*:rotate (client-player-node app) 0 (* -1 value) 0)))
              ("rotateLeft" -> (*:rotate (client-player-node app) 0 (* 0.25 tpf) 0))
-             ("mouseRotateLeft" -> (when (right-button? app)
+             ("mouseRotateLeft" -> (when (client-right-button? app)
                                      (*:rotate (client-player-node app) 0 (* 1 value) 0)))
              ("rotateUp" -> (*:rotate (client-player-node app) (* -0.125 tpf) 0 0))
-             ("mouseRotateUp" -> (when (right-button? app)
+             ("mouseRotateUp" -> (when (client-right-button? app)
                                    (*:rotate (client-player-node app) (* -1 value) 0 0)))
              ("rotateDown" -> (*:rotate (client-player-node app) (* 0.125 tpf) 0 0))
-             ("mouseRotateDown" -> (when (right-button? app)
+             ("mouseRotateDown" -> (when (client-right-button? app)
                                      (*:rotate (client-player-node app) (* 1 value) 0 0)))))
 
 ;;; (handle-action-event app name key-pressed? tpf)
@@ -516,8 +526,8 @@
 
 (define (handle-action-event app name key-pressed? tpf)
   (on-action (name)
-             ("leftButton" -> (set-left-button! app key-pressed?))
-             ("rightButton" -> (set-right-button! app key-pressed?))))
+             ("leftButton" -> (set-client-left-button! app key-pressed?))
+             ("rightButton" -> (set-client-right-button! app key-pressed?))))
 
 
 ;;; ---------------------------------------------------------------------
@@ -530,7 +540,7 @@
 
 (define (make-client #!optional (center #f))
   (let* ((client :: <fabric-client> (<fabric-client>))
-	 (settings :: AppSettings (client-info client app-settings:)))
+	 (settings :: AppSettings (client-app-settings client)))
     (when center
       (set-center-name! client center))
     (*:setResolution settings 1920 1200)
