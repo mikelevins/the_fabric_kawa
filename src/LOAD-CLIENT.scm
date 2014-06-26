@@ -33,6 +33,7 @@
 (require "view-name-cube.scm")
 (require "view-player.scm")
 (require "view-node.scm")
+(require "net-messaging.scm")
 (require "app-client.scm")
 
 ;;; (define $the-client (make-client))

@@ -9,13 +9,14 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export make-player-character)
+(module-export make-player-character make-armors)
 
 (require "util-java.scm")
 (require "assets-general.scm")
 (require "model-namegen.scm")
 (require "view-name-cube.scm")
 (require "model-entity.scm")
+(require "view-shapes.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -30,7 +31,38 @@
 (define-private-alias Sphere com.jme3.scene.shape.Sphere)
 
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; character armor
+;;; ---------------------------------------------------------------------
+
+;;; $available-armorers
+;;; ---------------------------------------------------------------------
+;;; armor constructors
+
+(define $available-armorers
+  (list make-enclosing-cube
+        make-enclosing-wire-cube
+        make-enclosing-pyramid
+        make-enclosing-sphere
+        make-enclosing-wire-sphere))
+
+;;; (make-armors n)
+;;; ---------------------------------------------------------------------
+;;; make N randomly-chosen armors
+
+(define (make-armors n)
+  (let ((armorers (cons make-any-plasma-generator
+                        (map (lambda (a)(choose-any $available-armorers))
+                             (iota n)))))
+    (map (lambda (make-armor)
+           (let ((armor (make-armor))
+                 (rotator (any-rotator)))
+             (*:addControl armor rotator)
+             armor))
+         armorers)))
+
+
+;;; ---------------------------------------------------------------------
+;;; construct a character
 ;;; ---------------------------------------------------------------------
 
 (define (make-player-character lit-color)

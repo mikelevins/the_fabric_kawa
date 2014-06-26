@@ -29,7 +29,6 @@
 (require "view-plasma.scm")
 (require "view-player.scm")
 (require "view-node.scm")
-(require "app-server.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -48,6 +47,7 @@
 (define-private-alias ChatBox tonegod.gui.controls.extras.ChatBox)
 (define-private-alias ColorRGBA com.jme3.math.ColorRGBA)
 (define-private-alias Container com.simsilica.lemur.Container)
+(define-private-alias EffectEvent tonegod.gui.effects.Effect:EffectEvent)
 (define-private-alias FilterPostProcessor com.jme3.post.FilterPostProcessor)
 (define-private-alias GuiGlobals com.simsilica.lemur.GuiGlobals)
 (define-private-alias KeyInput com.jme3.input.KeyInput)
@@ -67,6 +67,7 @@
 (define-private-alias Screen tonegod.gui.core.Screen)
 (define-private-alias SimpleApplication com.jme3.app.SimpleApplication)
 (define-private-alias Spatial com.jme3.scene.Spatial)
+(define-private-alias String java.lang.String)
 (define-private-alias Styles com.simsilica.lemur.style.Styles)
 (define-private-alias TbtQuadBackgroundComponent com.simsilica.lemur.component.TbtQuadBackgroundComponent)
 (define-private-alias TextField com.simsilica.lemur.TextField)
@@ -87,7 +88,7 @@
   (app-settings init-form: (AppSettings #t))
   (player init-form: #!null)
   (player-node :: Node init-form: #!null)
-  (center-name ::java.lang.String init-form: #!null)
+  (center-name ::String init-form: #!null)
   (direction ::Vector3f init-form: (Vector3f))
   (network-client ::com.jme3.network.Client  init-form: #!null)
   (left-button? init-form: #f)
@@ -182,34 +183,8 @@
   (*:normalizeLocal (client-camera-direction app)))
 
 ;;; ---------------------------------------------------------------------
-;;; <fabric-client> initialization
+;;; set up the player character
 ;;; ---------------------------------------------------------------------
-
-;;; $available-armorers
-;;; ---------------------------------------------------------------------
-;;; armor constructors
-
-(define $available-armorers
-  (list make-enclosing-cube
-        make-enclosing-wire-cube
-        make-enclosing-pyramid
-        make-enclosing-sphere
-        make-enclosing-wire-sphere))
-
-;;; (make-armors n)
-;;; ---------------------------------------------------------------------
-;;; make N randomly-chosen armors
-
-(define (make-armors n)
-  (let ((armorers (cons make-any-plasma-generator
-                        (map (lambda (a)(choose-any $available-armorers))
-                             (iota n)))))
-    (map (lambda (make-armor)
-           (let ((armor (make-armor))
-                 (rotator (any-rotator)))
-             (*:addControl armor rotator)
-             armor))
-         armorers)))
 
 ;;; (assemble-player-character pc-node pc-geom pc-controls pc-armors)
 ;;; ---------------------------------------------------------------------
@@ -278,13 +253,19 @@
     ;; add the player to the scene
     (*:attachChild (client-root-node app) player-node)))
 
+;;; ---------------------------------------------------------------------
+;;; set up the heads-up display
+;;; ---------------------------------------------------------------------
+
 (define-simple-class FabricChat (ChatBox)
-  ((*init* screen :: Screen id :: java.lang.String position :: Vector2f size :: Vector2f)
+  ((*init* screen :: Screen id :: String position :: Vector2f size :: Vector2f)
    (invoke-special ChatBox (this) '*init* screen id position size))
-  ((onSendMsg msg::java.lang.String) #!void))
+  ((onSendMsg msg::String) (let ((chatfield (*:getChildElementById (this) "chatbox:ChatInput")))
+                             (*:resetTabFocus chatfield))))
 
 (define (init-hud app ::SimpleApplication name-string)
-  (let ((screen (Screen app)))
+  (let ((screen (Screen app))
+        (key-input ::KeyInput (client-key-input app)))
     (*:initialize screen)
     (*:addControl (client-gui-node app) screen)
     (let* ((settings (client-app-settings app))
@@ -295,6 +276,7 @@
            (chatbox (FabricChat screen "chatbox"
                                 (Vector2f 15 (- height 220))
                                 (Vector2f 400 200)))
+           (chatfield (*:getChildElementById chatbox "chatbox:ChatInput"))
            (nameplate (TLabel screen "nameplate"
                               (Vector2f 8 8)
                               (Vector2f 900 40)))
@@ -314,21 +296,24 @@
       (*:setFontSize nodeplate 24)
       (*:setFontColor nodeplate ColorRGBA:Green)
 
+      (*:removeEffect chatfield EffectEvent:TabFocus)
       (*:setFontColor chatbox ColorRGBA:Green)
+      (*:setSendKey chatbox key-input:KEY_RETURN)
       
       (*:addElement screen nameplate)
       (*:addElement screen nodeplate)
       (*:addElement screen chatbox))))
 
 
-;;; (setup-inputs app ::SimpleApplication)
 ;;; ---------------------------------------------------------------------
-;;; set up the player's controls
+;;; set up player controls
+;;; ---------------------------------------------------------------------
 
 (define (setup-inputs app ::SimpleApplication)
   ;; set up the player's controls
   (let ((key-input ::KeyInput (client-key-input app)))
     (*:addMapping (client-input-manager app) "moveForward" (KeyTrigger key-input:KEY_UP))
+    (*:addMapping (client-input-manager app) "moveForward" (KeyTrigger key-input:KEY_W))
     (*:addMapping (client-input-manager app) "maybeMoveForward"
                    (MouseButtonTrigger MouseInput:BUTTON_LEFT))
     (*:addMapping (client-input-manager app) "leftButton"
@@ -336,11 +321,14 @@
     (*:addMapping (client-input-manager app) "rightButton"
                    (MouseButtonTrigger MouseInput:BUTTON_RIGHT))
     (*:addMapping (client-input-manager app) "moveRight" (KeyTrigger key-input:KEY_RIGHT))
+    (*:addMapping (client-input-manager app) "moveRight" (KeyTrigger key-input:KEY_D))
     (*:addMapping (client-input-manager app) "mouseRotateRight" (MouseAxisTrigger 0 #f))
     (*:addMapping (client-input-manager app) "moveLeft" (KeyTrigger key-input:KEY_LEFT))
+    (*:addMapping (client-input-manager app) "moveLeft" (KeyTrigger key-input:KEY_A))
     (*:addMapping (client-input-manager app) "mouseRotateLeft" (MouseAxisTrigger 0 #t))
     (*:addMapping (client-input-manager app) "mouseRotateUp" (MouseAxisTrigger 1 #f))
     (*:addMapping (client-input-manager app) "moveBackward" (KeyTrigger key-input:KEY_DOWN))
+    (*:addMapping (client-input-manager app) "moveBackward" (KeyTrigger key-input:KEY_S))
     (*:addMapping (client-input-manager app) "mouseRotateDown" (MouseAxisTrigger 1 #t))
 
        ;;; text inputs
@@ -356,10 +344,9 @@
                     ;; chat input
                     "SPACE" "KEY_A")))
 
-
-;;; (setup-lighting app ::SimpleApplication)
 ;;; ---------------------------------------------------------------------
-;;; initialize glow and lighting effects for the scene
+;;; set up the scene
+;;; ---------------------------------------------------------------------
 
 (define (setup-lighting app ::SimpleApplication)
   (let* ((asset-manager::AssetManager (get-asset-manager))
@@ -429,7 +416,7 @@
 
 
 ;;; ---------------------------------------------------------------------
-;;; <fabric-client> event-handler functions
+;;; set up event-handling
 ;;; ---------------------------------------------------------------------
 
 (define-syntax on-analog
@@ -498,7 +485,7 @@
 
 
 ;;; ---------------------------------------------------------------------
-;;; construct the client
+;;; construct the client app
 ;;; ---------------------------------------------------------------------
 
 ;;; (make-client)

@@ -36,5 +36,5 @@
   ((setName nm) (set! name nm))
   ((getMessage) message)
   ((setMessage msg)(set! message msg))
-  ((toString) (string-append name ":" message)))
+  ((toString) (format #f "~A:~A" name message)))
 
