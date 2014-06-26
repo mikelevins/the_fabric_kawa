@@ -22,9 +22,9 @@
 (define-private-alias Map com.github.krukow.clj_lang.PersistentHashMap)
 
 ;;; ---------------------------------------------------------------------
-;;; <frame>
+;;; Frame
 ;;; ---------------------------------------------------------------------
-;;; <frame> is an immutable associative array. it uses an efficient 
+;;; Frame is an immutable associative array. it uses an efficient 
 ;;; functional tree representation to deliver good amortized performance.
 ;;; updates are nondestructive; for example, adding and removing
 ;;; key/value pairs creates new frames.

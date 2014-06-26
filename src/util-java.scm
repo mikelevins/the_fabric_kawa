@@ -15,9 +15,6 @@
   (eqv? thing #!null))
 
 
-;;; (defgetter (app-settings <fabric-client>) getAppSettings)
-;;; (defsetter (app-settings <fabric-client>) setAppSettings)
-
 (define-syntax defgetter
   (syntax-rules (::)
     ((defgetter (getter-name classname) method-name)

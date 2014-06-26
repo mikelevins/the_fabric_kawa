@@ -55,7 +55,7 @@
          (dim-color (if lit? color (darken color)))
          (bright-color (if lit? (brighten color) color))
          (flicker-color (ColorRGBA 0.9 0.9 1.0 0.6))
-         (flickerer (<flicker-control>  dim-color flicker-color activity))
+         (flickerer (FlickerControl  dim-color flicker-color activity))
          (new-box (Box 0.4 0.4 0.4))
          (new-geom::Geometry (Geometry (format #f "cube ~a,~a, ~a" x y z) new-box))
          (bucket RenderQueue:Bucket))

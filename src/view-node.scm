@@ -60,7 +60,7 @@
 (define (make-center-body app ::SimpleApplication body-name::java.lang.String)
   (let* ((asset-manager::AssetManager (get-asset-manager))
          (center::Sphere (Sphere 128 128 2048.0))
-         (center-rotator (<rotate-control> 0.0 0.0 0.025))
+         (center-rotator (RotateControl 0.0 0.0 0.025))
          (center-geom (com.jme3.scene.Geometry "Center" center))
          (center-mat (com.jme3.material.Material asset-manager "Common/MatDefs/Misc/Unshaded.j3md"))
          (center-tex (*:loadTexture asset-manager (string-append "Textures/" body-name ".png"))))

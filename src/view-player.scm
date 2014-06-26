@@ -9,7 +9,7 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export make-player-character make-armors)
+(module-export make-player-character make-armors player-namestring)
 
 (require "util-java.scm")
 (require "assets-general.scm")
@@ -76,3 +76,11 @@
 ;;; (make-player-character)
 
 
+(define (player-namestring player)
+  (let* ((name-strings (fabric-name-strings (get-key player name: "")))
+         (out-string (call-with-output-string
+                      (lambda (out)
+                        (for-each (lambda (s)
+                                    (format out "~a " s))
+                                  name-strings)))))
+    (*:toString out-string)))

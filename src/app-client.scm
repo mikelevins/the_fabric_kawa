@@ -22,6 +22,7 @@
 (require "assets-general.scm")
 (require "model-frame.scm")
 (require "model-namegen.scm")
+(require "net-messaging.scm")
 (require "util-lists.scm")
 (require "view-shapes.scm")
 (require "view-controls.scm")
@@ -46,6 +47,7 @@
 (define-private-alias Client com.jme3.network.Client)
 (define-private-alias ChatBox tonegod.gui.controls.extras.ChatBox)
 (define-private-alias ColorRGBA com.jme3.math.ColorRGBA)
+(define-private-alias ConnectException java.net.ConnectException)
 (define-private-alias Container com.simsilica.lemur.Container)
 (define-private-alias EffectEvent tonegod.gui.effects.Effect:EffectEvent)
 (define-private-alias FilterPostProcessor com.jme3.post.FilterPostProcessor)
@@ -78,10 +80,10 @@
 (define-private-alias Window tonegod.gui.controls.windows.Window)
 
 ;;; ---------------------------------------------------------------------
-;;; <fabric-client> - the client class
+;;; FabricClient - the client class
 ;;; ---------------------------------------------------------------------
 
-(define-simple-class <fabric-client> (SimpleApplication AnalogListener ActionListener)
+(define-simple-class FabricClient (SimpleApplication AnalogListener ActionListener)
 
   ;; slots
   ;; -------
@@ -102,6 +104,8 @@
   ((setAppSettings settings) (set! app-settings settings))
   ((getDirection) direction)
   ((setDirection dir) (set! direction dir))
+  ((getNetworkClient) network-client)
+  ((setNetworkClient client) (set! network-client client))
   ((getCameraDirection) (*:getDirection cam))
   ((getAudioRenderer) audioRenderer)
   ((getViewport) viewPort)
@@ -125,13 +129,6 @@
 
   ;; methods
   ;; -------
-  ;; network client
-  ((connectToServer) (connect-client-to-server (this)))
-  ((disconnectFromServer)(network-client:close))
-  ((getNetworkClient) network-client)
-  ((setNetworkClient client)(set! network-client client))
-  ((startNetworkClient)(network-client:start))
-  ((stopNetworkClient)(network-client:close))
 
   ;; AnalogListener and ActionListener implementation
   ((onAnalog name value tpf)(handle-analog-event (this) name value tpf))
@@ -140,43 +137,42 @@
   ;; SimpleApplication implementation
   ((simpleInitApp)(init-client (this))))
 
-
 ;;; ---------------------------------------------------------------------
-;;; <fabric-client> accessors
+;;; FabricClient accessors
 ;;; ---------------------------------------------------------------------
 
-(defgetter (client-app-settings <fabric-client>) getAppSettings)
-(defgetter (client-audio-renderer <fabric-client>) getAudioRenderer)
-(defgetter (client-camera <fabric-client>) getCamera)
-(defgetter (client-camera-direction <fabric-client>) getCameraDirection)
-(defgetter (client-center-name <fabric-client>) getCenterName)
-(defgetter (client-chat-hud <fabric-client>) getChatHud)
-(defgetter (client-direction <fabric-client>) getDirection)
-(defgetter (client-fly-by-camera <fabric-client>) getFlyByCamera)
-(defgetter (client-gui-font <fabric-client>) getGuiFont)
-(defgetter (client-gui-node <fabric-client>) getGuiNode)
-(defgetter (client-input-manager <fabric-client>) getInputManager)
-(defgetter (client-key-input <fabric-client>) getKeyInput)
-(defgetter (client-left-button? <fabric-client>) getLeftButton)
-(defgetter (client-network-client! <fabric-client>) getNetworkClient)
-(defgetter (client-player <fabric-client>) getPlayer)
-(defgetter (client-player-node <fabric-client>) getPlayerNode)
-(defgetter (client-right-button? <fabric-client>) getRightButton)
-(defgetter (client-root-node <fabric-client>) getRootNode)
-(defgetter (client-state-manager <fabric-client>) getStateManager)
-(defgetter (client-viewport <fabric-client>) getViewport)
+(defgetter (client-app-settings FabricClient) getAppSettings)
+(defgetter (client-audio-renderer FabricClient) getAudioRenderer)
+(defgetter (client-camera FabricClient) getCamera)
+(defgetter (client-camera-direction FabricClient) getCameraDirection)
+(defgetter (client-center-name FabricClient) getCenterName)
+(defgetter (client-chat-hud FabricClient) getChatHud)
+(defgetter (client-direction FabricClient) getDirection)
+(defgetter (client-network-client FabricClient) getNetworkClient)
+(defgetter (client-fly-by-camera FabricClient) getFlyByCamera)
+(defgetter (client-gui-font FabricClient) getGuiFont)
+(defgetter (client-gui-node FabricClient) getGuiNode)
+(defgetter (client-input-manager FabricClient) getInputManager)
+(defgetter (client-key-input FabricClient) getKeyInput)
+(defgetter (client-left-button? FabricClient) getLeftButton)
+(defgetter (client-player FabricClient) getPlayer)
+(defgetter (client-player-node FabricClient) getPlayerNode)
+(defgetter (client-right-button? FabricClient) getRightButton)
+(defgetter (client-root-node FabricClient) getRootNode)
+(defgetter (client-state-manager FabricClient) getStateManager)
+(defgetter (client-viewport FabricClient) getViewport)
 
-(defsetter (set-center-name! <fabric-client>) setCenterName)
-(defsetter (set-client-app-settings! <fabric-client>) setAppSettings)
-(defsetter (set-client-chat-hud! <fabric-client>) setChatHud)
-(defsetter (set-client-direction! <fabric-client>) setDirection)
-(defsetter (set-client-left-button! <fabric-client>) setLeftButton)
-(defsetter (set-client-player! <fabric-client>) setPlayer)
-(defsetter (set-client-player-node! <fabric-client>) setPlayerNode)
-(defsetter (set-client-right-button! <fabric-client>) setRightButton)
-(defsetter (set-network-client! <fabric-client>) setNetworkClient)
+(defsetter (set-center-name! FabricClient) setCenterName)
+(defsetter (set-client-app-settings! FabricClient) setAppSettings)
+(defsetter (set-client-chat-hud! FabricClient) setChatHud)
+(defsetter (set-client-direction! FabricClient) setDirection)
+(defsetter (set-client-network-client! FabricClient) setNetworkClient)
+(defsetter (set-client-left-button! FabricClient) setLeftButton)
+(defsetter (set-client-player! FabricClient) setPlayer)
+(defsetter (set-client-player-node! FabricClient) setPlayerNode)
+(defsetter (set-client-right-button! FabricClient) setRightButton)
 
-(define (client-camera-left app :: <fabric-client>)
+(define (client-camera-left app :: FabricClient)
   (*:getLeft (client-camera app)))
 
 (define (client-normalize-camera! app)
@@ -254,13 +250,52 @@
     (*:attachChild (client-root-node app) player-node)))
 
 ;;; ---------------------------------------------------------------------
-;;; set up the heads-up display
+;;; set up the heads-up display and chatbox
 ;;; ---------------------------------------------------------------------
+
+(define (service-network-connection app)
+  (if (and (not (jnull? (client-network-client app)))
+           (*:isConnected (client-network-client app)))
+      #t
+      (begin (set-client-network-client! app (Network:connectToServer (server-name)
+                                                                      (server-version)
+                                                                      (server-host)
+                                                                      (server-port)
+                                                                      (server-port)))
+             (if (and (not (jnull? (client-network-client app)))
+                      (*:isConnected (client-network-client app)))
+                 #t
+                 #f))))
+
+(define (client-send-chat-message app chat-message)
+  (let ((net-client (client-network-client app)))
+    (*:send net-client chat-message)))
+
+(define (client-report-failed-chat-message app chat-message chat-box)
+  (let* ((msg-name (message-name chat-message))
+         (msg-contents (message-contents chat-message))
+         (failed-text (format #f "Connection failed; unable to send message: ~A:~A"
+                              msg-name msg-contents)))
+    (*:receiveMsg chat-box failed-text)))
+
+(define (send-chat-message app chat-message chat-box)
+  (let ((connected? (service-network-connection app)))
+    (if connected?
+        (client-send-chat-message app chat-message)
+        (client-report-failed-chat-message app chat-message chat-box))))
 
 (define-simple-class FabricChat (ChatBox)
   ((*init* screen :: Screen id :: String position :: Vector2f size :: Vector2f)
    (invoke-special ChatBox (this) '*init* screen id position size))
-  ((onSendMsg msg::String) (let ((chatfield (*:getChildElementById (this) "chatbox:ChatInput")))
+  ((onSendMsg msg::String) (let* ((chatfield (*:getChildElementById (this) "chatbox:ChatInput"))
+                                  (screen (*:getScreen (this)))
+                                  (app (*:getApplication screen))
+                                  (net-client (client-network-client app))
+                                  (chat-message (ChatMessage)))
+                             (set-message-name! chat-message (player-namestring (client-player app)))
+                             (set-message-contents! chat-message msg)
+                             (set-message-reliable! chat-message #t)
+                             (send-chat-message app chat-message (this))
                              (*:resetTabFocus chatfield))))
 
 (define (init-hud app ::SimpleApplication name-string)
@@ -401,14 +436,8 @@
     (*:attachChild (client-root-node app) center-body)
     (init-player-character app)
 
-    (let* ((player (client-player app))
-           (name-strings (fabric-name-strings (get-key player name: "")))
-           (player-name (call-with-output-string
-                         (lambda (out)
-                           (for-each (lambda (s)
-                                       (format out "~a " s))
-                                     name-strings)))))
-      (init-hud app player-name))
+    (let ((player (client-player app)))
+      (init-hud app (player-namestring player)))
 
     ;; uncomment to capture video to a file
     ;; (*:attach (client-state-manager app) (VideoRecorderAppState))
@@ -493,7 +522,7 @@
 ;;; puts everything together into a runnable client
 
 (define (make-client #!optional (center #f))
-  (let* ((client :: <fabric-client> (<fabric-client>))
+  (let* ((client :: FabricClient (FabricClient))
 	 (settings :: AppSettings (client-app-settings client)))
     (when center
       (set-center-name! client center))

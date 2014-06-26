@@ -9,13 +9,14 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export <chat-message>)
+(module-export ChatMessage message-name message-contents message-reliable?
+               set-message-name! set-message-contents! set-message-reliable!)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
-
+(require "util-java.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -25,16 +26,25 @@
 (define-private-alias String java.lang.String)
 
 ;;; ---------------------------------------------------------------------
-;;; <chat-message>
+;;; ChatMessage
 ;;; ---------------------------------------------------------------------
 
-(define-simple-class <chat-message> (AbstractMessage)
+(define-simple-class ChatMessage (AbstractMessage)
   (name :: String init-form: #!null)
-  (message :: String init-form: #!null)
+  (contents :: String init-form: #!null)
 
   ((getName) name)
   ((setName nm) (set! name nm))
-  ((getMessage) message)
-  ((setMessage msg)(set! message msg))
-  ((toString) (format #f "~A:~A" name message)))
+  ((getContents) contents)
+  ((setContents msg)(set! contents msg))
+  ((toString) (format #f "~A:~A" name contents)))
+
+(defgetter (message-name ChatMessage) getName)
+(defgetter (message-contents ChatMessage) getContents)
+(defgetter (message-reliable? ChatMessage) isReliable)
+
+(defsetter (set-message-name! ChatMessage) setName)
+(defsetter (set-message-contents! ChatMessage) setContents)
+(defsetter (set-message-reliable! ChatMessage) setReliable)
+
 

@@ -31,25 +31,25 @@
 
 
 ;;; ---------------------------------------------------------------------
-;;; <chat-handler> - aux class for handling icoming chat messages
+;;; ServerChatHandler - aux class for handling icoming chat messages
 ;;; ---------------------------------------------------------------------
 
-(define-simple-class <chat-handler> (MessageListener)
-  ((messageReceived source msg) (if (instance? msg <chat-message>)
+(define-simple-class ServerChatHandler (MessageListener)
+  ((messageReceived source msg) (if (instance? msg ChatMessage)
                                     (begin (*:setAttribute source "name" (*:getName msg))
                                            (*:broadcast (*:getServer source)
                                                         msg))
                                     (format #t "Unrecognized message: ~s" msg))))
 
 ;;; ---------------------------------------------------------------------
-;;; <fabric-server> - the server class
+;;; FabricServer - the server class
 ;;; ---------------------------------------------------------------------
 
-(define-simple-class <fabric-server> (SimpleApplication)
+(define-simple-class FabricServer (SimpleApplication)
   ;; slots
   ;; -------
   (network-listener::Server init-form: #!null)
-  (chat-handler::<chat-handler> init-form: #!null)
+  (chat-handler::ServerChatHandler init-form: #!null)
 
   ;; accessors
   ;; ---------
@@ -57,7 +57,7 @@
   ((setNetworkListener listener::Server) (set! network-listener listener))
 
   ((getChatHandler) chat-handler)
-  ((setChatHandler handler::<chat-handler>) (set! chat-handler handler))
+  ((setChatHandler handler::ServerChatHandler) (set! chat-handler handler))
 
   ;; methods
   ;; -------
@@ -77,7 +77,7 @@
 ;;; ---------------------------------------------------------------------
 
 (define (make-server)
-  (let* ((server (<fabric-server>)))
+  (let* ((server (FabricServer)))
     server))
 
 ;;; ---------------------------------------------------------------------
@@ -86,10 +86,10 @@
 
 (define (start-listener app)
   (let ((listener (Network:createServer (server-name) (server-version) (server-port)(server-port)))
-        (handler (<chat-handler>)))
+        (handler (ServerChatHandler)))
     (set-network-listener! app listener)
     (*:start listener)
-    (*:addMessageListener listener handler <chat-message>:class)))
+    (*:addMessageListener listener handler ChatMessage:class)))
 
 (define (stop-listener app)
   (let ((listener (network-listener app)))

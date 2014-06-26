@@ -9,7 +9,7 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export <rotate-control> any-rotator <flicker-control>)
+(module-export RotateControl any-rotator FlickerControl)
 
 (require "util-java.scm")
 (require "util-lists.scm")
@@ -23,7 +23,7 @@
 ;;; a rotation control
 ;;; ---------------------------------------------------------------------
 
-(define-simple-class <rotate-control> (AbstractControl)
+(define-simple-class RotateControl (AbstractControl)
   (xrate::float init-value: 0.0)
   (yrate::float init-value: 0.0)
   (zrate::float init-value: 0.0)
@@ -42,7 +42,7 @@
 
 
 (define (any-rotator)
-  (<rotate-control> (choose-any '(-1.5 -1.25 -1.0 -0.75 -0.5 -0.25 0.25 0.5 0.75 1.0 1.25 1.5))
+  (RotateControl (choose-any '(-1.5 -1.25 -1.0 -0.75 -0.5 -0.25 0.25 0.5 0.75 1.0 1.25 1.5))
                     (choose-any '(-1.5 -1.25 -1.0 -0.75 -0.5 -0.25 0.25 0.5 0.75 1.0 1.25 1.5))
                     (choose-any '(-1.5 -1.25 -1.0 -0.75 -0.5 -0.25 0.25 0.5 0.75 1.0 1.25 1.5))))
 
@@ -50,7 +50,7 @@
 ;;; a flicker control
 ;;; ---------------------------------------------------------------------
 
-(define-simple-class <flicker-control> (AbstractControl)
+(define-simple-class FlickerControl (AbstractControl)
   (dim-color::ColorRGBA init-value: #!null)
   (bright-color::ColorRGBA init-value: #!null)
   (activity::int init-value: 96)
