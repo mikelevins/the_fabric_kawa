@@ -256,16 +256,24 @@
 (define (service-network-connection app)
   (if (and (not (jnull? (client-network-client app)))
            (*:isConnected (client-network-client app)))
+      ;; we're connected
       #t
-      (begin (set-client-network-client! app (Network:connectToServer (server-name)
-                                                                      (server-version)
-                                                                      (server-host)
-                                                                      (server-port)
-                                                                      (server-port)))
-             (if (and (not (jnull? (client-network-client app)))
-                      (*:isConnected (client-network-client app)))
-                 #t
-                 #f))))
+      ;; we're not connected; try to establish a connection
+      (begin 
+        (try-catch
+         (let ((new-client (Network:connectToServer (server-name)(server-version)
+                                                    (server-host)(server-port)(server-port))))
+           ;; success! set the connection
+           (set-client-network-client! app new-client))
+         ;; no luck; set the connection to null
+         (ex java.net.ConnectException (set-client-network-client! app #!null)))
+        ;; check again whether we are connected
+        (if (and (not (jnull? (client-network-client app)))
+                 (*:isConnected (client-network-client app)))
+            ;; success! return true
+            #t
+            ;; failure; return false
+            #f))))
 
 (define (client-send-chat-message app chat-message)
   (let ((net-client (client-network-client app)))
@@ -274,7 +282,7 @@
 (define (client-report-failed-chat-message app chat-message chat-box)
   (let* ((msg-name (message-name chat-message))
          (msg-contents (message-contents chat-message))
-         (failed-text (format #f "Connection failed; unable to send message: ~A:~A"
+         (failed-text (format #f "Connection failed; unable to send message: [~A] ~A"
                               msg-name msg-contents)))
     (*:receiveMsg chat-box failed-text)))
 
@@ -312,6 +320,7 @@
                                 (Vector2f 15 (- height 220))
                                 (Vector2f 400 200)))
            (chatfield (*:getChildElementById chatbox "chatbox:ChatInput"))
+           (chatlog (*:getChildElementById chatbox "chatbox:ChatArea"))
            (nameplate (TLabel screen "nameplate"
                               (Vector2f 8 8)
                               (Vector2f 900 40)))
@@ -331,8 +340,9 @@
       (*:setFontSize nodeplate 24)
       (*:setFontColor nodeplate ColorRGBA:Green)
 
+      (*:setFontColor chatlog ColorRGBA:Green)
       (*:removeEffect chatfield EffectEvent:TabFocus)
-      (*:setFontColor chatbox ColorRGBA:Green)
+      (*:setFontSize chatfield 24)
       (*:setSendKey chatbox key-input:KEY_RETURN)
       
       (*:addElement screen nameplate)

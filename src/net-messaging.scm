@@ -37,7 +37,7 @@
   ((setName nm) (set! name nm))
   ((getContents) contents)
   ((setContents msg)(set! contents msg))
-  ((toString) (format #f "~A:~A" name contents)))
+  ((toString) (format #f "[~A] ~A" name contents)))
 
 (defgetter (message-name ChatMessage) getName)
 (defgetter (message-contents ChatMessage) getContents)
