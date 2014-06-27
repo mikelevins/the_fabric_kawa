@@ -4,8 +4,6 @@
   <path id="library.class.path">
     <pathelement location="../the_fabric_libraries/clj-ds-0.0.4.jar"/>
     <pathelement location="../the_fabric_libraries/eventbus-3.0.0.jar"/>
-    <pathelement location="../the_fabric_libraries/hgbdbje-1.2.jar"/>
-    <pathelement location="../the_fabric_libraries/hgdb-1.2.jar"/>
     <pathelement location="../the_fabric_libraries/j-ogg-oggd-3.0.0.jar"/>
     <pathelement location="../the_fabric_libraries/j-ogg-vorbisd-3.0.0.jar"/>
     <pathelement location="../the_fabric_libraries/jME3-blender.jar"/>
@@ -46,8 +44,6 @@
       <zipfileset src="../the_fabric_libraries/kawa-1.14.jar"/>
       <zipfileset src="../the_fabric_libraries/clj-ds-0.0.4.jar"/>
       <zipfileset src="../the_fabric_libraries/eventbus-3.0.0.jar"/>
-      <zipfileset src="../the_fabric_libraries/hgbdbje-1.2.jar"/>
-      <zipfileset src="../the_fabric_libraries/hgdb-1.2.jar"/>
       <zipfileset src="../the_fabric_libraries/j-ogg-oggd-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/j-ogg-vorbisd-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/jME3-blender.jar"/>
@@ -85,32 +81,22 @@
       <zipfileset src="../the_fabric_libraries/kawa-1.14.jar"/>
       <zipfileset src="../the_fabric_libraries/clj-ds-0.0.4.jar"/>
       <zipfileset src="../the_fabric_libraries/eventbus-3.0.0.jar"/>
-      <zipfileset src="../the_fabric_libraries/hgbdbje-1.2.jar"/>
-      <zipfileset src="../the_fabric_libraries/hgdb-1.2.jar"/>
       <zipfileset src="../the_fabric_libraries/j-ogg-oggd-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/j-ogg-vorbisd-3.0.0.jar"/>
-      <zipfileset src="../the_fabric_libraries/jME3-blender.jar"/>
       <zipfileset src="../the_fabric_libraries/jME3-core-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/jME3-desktop-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/jME3-effects-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/jME3-jbullet-3.0.0.jar"/>
-      <zipfileset src="../the_fabric_libraries/jME3-jogg-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/jME3-lwjgl-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/jME3-lwjgl-natives-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/jME3-networking-3.0.0.jar"/>
-      <zipfileset src="../the_fabric_libraries/jME3-niftygui-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/jME3-plugins-3.0.0.jar"/>
-      <zipfileset src="../the_fabric_libraries/jME3-terrain-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/jbullet-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/je-5.0.34.jar"/>
       <zipfileset src="../the_fabric_libraries/jinput-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/lwjgl-3.0.0.jar"/>
-      <zipfileset src="../the_fabric_libraries/nifty-3.0.0.jar"/>
-      <zipfileset src="../the_fabric_libraries/nifty-default-controls-3.0.0.jar"/>
-      <zipfileset src="../the_fabric_libraries/nifty-style-black-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/stack-alloc-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/vecmath-3.0.0.jar"/>
-      <zipfileset dir="../the_fabric_assets"/>
     </jar>
   </target>
 
@@ -123,8 +109,6 @@
       <zipfileset src="../the_fabric_libraries/kawa-1.14.jar"/>
       <zipfileset src="../the_fabric_libraries/clj-ds-0.0.4.jar"/>
       <zipfileset src="../the_fabric_libraries/eventbus-3.0.0.jar"/>
-      <zipfileset src="../the_fabric_libraries/hgbdbje-1.2.jar"/>
-      <zipfileset src="../the_fabric_libraries/hgdb-1.2.jar"/>
       <zipfileset src="../the_fabric_libraries/j-ogg-oggd-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/j-ogg-vorbisd-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/jME3-blender.jar"/>
@@ -132,23 +116,16 @@
       <zipfileset src="../the_fabric_libraries/jME3-desktop-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/jME3-effects-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/jME3-jbullet-3.0.0.jar"/>
-      <zipfileset src="../the_fabric_libraries/jME3-jogg-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/jME3-lwjgl-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/jME3-lwjgl-natives-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/jME3-networking-3.0.0.jar"/>
-      <zipfileset src="../the_fabric_libraries/jME3-niftygui-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/jME3-plugins-3.0.0.jar"/>
-      <zipfileset src="../the_fabric_libraries/jME3-terrain-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/jbullet-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/je-5.0.34.jar"/>
       <zipfileset src="../the_fabric_libraries/jinput-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/lwjgl-3.0.0.jar"/>
-      <zipfileset src="../the_fabric_libraries/nifty-3.0.0.jar"/>
-      <zipfileset src="../the_fabric_libraries/nifty-default-controls-3.0.0.jar"/>
-      <zipfileset src="../the_fabric_libraries/nifty-style-black-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/stack-alloc-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/vecmath-3.0.0.jar"/>
-      <zipfileset dir="../the_fabric_assets"/>
     </jar>
   </target>
 
