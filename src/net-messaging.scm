@@ -23,13 +23,14 @@
 ;;; ---------------------------------------------------------------------
 
 (define-private-alias AbstractMessage com.jme3.network.AbstractMessage)
+(define-private-alias Serializable com.jme3.network.serializing.Serializable)
 (define-private-alias String java.lang.String)
 
 ;;; ---------------------------------------------------------------------
 ;;; ChatMessage
 ;;; ---------------------------------------------------------------------
 
-(define-simple-class ChatMessage (AbstractMessage)
+(define-simple-class ChatMessage (AbstractMessage)(@Serializable)
   (name :: String init-form: #!null)
   (contents :: String init-form: #!null)
 

@@ -9,7 +9,7 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export make-server start-listener stop-listener)
+(module-export make-server network-listener start-listener stop-listener)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -26,6 +26,8 @@
 (define-private-alias Context com.jme3.system.JmeContext)
 (define-private-alias MessageListener com.jme3.network.MessageListener)
 (define-private-alias Network com.jme3.network.Network)
+(define-private-alias Serializable com.jme3.network.serializing.Serializable)
+(define-private-alias Serializer com.jme3.network.serializing.Serializer)
 (define-private-alias SimpleApplication com.jme3.app.SimpleApplication)
 (define-private-alias Server com.jme3.network.Server)
 
@@ -35,11 +37,13 @@
 ;;; ---------------------------------------------------------------------
 
 (define-simple-class ServerChatHandler (MessageListener)
-  ((messageReceived source msg) (if (instance? msg ChatMessage)
-                                    (begin (*:setAttribute source "name" (*:getName msg))
-                                           (*:broadcast (*:getServer source)
-                                                        msg))
-                                    (format #t "Unrecognized message: ~s" msg))))
+  ((messageReceived source msg)
+   (format #t "~%Received message: ~s" msg)
+   (if (instance? msg ChatMessage)
+       (begin (*:setAttribute source "name" (*:getName msg))
+              (format #t "~%Broadcasting message: ~a..." (*:toString msg))
+              (*:broadcast (*:getServer source) msg))
+       (format #t "~%Unrecognized message: ~a~%" (*:toString msg)))))
 
 ;;; ---------------------------------------------------------------------
 ;;; FabricServer - the server class
@@ -62,7 +66,12 @@
   ;; methods
   ;; -------
   ((simpleInitApp) #!void)
-  ((stopServer) (*:close network-listener)))
+  ((stopServer) (*:close network-listener))
+  ((printServer)(begin (format #t "~%The Fabric server: ~A" (fabric-version))
+                       (format #t "~% network listener: ~S" network-listener)
+                       (format #t "~% listener running? ~S" (and (not (jnull? network-listener))
+                                                                 (*:isRunning network-listener)))
+                       (format #t "~% ~A" (*:toString network-listener)))))
 
 
 ;;; ---------------------------------------------------------------------
@@ -77,6 +86,7 @@
 ;;; ---------------------------------------------------------------------
 
 (define (make-server)
+  (Serializer:registerClass ChatMessage)
   (let* ((server (FabricServer)))
     server))
 
@@ -89,7 +99,8 @@
         (handler (ServerChatHandler)))
     (set-network-listener! app listener)
     (*:start listener)
-    (*:addMessageListener listener handler ChatMessage:class)))
+    (*:addMessageListener listener handler ChatMessage:class)
+    (*:printServer app)))
 
 (define (stop-listener app)
   (let ((listener (network-listener app)))

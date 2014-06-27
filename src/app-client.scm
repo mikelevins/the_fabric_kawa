@@ -9,7 +9,7 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export make-client)
+(module-export make-client client-network-client send-chat-message)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -56,6 +56,7 @@
 (define-private-alias KeyTrigger com.jme3.input.controls.KeyTrigger)
 (define-private-alias Label com.simsilica.lemur.Label)
 (define-private-alias TLabel tonegod.gui.controls.text.Label)
+(define-private-alias MessageListener com.jme3.network.MessageListener)
 (define-private-alias Mouse org.lwjgl.input.Mouse)
 (define-private-alias MouseAxisTrigger com.jme3.input.controls.MouseAxisTrigger)
 (define-private-alias MouseButtonTrigger com.jme3.input.controls.MouseButtonTrigger)
@@ -67,6 +68,8 @@
 (define-private-alias QuadBackgroundComponent com.simsilica.lemur.component.QuadBackgroundComponent)
 (define-private-alias Quaternion com.jme3.math.Quaternion)
 (define-private-alias Screen tonegod.gui.core.Screen)
+(define-private-alias Serializable com.jme3.network.serializing.Serializable)
+(define-private-alias Serializer com.jme3.network.serializing.Serializer)
 (define-private-alias SimpleApplication com.jme3.app.SimpleApplication)
 (define-private-alias Spatial com.jme3.scene.Spatial)
 (define-private-alias String java.lang.String)
@@ -250,34 +253,26 @@
     (*:attachChild (client-root-node app) player-node)))
 
 ;;; ---------------------------------------------------------------------
-;;; set up the heads-up display and chatbox
+;;; ClientChatHandler - aux class for handling incoming chat messages
 ;;; ---------------------------------------------------------------------
 
-(define (service-network-connection app)
-  (if (and (not (jnull? (client-network-client app)))
-           (*:isConnected (client-network-client app)))
-      ;; we're connected
-      #t
-      ;; we're not connected; try to establish a connection
-      (begin 
-        (try-catch
-         (let ((new-client (Network:connectToServer (server-name)(server-version)
-                                                    (server-host)(server-port)(server-port))))
-           ;; success! set the connection
-           (set-client-network-client! app new-client))
-         ;; no luck; set the connection to null
-         (ex java.net.ConnectException (set-client-network-client! app #!null)))
-        ;; check again whether we are connected
-        (if (and (not (jnull? (client-network-client app)))
-                 (*:isConnected (client-network-client app)))
-            ;; success! return true
-            #t
-            ;; failure; return false
-            #f))))
+(define-simple-class ClientChatHandler (MessageListener)
+  (application init-form: #!null)
+  ((*init* app)(set! application app))
+  ((messageReceived source msg) (if (instance? msg ChatMessage)
+                                    (let* ((chatbox (client-chat-hud application))
+                                           (msg-name (message-name msg))
+                                           (msg-contents (message-contents msg))
+                                           (received-text (format #f "[~A] ~A"
+                                                                  msg-name msg-contents))
+                                           (updater (runnable (lambda ()
+                                                                (*:receiveMsg chatbox received-text)))))
+                                      (*:enqueue application updater))
+                                    (format #t "Unrecognized message: ~s" msg))))
 
-(define (client-send-chat-message app chat-message)
-  (let ((net-client (client-network-client app)))
-    (*:send net-client chat-message)))
+;;; ---------------------------------------------------------------------
+;;; set up the heads-up display and chatbox
+;;; ---------------------------------------------------------------------
 
 (define (client-report-failed-chat-message app chat-message chat-box)
   (let* ((msg-name (message-name chat-message))
@@ -286,11 +281,35 @@
                               msg-name msg-contents)))
     (*:receiveMsg chat-box failed-text)))
 
-(define (send-chat-message app chat-message chat-box)
-  (let ((connected? (service-network-connection app)))
-    (if connected?
-        (client-send-chat-message app chat-message)
-        (client-report-failed-chat-message app chat-message chat-box))))
+(define (client-connect-to-server app)
+  (try-catch
+   (let ((new-connection (Network:connectToServer (server-name)(server-version)(server-host)
+                                                  (server-port)(server-port))))
+     (set-client-network-client! app new-connection)
+     (*:addMessageListener (client-network-client app) (ClientChatHandler app))
+     (*:start (client-network-client app)))
+   (ex java.net.ConnectException (begin (set-client-network-client! app #!null)
+                                        (format #t "~%Failed to connect to Fabric server.")
+                                        (format #t "~%~A" (*:toString ex))))))
+
+(define (ensure-valid-network-client app)
+  (let ((net-client #f)
+        (found-client (client-network-client app)))
+    (when (jnull? found-client)
+      (client-connect-to-server app))
+    (set! net-client (client-network-client app))
+    (if (jnull? net-client)
+        #f
+        (if (*:isConnected net-client)
+            net-client
+            #f))))
+
+(define (send-chat-message app chat-message)
+  (let ((net-client (ensure-valid-network-client app)))
+    (if net-client
+        (*:send net-client chat-message)
+        (client-report-failed-chat-message app chat-message (client-chat-hud app)))))
+
 
 (define-simple-class FabricChat (ChatBox)
   ((*init* screen :: Screen id :: String position :: Vector2f size :: Vector2f)
@@ -298,12 +317,11 @@
   ((onSendMsg msg::String) (let* ((chatfield (*:getChildElementById (this) "chatbox:ChatInput"))
                                   (screen (*:getScreen (this)))
                                   (app (*:getApplication screen))
-                                  (net-client (client-network-client app))
                                   (chat-message (ChatMessage)))
                              (set-message-name! chat-message (player-namestring (client-player app)))
                              (set-message-contents! chat-message msg)
                              (set-message-reliable! chat-message #t)
-                             (send-chat-message app chat-message (this))
+                             (send-chat-message app chat-message)
                              (*:resetTabFocus chatfield))))
 
 (define (init-hud app ::SimpleApplication name-string)
@@ -345,6 +363,7 @@
       (*:setFontSize chatfield 24)
       (*:setSendKey chatbox key-input:KEY_RETURN)
       
+      (set-client-chat-hud! app chatbox)
       (*:addElement screen nameplate)
       (*:addElement screen nodeplate)
       (*:addElement screen chatbox))))
@@ -448,7 +467,7 @@
 
     (let ((player (client-player app)))
       (init-hud app (player-namestring player)))
-
+    (ensure-valid-network-client app)
     ;; uncomment to capture video to a file
     ;; (*:attach (client-state-manager app) (VideoRecorderAppState))
     #!void))
@@ -536,6 +555,7 @@
 	 (settings :: AppSettings (client-app-settings client)))
     (when center
       (set-center-name! client center))
+    (Serializer:registerClass ChatMessage)
     (*:setResolution settings 1920 1200)
     (*:setTitle settings "The Fabric")
     (*:setSettingsDialogImage settings "Interface/icon.jpg")
