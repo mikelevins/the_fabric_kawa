@@ -12,7 +12,7 @@
 (require "util-java.scm")
 (require "util-random.scm")
 (require "util-general.scm")
-(require "init-config.scm")
+(require "init-config-local.scm")
 (require "model-id.scm")
 (require "model-frame.scm")
 (require "model-namegen-domains.scm")

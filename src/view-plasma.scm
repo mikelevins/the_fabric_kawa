@@ -11,6 +11,8 @@
 
 (module-export make-plasma-generator make-plasma-generator-color make-any-plasma-generator)
 
+(require "util-general.scm")
+(require "util-lists.scm")
 (require "util-java.scm")
 (require "assets-general.scm")
 (require "view-colors.scm")

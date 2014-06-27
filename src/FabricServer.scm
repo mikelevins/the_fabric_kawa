@@ -2,10 +2,18 @@
 
 (module-name FabricServer)
 (module-compile-options main: #t)
+(module-export fabric-manager)
 
 (require "app-server.scm")
 
-(define $server (make-server))
-(start-server $server)
+(define fabric-manager (make-parameter (make-server)))
+
+(begin
+  (start-listener (fabric-manager))
+  (kawa.Shell:run (gnu.expr.Language:getDefaultLanguage)
+                  (gnu.mapping.Environment:getCurrent)))
+
+
+
 
 

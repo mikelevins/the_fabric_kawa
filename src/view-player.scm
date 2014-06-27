@@ -11,12 +11,17 @@
 
 (module-export make-player-character make-armors player-namestring)
 
+(require 'list-lib)
 (require "util-java.scm")
+(require "util-lists.scm")
 (require "assets-general.scm")
 (require "model-namegen.scm")
 (require "view-name-cube.scm")
 (require "model-entity.scm")
+(require "model-frame.scm")
 (require "view-shapes.scm")
+(require "view-controls.scm")
+(require "view-plasma.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports

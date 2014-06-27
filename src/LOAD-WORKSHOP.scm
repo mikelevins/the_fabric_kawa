@@ -16,7 +16,7 @@
 (require "util-random.scm")
 (require "util-general.scm")
 (require "util-lists.scm")
-(require "init-config.scm")
+(require "init-config-local.scm")
 (require "model-id.scm")
 (require "language-types.scm")
 (require "language-gf.scm")

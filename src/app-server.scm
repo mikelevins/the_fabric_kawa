@@ -46,10 +46,10 @@
        (format #t "~%Unrecognized message: ~a~%" (*:toString msg)))))
 
 ;;; ---------------------------------------------------------------------
-;;; FabricServer - the server class
+;;; FabricManager - the server class
 ;;; ---------------------------------------------------------------------
 
-(define-simple-class FabricServer (SimpleApplication)
+(define-simple-class FabricManager (SimpleApplication)
   ;; slots
   ;; -------
   (network-listener::Server init-form: #!null)
@@ -87,7 +87,7 @@
 
 (define (make-server)
   (Serializer:registerClass ChatMessage)
-  (let* ((server (FabricServer)))
+  (let* ((server (FabricManager)))
     server))
 
 ;;; ---------------------------------------------------------------------
@@ -99,7 +99,7 @@
         (handler (ServerChatHandler)))
     (set-network-listener! app listener)
     (*:start listener)
-    (*:addMessageListener listener handler ChatMessage:class)
+    (*:addMessageListener listener handler ChatMessage)
     (*:printServer app)))
 
 (define (stop-listener app)

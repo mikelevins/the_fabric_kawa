@@ -29,6 +29,7 @@
 (require "view-colors.scm")
 (require "view-plasma.scm")
 (require "view-player.scm")
+(require "init-config.scm")
 (require "view-node.scm")
 
 ;;; ---------------------------------------------------------------------
