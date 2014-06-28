@@ -37,6 +37,7 @@
 (require "view-player.scm")
 (require "view-node.scm")
 (require "net-messaging.scm")
+(require "app-common.scm")
 (require "app-client.scm")
 
 ;;; (define $the-client (make-client))

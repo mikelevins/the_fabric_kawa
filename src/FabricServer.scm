@@ -4,7 +4,7 @@
 (module-compile-options main: #t)
 (module-export fabric-manager)
 
-(require "app-server.scm")
+(require "net-server.scm")
 
 (define fabric-manager (make-parameter (make-server)))
 

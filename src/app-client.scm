@@ -31,6 +31,8 @@
 (require "view-player.scm")
 (require "init-config.scm")
 (require "view-node.scm")
+(require "syntax-events.scm")
+(require "app-common.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -87,7 +89,7 @@
 ;;; FabricClient - the client class
 ;;; ---------------------------------------------------------------------
 
-(define-simple-class FabricClient (SimpleApplication AnalogListener ActionListener)
+(define-simple-class FabricClient (FabricApp)
 
   ;; slots
   ;; -------
@@ -131,13 +133,9 @@
   ((getChatHud) chat-hud)
   ((setChatHud hud) (set! chat-hud hud))
 
-  ;; methods
-  ;; -------
-
   ;; AnalogListener and ActionListener implementation
   ((onAnalog name value tpf)(handle-analog-event (this) name value tpf))
   ((onAction name key-pressed? tpf)(handle-action-event (this) name key-pressed? tpf))
-
   ;; SimpleApplication implementation
   ((simpleInitApp)(init-client (this))))
 
@@ -478,15 +476,6 @@
 ;;; set up event-handling
 ;;; ---------------------------------------------------------------------
 
-(define-syntax on-analog
-  (syntax-rules (->)
-    ((on-analog (evt-name)
-                (s -> expr) ...)
-     (cond
-      ((invoke evt-name 'equals s) expr) ...
-      (#t #f)))))
-
-
 ;;; (handle-analog-event app name value tpf)
 ;;; ---------------------------------------------------------------------
 ;;; handle mouse movements and other continuous events
@@ -528,14 +517,6 @@
 ;;; (handle-action-event app name key-pressed? tpf)
 ;;; ---------------------------------------------------------------------
 ;;; handle keypresses, mouse clicks, and other discrete events
-
-(define-syntax on-action
-  (syntax-rules (->)
-    ((on-action (evt-name)
-                (s -> expr) ...)
-     (cond
-      ((invoke evt-name 'equals s) expr) ...
-      (#t #f)))))
 
 (define (handle-action-event app name key-pressed? tpf)
   (on-action (name)

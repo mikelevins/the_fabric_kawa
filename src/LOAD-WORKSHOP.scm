@@ -34,6 +34,7 @@
 (require "view-player.scm")
 (require "view-node.scm")
 (require "net-messaging.scm")
+(require "app-common.scm")
 (require "app-workshop.scm")
 
 ;;; (define $workshop (make-workshop))

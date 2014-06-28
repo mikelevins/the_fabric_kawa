@@ -1,7 +1,7 @@
 ;;;; ***********************************************************************
 ;;;; FILE IDENTIFICATION
 ;;;;
-;;;; Name:          server.scm
+;;;; Name:          net-server.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
 ;;;; Purpose:       server main program
 ;;;; Author:        mikel evins

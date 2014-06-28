@@ -156,7 +156,7 @@
       <classpath refid="library.class.path"/>
       <arg line="-C 'util-java.scm' 'util-random.scm' 'util-general.scm' 'init-config.scm' 'model-id.scm'
                  'model-frame.scm' 'model-namegen-domains.scm' 'model-namegen.scm' 'model-kind.scm'
-                 'model-entity.scm' 'net-messaging.scm' 'app-server.scm' 'FabricServer.scm'"/>
+                 'model-entity.scm' 'net-messaging.scm' net-server.scm' 'FabricServer.scm'"/>
     </java>
   </target>
 
@@ -171,7 +171,7 @@
       <classpath refid="library.class.path"/>
       <arg line="-C 'util-java.scm' 'util-random.scm' 'util-general.scm' 'init-config-local.scm' 'model-id.scm'
                  'model-frame.scm' 'model-namegen-domains.scm' 'model-namegen.scm' 'model-kind.scm'
-                 'model-entity.scm' 'net-messaging.scm' 'app-server.scm' 'FabricServer.scm'"/>
+                 'model-entity.scm' 'net-messaging.scm' net-server.scm' 'FabricServer.scm'"/>
     </java>
   </target>
 

@@ -20,7 +20,7 @@
 (require "model-kind.scm")
 (require "model-entity.scm")
 (require "net-messaging.scm")
-(require "app-server.scm")
+(require "net-server.scm")
 
 ;;; (define $the-server (make-server))
 ;;; (start-listener $the-server)
