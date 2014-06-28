@@ -30,6 +30,7 @@
 (require "view-plasma.scm")
 (require "view-player.scm")
 (require "init-config.scm")
+(require "interface-consp.scm")
 (require "view-node.scm")
 
 ;;; ---------------------------------------------------------------------

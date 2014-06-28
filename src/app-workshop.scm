@@ -1,5 +1,4 @@
 ;;; ***********************************************************************
-;;;; FILE IDENTIFICATION
 ;;;;
 ;;;; Name:          app-workshop.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
@@ -31,6 +30,7 @@
 (require "view-player.scm")
 (require "init-config.scm")
 (require "view-node.scm")
+(require "interface-consp.scm")
 (require "syntax-events.scm")
 (require "app-common.scm")
 
