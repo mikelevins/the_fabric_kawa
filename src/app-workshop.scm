@@ -27,7 +27,7 @@
 (require "view-controls.scm")
 (require "view-colors.scm")
 (require "view-plasma.scm")
-(require "view-player.scm")
+(require "view-worker.scm")
 (require "init-config.scm")
 (require "view-node.scm")
 (require "interface-consp.scm")
@@ -93,8 +93,8 @@
 
   ;; slots
   ;; -------
-  (player init-form: #!null)
-  (player-node :: Node init-form: #!null)
+  (worker init-form: #!null)
+  (worker-node :: Node init-form: #!null)
   (center-name ::String init-form: #!null)
   (direction ::Vector3f init-form: (Vector3f))
   (network-client ::com.jme3.network.Client  init-form: #!null)
@@ -116,10 +116,10 @@
   ((getKeyInput) keyInput)
   ((getGuiFont) guiFont)
   ((getGuiNode) guiNode)
-  ((getPlayer) player)
-  ((setPlayer p) (set! player p))
-  ((getPlayerNode) player-node)
-  ((setPlayerNode n) (set! player-node n))
+  ((getWorker) worker)
+  ((setWorker p) (set! worker p))
+  ((getWorkerNode) worker-node)
+  ((setWorkerNode n) (set! worker-node n))
   ((getCenterName) center-name)
   ((setCenterName nm) (set! center-name nm))
   ((getLeftButton) left-button?)
@@ -152,8 +152,8 @@
 (defgetter (workshop-input-manager FabricWorkshop) getInputManager)
 (defgetter (workshop-key-input FabricWorkshop) getKeyInput)
 (defgetter (workshop-left-button? FabricWorkshop) getLeftButton)
-(defgetter (workshop-player FabricWorkshop) getPlayer)
-(defgetter (workshop-player-node FabricWorkshop) getPlayerNode)
+(defgetter (workshop-worker FabricWorkshop) getWorker)
+(defgetter (workshop-worker-node FabricWorkshop) getWorkerNode)
 (defgetter (workshop-right-button? FabricWorkshop) getRightButton)
 (defgetter (workshop-root-node FabricWorkshop) getRootNode)
 (defgetter (workshop-state-manager FabricWorkshop) getStateManager)
@@ -164,8 +164,8 @@
 (defsetter (set-workshop-direction! FabricWorkshop) setDirection)
 (defsetter (set-workshop-network-client! FabricWorkshop) setNetworkClient)
 (defsetter (set-workshop-left-button! FabricWorkshop) setLeftButton)
-(defsetter (set-workshop-player! FabricWorkshop) setPlayer)
-(defsetter (set-workshop-player-node! FabricWorkshop) setPlayerNode)
+(defsetter (set-workshop-worker! FabricWorkshop) setWorker)
+(defsetter (set-workshop-worker-node! FabricWorkshop) setWorkerNode)
 (defsetter (set-workshop-right-button! FabricWorkshop) setRightButton)
 
 (define (workshop-camera-left app :: FabricWorkshop)
@@ -175,75 +175,66 @@
   (*:normalizeLocal (workshop-camera-direction app)))
 
 ;;; ---------------------------------------------------------------------
-;;; set up the player character
+;;; set up the worker character
 ;;; ---------------------------------------------------------------------
 
-;;; (assemble-player-character pc-node pc-geom pc-controls pc-armors)
+;;; (assemble-worker-character pc-node pc-geom pc-controls)
 ;;; ---------------------------------------------------------------------
-;;; assemble a player-character's node, geometry, controls, and armors
+;;; assemble a worker-character's node, geometry, and controls
 
-(define (assemble-player-character pc-node pc-geom pc-controls pc-armors)
+(define (assemble-worker-character pc-node pc-geom pc-controls)
   (*:attachChild pc-node pc-geom)
   (for-each (lambda (ctrl)
               (*:addControl pc-geom ctrl))
-            pc-controls)
-  (for-each (lambda (armor)
-              (*:attachChild pc-node armor)
-              (*:setLocalTranslation armor 0 0 0))
-            pc-armors))
+            pc-controls))
 
-;;; (init-player-camera app player-node)
+;;; (init-worker-camera app worker-node)
 ;;; ---------------------------------------------------------------------
 
-(define (init-player-camera app player-node)
+(define (init-worker-camera app worker-node)
   (let* ((camera::com.jme3.renderer.Camera (workshop-camera app))
          (cam-node (CameraNode "camera" camera)))
     (*:setControlDir cam-node CameraControl:ControlDirection:SpatialToCamera)
     (*:setFrustumFar (workshop-camera app) 20000)
-    ;; position the camera behind and above the player and look at the player
+    ;; position the camera behind and above the worker and look at the worker
     (*:setLocalTranslation cam-node (Vector3f 0 30 -30))
-    (*:lookAt cam-node (*:getLocalTranslation player-node) Vector3f:UNIT_Y)
-    ;; attach the camera to the player character
-    (*:attachChild player-node cam-node)))
+    (*:lookAt cam-node (*:getLocalTranslation worker-node) Vector3f:UNIT_Y)
+    ;; attach the camera to the worker character
+    (*:attachChild worker-node cam-node)))
 
 
-;;; (init-player-character app ::SimpleApplication)
+;;; (init-worker-character app ::SimpleApplication)
 ;;; ---------------------------------------------------------------------
-;;; prepare a player character and present it in the scene
+;;; prepare a worker character and present it in the scene
 
-(define (init-player-character app ::SimpleApplication)
-  (let* ((player-node (Node "Player"))
-         (player (make-player-character (any-lit-color)))
-         (player-cube (get-key player name-cube:))
-         (player-rotator (any-rotator))
-         ;;(armor-count (random-integer 3))
-         (armor-count 0))
-    (set-workshop-player! app player)
-    (set-workshop-player-node! app player-node)
-    ;; don't seize the mouse from the player
+(define (init-worker-character app ::SimpleApplication)
+  (let* ((worker-node (Node "Worker"))
+         (worker (make-worker-character (any-lit-color)))
+         (worker-shape (get-key worker shape:))
+         (worker-rotator (any-rotator)))
+    (set-workshop-worker! app worker)
+    (set-workshop-worker-node! app worker-node)
+    ;; don't seize the mouse from the worker
     (Mouse:setGrabbed #f)
     ;; disable the fly-by camera
     (*:setEnabled (workshop-fly-by-camera app) #f)
 
-    ;; assemble the player character's parts
-    (assemble-player-character player-node
-                               player-cube
-                               (list player-rotator)
-                               (make-armors armor-count))
+    ;; assemble the worker character's parts
+    (assemble-worker-character worker-node worker-shape (list worker-rotator))
     
-    ;; set up the player character's camera
-    (init-player-camera app player-node)
+    ;; set up the worker character's camera
+    (init-worker-camera app worker-node)
 
     ;; move the character to its starting location and point it at the center
-    (*:setLocalTranslation player-node 0.0 8000.0 0.0)
+    (*:setLocalTranslation worker-node 0.0 8000.0 0.0)
     (let ((rotation (Quaternion))
           (pitch-axis (Vector3f 1 0 0)))
       ;; PI/4 radians points us right at the center
       (*:fromAngleAxis rotation (/ PI 4) pitch-axis)
-      (*:setLocalRotation player-node rotation))
+      (*:setLocalRotation worker-node rotation))
     
-    ;; add the player to the scene
-    (*:attachChild (workshop-root-node app) player-node)))
+    ;; add the worker to the scene
+    (*:attachChild (workshop-root-node app) worker-node)))
 
 ;;; ---------------------------------------------------------------------
 ;;; WorkshopChatHandler - aux class for handling incoming chat messages
@@ -311,7 +302,7 @@
                                   (screen (*:getScreen (this)))
                                   (app (*:getApplication screen))
                                   (chat-message (ChatMessage)))
-                             (set-message-name! chat-message (player-namestring (workshop-player app)))
+                             (set-message-name! chat-message (worker-namestring (workshop-worker app)))
                              (set-message-contents! chat-message msg)
                              (set-message-reliable! chat-message #t)
                              (send-chat-message app chat-message)
@@ -363,11 +354,11 @@
 
 
 ;;; ---------------------------------------------------------------------
-;;; set up player controls
+;;; set up worker controls
 ;;; ---------------------------------------------------------------------
 
 (define (setup-inputs app ::SimpleApplication)
-  ;; set up the player's controls
+  ;; set up the worker's controls
   (let ((key-input ::KeyInput (workshop-key-input app)))
     (*:addMapping (workshop-input-manager app) "moveForward" (KeyTrigger key-input:KEY_UP))
     (*:addMapping (workshop-input-manager app) "moveForward" (KeyTrigger key-input:KEY_W))
@@ -417,7 +408,7 @@
 
 ;;; (init-workshop app)
 ;;; ---------------------------------------------------------------------
-;;; set up the scene and add the player character
+;;; set up the scene and add the worker character
 
 (define (init-workshop app)
   (let* ((sky (make-sky app))
@@ -430,10 +421,10 @@
       (set-center-name! app (choose-any (node-names))))
     (set! center-body (make-center-body app (workshop-center-name app)))
     (*:attachChild (workshop-root-node app) center-body)
-    (init-player-character app)
+    (init-worker-character app)
 
-    (let ((player (workshop-player app)))
-      (init-hud app (player-namestring player)))
+    (let ((worker (workshop-worker app)))
+      (init-hud app (worker-namestring worker)))
     (ensure-valid-network-client app)
     ;; uncomment to capture video to a file
     ;; (*:attach (workshop-state-manager app) (VideoRecorderAppState))
@@ -453,34 +444,34 @@
              ("moveForward" -> (begin (workshop-normalize-camera! app)
                                       (set-workshop-direction! app (workshop-camera-direction app))
                                       (*:multLocal (workshop-direction app) (* 300 tpf))
-                                      (*:move (workshop-player-node app) (workshop-direction app))))
+                                      (*:move (workshop-worker-node app) (workshop-direction app))))
              ("maybeMoveForward" -> (when (workshop-right-button? app)
                                       (workshop-normalize-camera! app)
                                       (set-workshop-direction! app (workshop-camera-direction app))
                                       (*:multLocal (workshop-direction app) (* 300 tpf))
-                                      (*:move (workshop-player-node app) (workshop-direction app))))
+                                      (*:move (workshop-worker-node app) (workshop-direction app))))
              ("moveBackward" -> (begin (workshop-normalize-camera! app)
                                        (set-workshop-direction! app (workshop-camera-direction app))
                                        (*:multLocal (workshop-direction app) (* -200 tpf))
-                                       (*:move (workshop-player-node app) (workshop-direction app))))
+                                       (*:move (workshop-worker-node app) (workshop-direction app))))
              ("moveRight" -> (begin (set-workshop-direction! app (*:normalizeLocal (*:getLeft (workshop-camera app))))
                                     (*:multLocal (workshop-direction app) (* -150 tpf))
-                                    (*:move (workshop-player-node app) (workshop-direction app))))
+                                    (*:move (workshop-worker-node app) (workshop-direction app))))
              ("moveLeft" -> (begin (set-workshop-direction! app (*:normalizeLocal (*:getLeft (workshop-camera app))))
                                    (*:multLocal (workshop-direction app) (* 150 tpf))
-                                   (*:move (workshop-player-node app) (workshop-direction app))))
-             ("rotateRight" -> (*:rotate (workshop-player-node app) 0 (* -0.25 tpf) 0))
+                                   (*:move (workshop-worker-node app) (workshop-direction app))))
+             ("rotateRight" -> (*:rotate (workshop-worker-node app) 0 (* -0.25 tpf) 0))
              ("mouseRotateRight" -> (when (workshop-right-button? app)
-                                      (*:rotate (workshop-player-node app) 0 (* -1 value) 0)))
-             ("rotateLeft" -> (*:rotate (workshop-player-node app) 0 (* 0.25 tpf) 0))
+                                      (*:rotate (workshop-worker-node app) 0 (* -1 value) 0)))
+             ("rotateLeft" -> (*:rotate (workshop-worker-node app) 0 (* 0.25 tpf) 0))
              ("mouseRotateLeft" -> (when (workshop-right-button? app)
-                                     (*:rotate (workshop-player-node app) 0 (* 1 value) 0)))
-             ("rotateUp" -> (*:rotate (workshop-player-node app) (* -0.125 tpf) 0 0))
+                                     (*:rotate (workshop-worker-node app) 0 (* 1 value) 0)))
+             ("rotateUp" -> (*:rotate (workshop-worker-node app) (* -0.125 tpf) 0 0))
              ("mouseRotateUp" -> (when (workshop-right-button? app)
-                                   (*:rotate (workshop-player-node app) (* -1 value) 0 0)))
-             ("rotateDown" -> (*:rotate (workshop-player-node app) (* 0.125 tpf) 0 0))
+                                   (*:rotate (workshop-worker-node app) (* -1 value) 0 0)))
+             ("rotateDown" -> (*:rotate (workshop-worker-node app) (* 0.125 tpf) 0 0))
              ("mouseRotateDown" -> (when (workshop-right-button? app)
-                                     (*:rotate (workshop-player-node app) (* 1 value) 0 0)))))
+                                     (*:rotate (workshop-worker-node app) (* 1 value) 0 0)))))
 
 ;;; (handle-action-event app name key-pressed? tpf)
 ;;; ---------------------------------------------------------------------

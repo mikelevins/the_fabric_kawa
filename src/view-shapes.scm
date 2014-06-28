@@ -12,7 +12,8 @@
 (module-export vertex make-vertex vertex->coordinates
                triangle triangle->vertexes
                make-enclosing-cube make-enclosing-wire-cube make-enclosing-sphere
-               make-enclosing-wire-sphere make-enclosing-pyramid)
+               make-enclosing-wire-sphere make-enclosing-pyramid
+               make-worker-sphere)
 
 (require "util-java.scm")
 (require "util-lists.scm")
@@ -27,6 +28,7 @@
 
 (define-private-alias Box com.jme3.scene.shape.Box)
 (define-private-alias Dome com.jme3.scene.shape.Dome)
+(define-private-alias ColorRGBA com.jme3.math.ColorRGBA)
 (define-private-alias Geometry com.jme3.scene.Geometry)
 (define-private-alias Material com.jme3.material.Material)
 (define-private-alias RenderQueue com.jme3.renderer.queue.RenderQueue)
@@ -177,6 +179,27 @@
       (*:addControl new-geom rotator)
       (*:setLocalTranslation new-geom 0 0 0)
       new-geom)))
+
+(define (make-worker-sphere)
+  (let* ((asset-manager (get-asset-manager))
+         (sphere-mat::Material (Material asset-manager "Common/MatDefs/Misc/Unshaded.j3md"))
+         (color (ColorRGBA 0.75 0.5 0.0 0.75))
+         (glow-color (ColorRGBA 1.0 0.85 0.5 0.75)))
+    (*:setColor sphere-mat "Color" color)
+    (*:setColor sphere-mat "GlowColor" glow-color)
+    (let* ((blendMode RenderState:BlendMode))
+      (*:setBlendMode (*:getAdditionalRenderState sphere-mat) blendMode:Alpha))
+    (let* ((r 1.0)
+           (new-sphere::Sphere (Sphere 32 32 r))
+           (new-geom::Geometry (Geometry (format #f "worker sphere") new-sphere))
+           (rotator (any-rotator))
+           (bucket RenderQueue:Bucket))
+      (*:setMaterial new-geom sphere-mat)
+      (*:setQueueBucket new-geom bucket:Transparent)
+      (*:addControl new-geom rotator)
+      (*:setLocalTranslation new-geom 0 0 0)
+      new-geom)))
+
 
 
 
