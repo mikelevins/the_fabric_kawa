@@ -416,32 +416,6 @@
     (*:addProcessor (client-viewport app) filter-processor)))
 
 
-;;; $center-names
-;;; ---------------------------------------------------------------------
-;;; the names of all available celestial bodies
-
-(define $center-names
-  '("callisto"
-     "dione"
-     "earth"
-     "enceladus"
-     "europa"
-     "ganymede"
-     "iapetus"
-     "io"
-     "jupiter"
-     "luna"
-     "mars"
-     "neptune"
-     "pluto"
-     "rhea"
-     "saturn"
-     "sedna"
-     "sol"
-     "titan"
-     "uranus"
-     "venus"))
-
 ;;; (init-client app)
 ;;; ---------------------------------------------------------------------
 ;;; set up the scene and add the player character
@@ -454,7 +428,7 @@
     (setup-inputs app)
     (*:attachChild (client-root-node app) sky)
     (when (eq? #!null (client-center-name app))
-      (set-center-name! app (choose-any $center-names)))
+      (set-center-name! app (choose-any (node-names))))
     (set! center-body (make-center-body app (client-center-name app)))
     (*:attachChild (client-root-node app) center-body)
     (init-player-character app)

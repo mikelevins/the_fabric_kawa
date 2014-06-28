@@ -9,7 +9,7 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export make-sky make-center-body)
+(module-export make-sky make-center-body node-names)
 
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
@@ -39,6 +39,27 @@
 (define-private-alias SkyFactory com.jme3.util.SkyFactory)
 (define-private-alias Sphere com.jme3.scene.shape.Sphere)
 
+(define node-names
+  (make-parameter '("callisto"
+                    "dione"
+                    "earth"
+                    "enceladus"
+                    "europa"
+                    "ganymede"
+                    "iapetus"
+                    "io"
+                    "jupiter"
+                    "luna"
+                    "mars"
+                    "neptune"
+                    "pluto"
+                    "rhea"
+                    "saturn"
+                    "sedna"
+                    "sol"
+                    "titan"
+                    "uranus"
+                    "venus")))
 
 ;;; (make-sky app ::SimpleApplication)
 ;;; ---------------------------------------------------------------------
@@ -70,5 +91,4 @@
     (*:setMaterial center-geom center-mat)
     (*:addControl center-geom center-rotator)
     center-geom))
-
 
