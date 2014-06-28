@@ -93,7 +93,6 @@
 
   ;; slots
   ;; -------
-  (app-settings init-form: (AppSettings #t))
   (player init-form: #!null)
   (player-node :: Node init-form: #!null)
   (center-name ::String init-form: #!null)
@@ -106,8 +105,6 @@
 
   ;; accessors
   ;; ---------
-  ((getAppSettings) app-settings)
-  ((setAppSettings settings) (set! app-settings settings))
   ((getDirection) direction)
   ((setDirection dir) (set! direction dir))
   ((getNetworkClient) network-client)
@@ -143,7 +140,6 @@
 ;;; FabricWorkshop accessors
 ;;; ---------------------------------------------------------------------
 
-(defgetter (workshop-app-settings FabricWorkshop) getAppSettings)
 (defgetter (workshop-audio-renderer FabricWorkshop) getAudioRenderer)
 (defgetter (workshop-camera FabricWorkshop) getCamera)
 (defgetter (workshop-camera-direction FabricWorkshop) getCameraDirection)
@@ -165,7 +161,6 @@
 (defgetter (workshop-viewport FabricWorkshop) getViewport)
 
 (defsetter (set-center-name! FabricWorkshop) setCenterName)
-(defsetter (set-workshop-app-settings! FabricWorkshop) setAppSettings)
 (defsetter (set-workshop-chat-hud! FabricWorkshop) setChatHud)
 (defsetter (set-workshop-direction! FabricWorkshop) setDirection)
 (defsetter (set-workshop-network-client! FabricWorkshop) setNetworkClient)
@@ -328,7 +323,7 @@
         (key-input ::KeyInput (workshop-key-input app)))
     (*:initialize screen)
     (*:addControl (workshop-gui-node app) screen)
-    (let* ((settings (workshop-app-settings app))
+    (let* ((settings (app-settings app))
            (Align BitmapFont:Align)
            (VAlign BitmapFont:VAlign)
            (width (*:getWidth settings))
@@ -533,7 +528,7 @@
 
 (define (make-workshop #!optional (center #f))
   (let* ((workshop :: FabricWorkshop (FabricWorkshop))
-	 (settings :: AppSettings (workshop-app-settings workshop)))
+	 (settings :: AppSettings (app-settings workshop)))
     (when center
       (set-center-name! workshop center))
     (Serializer:registerClass ChatMessage)

@@ -9,7 +9,7 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export FabricApp)
+(module-export FabricApp app-settings)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -83,7 +83,21 @@
 (define-private-alias VideoRecorderAppState com.jme3.app.state.VideoRecorderAppState)
 (define-private-alias Window tonegod.gui.controls.windows.Window)
 
+;;; ---------------------------------------------------------------------
+;;; FabricApp - the abstract client application class
+;;; ---------------------------------------------------------------------
+
 (define-simple-class FabricApp (SimpleApplication AnalogListener ActionListener)
+  ;; slots
+  ;; -------
+  (app-settings init-form: (AppSettings #t))
+
+  ;; accessors
+  ;; ---------
+  ((getAppSettings) app-settings)
+
+  ;; implementation methods
+  ;; ---------
 
   ;; AnalogListener and ActionListener implementation
   ((onAnalog name value tpf) #!abstract)
@@ -91,4 +105,10 @@
   
   ;; SimpleApplication implementation
   ((simpleInitApp) #!abstract))
+
+;;; ---------------------------------------------------------------------
+;;; accessor functions
+;;; ---------------------------------------------------------------------
+
+(defgetter (app-settings FabricApp) getAppSettings)
 

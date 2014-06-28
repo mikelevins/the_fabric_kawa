@@ -93,7 +93,6 @@
 
   ;; slots
   ;; -------
-  (app-settings init-form: (AppSettings #t))
   (player init-form: #!null)
   (player-node :: Node init-form: #!null)
   (center-name ::String init-form: #!null)
@@ -106,8 +105,6 @@
 
   ;; accessors
   ;; ---------
-  ((getAppSettings) app-settings)
-  ((setAppSettings settings) (set! app-settings settings))
   ((getDirection) direction)
   ((setDirection dir) (set! direction dir))
   ((getNetworkClient) network-client)
@@ -143,7 +140,6 @@
 ;;; FabricClient accessors
 ;;; ---------------------------------------------------------------------
 
-(defgetter (client-app-settings FabricClient) getAppSettings)
 (defgetter (client-audio-renderer FabricClient) getAudioRenderer)
 (defgetter (client-camera FabricClient) getCamera)
 (defgetter (client-camera-direction FabricClient) getCameraDirection)
@@ -165,7 +161,6 @@
 (defgetter (client-viewport FabricClient) getViewport)
 
 (defsetter (set-center-name! FabricClient) setCenterName)
-(defsetter (set-client-app-settings! FabricClient) setAppSettings)
 (defsetter (set-client-chat-hud! FabricClient) setChatHud)
 (defsetter (set-client-direction! FabricClient) setDirection)
 (defsetter (set-client-network-client! FabricClient) setNetworkClient)
@@ -328,7 +323,7 @@
         (key-input ::KeyInput (client-key-input app)))
     (*:initialize screen)
     (*:addControl (client-gui-node app) screen)
-    (let* ((settings (client-app-settings app))
+    (let* ((settings (app-settings app))
            (Align BitmapFont:Align)
            (VAlign BitmapFont:VAlign)
            (width (*:getWidth settings))
@@ -534,7 +529,7 @@
 
 (define (make-client #!optional (center #f))
   (let* ((client :: FabricClient (FabricClient))
-	 (settings :: AppSettings (client-app-settings client)))
+	 (settings :: AppSettings (app-settings client)))
     (when center
       (set-center-name! client center))
     (Serializer:registerClass ChatMessage)
