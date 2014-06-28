@@ -40,26 +40,26 @@
 (define-private-alias Sphere com.jme3.scene.shape.Sphere)
 
 (define node-names
-  (make-parameter '("callisto"
-                    "dione"
-                    "earth"
-                    "enceladus"
-                    "europa"
-                    "ganymede"
-                    "iapetus"
-                    "io"
-                    "jupiter"
-                    "luna"
-                    "mars"
-                    "neptune"
-                    "pluto"
-                    "rhea"
-                    "saturn"
-                    "sedna"
-                    "sol"
-                    "titan"
-                    "uranus"
-                    "venus")))
+  (make-parameter '("Callisto"
+                    "Dione"
+                    "Earth"
+                    "Enceladus"
+                    "Europa"
+                    "Ganymede"
+                    "Iapetus"
+                    "Io"
+                    "Jupiter"
+                    "Luna"
+                    "Mars"
+                    "Neptune"
+                    "Pluto"
+                    "Rhea"
+                    "Saturn"
+                    "Sedna"
+                    "Sol"
+                    "Titan"
+                    "Uranus"
+                    "Venus")))
 
 ;;; (make-sky app ::SimpleApplication)
 ;;; ---------------------------------------------------------------------
@@ -81,10 +81,10 @@
 (define (make-center-body app ::SimpleApplication body-name::java.lang.String)
   (let* ((asset-manager::AssetManager (get-asset-manager))
          (center::Sphere (Sphere 128 128 2048.0))
-         (center-rotator (RotateControl 0.0 0.0 0.025))
+         (center-rotator (RotateControl 0.0 0.0 0.0125))
          (center-geom (com.jme3.scene.Geometry "Center" center))
          (center-mat (com.jme3.material.Material asset-manager "Common/MatDefs/Misc/Unshaded.j3md"))
-         (center-tex (*:loadTexture asset-manager (string-append "Textures/" body-name ".png"))))
+         (center-tex (*:loadTexture asset-manager (string-append "Textures/" body-name ".jpg"))))
     ;; set up the look of the celestial object at the center of the skybox
     (*:setTextureMode center Sphere:TextureMode:Projected)
     (*:setTexture center-mat "ColorMap" center-tex)

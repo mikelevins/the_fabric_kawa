@@ -15,6 +15,7 @@
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
+(require "version.scm")
 (require "util-java.scm")
 (require "init-config.scm")
 (require "net-messaging.scm")

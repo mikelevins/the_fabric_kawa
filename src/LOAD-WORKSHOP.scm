@@ -12,6 +12,7 @@
 (require 'list-lib)
 (require 'srfi-95) ; sorting
 
+(require "version.scm")
 (require "util-java.scm")
 (require "util-random.scm")
 (require "util-general.scm")

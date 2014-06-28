@@ -9,6 +9,7 @@
 ;;;;
 ;;;; ***********************************************************************
 
+(require "version.scm")
 (require "util-java.scm")
 (require "util-random.scm")
 (require "util-general.scm")
