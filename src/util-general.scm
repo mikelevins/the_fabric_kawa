@@ -42,7 +42,7 @@
 (define (bytes->integer a b c d e f g h)
   (gnu.math.IntNum:make (int[] a b c d e f g h)))
 
-(define (integer->bytes num)
+(define (integer->bytes num::gnu.math.IntNum)
   (let ((bytes num:words))
     (if (eq? bytes #!null)
         (let ((val num:ival))

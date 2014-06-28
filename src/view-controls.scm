@@ -18,6 +18,8 @@
 
 (define-private-alias AbstractControl com.jme3.scene.control.AbstractControl)
 (define-private-alias ColorRGBA com.jme3.math.ColorRGBA)
+(define-private-alias Geometry com.jme3.scene.Geometry)
+(define-private-alias Material com.jme3.material.Material)
 
 ;;; ---------------------------------------------------------------------
 ;;; a rotation control
@@ -59,11 +61,12 @@
                             (set! bright-color bright)
                             (set! activity act)))
   ((controlUpdate tpf)
-   (when (*:getSpatial (this))
-     (let ((mat (*:getMaterial (*:getSpatial (this))))
+   (let ((geom::Geometry (*:getSpatial (this))))
+     (when geom
+     (let ((mat::Material (*:getMaterial geom))
            (die (random-integer activity)))
        (if (< die 4)
            (*:setColor mat "GlowColor" bright-color)
-           (*:setColor mat "GlowColor" dim-color)))))
+           (*:setColor mat "GlowColor" dim-color))))))
   ;; dummy update method to make Java happy
   ((controlRender renderManager viewPort) #!void))

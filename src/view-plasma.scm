@@ -21,6 +21,7 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
+(define-private-alias AssetManager com.jme3.asset.AssetManager)
 (define-private-alias ColorRGBA com.jme3.math.ColorRGBA)
 (define-private-alias PrMaterial com.jme3.material.Material)
 (define-private-alias ParticleEmitter com.jme3.effect.ParticleEmitter)
@@ -42,8 +43,9 @@
   (let* ((emitter (ParticleEmitter "Smoke" ParticleMesh:Type:Triangle 10))
          (mat (PrMaterial (get-asset-manager) "Common/MatDefs/Misc/Particle.j3md"))
          (end-color (fade color))
-         (v (choose-any '(0.5 0.75 1 1.25 1.5))))
-    (*:setTexture mat "Texture" (*:loadTexture (get-asset-manager) "Effects/Explosion/Debris.png"))
+         (v (choose-any '(0.5 0.75 1 1.25 1.5)))
+         (asset-manager::AssetManager (get-asset-manager)))
+    (*:setTexture mat "Texture" (*:loadTexture asset-manager "Effects/Explosion/Debris.png"))
     (*:setMaterial emitter mat)
     (*:setImagesX emitter 3)
     (*:setImagesY emitter 3)

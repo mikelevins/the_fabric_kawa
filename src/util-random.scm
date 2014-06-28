@@ -13,10 +13,12 @@
 
 (require "util-java.scm")
 
-(define $random-state (make-parameter (java.util.Random (*:getTime (java.util.Date)))))
+(define $random-state
+  (make-parameter (java.util.Random (*:getTime (java.util.Date)))))
 
 (define (random-integer n)
-  (*:nextInt ($random-state) n))
+  (let ((rs::java.util.Random ($random-state)))
+    (*:nextInt rs n)))
 
 
 

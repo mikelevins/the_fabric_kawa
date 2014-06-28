@@ -59,7 +59,7 @@
                         (map (lambda (a)(choose-any $available-armorers))
                              (iota n)))))
     (map (lambda (make-armor)
-           (let ((armor (make-armor))
+           (let ((armor::Geometry (make-armor))
                  (rotator (any-rotator)))
              (*:addControl armor rotator)
              armor))

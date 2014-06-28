@@ -100,7 +100,6 @@
   (network-client ::com.jme3.network.Client  init-form: #!null)
   (left-button? init-form: #f)
   (right-button? init-form: #f)
-  (player-location-hud init-form: #!null)
   (chat-hud init-form: #!null)
 
   ;; accessors
