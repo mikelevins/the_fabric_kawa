@@ -71,21 +71,15 @@
 ;;; ---------------------------------------------------------------------
 
 (define (make-worker-character lit-color)
-  (let* ((name (gen-name))
-         (name-bits (fabric-name-data name))
+  (let* ((name (java.lang.System:getProperty "user.name"))
          (shape (make-worker-sphere)))
     (entity name: name
             lit-color: lit-color
             shape: shape)))
 
-;;; (make-worker-character)
-
-
 (define (worker-namestring worker)
-  (let* ((name-strings (fabric-name-strings (get-key worker name: "")))
-         (out-string (call-with-output-string
-                      (lambda (out)
-                        (for-each (lambda (s)
-                                    (format out "~a " s))
-                                  name-strings)))))
-    (*:toString out-string)))
+  (let* ((namestring (get-key worker name: "worker")))
+    (*:toString  namestring)))
+
+
+

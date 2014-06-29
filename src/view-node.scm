@@ -9,7 +9,7 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export make-sky make-center-body node-names)
+(module-export make-sky make-workshop-sky make-center-body node-names)
 
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
@@ -73,6 +73,19 @@
                           (*:loadTexture asset-manager "Textures/tychoback.png")
                           (*:loadTexture asset-manager "Textures/tychotop.png")
                           (*:loadTexture asset-manager "Textures/tychobottom.png"))))
+
+;;; (make-workshop-sky app ::SimpleApplication)
+;;; ---------------------------------------------------------------------
+
+(define (make-workshop-sky app ::SimpleApplication)
+  (let ((asset-manager::AssetManager (get-asset-manager)))
+    (SkyFactory:createSky asset-manager 
+                          (*:loadTexture asset-manager "Textures/boxgrid.jpg")
+                          (*:loadTexture asset-manager "Textures/boxgrid.jpg")
+                          (*:loadTexture asset-manager "Textures/boxgrid.jpg")
+                          (*:loadTexture asset-manager "Textures/boxgrid.jpg")
+                          (*:loadTexture asset-manager "Textures/boxgrid.jpg")
+                          (*:loadTexture asset-manager "Textures/boxgrid.jpg"))))
 
 
 ;;; (make-center-body app ::SimpleApplication)
