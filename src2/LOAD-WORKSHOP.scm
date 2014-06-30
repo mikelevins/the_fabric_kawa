@@ -9,8 +9,12 @@
 
 (require "parameters-version.scm")
 (require "model-frames.scm")
+(require "language-types.scm")
+(require "language-gf.scm")
 (require "assets-general.scm")
 (require "application-common.scm")
 
 ;;; (define $app (make-app))
+;;; (appstate $app app-settings:)
+;;; (appstate $app root-node:)
 ;;; (*:start $app)

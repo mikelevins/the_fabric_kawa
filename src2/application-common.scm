@@ -7,7 +7,7 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export FabricApp app-settings gui-node make-app root-node)
+(module-export FabricApp make-app appstate)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -15,6 +15,8 @@
 
 (require "utilities-java.scm")
 (require "model-frames.scm")
+(require "language-types.scm")
+(require "language-gf.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -40,23 +42,15 @@
   ;; accessors
   ;; ---------
   ((getAppSettings) app-settings)
+  ((getFrameState) frame-state)
+  ((setFrameState state) (set! frame-state state))
 
   ;; implementation methods
   ;; ---------
   
   ;; SimpleApplication
-  ((simpleInitApp)(let ((init (or (get-key frame-state application-init: #f)
-                                  (lambda (app) (default-init-application app)))))
+  ((simpleInitApp)(let ((init (appstate (this) application-init:)))
                     (init (this)))))
-
-;;; ---------------------------------------------------------------------
-;;; accessor functions
-;;; ---------------------------------------------------------------------
-
-(defgetter (app-settings FabricApp) getAppSettings)
-
-(define (root-node app)(*:getRootNode app))
-(define (gui-node app)(*:getGuiNode app))
 
 ;;; ---------------------------------------------------------------------
 ;;; application initialization
@@ -67,10 +61,38 @@
          (box (Box 1 1 1))
          (geom (Geometry "Box" box))
          (mat (Material asset-manager "Common/MatDefs/Misc/Unshaded.j3md"))
-         (root (root-node app)))
+         (root (appstate app root-node:))
+         )
     (*:setColor mat "Color" ColorRGBA:Blue)
     (*:setMaterial geom mat)
     (*:attachChild root geom)
     app))
 
+;;; ---------------------------------------------------------------------
+;;; accessor functions
+;;; ---------------------------------------------------------------------
+
+(defgeneric appstate)
+(defgeneric set-appstate!)
+
+(defmethod appstate ((app FabricApp) (key (singleton app-settings:)))
+  (*:getAppSettings app))
+
+(defmethod appstate ((app FabricApp) (key (singleton root-node:)))
+  (*:getRootNode app))
+
+(defmethod appstate ((app FabricApp) (key (singleton application-init:)))
+  (get-key (*:getFrameState app)
+           application-init: default-init-application))
+
+(defmethod set-appstate! ((app FabricApp) (key (singleton application-init:)) (initfn gnu.expr.ModuleMethod))
+  (set-key! (*:getFrameState app)
+            application-init: initfn))
+
+;;; ---------------------------------------------------------------------
+;;; make an app
+;;; ---------------------------------------------------------------------
+
 (define (make-app)(FabricApp))
+
+
