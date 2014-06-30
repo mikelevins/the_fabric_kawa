@@ -7,7 +7,7 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export FabricApp app-settings)
+(module-export FabricApp app-settings gui-node make-app root-node)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -22,6 +22,10 @@
 ;;; ---------------------------------------------------------------------
 
 (define-private-alias AppSettings com.jme3.system.AppSettings)
+(define-private-alias Box com.jme3.scene.shape.Box)
+(define-private-alias ColorRGBA com.jme3.math.ColorRGBA)
+(define-private-alias Geometry com.jme3.scene.Geometry)
+(define-private-alias Material com.jme3.material.Material)
 (define-private-alias SimpleApplication com.jme3.app.SimpleApplication)
 
 ;;; ---------------------------------------------------------------------
@@ -50,9 +54,11 @@
   ((isEmpty) (*:isEmpty frame-state))
   ;; IMutableFrame
   ((setKey key val) (*:setKey frame-state key val))
-  ((deleteKey key) (*:deleteKey frame-state key val))
+  ((deleteKey key) (*:deleteKey frame-state key))
   ;; SimpleApplication
-  ((simpleInitApp)(init-application (this))))
+  ((simpleInitApp)(let ((init (or (get-key frame-state application-init: #f)
+                                  (lambda (app) (default-init-application app)))))
+                    (init (this)))))
 
 ;;; ---------------------------------------------------------------------
 ;;; accessor functions
@@ -60,7 +66,22 @@
 
 (defgetter (app-settings FabricApp) getAppSettings)
 
+(define (root-node app)(*:getRootNode app))
+(define (gui-node app)(*:getGuiNode app))
+
 ;;; ---------------------------------------------------------------------
 ;;; application initialization
 ;;; ---------------------------------------------------------------------
 
+(define (default-init-application app)
+  (let* ((asset-manager (get-asset-manager))
+         (box (Box 1 1 1))
+         (geom (Geometry "Box" box))
+         (mat (Material asset-manager "Common/MatDefs/Misc/Unshaded.j3md"))
+         (root (root-node app)))
+    (*:setColor mat "Color" ColorRGBA:Blue)
+    (*:setMaterial geom mat)
+    (*:attachChild root geom)
+    app))
+
+(define (make-app)(FabricApp))

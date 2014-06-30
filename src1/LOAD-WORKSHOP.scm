@@ -14,7 +14,8 @@
 
 (require "parameters-version.scm")
 (require "interfaces-frame.scm")
+(require "assets-general.scm")
 (require "application-common.scm")
 
-;;; (define $workshop (make-workshop))
-;;; (*:start $workshop)
+;;; (define $app (make-app))
+;;; (*:start $app)
