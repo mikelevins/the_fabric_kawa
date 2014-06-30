@@ -59,7 +59,7 @@
     (if slot
         (set-cdr! slot val)
         (*:setFrameSlots fr
-                         (cons (key val)
+                         (cons (cons key val)
                                (*:frameSlots fr))))))
 
 (define (remove-key fr :: Frame key)

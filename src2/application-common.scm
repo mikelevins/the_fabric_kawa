@@ -7,7 +7,7 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export FabricApp make-app appstate)
+(module-export FabricApp make-app appstate set-appstate! default-init-application)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules

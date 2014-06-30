@@ -13,8 +13,8 @@
 (require "language-gf.scm")
 (require "assets-general.scm")
 (require "application-common.scm")
+(require "application-workshop.scm")
 
-;;; (define $app (make-app))
-;;; (appstate $app app-settings:)
-;;; (appstate $app root-node:)
-;;; (*:start $app)
+;;; (define $ws (make-workshop))
+;;; (*:start $ws)
+
