@@ -14,8 +14,7 @@
 ;;; ---------------------------------------------------------------------
 
 (require "utilities-java.scm")
-(require "interfaces-frame.scm")
-(require "model-frame.scm")
+(require "model-frames.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -32,11 +31,11 @@
 ;;; FabricApp - the abstract client application class
 ;;; ---------------------------------------------------------------------
 
-(define-simple-class FabricApp (SimpleApplication IMutableFrame)
+(define-simple-class FabricApp (SimpleApplication)
   ;; slots
   ;; -------
   (app-settings init-form: (AppSettings #t))
-  (frame-state init-form: (AListFrame))
+  (frame-state init-form: (Frame))
 
   ;; accessors
   ;; ---------
@@ -45,16 +44,6 @@
   ;; implementation methods
   ;; ---------
   
-  ;; IFrame
-  ((getKey key) (*:getKey frame-state key))
-  ((putKey key val) (*:putKey frame-state key val))
-  ((removeKey key) (*:removeKey frame-state key))
-  ((containsKey key) (*:containsKey frame-state key))
-  ((listKeys) (*:listKeys frame-state))
-  ((isEmpty) (*:isEmpty frame-state))
-  ;; IMutableFrame
-  ((setKey key val) (*:setKey frame-state key val))
-  ((deleteKey key) (*:deleteKey frame-state key))
   ;; SimpleApplication
   ((simpleInitApp)(let ((init (or (get-key frame-state application-init: #f)
                                   (lambda (app) (default-init-application app)))))
