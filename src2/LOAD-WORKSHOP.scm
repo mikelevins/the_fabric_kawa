@@ -8,12 +8,11 @@
 ;;;; ***********************************************************************
 
 (require "parameters-version.scm")
-(require "model-frames.scm")
-(require "language-types.scm")
-(require "language-gf.scm")
+(require "data-pmaps.scm")
+(require "interface-frame.scm")
 (require "assets-general.scm")
 (require "application-common.scm")
-(require "application-workshop.scm")
+;; (require "application-workshop.scm")
 
 ;;; (define $ws (make-workshop))
 ;;; (*:start $ws)
