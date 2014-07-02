@@ -217,7 +217,7 @@
          (player-cube (get-key player name-cube:))
          (player-rotator (any-rotator))
          ;;(armor-count (random-integer 3))
-         (armor-count 0))
+         (armor-count 2))
     (set-client-player! app player)
     (set-client-player-node! app player-node)
     ;; don't seize the mouse from the player
@@ -435,8 +435,8 @@
     (let ((player (client-player app)))
       (init-hud app (player-namestring player)))
     (ensure-valid-network-client app)
-    ;; uncomment to capture video to a file
-    ;; (*:attach (client-state-manager app) (VideoRecorderAppState))
+    uncomment to capture video to a file
+    (*:attach (client-state-manager app) (VideoRecorderAppState))
     #!void))
 
 

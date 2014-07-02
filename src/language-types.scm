@@ -9,7 +9,7 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export subclass? get-superclass get-interfaces direct-superclasses all-superclasses)
+(module-export class-of subclass? get-interfaces direct-superclasses all-superclasses)
 
 (require 'list-lib)
 (require "util-general.scm")
@@ -19,7 +19,14 @@
 (define-private-alias Class java.lang.Class)
 
 ;;; ---------------------------------------------------------------------
-;;; obtaining stably-sorted lists of direct superclasses
+;;; type utilities
+;;; ---------------------------------------------------------------------
+
+(define (class-of thing)
+  (*:getClass thing))
+
+;;; ---------------------------------------------------------------------
+;;; obtaining stably-sorted lists of superclasses
 ;;; ---------------------------------------------------------------------
 
 (define (subclass? class1::Class class2::Class)
@@ -27,58 +34,39 @@
       #t
       #f))
 
-(define (get-superclass cl::Class)
-  (let ((sup (*:getSuperclass cl)))
-    (if (jnull? sup)
-        #f
-        sup)))
+(define (get-interfaces a-class)
+  (gnu.lists.LList:makeList (*:getInterfaces a-class) 0))
 
-(define (get-interfaces cl::Class)
-  (array->list (*:getInterfaces cl)))
-
-(define (direct-superclasses cl::Class)
-  (let* ((sup (get-superclass cl))
-         (local-interfaces (get-interfaces cl))
-         (local-count (length local-interfaces))
-         (super-interfaces (if sup (get-interfaces sup) '()))
-         (super-count (length super-interfaces))
-         (supers (if sup (list sup) '())))
-    (reverse (adjoin-all eq? (adjoin-all eq? supers local-interfaces)
-                         super-interfaces))))
-
-;;; ---------------------------------------------------------------------
-;;; obtaining stably-sorted lists of all superclasses
-;;; ---------------------------------------------------------------------
-;;; NOTE: for now we don't care about superclass linearization; we're
-;;; going to use flat dispatch--i.e. either we get and exact match on
-;;; the parameter list or we fail over to the default method.
-;;; In future, though, it's possible we may want to add support for
-;;; inherited methods, in which case we'll need stably-sorted
-;;; lists of all superclasses.
-
-#|
-(define (all-superclasses cl::Class)
-  (let* ((directs (direct-superclasses cl))
-         (super-lists (map direct-superclasses directs))
-         (supers (reverse directs)))
-    (let loop ((slists super-lists))
-      (if (null? slists)
-          (reverse supers)
-          (let ((slist (car slists)))
-            (for-each (lambda (s)(set! supers (lset-adjoin eq? supers s)))
-                      slist)
-            (loop (cdr slists)))))))
-|#
+(define (direct-superclasses a-class::Class)
+  (let* ((super (*:getSuperclass a-class))
+         (direct-interfaces (get-interfaces a-class))
+         (super-interfaces (if (eq? #!null super)
+                               '()
+                               (get-interfaces super))))
+    (let loop1 ((supers (list a-class))
+                (directs direct-interfaces))
+      (if (null? directs)
+          (let loop2 ((supers (if (eq? #!null super)
+                                  supers
+                                  (cons super supers)))
+                      (indirects super-interfaces))
+            (if (null? indirects)
+                (reverse supers)
+                (let ((ind (car indirects))
+                      (more (cdr indirects)))
+                  (loop2 (if (member ind supers)
+                             supers
+                             (cons ind supers))
+                         (cdr indirects)))))
+          (loop1 (cons (car directs)
+                       supers)
+                 (cdr directs))))))
 
 (define (all-superclasses cl::Class)
-  (let* ((directs (direct-superclasses cl))
-         (super-lists (map all-superclasses directs)))
-    (let loop ((sups (reverse directs))
-               (suplists super-lists))
-      (if (null? suplists)
-          (reverse sups)
-          (loop (adjoin-all eq? sups (car suplists))
-                (cdr suplists))))))
-
+  (let ((direct-supers (cdr (direct-superclasses a-class))))
+    (if (null? direct-supers)
+        (list cl)
+        (let ((cpls (map all-superclasses direct-supers)))
+          (cons cl (apply append cpls))))))
 
 

@@ -22,32 +22,6 @@
 (define-private-alias PersistentHashMap com.github.krukow.clj_lang.PersistentHashMap)
 (define-private-alias ProcedureN gnu.mapping.ProcedureN)
 
-
-;;; ---------------------------------------------------------------------
-;;; generic functions and method tables
-;;; ---------------------------------------------------------------------
-;;; ABOUT: Each generic function is a dispatch function that chooses a
-;;; method to run based on the input types of its parameters. Each
-;;; gf has a default method called when it is called but no matches
-;;; are found. A default implementation of that default is provided:
-;;; no-applicable-method, which signals an error. A different default
-;;; method can be supplied when a gf is created.
-;;;
-;;; Conceptually, the gf's method table is like this:
-;;;
-;;; { [type0a type1a ... typeNa] : methodA
-;;;   [type0b type1b ... typeNb] : methodB
-;;;   ...
-;;;   [type0x type1x ... typeNx] : methodX }
-;;;
-;;; With a flat domain we can literally store methods in a HashMap.
-;;; If we decide to add inheritance it will get more
-;;; complicated, because we'll have to find all signatures that
-;;; match the input types *or any of their superclasses*, and
-;;; we'll have to perform a topological sort of the results
-;;; to find the most specific method
-
-
 (define (no-applicable-method . args)
   (error (format #f "No applicable method for arguments ~s with types ~s "
                  args (map (lambda (a)(a:getClass))

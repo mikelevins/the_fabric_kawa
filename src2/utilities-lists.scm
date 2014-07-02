@@ -20,12 +20,7 @@
               (cdr its)))))
 
 (define (array->list arr::java.lang.Object[])
-  (let loop ((i 0)
-             (result '()))
-    (if (< i arr:length)
-        (loop (+ i 1)
-              (cons (arr i) result))
-        (reverse result))))
+  (gnu.lists.LList:makeList arr 0))
 
 (define (copy-tree ls)
   (if (null? ls)
