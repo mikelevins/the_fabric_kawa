@@ -7,13 +7,27 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(require "parameters-version.scm")
-(require "model-hubs.scm")
-(require "data-pmaps.scm")
-(require "interface-frame.scm")
-(require "assets-general.scm")
-(require "application-common.scm")
-(require "application-workshop.scm")
+(module-export hub-names)
 
-;;; (define $ws (make-workshop))
-;;; (*:start $ws)
+(define hub-names
+  (make-parameter
+   '("Callisto"
+     "Dione"
+     "Earth"
+     "Enceladus"
+     "Europa"
+     "Ganymede"
+     "Iapetus"
+     "Io"
+     "Jupiter"
+     "Luna"
+     "Mars"
+     "Neptune"
+     "Pluto"
+     "Rhea"
+     "Saturn"
+     "Sedna"
+     "Sol"
+     "Titan"
+     "Uranus"
+     "Venus")))

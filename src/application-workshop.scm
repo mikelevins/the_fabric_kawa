@@ -13,7 +13,9 @@
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
+(require 'list-lib)
 (require "utilities-java.scm")
+(require "model-hubs.scm")
 (require "interface-frame.scm")
 (require "assets-general.scm")
 (require "application-common.scm")
@@ -24,6 +26,7 @@
 
 (define-private-alias AssetManager com.jme3.asset.AssetManager)
 (define-private-alias BloomFilter com.jme3.post.filters.BloomFilter)
+(define-private-alias ButtonAdapter tonegod.gui.controls.buttons.ButtonAdapter)
 (define-private-alias FilterPostProcessor com.jme3.post.FilterPostProcessor)
 (define-private-alias FlyByCamera com.jme3.input.FlyByCamera)
 (define-private-alias Geometry com.jme3.scene.Geometry)
@@ -108,10 +111,40 @@
     (worker-position-watcher position-label)
     win))
 
+(define (make-palette app screen)
+  (let* ((screen (get-key app gui-screen:))
+         (settings (get-key app app-settings:))
+         (screen-margin 8)
+         (palette-width 160)
+         (palette-height (- (*:getHeight settings)
+                            192
+                            (* 2 screen-margin)))
+         (palette-left screen-margin)
+         (palette-top screen-margin)
+         (win (Window screen "Palette"
+                      (Vector2f palette-left palette-top)
+                      (Vector2f palette-width palette-height)))
+         (hubs-label (Label screen "Hubs" (Vector2f 16 24)(Vector2f 100 32)))
+         (hnames (hub-names))
+         (hoffsets (map (lambda (n)(+ 60 (* n 40)))
+                        (iota (length hnames))))
+         (hub-buttons (map (lambda (nm::java.lang.String i)
+                             (let ((btn (ButtonAdapter screen nm (Vector2f 32 i))))
+                               (*:setText btn nm)
+                               btn))
+                           hnames hoffsets)))
+    (*:setText hubs-label "Hubs")
+    (*:addChild win hubs-label)
+    (for-each (lambda (btn)(*:addChild win btn))
+              hub-buttons)
+    win))
+
 (define (setup-workshop-gui app)
   (let* ((screen (get-key app gui-screen:))
-         (inspector (make-inspector app screen)))
+         (inspector (make-inspector app screen))
+         (palette (make-palette app screen)))
     (*:addElement screen inspector)
+    (*:addElement screen palette)
     app))
 
 (define (init-workshop app)
