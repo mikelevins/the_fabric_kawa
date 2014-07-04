@@ -9,6 +9,7 @@
 
 (require "parameters-version.scm")
 (require "model-hubs.scm")
+(require "utilities-math.scm")
 (require "data-pmaps.scm")
 (require "interface-frame.scm")
 (require "assets-general.scm")

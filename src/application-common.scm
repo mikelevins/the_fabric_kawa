@@ -33,6 +33,7 @@
 (define-private-alias Node com.jme3.scene.Node)
 (define-private-alias Screen tonegod.gui.core.Screen)
 (define-private-alias SimpleApplication com.jme3.app.SimpleApplication)
+(define-private-alias Spatial com.jme3.scene.Spatial)
 
 ;;; ---------------------------------------------------------------------
 ;;; application initialization
@@ -61,6 +62,8 @@
   
   ;; Frame APIs
   ;; ---------
+  ((frameSlots) slots)
+  ((setFrameSlots new-slots) (set! slots new-slots))
   ((frameKeys) (append (list root-node: gui-node:)
                        (map-keys slots)))
   ((containsFrameKey key) (member key (*:frameKeys (this))))
@@ -71,11 +74,13 @@
                       ((eq? key gui-screen:) (let ((screen (*:get slots gui-screen:)))
                                                (when (jnull? screen)
                                                  (set! screen (Screen (this)))
-                                                 (*:initialize screen)
+                                                 (let ((scr::Screen screen))
+                                                   (*:initialize scr))
                                                  (*:addControl (*:getGuiNode (this)) screen)
                                                  (set! slots (*:plus slots gui-screen: screen)))
                                                screen))
                       ((eq? key viewport:) (*:getViewPort (this)))
+                      ((eq? key camera:) (*:getCamera (this)))
                       ((eq? key flyby-camera:) (*:getFlyByCamera (this)))
                       ((eq? key skybox:) (let ((root (*:getRootNode (this))))
                                            (*:getChild root "skybox")))
@@ -98,7 +103,8 @@
                                                                  (*:attachChild root sky)))))
                                                (if (or (jnull? val)(not val))
                                                    (clear-sky!)
-                                                   (if (*:equals "skybox" (*:getName val))
+                                                   (if (let ((sp::Spatial val))
+                                                         (*:equals "skybox" (*:getName sp)))
                                                        (begin (clear-sky!)
                                                               (set-sky! val))
                                                        (error "The new skybox must be a Node or Spatial whose name is \"skybox\"")))))
