@@ -39,14 +39,50 @@
 (define-private-alias MotionAllowedListener com.jme3.collision.MotionAllowedListener)
 (define-private-alias Mouse org.lwjgl.input.Mouse)
 (define-private-alias Node com.jme3.scene.Node)
+(define-private-alias Procedure gnu.mapping.Procedure)
 (define-private-alias Screen tonegod.gui.core.Screen)
 (define-private-alias SkyFactory com.jme3.util.SkyFactory)
 (define-private-alias Spatial com.jme3.scene.Spatial)
 (define-private-alias Sphere com.jme3.scene.shape.Sphere)
+(define-private-alias String java.lang.String)
 (define-private-alias Vector2f com.jme3.math.Vector2f)
 (define-private-alias Vector3f com.jme3.math.Vector3f)
 (define-private-alias ViewPort com.jme3.renderer.ViewPort)
 (define-private-alias Window tonegod.gui.controls.windows.Window)
+
+;;; ---------------------------------------------------------------------
+;;; notification plumbing
+;;; ---------------------------------------------------------------------
+
+;;; camera position
+
+(define focus-name (make-parameter "Earth"))
+(define focus-watcher (make-parameter #f))
+
+(define (notify-focus-updated new-focus)
+  (focus-name new-focus)
+  (when (focus-watcher)
+    (let* ((watcher::Element (focus-watcher))
+           (pos-text (focus-name)))
+      (*:setText watcher pos-text))))
+
+(define worker-position (make-parameter (Vector3f 0 0 0)))
+(define worker-position-watcher (make-parameter #f))
+
+(define (notify-worker-moved position)
+  (worker-position position)
+  (when (worker-position-watcher)
+    (let* ((watcher::Element (worker-position-watcher))
+           (pos::Vector3f (worker-position))
+           (posx (*:getX pos))
+           (posy (*:getY pos))
+           (posz (*:getZ pos))
+           (pos-text (format #f "Position: ~6,2f, ~6,2f, ~6,2f" posx posy posz)))
+      (*:setText watcher pos-text))))
+
+(define-simple-class ReportMotionListener (MotionAllowedListener)
+  ((checkMotionAllowed position velocity)
+   (begin (notify-worker-moved position)(*:addLocal position velocity))))
 
 ;;; ---------------------------------------------------------------------
 ;;; FabricApp - the abstract client application class
@@ -59,7 +95,6 @@
          (object-mat (com.jme3.material.Material asset-manager "Common/MatDefs/Misc/Unshaded.j3md"))
          (object-tex (*:loadTexture asset-manager (string-append "Textures/" object-name ".jpg"))))
     (*:setTextureMode object Sphere:TextureMode:Projected)
-    ;;(*:setTextureMode object Sphere:TextureMode:Original)
     (*:setTexture object-mat "ColorMap" object-tex)
     (*:setMaterial object-geom object-mat)
     (*:setLocalTranslation object-geom 0 0 -8000)
@@ -79,6 +114,7 @@
                                (*:detachChild root already))
                              (*:setFrameSlots (this)
                                               (*:plus old-slots focus-object: focus-object))
+                             (notify-focus-updated val)
                              (*:attachChild root focus-object)))
                           ;; default handler
                           (#t (invoke-special FabricApp (this) 'setFrameKey key val)))))
@@ -111,27 +147,6 @@
     (*:setName sky "skybox")
     sky))
 
-;;; ---------------------------------------------------------------------
-;;; tracking camera position
-;;; ---------------------------------------------------------------------
-
-(define worker-position (make-parameter (Vector3f 0 0 0)))
-(define worker-position-watcher (make-parameter #f))
-
-(define (notify-worker-moved position)
-  (worker-position position)
-  (when (worker-position-watcher)
-    (let* ((watcher::Element (worker-position-watcher))
-           (pos::Vector3f (worker-position))
-           (posx (*:getX pos))
-           (posy (*:getY pos))
-           (posz (*:getZ pos))
-           (pos-text (format #f "Position: ~6,2f, ~6,2f, ~6,2f" posx posy posz)))
-      (*:setText watcher pos-text))))
-
-(define-simple-class ReportMotionListener (MotionAllowedListener)
-  ((checkMotionAllowed position velocity) (begin (notify-worker-moved position)
-                                                 (*:addLocal position velocity))))
 
 ;;; ---------------------------------------------------------------------
 ;;; the inspector window
@@ -148,8 +163,11 @@
          (win (Window screen "Inspector"
                       (Vector2f inspector-left inspector-top)
                       (Vector2f inspector-width inspector-height)))
+         (focus-label (Label screen "Focus" (Vector2f 8 8)(Vector2f 384 24)))
          (position-label (Label screen "Position Watcher"
-                                (Vector2f 8 8)(Vector2f 384 24))))
+                                (Vector2f 8 40)(Vector2f 384 24))))
+    (*:addChild win focus-label)
+    (focus-watcher focus-label)
     (*:addChild win position-label)
     (worker-position-watcher position-label)
     win))
@@ -158,13 +176,24 @@
 ;;; the palette window
 ;;; ---------------------------------------------------------------------
 
+;;; palette button
+
 (define-simple-class PaletteButton (ButtonAdapter)
+  (application init-form: #!null)
   (name init-form: #!null)
-  ((*init* screen button-name::java.lang.String position)
+  ;; (lambda (button app event)...)
+  (click-handler init-form: #!null)
+
+  ((*init* app::FabricWorkshop screen::Screen button-name::String position::Vector2f handler::Procedure)
    (invoke-special ButtonAdapter (this) '*init* screen button-name position)
-   (set! name button-name))
-  ((onMouseLeftReleased event)(set-key! (*:getApplication (*:getScreen (this)))
-                                        focus-object: name)))
+   (set! application app)
+   (set! name button-name)
+   (set! click-handler handler))
+  ((getName) name)
+  ((onMouseLeftReleased event)(unless (absent? click-handler)
+                                (click-handler (this) application event))))
+
+;;; make the palette window
 
 (define (make-palette app screen)
   (let* ((screen (get-key app gui-screen:))
@@ -184,7 +213,9 @@
          (hoffsets (map (lambda (n)(+ 60 (* n 40)))
                         (iota (length hnames))))
          (hub-buttons (map (lambda (nm::java.lang.String i)
-                             (let ((btn (PaletteButton screen nm (Vector2f 32 i))))
+                             (let* ((handler (lambda (button::PaletteButton app event)
+                                               (set-key! app focus-object: (*:getName button))))
+                                    (btn (PaletteButton app screen nm (Vector2f 32 i) handler)))
                                (*:setText btn nm)
                                btn))
                            hnames hoffsets)))
@@ -193,6 +224,7 @@
     (for-each (lambda (btn)(*:addChild win btn))
               hub-buttons)
     win))
+
 
 ;;; ---------------------------------------------------------------------
 ;;; set up the workshop

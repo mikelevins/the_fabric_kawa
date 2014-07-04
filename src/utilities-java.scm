@@ -9,10 +9,17 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export jnull? defgetter defsetter)
+(module-export class-of jnull? absent? defgetter defsetter)
+
+(define (class-of thing)
+  (thing:getClass))
 
 (define (jnull? thing)
   (eqv? thing #!null))
+
+(define (absent? thing)
+  (or (not thing)
+      (eqv? thing #!null)))
 
 (define-syntax defgetter
   (syntax-rules (::)
