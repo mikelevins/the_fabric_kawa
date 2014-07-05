@@ -7,7 +7,7 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export FabricWorkshop make-workshop worker-position worker-position-watcher)
+(module-export FabricWorkshop make-workshop)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -51,40 +51,6 @@
 (define-private-alias Window tonegod.gui.controls.windows.Window)
 
 ;;; ---------------------------------------------------------------------
-;;; notification plumbing
-;;; ---------------------------------------------------------------------
-
-;;; camera position
-
-(define focus-name (make-parameter "Earth"))
-(define focus-watcher (make-parameter #f))
-
-(define (notify-focus-updated new-focus)
-  (focus-name new-focus)
-  (when (focus-watcher)
-    (let* ((watcher::Element (focus-watcher))
-           (pos-text (focus-name)))
-      (*:setText watcher pos-text))))
-
-(define worker-position (make-parameter (Vector3f 0 0 0)))
-(define worker-position-watcher (make-parameter #f))
-
-(define (notify-worker-moved position)
-  (worker-position position)
-  (when (worker-position-watcher)
-    (let* ((watcher::Element (worker-position-watcher))
-           (pos::Vector3f (worker-position))
-           (posx (*:getX pos))
-           (posy (*:getY pos))
-           (posz (*:getZ pos))
-           (pos-text (format #f "Position: ~6,2f, ~6,2f, ~6,2f" posx posy posz)))
-      (*:setText watcher pos-text))))
-
-(define-simple-class ReportMotionListener (MotionAllowedListener)
-  ((checkMotionAllowed position velocity)
-   (begin (notify-worker-moved position)(*:addLocal position velocity))))
-
-;;; ---------------------------------------------------------------------
 ;;; FabricApp - the abstract client application class
 ;;; ---------------------------------------------------------------------
 
@@ -97,7 +63,7 @@
     (*:setTextureMode object Sphere:TextureMode:Projected)
     (*:setTexture object-mat "ColorMap" object-tex)
     (*:setMaterial object-geom object-mat)
-    (*:setLocalTranslation object-geom 0 0 -8000)
+    (*:center object-geom)
     (*:rotate object-geom (degrees->radians -90) 0 0)
     object-geom))
 
@@ -114,7 +80,6 @@
                                (*:detachChild root already))
                              (*:setFrameSlots (this)
                                               (*:plus old-slots focus-object: focus-object))
-                             (notify-focus-updated val)
                              (*:attachChild root focus-object)))
                           ;; default handler
                           (#t (invoke-special FabricApp (this) 'setFrameKey key val)))))
@@ -147,7 +112,6 @@
     (*:setName sky "skybox")
     sky))
 
-
 ;;; ---------------------------------------------------------------------
 ;;; the inspector window
 ;;; ---------------------------------------------------------------------
@@ -162,14 +126,7 @@
          (inspector-top screen-margin)
          (win (Window screen "Inspector"
                       (Vector2f inspector-left inspector-top)
-                      (Vector2f inspector-width inspector-height)))
-         (focus-label (Label screen "Focus" (Vector2f 8 8)(Vector2f 384 24)))
-         (position-label (Label screen "Position Watcher"
-                                (Vector2f 8 40)(Vector2f 384 24))))
-    (*:addChild win focus-label)
-    (focus-watcher focus-label)
-    (*:addChild win position-label)
-    (worker-position-watcher position-label)
+                      (Vector2f inspector-width inspector-height))))
     win))
 
 ;;; ---------------------------------------------------------------------
@@ -241,10 +198,9 @@
 (define (init-workshop app)
   (let ((default-sky (make-workshop-sky))
         (cam::Camera (get-key app camera:))
-        (fly-cam::FlyByCamera (get-key app flyby-camera:))
-        (motion-reporter (ReportMotionListener)))
-    (*:setMotionAllowedListener fly-cam motion-reporter)
+        (fly-cam::FlyByCamera (get-key app flyby-camera:)))
     (*:setFrustumFar cam 30000)
+    (*:setLocation cam (Vector3f 0 0 8000))
     (setup-lighting app)
     (setup-workshop-gui app)
     (Mouse:setGrabbed #f)

@@ -1,7 +1,7 @@
 ;;;; ***********************************************************************
-;;;; Name:          LOAD-WORKSHOP.scm
+;;;; Name:          model-hubs.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
-;;;; Purpose:       system loader for the Workshop
+;;;; Purpose:       all known hub names
 ;;;; Author:        mikel evins
 ;;;; Copyright:     2014 by mikel evins
 ;;;;
