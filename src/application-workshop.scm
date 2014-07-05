@@ -16,7 +16,8 @@
 (require 'list-lib)
 (require "utilities-math.scm")
 (require "utilities-java.scm")
-(require "model-hubs.scm")
+(require "setting-hubs.scm")
+(require "setting-celestial-objects.scm")
 (require "interface-frame.scm")
 (require "assets-general.scm")
 (require "application-common.scm")
@@ -43,7 +44,6 @@
 (define-private-alias Screen tonegod.gui.core.Screen)
 (define-private-alias SkyFactory com.jme3.util.SkyFactory)
 (define-private-alias Spatial com.jme3.scene.Spatial)
-(define-private-alias Sphere com.jme3.scene.shape.Sphere)
 (define-private-alias String java.lang.String)
 (define-private-alias Vector2f com.jme3.math.Vector2f)
 (define-private-alias Vector3f com.jme3.math.Vector3f)
@@ -51,38 +51,25 @@
 (define-private-alias Window tonegod.gui.controls.windows.Window)
 
 ;;; ---------------------------------------------------------------------
-;;; FabricApp - the abstract client application class
+;;; FabricWorkshop - the application class
 ;;; ---------------------------------------------------------------------
 
-(define (make-celestial-object object-name)
-  (let* ((asset-manager::AssetManager (get-asset-manager))
-         (object::Sphere (Sphere 128 128 2048.0))
-         (object-geom (com.jme3.scene.Geometry object-name object))
-         (object-mat (com.jme3.material.Material asset-manager "Common/MatDefs/Misc/Unshaded.j3md"))
-         (object-tex (*:loadTexture asset-manager (string-append "Textures/" object-name ".jpg"))))
-    (*:setTextureMode object Sphere:TextureMode:Projected)
-    (*:setTexture object-mat "ColorMap" object-tex)
-    (*:setMaterial object-geom object-mat)
-    (*:center object-geom)
-    (*:rotate object-geom (degrees->radians -90) 0 0)
-    object-geom))
-
 (define-simple-class FabricWorkshop (FabricApp)
-  ((setFrameKey key val) (cond
-                          ;; focus-object:
-                          ((eq? focus-object: key)
-                           (let* ((focus-object (make-celestial-object val))
-                                  (root::Node (get-key (this) root-node:))
-                                  (already (get-key (this) focus-object:))
-                                  (old-slots::HashPMap (*:frameSlots (this))))
-                             (unless (or (not already)
-                                         (jnull? already))
-                               (*:detachChild root already))
-                             (*:setFrameSlots (this)
-                                              (*:plus old-slots focus-object: focus-object))
-                             (*:attachChild root focus-object)))
-                          ;; default handler
-                          (#t (invoke-special FabricApp (this) 'setFrameKey key val)))))
+  ;; IMutableFrame
+  ((setFrameKey key val) (case key
+                           ;; focus-object:
+                           ((focus-object:) (let* ((self (this))
+                                                   (focus-object (make-celestial-object val))
+                                                   (root::Node (get-key self root-node:))
+                                                   (already (get-key self focus-object:))
+                                                   (old-slots::HashPMap self:slots))
+                                              (unless (or (not already)
+                                                          (jnull? already))
+                                                (*:detachChild root already))
+                                              (set! self:slots (*:plus old-slots focus-object: focus-object))
+                                              (*:attachChild root focus-object)))
+                           ;; default handler
+                           (else (invoke-special FabricApp (this) 'setFrameKey key val)))))
 
 ;;; ---------------------------------------------------------------------
 ;;; application initialization
@@ -108,7 +95,6 @@
                         (*:loadTexture asset-manager "Textures/boxgrid.jpg")
                         (*:loadTexture asset-manager "Textures/boxgrid.jpg")
                         (*:loadTexture asset-manager "Textures/boxgrid.jpg"))))
-    
     (*:setName sky "skybox")
     sky))
 
@@ -118,7 +104,7 @@
 
 (define (make-inspector app screen)
   (let* ((screen (get-key app gui-screen:))
-         (settings::AppSettings (get-key app app-settings:))
+         (settings::AppSettings (get-key app settings:))
          (screen-margin 8)
          (inspector-width 400)
          (inspector-height 400)
@@ -154,7 +140,7 @@
 
 (define (make-palette app screen)
   (let* ((screen (get-key app gui-screen:))
-         (settings::AppSettings (get-key app app-settings:))
+         (settings::AppSettings (get-key app settings:))
          (screen-margin 8)
          (palette-width 144)
          (palette-height (- (*:getHeight settings)
@@ -182,9 +168,8 @@
               hub-buttons)
     win))
 
-
 ;;; ---------------------------------------------------------------------
-;;; set up the workshop
+;;; set up the UI
 ;;; ---------------------------------------------------------------------
 
 (define (setup-workshop-gui app)
@@ -194,6 +179,10 @@
     (*:addElement screen inspector)
     (*:addElement screen palette)
     app))
+
+;;; ---------------------------------------------------------------------
+;;; initialize the workshop
+;;; ---------------------------------------------------------------------
 
 (define (init-workshop app)
   (let ((default-sky (make-workshop-sky))
@@ -215,7 +204,7 @@
 
 (define (make-workshop)
   (let* ((shop (FabricWorkshop))
-         (settings::AppSettings (get-key shop app-settings:)))
+         (settings::AppSettings (get-key shop settings:)))
     (set-key! shop application-init: init-workshop)
     (*:setResolution settings 1920 1200)
     (*:setTitle settings "The Fabric")

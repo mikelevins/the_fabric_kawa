@@ -8,7 +8,8 @@
 ;;;; ***********************************************************************
 
 (require "parameters-version.scm")
-(require "model-hubs.scm")
+(require "setting-hubs.scm")
+(require "setting-celestial-objects.scm")
 (require "utilities-math.scm")
 (require "utilities-java.scm")
 (require "data-pmaps.scm")

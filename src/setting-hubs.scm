@@ -1,5 +1,5 @@
 ;;;; ***********************************************************************
-;;;; Name:          model-hubs.scm
+;;;; Name:          setting-hubs.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
 ;;;; Purpose:       all known hub names
 ;;;; Author:        mikel evins

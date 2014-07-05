@@ -54,74 +54,84 @@
 ;;; FabricApp - the abstract client application class
 ;;; ---------------------------------------------------------------------
 
+;;; helper functions
+
+(define (%get-gui-screen app)
+  (let* ((slots app:slots)
+         (screen (*:get slots gui-screen:)))
+    (when (jnull? screen)
+      (set! screen (Screen app))
+      (*:initialize screen)
+      (*:addControl (get-key app gui-node:) screen)
+      (set! app:slots (*:plus app:slots gui-screen: screen)))
+    screen))
+
+(define (%ensure-settings app)
+  (begin (when (absent? (*:getSettings app))
+           (*:setSettings app (AppSettings #t)))
+         (*:getSettings app)))
+
+(define (%clear-skybox! app)
+  (let* ((root::Node (*:getRootNode app))
+         (already (*:getChild root "skybox")))
+    (when already
+      (unless (absent? already)
+        (*:detachChild root already)))))
+
+(define (%set-skybox app val)
+  (let* ((root::Node (*:getRootNode app))
+         (set-sky! (lambda (sky)(*:attachChild root sky))))
+    (if (absent? val)
+        (%clear-skybox! app)
+        (let ((sky::Spatial val))
+          (if (*:equals "skybox" (*:getName sky))
+              (begin (%clear-skybox! app)
+                     (set-sky! sky))
+              (error "The new skybox must be a Node or Spatial whose name is \"skybox\""))))))
+
+;;; the FabricApp class
+
 (define-simple-class FabricApp (SimpleApplication IMutableFrame)
   ;; slots
-  ;; -------
-  (app-settings init-form: (AppSettings #t))
-  (slots::HashPMap init-form: (hashpmap application-init: default-init-application))
-  
-  ;; Frame APIs
   ;; ---------
-  ((frameSlots) slots)
-  ((setFrameSlots new-slots) (set! slots new-slots))
+  ((getSettings) settings) ; getter for inherited settings field
+
+  (slots::HashPMap init-form: (hashpmap application-init: default-init-application))
+  ((getSlots) slots)
+  ((setSlots new-slots) (set! slots new-slots))
+  
+  ;; IMutableFrame
+  ;; ---------
   ((frameKeys) (append (list root-node: gui-node:)
                        (map-keys slots)))
   ((containsFrameKey key) (member key (*:frameKeys (this))))
-  ((getFrameKey key) (cond
-                      ((eq? key root-node:) (*:getRootNode (this)))
-                      ((eq? key app-settings:) app-settings)
-                      ((eq? key gui-node:) (*:getGuiNode (this)))
-                      ((eq? key gui-screen:) (let ((screen (*:get slots gui-screen:)))
-                                               (when (jnull? screen)
-                                                 (set! screen (Screen (this)))
-                                                 (let ((scr::Screen screen))
-                                                   (*:initialize scr))
-                                                 (*:addControl (*:getGuiNode (this)) screen)
-                                                 (set! slots (*:plus slots gui-screen: screen)))
-                                               screen))
-                      ((eq? key viewport:) (*:getViewPort (this)))
-                      ((eq? key camera:) (*:getCamera (this)))
-                      ((eq? key flyby-camera:) (*:getFlyByCamera (this)))
-                      ((eq? key skybox:) (let ((root (*:getRootNode (this))))
-                                           (*:getChild root "skybox")))
-                      (#t (*:get slots key))))
-  ((setFrameKey key val) (cond
-                          ((eq? key root-node:) (error "root-node: is read-only"))
-                          ((eq? key gui-node:) (error "gui-node: is read-only"))
-                          ((eq? key gui-screen:) (error "gui-screen: is read-only"))
-                          ((eq? key app-settings:) (error "app-settings: is read-only"))
-                          ((eq? key viewport:) (error "viewport: is read-only"))
-                          ((eq? key flyby-camera:) (error "flyby-camera: is read-only"))
-                          ((eq? key skybox:) (let ((clear-sky! (lambda ()
-                                                                 (let* ((root::Node (*:getRootNode (this)))
-                                                                        (already (*:getChild root "skybox")))
-                                                                   (when already
-                                                                     (unless (jnull? already)
-                                                                       (*:detachChild root already))))))
-                                                   (set-sky! (lambda (sky)
-                                                               (let ((root (*:getRootNode (this))))
-                                                                 (*:attachChild root sky)))))
-                                               (if (or (jnull? val)(not val))
-                                                   (clear-sky!)
-                                                   (if (let ((sp::Spatial val))
-                                                         (*:equals "skybox" (*:getName sp)))
-                                                       (begin (clear-sky!)
-                                                              (set-sky! val))
-                                                       (error "The new skybox must be a Node or Spatial whose name is \"skybox\"")))))
-                          (#t (set! slots (*:plus slots key val)))))
+  ((getFrameKey key)
+   (case key
+     ((root-node:) (*:getRootNode (this)))
+     ((settings:) (%ensure-settings (this)))
+     ((gui-node:) (*:getGuiNode (this)))
+     ((gui-screen:) (%get-gui-screen (this)))
+     ((viewport:) (*:getViewPort (this)))
+     ((camera:) (*:getCamera (this)))
+     ((flyby-camera:) (*:getFlyByCamera (this)))
+     ((skybox:) (*:getChild (*:getRootNode (this)) "skybox"))
+     (else (*:get slots key))))
+  ((setFrameKey key val)
+   (case key
+     ((root-node:) (error "root-node: is read-only"))
+     ((gui-node:) (error "gui-node: is read-only"))
+     ((gui-screen:) (error "gui-screen: is read-only"))
+     ((viewport:) (error "viewport: is read-only"))
+     ((flyby-camera:) (error "flyby-camera: is read-only"))
+     ((settings:) (*:setSettings (this) val))
+     ((skybox:) (%set-skybox (this) val))
+     (else (set! slots (*:plus slots key val)))))
   ((deleteFrameKey key) (error "Cannot delete slots from a FabricApp!"))
-
-  ;; implementation methods
-  ;; ---------
   
   ;; SimpleApplication
+  ;; ---------
   ((simpleInitApp)(let ((init (get-key (this) application-init:)))
                     (init (this)))))
-
-;;; ---------------------------------------------------------------------
-;;;  FabricApp getters and setters
-;;; ---------------------------------------------------------------------
-
 
 ;;; ---------------------------------------------------------------------
 ;;; make an app
