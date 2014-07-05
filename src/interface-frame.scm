@@ -69,10 +69,15 @@
 ;;; ---------------------------------------------------------------------
 
 (define-simple-class ISlotAccessors (IMutableFrame) interface: #t
+  ((getSlotGetter key) #!abstract)
   ((setSlotGetter key getter) #!abstract)
   ((deleteSlotGetter key) #!abstract)
+  ((getSlotSetter key) #!abstract)
   ((setSlotSetter key setter) #!abstract)
   ((deleteSlotSetter key) #!abstract))
+
+(define (get-slot-getter! fr::ISlotAccessors key)
+  (*:getSlotGetter fr key))
 
 (define (set-slot-getter! fr::ISlotAccessors key getter)
   (*:setSlotGetter fr key getter))

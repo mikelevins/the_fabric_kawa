@@ -7,7 +7,7 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export FabricApp make-app default-init-application)
+(module-export FabricApp make-app make-default-scene)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -35,23 +35,9 @@
 (define-private-alias SimpleApplication com.jme3.app.SimpleApplication)
 (define-private-alias Spatial com.jme3.scene.Spatial)
 
-;;; ---------------------------------------------------------------------
-;;; application initialization
-;;; ---------------------------------------------------------------------
-
-(define (default-init-application app)
-  (let* ((asset-manager (get-asset-manager))
-         (box (Box 1 1 1))
-         (geom (Geometry "Box" box))
-         (mat (Material asset-manager "Common/MatDefs/Misc/Unshaded.j3md"))
-         (root::Node (get-key app root-node:)))
-    (*:setColor mat "Color" ColorRGBA:Blue)
-    (*:setMaterial geom mat)
-    (*:attachChild root geom)
-    app))
 
 ;;; ---------------------------------------------------------------------
-;;; FabricApp - the abstract client application class
+;;; FabricApp initialization
 ;;; ---------------------------------------------------------------------
 
 ;;; helper functions
@@ -89,43 +75,83 @@
                      (set-sky! sky))
               (error "The new skybox must be a Node or Spatial whose name is \"skybox\""))))))
 
-;;; the FabricApp class
+;;; set up frame slots, getters, and setters
 
-(define-simple-class FabricApp (SimpleApplication IMutableFrame)
+(define (%default-fabricapp-slots)
+  (hashpmap application-init: make-default-scene))
+
+(define (%default-fabricapp-slot-getters)
+  (hashpmap
+   root-node: (lambda (app key)(*:getRootNode app))
+   settings: (lambda (app key)(%ensure-settings app))
+   gui-node: (lambda (app key)(*:getGuiNode app))
+   gui-screen: (lambda (app key)(%get-gui-screen app))
+   viewport: (lambda (app key)(*:getViewPort app))
+   camera: (lambda (app key)(*:getCamera app))
+   flyby-camera: (lambda (app key)(*:getFlyByCamera app))
+   skybox: (lambda (app key)(*:getChild (*:getRootNode app) "skybox"))))
+
+(define (%default-fabricapp-slot-setters)
+  (hashpmap
+   root-node: (lambda (app key val)(error "root-node: is read-only"))
+   gui-node: (lambda (app key val)(error "gui-node: is read-only"))
+   gui-screen: (lambda (app key val)(error "gui-screen: is read-only"))
+   viewport: (lambda (app key val)(error "viewport: is read-only"))
+   flyby-camera: (lambda (app key val)(error "flyby-camera: is read-only"))
+   settings: (lambda (app key val)(*:setSettings app val))
+   skybox: (lambda (app key val)(%set-skybox app val))))
+
+;;; ---------------------------------------------------------------------
+;;; a default scene
+;;; ---------------------------------------------------------------------
+
+(define (make-default-scene app)
+  (let* ((asset-manager (get-asset-manager))
+         (box (Box 1 1 1))
+         (geom (Geometry "Box" box))
+         (mat (Material asset-manager "Common/MatDefs/Misc/Unshaded.j3md"))
+         (root::Node (get-key app root-node:)))
+    (*:setColor mat "Color" ColorRGBA:Blue)
+    (*:setMaterial geom mat)
+    (*:attachChild root geom)
+    app))
+
+;;; ---------------------------------------------------------------------
+;;; FabricApp - the common client application class
+;;; ---------------------------------------------------------------------
+
+(define-simple-class FabricApp (SimpleApplication ISlotAccessors)
   ;; slots
   ;; ---------
   ((getSettings) settings) ; getter for inherited settings field
 
-  (slots::HashPMap init-form: (hashpmap application-init: default-init-application))
+  (slots::HashPMap init-form: (%default-fabricapp-slots))
   ((getSlots) slots)
   ((setSlots new-slots) (set! slots new-slots))
+
+  (slotGetters::HashPMap init-form: (%default-fabricapp-slot-getters))
+  ((getSlotGetter key) (*:get slotGetters key))
+  ((setSlotGetter key getter) (set! slotGetters (*:plus slotGetters key getter)))
+  ((deleteSlotGetter key) (set! slotGetters (*:minus slotGetters key)))
+
+  (slotSetters::HashPMap init-form: (%default-fabricapp-slot-setters))
+  ((getSlotSetter key) (*:get slotSetters key))
+  ((setSlotSetter key setter) (set! slotSetters (*:plus slotSetters key setter)))
+  ((deleteSlotSetter key) (set! slotSetters (*:minus slotSetters key)))
   
-  ;; IMutableFrame
+  ;; IFrame, IMutableFrame, ISlotAccessors
   ;; ---------
   ((frameKeys) (append (list root-node: gui-node:)
                        (map-keys slots)))
   ((containsFrameKey key) (member key (*:frameKeys (this))))
-  ((getFrameKey key)
-   (case key
-     ((root-node:) (*:getRootNode (this)))
-     ((settings:) (%ensure-settings (this)))
-     ((gui-node:) (*:getGuiNode (this)))
-     ((gui-screen:) (%get-gui-screen (this)))
-     ((viewport:) (*:getViewPort (this)))
-     ((camera:) (*:getCamera (this)))
-     ((flyby-camera:) (*:getFlyByCamera (this)))
-     ((skybox:) (*:getChild (*:getRootNode (this)) "skybox"))
-     (else (*:get slots key))))
-  ((setFrameKey key val)
-   (case key
-     ((root-node:) (error "root-node: is read-only"))
-     ((gui-node:) (error "gui-node: is read-only"))
-     ((gui-screen:) (error "gui-screen: is read-only"))
-     ((viewport:) (error "viewport: is read-only"))
-     ((flyby-camera:) (error "flyby-camera: is read-only"))
-     ((settings:) (*:setSettings (this) val))
-     ((skybox:) (%set-skybox (this) val))
-     (else (set! slots (*:plus slots key val)))))
+  ((getFrameKey key)(let ((getter (*:getSlotGetter (this) key)))
+                      (if (absent? getter)
+                          (*:get slots key)
+                          (getter (this) key))))
+  ((setFrameKey key val)(let ((setter (*:getSlotSetter (this) key)))
+                          (if (absent? setter)
+                              (set! slots (*:plus slots key val))
+                              (setter (this) key val))))
   ((deleteFrameKey key) (error "Cannot delete slots from a FabricApp!"))
   
   ;; SimpleApplication

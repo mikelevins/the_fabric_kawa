@@ -62,7 +62,7 @@
                                                    (focus-object (make-celestial-object val))
                                                    (root::Node (get-key self root-node:))
                                                    (already (get-key self focus-object:))
-                                                   (old-slots::HashPMap self:slots))
+                                                   (old-slots::HashPMap (*:getSlots self)))
                                               (unless (or (not already)
                                                           (jnull? already))
                                                 (*:detachChild root already))
