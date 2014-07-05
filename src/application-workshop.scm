@@ -54,22 +54,18 @@
 ;;; FabricWorkshop - the application class
 ;;; ---------------------------------------------------------------------
 
+(define (%set-focus-object! app key val)
+  (let* ((focus-object (make-celestial-object val))
+         (root::Node (get-key app root-node:))
+         (already (get-key app focus-object:))
+         (old-slots::HashPMap (*:getSlots app)))
+    (unless (absent? already)
+      (*:detachChild root already))
+    (*:setSlots app (*:plus old-slots focus-object: focus-object))
+    (*:attachChild root focus-object)))
+
 (define-simple-class FabricWorkshop (FabricApp)
-  ;; IMutableFrame
-  ((setFrameKey key val) (case key
-                           ;; focus-object:
-                           ((focus-object:) (let* ((self (this))
-                                                   (focus-object (make-celestial-object val))
-                                                   (root::Node (get-key self root-node:))
-                                                   (already (get-key self focus-object:))
-                                                   (old-slots::HashPMap (*:getSlots self)))
-                                              (unless (or (not already)
-                                                          (jnull? already))
-                                                (*:detachChild root already))
-                                              (set! self:slots (*:plus old-slots focus-object: focus-object))
-                                              (*:attachChild root focus-object)))
-                           ;; default handler
-                           (else (invoke-special FabricApp (this) 'setFrameKey key val)))))
+  (init: (set-slot-setter! (this) focus-object: %set-focus-object!)))
 
 ;;; ---------------------------------------------------------------------
 ;;; application initialization
