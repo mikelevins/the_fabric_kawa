@@ -11,7 +11,9 @@
  IFrame keys contains-key? get-key
  IPersistentFrame put-key remove-key
  IMutableFrame set-key! delete-key!
- ISlotAccessors set-slot-getter! delete-slot-getter! set-slot-setter! delete-slot-setter!)
+ ISlotAccessors
+ get-slot-getter set-slot-getter! delete-slot-getter!
+ get-slot-setter set-slot-setter! delete-slot-setter!)
 
 (require "utilities-java.scm")
 
@@ -76,7 +78,7 @@
   ((setSlotSetter key setter) #!abstract)
   ((deleteSlotSetter key) #!abstract))
 
-(define (get-slot-getter! fr::ISlotAccessors key)
+(define (get-slot-getter fr::ISlotAccessors key)
   (*:getSlotGetter fr key))
 
 (define (set-slot-getter! fr::ISlotAccessors key getter)
@@ -84,6 +86,9 @@
 
 (define (delete-slot-getter! fr::ISlotAccessors key)
   (*:deleteSlotGetter fr key))
+
+(define (get-slot-setter fr::ISlotAccessors key)
+  (*:getSlotSetter fr key))
 
 (define (set-slot-setter! fr::ISlotAccessors key setter)
   (*:setSlotSetter fr key setter))
