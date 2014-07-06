@@ -21,12 +21,14 @@
 (require "setting-celestial-objects.scm")
 (require "interface-frame.scm")
 (require "assets-general.scm")
+(require "controls-client-inputs.scm")
 (require "application-common.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
+(define-private-alias AnalogListener com.jme3.input.controls.AnalogListener)
 (define-private-alias AppSettings com.jme3.system.AppSettings)
 (define-private-alias AssetManager com.jme3.asset.AssetManager)
 (define-private-alias BloomFilter com.jme3.post.filters.BloomFilter)
@@ -37,6 +39,8 @@
 (define-private-alias HashPMap org.pcollections.HashPMap)
 (define-private-alias Mouse org.lwjgl.input.Mouse)
 (define-private-alias Node com.jme3.scene.Node)
+(define-private-alias PI com.jme3.math.FastMath:PI)
+(define-private-alias Quaternion com.jme3.math.Quaternion)
 (define-private-alias Vector2f com.jme3.math.Vector2f)
 (define-private-alias Vector3f com.jme3.math.Vector3f)
 (define-private-alias ViewPort com.jme3.renderer.ViewPort)
@@ -44,6 +48,8 @@
 ;;; ---------------------------------------------------------------------
 ;;; FabricClient - the application class
 ;;; ---------------------------------------------------------------------
+
+;;; slot accessors
 
 (define (%set-client-hub! app::FabricApp key hub)
   (let* ((root::Node (get-key app root-node:))
@@ -54,8 +60,45 @@
     (*:setSlots app (*:plus old-slots hub: hub))
     (*:attachChild root hub)))
 
-(define-simple-class FabricClient (FabricApp)
-  (init: (set-slot-setter! (this) hub: %set-client-hub!)))
+(define (%set-client-inputs! app::FabricApp key input-specs)
+  (let ((mgr (get-key app input-manager:)))
+    (for-each (lambda (spec)
+                (let ((name (input-spec-name spec))
+                      (signal (input-spec-signal spec)))
+                  (*:addMapping mgr name signal)
+                  (*:addListener mgr app name)))
+              input-specs)))
+
+;;; the class
+
+(define-simple-class FabricClient (FabricApp AnalogListener)
+  ;; slots
+  (direction ::Vector3f init-form: (Vector3f))
+  ((getDirection) direction)
+  ((setDirection dir) (set! direction dir))
+
+  (left-button? init-form: #f)
+  ((getLeftButton) left-button?)
+  ((setLeftButton down?) (set! left-button? down?))
+
+  (right-button? init-form: #f)
+  ((getRightButton) right-button?)
+  ((setRightButton down?) (set! right-button? down?))
+
+  ;; AnalogListener and ActionListener implementation
+  ((onAnalog name value tpf)(handle-client-analog-event (this) name value tpf))
+  ;; local initialization
+  (init: (begin (set-slot-getter! (this) direction: (lambda (app key)(*:getDirection app)))
+                (set-slot-getter! (this) key-input: (lambda (app key)(*:getKeyInput app)))
+                (set-slot-getter! (this) input-manager: (lambda (app key)(*:getInputManager app)))
+                (set-slot-getter! (this) left-button: (lambda (app key)(*:getLeftButton app)))
+                (set-slot-getter! (this) right-button: (lambda (app key)(*:getRightButton app)))
+                
+                (set-slot-setter! (this) direction: (lambda (app key val)(*:setDirection app val)))
+                (set-slot-setter! (this) hub: %set-client-hub!)
+                (set-slot-setter! (this) inputs: %set-client-inputs!)
+                (set-slot-setter! (this) left-button: (lambda (app key val)(*:setLeftButton app val)))
+                (set-slot-setter! (this) right-button: (lambda (app key val)(*:setRightButton app val))))))
 
 ;;; ---------------------------------------------------------------------
 ;;; initialize the client
@@ -77,7 +120,17 @@
     (*:addProcessor viewport filter-processor)))
 
 (define (init-player app)
-  (set-key! app player: (make-player)))
+  (let* ((root::Node (get-key app root-node:))
+         (player (make-player))
+         (player-node::Node (get-key player node:)))
+    (set-key! app player: player)
+    (*:setLocalTranslation player-node 0.0 6000.0 0.0)
+    (let ((rotation (Quaternion))
+          (pitch-axis (Vector3f 1 0 0)))
+      ;; PI radians points us right at the center
+      (*:fromAngleAxis rotation PI pitch-axis)
+      (*:setLocalRotation player-node rotation)
+      (*:attachChild root player-node))))
 
 (define (init-camera app player)
   (let* ((camera::com.jme3.renderer.Camera (get-key app camera:))
@@ -98,7 +151,8 @@
   (init-scene app)
   (init-lighting app)
   (init-player app)
-  (init-camera app (get-key app player:)))
+  (init-camera app (get-key app player:))
+  (init-inputs app))
 
 ;;; ---------------------------------------------------------------------
 ;;; create the client
@@ -107,8 +161,6 @@
 (define (make-client #!optional (hub-name "Earth"))
   (let* ((client (FabricClient))
          (settings::AppSettings (get-key client settings:)))
-    ;; set client getters and setters
-    
     ;; set client slots
     (set-key! client hub-name: hub-name)
     (set-key! client application-init: init-client)

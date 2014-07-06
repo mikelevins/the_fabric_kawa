@@ -59,7 +59,8 @@
 (define-simple-class FabricApp (SimpleApplication ISlotAccessors)
   ;; slots
   ;; ---------
-  ((getSettings) settings) ; getter for inherited settings field
+  ((getSettings) settings) ; getters for inherited fields
+  ((getKeyInput) keyInput)
 
   (slots::HashPMap init-form: (%default-fabricapp-slots))
   ((getSlots) slots)

@@ -44,10 +44,7 @@
                           (if (absent? setter)
                               (set! slots (*:plus slots key val))
                               (setter (this) key val))))
-  ((deleteFrameKey key) (error "Cannot delete slots from a Player!"))
-  ;; set up the initial getters and setters
-  ;;(init: )
-  )
+  ((deleteFrameKey key) (error "Cannot delete slots from a Player!")))
 
 (define (make-player)
   (let* ((player (Player))

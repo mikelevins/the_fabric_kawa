@@ -17,6 +17,7 @@
 (require "interface-frame.scm")
 (require "assets-general.scm")
 (require "player.scm")
+(require "controls-client-inputs.scm")
 (require "application-common.scm")
 (require "application-client.scm")
 
