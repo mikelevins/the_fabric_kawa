@@ -25,6 +25,7 @@
 (require "assets-general.scm")
 (require "controls-client-camera.scm")
 (require "controls-client-inputs.scm")
+(require "ui-client-hud.scm")
 (require "application-common.scm")
 
 ;;; ---------------------------------------------------------------------
@@ -48,6 +49,7 @@
   (init-lighting app)
   (init-player app)
   (init-camera app (get-key app player:))
+  (init-client-hud app)
   (init-inputs app))
 
 ;;; ---------------------------------------------------------------------
@@ -124,6 +126,7 @@
   (let* ((client (FabricClient))
          (settings::AppSettings (get-key client settings:)))
     (set-key! client hub-name: hub-name)
+    (set-key! client character-name: "J. Random Character")
     ;; set JME3 settings
     (*:setResolution settings 1920 1200)
     (*:setTitle settings "The Fabric")
