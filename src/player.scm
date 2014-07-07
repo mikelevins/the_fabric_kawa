@@ -7,13 +7,16 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export make-player)
+(module-export make-player init-player)
 
 (require "data-pmaps.scm")
 (require "interface-frame.scm")
 
 (define-private-alias HashPMap org.pcollections.HashPMap)
 (define-private-alias Node com.jme3.scene.Node)
+(define-private-alias PI com.jme3.math.FastMath:PI)
+(define-private-alias Quaternion com.jme3.math.Quaternion)
+(define-private-alias Vector3f com.jme3.math.Vector3f)
 
 (define-simple-class Player (ISlotAccessors)
   ;; slots
@@ -54,3 +57,17 @@
     (set-key! player name: player-name)
     (set-key! player node: player-node)
     player))
+
+(define (init-player app)
+  (let* ((root::Node (get-key app root-node:))
+         (player (make-player))
+         (player-node::Node (get-key player node:)))
+    (set-key! app player: player)
+    (*:setLocalTranslation player-node 0.0 8000.0 0.0)
+    (let ((rotation (Quaternion))
+          (pitch-axis (Vector3f 1 0 0)))
+      ;; PI radians points us right at the center
+      (*:fromAngleAxis rotation PI pitch-axis)
+      (*:setLocalRotation player-node rotation)
+      (*:attachChild root player-node))))
+
