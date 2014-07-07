@@ -1,0 +1,72 @@
+I. Targets
+
+There are three kinds of build targets in the Fabric sources:
+
+1. the game client
+   LOAD-CLIENT.scm
+   ant client
+
+   The game client is the program that players run in order to play
+   the game.
+
+2. the game server
+   LOAD-SERVER.scm
+   ant server   
+
+   The game server is the program that we run on the xg server to
+   provide game services.
+
+3. development tools
+   LOAD-<tool>.scm
+
+   Development tools, like the Workshop, are programs we make to
+   facilitate construction of game services and content.
+
+The LOAD files list the sources that make up each program.
+
+II. Organization
+
+All sources inhabit a single common src directory. This arrangement
+makes it easy to share common code between programs, and helps us
+avoid duplicating code.
+
+A simple naming convention is used to help us in navigating the code;
+files are named using the following pattern:
+
+  <category>-<specific tool>.scm
+
+Currently the categories include:
+
+  application - the source code of GUI programs
+  assets      - code for handling textures, audio, and other media assets
+  controls    - code for handling user input, events, and signals
+  data        - code that implements data structures
+  interface   - Java interfaces, used to organize APIs
+  net         - network-communications code
+  parameters  - definition of runtime configuration variables and constants
+  player      - code that models the human player and his or her character
+  server      - the source code of server-side programs
+  setting     - code that sets up and manages the in-game environment experienced by players
+  syntax      - extensions to Scheme syntax used by our programs
+  tools       - command-line programs used for development and administration
+  user        - code that manages user accounts and associated data
+  utilities   - auxiliary procedures that support the other categories
+
+Fabric programs fall into three categories:
+
+  - applications: client-side GUI programs
+  - server: headless server-side command-line programs
+  - tools: command-line programs on either client or server side used for
+           maintenance and administration
+
+These three categories--applications, server, and tools--are main
+programs. Sources in other categories are routines and data structures
+that support these programs.
+
+When adding a file, try to put it into a caregory that will help you
+find the code later. Try to use the existing categories so that we
+don't multiply categories beyond necessity, but don't force a new file
+into a category that it doesn't fit; invent a new category if you need
+to.
+
+
