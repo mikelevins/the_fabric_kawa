@@ -8,6 +8,7 @@
 ;;;; ***********************************************************************
 
 (require "parameters-version.scm")
+(require "setting-lighting.scm")
 (require "setting-hubs.scm")
 (require "setting-celestial-objects.scm")
 (require "utilities-math.scm")

@@ -7,7 +7,7 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export make-client-sky)
+(module-export make-client-sky make-workshop-sky)
 
 (require "assets-general.scm")
 
@@ -28,3 +28,16 @@
     (*:setName sky "skybox")
     sky))
 
+
+(define (make-workshop-sky)
+  (let* ((asset-manager::AssetManager (get-asset-manager))
+         (sky::Spatial (SkyFactory:createSky
+                        asset-manager 
+                        (*:loadTexture asset-manager "Textures/boxgrid.jpg")
+                        (*:loadTexture asset-manager "Textures/boxgrid.jpg")
+                        (*:loadTexture asset-manager "Textures/boxgrid.jpg")
+                        (*:loadTexture asset-manager "Textures/boxgrid.jpg")
+                        (*:loadTexture asset-manager "Textures/boxgrid.jpg")
+                        (*:loadTexture asset-manager "Textures/boxgrid.jpg"))))
+    (*:setName sky "skybox")
+    sky))

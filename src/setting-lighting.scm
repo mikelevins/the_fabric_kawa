@@ -9,6 +9,9 @@
 
 (module-export init-lighting)
 
+(require "assets-general.scm")
+(require "interface-frame.scm")
+
 (define-private-alias AssetManager com.jme3.asset.AssetManager)
 (define-private-alias BloomFilter com.jme3.post.filters.BloomFilter)
 (define-private-alias FilterPostProcessor com.jme3.post.FilterPostProcessor)
