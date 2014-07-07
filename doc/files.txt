@@ -37,6 +37,7 @@ files are named using the following pattern:
 
 Currently the categories include:
 
+  LOAD        - loaders for interactive development of apps
   application - the source code of GUI programs
   assets      - code for handling textures, audio, and other media assets
   controls    - code for handling user input, events, and signals
@@ -49,6 +50,7 @@ Currently the categories include:
   setting     - code that sets up and manages the in-game environment experienced by players
   syntax      - extensions to Scheme syntax used by our programs
   tools       - command-line programs used for development and administration
+  ui          - code that constructs graphical UI elements
   user        - code that manages user accounts and associated data
   utilities   - auxiliary procedures that support the other categories
 
