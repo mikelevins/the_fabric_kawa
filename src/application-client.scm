@@ -28,6 +28,7 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
+(define-private-alias ActionListener com.jme3.input.controls.ActionListener)
 (define-private-alias AnalogListener com.jme3.input.controls.AnalogListener)
 (define-private-alias AppSettings com.jme3.system.AppSettings)
 (define-private-alias AssetManager com.jme3.asset.AssetManager)
@@ -71,7 +72,7 @@
 
 ;;; the class
 
-(define-simple-class FabricClient (FabricApp AnalogListener)
+(define-simple-class FabricClient (FabricApp AnalogListener ActionListener)
   ;; slots
   (direction ::Vector3f init-form: (Vector3f))
   ((getDirection) direction)
@@ -87,6 +88,7 @@
 
   ;; AnalogListener and ActionListener implementation
   ((onAnalog name value tpf)(handle-client-analog-event (this) name value tpf))
+  ((onAction name key-pressed? tpf)(handle-action-event (this) name key-pressed? tpf))
   ;; local initialization
   (init: (begin (set-slot-getter! (this) direction: (lambda (app key)(*:getDirection app)))
                 (set-slot-getter! (this) key-input: (lambda (app key)(*:getKeyInput app)))
@@ -124,7 +126,7 @@
          (player (make-player))
          (player-node::Node (get-key player node:)))
     (set-key! app player: player)
-    (*:setLocalTranslation player-node 0.0 6000.0 0.0)
+    (*:setLocalTranslation player-node 0.0 8000.0 0.0)
     (let ((rotation (Quaternion))
           (pitch-axis (Vector3f 1 0 0)))
       ;; PI radians points us right at the center

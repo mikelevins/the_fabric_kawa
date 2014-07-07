@@ -27,5 +27,5 @@
     (*:setTexture object-mat "ColorMap" object-tex)
     (*:setMaterial object-geom object-mat)
     (*:center object-geom)
-    (*:rotate object-geom (degrees->radians -90) 0 0)
+    ;;(*:rotate object-geom (degrees->radians 0) 0 0)
     object-geom))

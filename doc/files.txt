@@ -63,7 +63,7 @@ These three categories--applications, server, and tools--are main
 programs. Sources in other categories are routines and data structures
 that support these programs.
 
-When adding a file, try to put it into a caregory that will help you
+When adding a file, try to put it into a category that will help you
 find the code later. Try to use the existing categories so that we
 don't multiply categories beyond necessity, but don't force a new file
 into a category that it doesn't fit; invent a new category if you need
