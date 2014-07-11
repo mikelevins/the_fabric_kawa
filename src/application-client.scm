@@ -26,6 +26,7 @@
 (require "controls-client-camera.scm")
 (require "controls-client-inputs.scm")
 (require "ui-client-hud.scm")
+(require "ui-client-chat.scm")
 (require "application-common.scm")
 
 ;;; ---------------------------------------------------------------------
@@ -50,6 +51,7 @@
   (init-player app)
   (init-camera app (get-key app player:))
   (init-client-hud app)
+  (init-client-chat app)
   (init-inputs app))
 
 ;;; ---------------------------------------------------------------------
@@ -76,6 +78,9 @@
                   (*:addMapping mgr name signal)
                   (*:addListener mgr app name)))
               input-specs)))
+
+(define (%set-outbound-chat-message! app::FabricApp key message)
+  (error "Sending chat messages not yet implemented"))
 
 ;;; class
 ;;; -----
@@ -115,7 +120,8 @@
            (set-slot-setter! (this) hub: %set-client-hub!)
            (set-slot-setter! (this) inputs: %set-client-inputs!)
            (set-slot-setter! (this) left-button: (lambda (app key val)(*:setLeftButton app val)))
-           (set-slot-setter! (this) right-button: (lambda (app key val)(*:setRightButton app val))))))
+           (set-slot-setter! (this) right-button: (lambda (app key val)(*:setRightButton app val)))
+           (set-slot-setter! (this) chat-message: %set-outbound-chat-message!))))
 
 
 ;;; ---------------------------------------------------------------------

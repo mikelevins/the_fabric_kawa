@@ -22,6 +22,8 @@
 (require "player.scm")
 (require "controls-client-inputs.scm")
 (require "ui-client-hud.scm")
+(require "net-messages.scm")
+(require "ui-client-chat.scm")
 (require "application-common.scm")
 (require "application-client.scm")
 
