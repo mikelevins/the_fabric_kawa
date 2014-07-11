@@ -8,12 +8,9 @@
 ;;;; ***********************************************************************
 
 (module-export
- IFrame keys contains-key? get-key
- IPersistentFrame put-key remove-key
- IMutableFrame set-key! delete-key!
- ISlotAccessors
- get-slot-getter set-slot-getter! delete-slot-getter!
- get-slot-setter set-slot-setter! delete-slot-setter!)
+ IFrame keys contains-key? get-key set-key! 
+ get-slot-getter set-slot-getter! 
+ get-slot-setter set-slot-setter!)
 
 (require "utilities-java.scm")
 
@@ -24,7 +21,14 @@
 (define-simple-class IFrame () interface: #t
   ((frameKeys) #!abstract)
   ((containsFrameKey key) #!abstract)
-  ((getFrameKey key) #!abstract))
+  ((getFrameKey key) #!abstract)
+  ((setFrameKey key val) #!abstract)
+  ((getSlotDescription key) #!abstract)
+  ((setSlotDescription key description) #!abstract)
+  ((getSlotGetter key) #!abstract)
+  ((setSlotGetter key getter) #!abstract)
+  ((getSlotSetter key) #!abstract)
+  ((setSlotSetter key setter) #!abstract))
 
 (define (keys fr::IFrame)
   (*:frameKeys fr))
@@ -38,60 +42,23 @@
         default
         val)))
 
-;;; ---------------------------------------------------------------------
-;;; IPersistentFrame - persistent, immutable frames
-;;; ---------------------------------------------------------------------
-
-(define-simple-class IPersistentFrame (IFrame) interface: #t
-  ((putFrameKey key val) #!abstract)
-  ((removeFrameKey key) #!abstract))
-
-(define (put-key fr::IPersistentFrame key val)
-  (*:putFrameKey fr key val))
-
-(define (remove-key fr::IPersistentFrame key)
-  (*:removeFrameKey fr key))
-
-;;; ---------------------------------------------------------------------
-;;; IMutableFrame - mutable frames
-;;; ---------------------------------------------------------------------
-
-(define-simple-class IMutableFrame (IFrame) interface: #t
-  ((setFrameKey key val) #!abstract)
-  ((deleteFrameKey key) #!abstract))
-
-(define (set-key! fr::IMutableFrame key val)
+(define (set-key! fr::IFrame key val)
   (*:setFrameKey fr key val))
 
-(define (delete-key! fr::IMutableFrame key)
-  (*:deleteFrameKey fr key))
+(define (get-slot-description fr::IFrame key)
+  (*:getSlotDescription fr key))
 
-;;; ---------------------------------------------------------------------
-;;; ISlotAccessors - frames with getter and setter functions
-;;; ---------------------------------------------------------------------
+(define (set-slot-description! fr::IFrame key getter)
+  (*:setSlotDescription fr key description))
 
-(define-simple-class ISlotAccessors (IMutableFrame) interface: #t
-  ((getSlotGetter key) #!abstract)
-  ((setSlotGetter key getter) #!abstract)
-  ((deleteSlotGetter key) #!abstract)
-  ((getSlotSetter key) #!abstract)
-  ((setSlotSetter key setter) #!abstract)
-  ((deleteSlotSetter key) #!abstract))
-
-(define (get-slot-getter fr::ISlotAccessors key)
+(define (get-slot-getter fr::IFrame key)
   (*:getSlotGetter fr key))
 
-(define (set-slot-getter! fr::ISlotAccessors key getter)
+(define (set-slot-getter! fr::IFrame key getter)
   (*:setSlotGetter fr key getter))
 
-(define (delete-slot-getter! fr::ISlotAccessors key)
-  (*:deleteSlotGetter fr key))
-
-(define (get-slot-setter fr::ISlotAccessors key)
+(define (get-slot-setter fr::IFrame key)
   (*:getSlotSetter fr key))
 
-(define (set-slot-setter! fr::ISlotAccessors key setter)
+(define (set-slot-setter! fr::IFrame key setter)
   (*:setSlotSetter fr key setter))
-
-(define (delete-slot-setter! fr::ISlotAccessors key)
-  (*:deleteSlotSetter fr key))

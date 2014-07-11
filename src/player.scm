@@ -18,7 +18,7 @@
 (define-private-alias Quaternion com.jme3.math.Quaternion)
 (define-private-alias Vector3f com.jme3.math.Vector3f)
 
-(define-simple-class Player (ISlotAccessors)
+(define-simple-class Player (IFrame)
   ;; slots
   ;; ---------
   (slots::HashPMap init-form: (hashpmap))

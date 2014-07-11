@@ -56,7 +56,7 @@
 ;;; FabricApp - the common client application class
 ;;; ---------------------------------------------------------------------
 
-(define-simple-class FabricApp (SimpleApplication ISlotAccessors)
+(define-simple-class FabricApp (SimpleApplication IFrame)
   ;; slots
   ;; ---------
   ((getSettings) settings) ; getters for inherited fields

@@ -30,7 +30,7 @@
 ;;; ChatMessage
 ;;; ---------------------------------------------------------------------
 
-(define-simple-class ChatMessage (AbstractMessage IMutableFrame)(@Serializable)
+(define-simple-class ChatMessage (AbstractMessage IFrame)(@Serializable)
   ;; slots
   ;; ---------
   (name :: String init-form: #!null)
