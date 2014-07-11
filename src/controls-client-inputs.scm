@@ -15,6 +15,7 @@
 ;;; ---------------------------------------------------------------------
 
 (require "syntax-events.scm")
+(require "application-common.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -26,43 +27,48 @@
 (define-private-alias MouseAxisTrigger com.jme3.input.controls.MouseAxisTrigger)
 (define-private-alias MouseButtonTrigger com.jme3.input.controls.MouseButtonTrigger)
 (define-private-alias MouseInput com.jme3.input.MouseInput)
+(define-private-alias Node com.jme3.scene.Node)
+(define-private-alias Vector3f com.jme3.math.Vector3f)
 
 ;;; ---------------------------------------------------------------------
 ;;; event-handling
 ;;; ---------------------------------------------------------------------
 
-(define (player-move! app distance)
+(define (player-move! app distance::float)
   (let* ((camera::Camera (get-key app camera:))
          (player (get-key app player:))
-         (player-node (get-key player node:)))
+         (player-node::Node (get-key player node:))
+         (appdir::Vector3f (get-key app direction:)))
     (*:normalizeLocal (*:getDirection camera))
     (set-key! app direction: (*:getDirection camera))
-    (*:multLocal (get-key app direction:) distance)
-    (*:move (get-key player node:) (get-key app direction:))))
+    (*:multLocal appdir distance)
+    (*:move player-node appdir)))
 
-(define (player-strafe! app distance)
+(define (player-strafe! app distance::float)
   (let* ((camera::Camera (get-key app camera:))
          (player (get-key app player:))
-         (player-node (get-key player node:)))
+         (player-node::Node (get-key player node:))
+         (appdir::Vector3f (get-key app direction:)))
     (set-key! app direction: (*:normalizeLocal (*:getLeft camera)))
-    (*:multLocal (get-key app direction:) distance)
-    (*:move player-node (get-key app direction:))))
+    (*:multLocal appdir distance)
+    (*:move player-node appdir)))
 
-(define (player-rise! app distance)
+(define (player-rise! app distance::float)
   (let* ((camera::Camera (get-key app camera:))
          (player (get-key app player:))
-         (player-node (get-key player node:)))
+         (player-node::Node (get-key player node:))
+         (appdir::Vector3f (get-key app direction:)))
     (set-key! app direction: (*:normalizeLocal (*:getUp camera)))
-    (*:multLocal (get-key app direction:) distance)
-    (*:move player-node (get-key app direction:))))
+    (*:multLocal appdir distance)
+    (*:move player-node appdir)))
 
 ;;; (handle-client-analog-event app name value tpf)
 ;;; ---------------------------------------------------------------------
 ;;; handle mouse movements and other continuous events
 
-(define (handle-client-analog-event app name value tpf)
+(define (handle-client-analog-event app name value tpf::float)
   (let* ((player (get-key app player:))
-         (player-node (get-key player node:))
+         (player-node::Node (get-key player node:))
          (right-button? (get-key app right-button:)))
     (on-analog (name)
                ("rotateUp" -> (*:rotate player-node (* -0.5 tpf) 0 0))
