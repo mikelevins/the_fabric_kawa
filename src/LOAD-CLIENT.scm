@@ -1,31 +1,46 @@
 ;;;; ***********************************************************************
-;;;; Name:          LOAD-CLIENT.scm
+;;;; FILE IDENTIFICATION
+;;;;
+;;;; Name:          LOAD.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
-;;;; Purpose:       system loader for the game client
+;;;; Purpose:       system loader
 ;;;; Author:        mikel evins
 ;;;; Copyright:     2014 by mikel evins
 ;;;;
 ;;;; ***********************************************************************
 
-(require "parameters-version.scm")
-(require "setting-hubs.scm")
-(require "setting-sky.scm")
-(require "setting-celestial-objects.scm")
-(require "utilities-math.scm")
-(require "utilities-java.scm")
-(require "data-pmaps.scm")
-(require "interface-frame.scm")
-(require "assets-general.scm")
-(require "setting-scene.scm")
-(require "setting-lighting.scm")
-(require "controls-client-camera.scm")
-(require "player.scm")
-(require "controls-client-inputs.scm")
-(require "ui-client-hud.scm")
-(require "net-messages.scm")
-(require "ui-client-chat.scm")
-(require "application-common.scm")
-(require "application-client.scm")
+(require 'list-lib)
+(require 'srfi-95) ; sorting
 
-;;; (define $client (make-client))
-;;; (*:start $client)
+(require "version.scm")
+(require "util-java.scm")
+(require "util-random.scm")
+(require "util-general.scm")
+(require "util-lists.scm")
+(require "syntax-classes.scm")
+;;; for local testing
+;;;(require "init-config-local.scm")
+;;; for testing against the server on explorersguild.com
+(require "init-config.scm")
+(require "model-id.scm")
+(require "language-types.scm")
+(require "language-gf.scm")
+(require "model-frame.scm")
+(require "model-namegen-domains.scm")
+(require "model-namegen.scm")
+(require "model-kind.scm")
+(require "model-entity.scm")
+(require "assets-general.scm")
+(require "view-controls.scm")
+(require "view-colors.scm")
+(require "view-shapes.scm")
+(require "view-plasma.scm")
+(require "view-name-cube.scm")
+(require "view-player.scm")
+(require "view-node.scm")
+(require "net-messaging.scm")
+(require "app-common.scm")
+(require "app-client.scm")
+
+;;; (define $the-client (make-client))
+;;; (*:start $the-client)

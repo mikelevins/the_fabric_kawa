@@ -9,11 +9,15 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export jnull? defgetter defsetter)
+(module-export import-as jnull? defgetter defsetter)
 
 (define (jnull? thing)
   (eqv? thing #!null))
 
+(define-syntax import-as
+  (syntax-rules ()
+    ((import-as localname imported-name)
+     (define-private-alias localname imported-name))))
 
 (define-syntax defgetter
   (syntax-rules (::)

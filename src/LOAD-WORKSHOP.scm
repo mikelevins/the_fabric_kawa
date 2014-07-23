@@ -1,4 +1,6 @@
 ;;;; ***********************************************************************
+;;;; FILE IDENTIFICATION
+;;;;
 ;;;; Name:          LOAD-WORKSHOP.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
 ;;;; Purpose:       system loader for the Workshop
@@ -7,17 +9,34 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(require "parameters-version.scm")
-(require "setting-lighting.scm")
-(require "setting-hubs.scm")
-(require "setting-celestial-objects.scm")
-(require "utilities-math.scm")
-(require "utilities-java.scm")
-(require "data-pmaps.scm")
-(require "interface-frame.scm")
-(require "assets-general.scm")
-(require "application-common.scm")
-(require "application-workshop.scm")
+(require 'list-lib)
+(require 'srfi-95) ; sorting
 
-;;; (define $ws (make-workshop))
-;;; (*:start $ws)
+(require "version.scm")
+(require "util-java.scm")
+(require "util-random.scm")
+(require "util-general.scm")
+(require "util-lists.scm")
+(require "init-config-local.scm")
+(require "model-id.scm")
+(require "language-types.scm")
+(require "language-gf.scm")
+(require "model-frame.scm")
+(require "model-namegen-domains.scm")
+(require "model-namegen.scm")
+(require "model-kind.scm")
+(require "model-entity.scm")
+(require "assets-general.scm")
+(require "view-controls.scm")
+(require "view-colors.scm")
+(require "view-shapes.scm")
+(require "view-plasma.scm")
+(require "view-name-cube.scm")
+(require "view-player.scm")
+(require "view-node.scm")
+(require "net-messaging.scm")
+(require "app-common.scm")
+(require "app-workshop.scm")
+
+;;; (define $workshop (make-workshop))
+;;; (*:start $workshop)
