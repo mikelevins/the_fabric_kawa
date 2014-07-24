@@ -26,18 +26,18 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
-(define-private-alias Box com.jme3.scene.shape.Box)
-(define-private-alias Dome com.jme3.scene.shape.Dome)
-(define-private-alias ColorRGBA com.jme3.math.ColorRGBA)
-(define-private-alias Geometry com.jme3.scene.Geometry)
-(define-private-alias Material com.jme3.material.Material)
-(define-private-alias RenderQueue com.jme3.renderer.queue.RenderQueue)
-(define-private-alias RenderState com.jme3.material.RenderState)
-(define-private-alias Sphere com.jme3.scene.shape.Sphere)
-(define-private-alias Triangle com.jme3.math.Triangle)
-(define-private-alias Vector3f com.jme3.math.Vector3f)
-(define-private-alias WireBox com.jme3.scene.debug.WireBox)
-(define-private-alias WireSphere com.jme3.scene.debug.WireSphere)
+(import-as Box com.jme3.scene.shape.Box)
+(import-as Dome com.jme3.scene.shape.Dome)
+(import-as ColorRGBA com.jme3.math.ColorRGBA)
+(import-as Geometry com.jme3.scene.Geometry)
+(import-as Material com.jme3.material.Material)
+(import-as RenderQueue com.jme3.renderer.queue.RenderQueue)
+(import-as RenderState com.jme3.material.RenderState)
+(import-as Sphere com.jme3.scene.shape.Sphere)
+(import-as Triangle com.jme3.math.Triangle)
+(import-as Vector3f com.jme3.math.Vector3f)
+(import-as WireBox com.jme3.scene.debug.WireBox)
+(import-as WireSphere com.jme3.scene.debug.WireSphere)
 
 ;;; ---------------------------------------------------------------------
 ;;; geometry constructors and deconstructors
@@ -103,7 +103,6 @@
       (*:setLocalTranslation new-geom 0 0 0)
       new-geom)))
 
-
 (define (make-enclosing-wire-cube)
   (let* ((asset-manager (get-asset-manager))
          (cube-mat::Material (Material asset-manager "Common/MatDefs/Misc/Unshaded.j3md"))
@@ -122,7 +121,6 @@
       (*:addControl new-geom rotator)
       (*:setLocalTranslation new-geom 0 0 0)
       new-geom)))
-
 
 (define (make-enclosing-sphere)
   (let* ((asset-manager (get-asset-manager))

@@ -21,11 +21,11 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
-(define-private-alias ArrayList java.util.ArrayList)
-(define-private-alias Class java.lang.Class)
-(define-private-alias Map com.github.krukow.clj_lang.PersistentHashMap)
-(define-private-alias Thread java.lang.Thread)
-(define-private-alias UUID java.util.UUID)
+(import-as ArrayList java.util.ArrayList)
+(import-as Class java.lang.Class)
+(import-as Map com.github.krukow.clj_lang.PersistentHashMap)
+(import-as Thread java.lang.Thread)
+(import-as UUID java.util.UUID)
 
 ;;; ---------------------------------------------------------------------
 ;;; utils
@@ -58,19 +58,6 @@
                (indexes (iota byte-count)))
           (map (lambda (i)(bytes i))
                indexes)))))
-
-;; (define (long->bytes long)
-;;   (let loop ((i 0)
-;;              (bytes '()))
-;;     (if (< i 8)
-;;         (loop (+ i 1)
-;;               (cons (bitwise-and (bitwise-arithmetic-shift-right long (* i 8))
-;;                                  #b11111111)
-;;                     bytes))
-;;         (reverse bytes))))
-
-              
-
 
 (define (byte->bool-vector b)
   (list->vector (reverse (map (lambda (i)(bitwise-bit-set? b i))

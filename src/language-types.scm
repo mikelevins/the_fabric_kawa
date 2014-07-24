@@ -16,7 +16,7 @@
 (require "util-java.scm")
 (require "util-lists.scm")
 
-(define-private-alias Class java.lang.Class)
+(import-as Class java.lang.Class)
 
 ;;; ---------------------------------------------------------------------
 ;;; type utilities
@@ -63,7 +63,7 @@
                  (cdr directs))))))
 
 (define (all-superclasses cl::Class)
-  (let ((direct-supers (cdr (direct-superclasses a-class))))
+  (let ((direct-supers (cdr (direct-superclasses cl))))
     (if (null? direct-supers)
         (list cl)
         (let ((cpls (map all-superclasses direct-supers)))

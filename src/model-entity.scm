@@ -14,7 +14,7 @@
 (require "model-frame.scm")
 (require "model-id.scm")
 
-(define-private-alias EMap com.github.krukow.clj_lang.PersistentHashMap)
+(import-as EMap com.github.krukow.clj_lang.PersistentHashMap)
 
 (define (entity? thing)
   (and (instance? thing EMap)

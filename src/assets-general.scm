@@ -21,8 +21,8 @@
 ;;; assets
 ;;; ---------------------------------------------------------------------
 
-(define-private-alias JmeSystem com.jme3.system.JmeSystem)
-(define-private-alias Thread java.lang.Thread)
+(import-as JmeSystem com.jme3.system.JmeSystem)
+(import-as Thread java.lang.Thread)
 
 (define %asset-manager (make-parameter #f))
 
@@ -31,7 +31,7 @@
       (begin
         (%asset-manager (JmeSystem:newAssetManager
                          (*:getResource (*:getContextClassLoader (Thread:currentThread))
-                                         "com/jme3/asset/Desktop.cfg")))
+                                        "com/jme3/asset/Desktop.cfg")))
         (%asset-manager))))
 
 

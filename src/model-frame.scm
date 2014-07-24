@@ -18,8 +18,8 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
-(define-private-alias Iterator java.util.Iterator)
-(define-private-alias Map com.github.krukow.clj_lang.PersistentHashMap)
+(import-as Iterator java.util.Iterator)
+(import-as Map com.github.krukow.clj_lang.PersistentHashMap)
 
 ;;; ---------------------------------------------------------------------
 ;;; Frame

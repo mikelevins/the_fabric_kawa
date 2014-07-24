@@ -21,12 +21,12 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
-(define-private-alias AssetManager com.jme3.asset.AssetManager)
-(define-private-alias ColorRGBA com.jme3.math.ColorRGBA)
-(define-private-alias PrMaterial com.jme3.material.Material)
-(define-private-alias ParticleEmitter com.jme3.effect.ParticleEmitter)
-(define-private-alias ParticleMesh com.jme3.effect.ParticleMesh)
-(define-private-alias PrVector3f com.jme3.math.Vector3f)
+(import-as AssetManager com.jme3.asset.AssetManager)
+(import-as ColorRGBA com.jme3.math.ColorRGBA)
+(import-as PrMaterial com.jme3.material.Material)
+(import-as ParticleEmitter com.jme3.effect.ParticleEmitter)
+(import-as ParticleMesh com.jme3.effect.ParticleMesh)
+(import-as PrVector3f com.jme3.math.Vector3f)
 
 ;;; ---------------------------------------------------------------------
 ;;; particle-effect constructors

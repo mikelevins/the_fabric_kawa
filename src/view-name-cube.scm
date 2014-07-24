@@ -20,7 +20,6 @@
 
 (module-export make-component-cube make-name-cube)
 
-
 (require "util-java.scm")
 (require "assets-general.scm")
 (require "view-colors.scm")
@@ -31,13 +30,13 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
-(define-private-alias Box com.jme3.scene.shape.Box)
-(define-private-alias ColorRGBA com.jme3.math.ColorRGBA)
-(define-private-alias Geometry com.jme3.scene.Geometry)
-(define-private-alias Material com.jme3.material.Material)
-(define-private-alias Node com.jme3.scene.Node)
-(define-private-alias RenderQueue com.jme3.renderer.queue.RenderQueue)
-(define-private-alias RenderState com.jme3.material.RenderState)
+(import-as Box com.jme3.scene.shape.Box)
+(import-as ColorRGBA com.jme3.math.ColorRGBA)
+(import-as Geometry com.jme3.scene.Geometry)
+(import-as Material com.jme3.material.Material)
+(import-as Node com.jme3.scene.Node)
+(import-as RenderQueue com.jme3.renderer.queue.RenderQueue)
+(import-as RenderState com.jme3.material.RenderState)
 
 ;;; ---------------------------------------------------------------------
 ;;; building the name cubes

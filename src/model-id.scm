@@ -17,7 +17,7 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
-(define-private-alias UUID java.util.UUID)
+(import-as UUID java.util.UUID)
 
 ;;; ---------------------------------------------------------------------
 ;;; identifiers

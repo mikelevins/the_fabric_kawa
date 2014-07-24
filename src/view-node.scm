@@ -34,10 +34,10 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
-(define-private-alias AssetManager com.jme3.asset.AssetManager)
-(define-private-alias SimpleApplication com.jme3.app.SimpleApplication)
-(define-private-alias SkyFactory com.jme3.util.SkyFactory)
-(define-private-alias Sphere com.jme3.scene.shape.Sphere)
+(import-as AssetManager com.jme3.asset.AssetManager)
+(import-as SimpleApplication com.jme3.app.SimpleApplication)
+(import-as SkyFactory com.jme3.util.SkyFactory)
+(import-as Sphere com.jme3.scene.shape.Sphere)
 
 (define node-names
   (make-parameter '("Callisto"

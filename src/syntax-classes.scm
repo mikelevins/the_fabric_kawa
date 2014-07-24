@@ -12,6 +12,7 @@
 
 (require 'list-lib)
 (require "util-general.scm")
+(require "util-lists.scm")
 
 (define-syntax definterface
   (syntax-rules ()
@@ -19,73 +20,55 @@
      (define-simple-class ifname supers interface: #t
        (method-prototype  #!abstract) ...))))
 
+(define (%slotspec form)
+  (let* ((sname (car form))
+         (inits (cdr form))
+         (sinit (getf inits init-form: #!null))
+         (stype (getf inits type: java.lang.Object)))
+    (list sname type: stype init-form: sinit)))
 
-(define (%parse-defclass-superclasses supers-form)
-  (if (or (null? supers-form)
-          (and (list? supers-form)
-               (every (lambda (f)(or (symbol? f)
-                                     (instance? f java.lang.reflect.Type)))
-                      supers-form)))
-      supers-form
-      (error (format #f "Invalid superclasses form: ~s" supers-form))))
+(define (%slotaccessors form)
+  (let* ((sname (car form))
+         (inits (cdr form))
+         (sgetter-form (getf inits getter: #f))
+         (sgetter (if sgetter-form
+                      `((,sgetter-form) ,sname)
+                      #f))
+         (ssetter-form (getf inits setter: #f))
+         (svar (gentemp))
+         (ssetter (if ssetter-form
+                      `((,ssetter-form ,svar) (set! ,sname ,svar))
+                      #f)))
+    (filter identity (list sgetter ssetter))))
 
-(define (%parse-defclass-init body)
-  (let ((init-clause (assoc init: body)))
-    (if init-clause
-        `(begin ,@(cdr init-clause))
-        '(begin #f))))
-
-(define (%parse-slot-description sdesc)
-  (let* ((sname (car sdesc))
-         (init-tail (member init-form: sdesc))
-         (initval (if init-tail (cadr init-tail) #f))
-         (type-tail (member type: sdesc))
-         (typeval (if type-tail (cadr type-tail) 'java.lang.Object)))
-    `(,sname init-form: ,initval type: ,typeval)))
-
-(define (%parse-slot-accessors sdesc)
-  (let* ((valvar (gentemp))
-         (sname (car sdesc))
-         (getter-tail (member getter: sdesc))
-         (gettername (if getter-tail (cadr getter-tail) #f))
-         (getter (if getter-tail
-                     `((,gettername) ,sname)
-                     '()))
-         (setter-tail (member setter: sdesc))
-         (settername (if setter-tail (cadr setter-tail) #f))
-         (setter (if setter-tail
-                     `((,settername ,valvar) (set! ,sname ,valvar))
-                     '())))
-    `(,getter ,setter)))
-
-(define (%parse-method-form mdesc)
-  mdesc)
-
-(define (%parse-defclass-slots body)
-  (let* ((slots-part (assoc slots: body))
-         (slot-forms (if slots-part (cdr slots-part) '())))
-    (map %parse-slot-description
-         slot-forms)))
-
-(define (%parse-defclass-methods body)
-  (let* ((slots-part (assoc slots: body))
-         (slot-forms (if slots-part (cdr slots-part) '()))
-         (slot-accessors (apply append (map %parse-slot-accessors
-                                            slot-forms)))
-         (methods-part (assoc methods: body))
-         (method-specs (if methods-part (cdr methods-part) '()))
-         (method-forms (map %parse-method-form method-specs)))
-    (append (filter (lambda (sa)(not (null? sa))) slot-accessors)
-            (filter (lambda (mf)(not (null? mf))) method-forms))))
-
-(defmacro defclass (classname supers . body)
-  (let ((superclasses (%parse-defclass-superclasses supers))
-        (slots (%parse-defclass-slots body))
-        (methods (%parse-defclass-methods body))
-        (init-form (%parse-defclass-init body)))
-    `(define-simple-class ,classname ,superclasses
-       ,@slots
-       ,@methods
-       (init: ,init-form))))
-
-
+(defmacro defclass (classname superclasses . class-body)
+  (let* ((annotations-clause (assoc annotations: class-body))
+         (annotation-forms (if annotations-clause
+                               (cdr annotations-clause)
+                               #f))
+         (slots-clause (assoc slots: class-body))
+         (slot-specs (if slots-clause
+                         (map %slotspec (cdr slots-clause))
+                         '()))
+         (slot-accessors (if slots-clause
+                             (apply append (map %slotaccessors (cdr slots-clause)))
+                             '()))
+         (methods-clause (assoc methods: class-body))
+         (method-forms (if methods-clause
+                           (cdr methods-clause)
+                           '()))
+         (init-clause (assoc init: class-body))
+         (init-forms (if init-clause
+                         (cdr init-clause)
+                         (list #f))))
+    (if annotation-forms
+        `(define-simple-class ,classname ,superclasses (,@annotation-forms)
+           ,@slot-specs
+           ,@slot-accessors
+           ,@method-forms
+           (init: (begin ,@init-forms)))
+        `(define-simple-class ,classname ,superclasses
+           ,@slot-specs
+           ,@slot-accessors
+           ,@method-forms
+           (init: (begin ,@init-forms))))))

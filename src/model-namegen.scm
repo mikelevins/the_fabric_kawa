@@ -61,13 +61,3 @@
         (gen-name)
         (fabric-name data: num))))
 
-(define (show-names n)
-  (let loop ((i 0))
-    (when (< i n)
-      (let ((nm (gen-name)))
-        (format #t "~% ~S" (fabric-name-strings nm))
-        (loop (+ i 1))))))
-
-
-;;; (show-names 10)
-

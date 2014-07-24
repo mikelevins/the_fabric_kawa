@@ -12,7 +12,7 @@
 (module-export ArrayList->list list->ArrayList array->list list->array
                some? choose-any drop-any interleave list-fill shuffle
                plist->alist alist->plist alist alist-keys alist-vals
-               adjoin-all position-if)
+               adjoin-all position-if getf)
 
 (require 'list-lib)
 (require 'srfi-95) ; sorting
@@ -23,11 +23,11 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
-(define-private-alias ArrayList java.util.ArrayList)
-(define-private-alias Class java.lang.Class)
-(define-private-alias Map com.github.krukow.clj_lang.PersistentHashMap)
-(define-private-alias Thread java.lang.Thread)
-(define-private-alias UUID java.util.UUID)
+(import-as ArrayList java.util.ArrayList)
+(import-as Class java.lang.Class)
+(import-as Map com.github.krukow.clj_lang.PersistentHashMap)
+(import-as Thread java.lang.Thread)
+(import-as UUID java.util.UUID)
 
 ;;; ---------------------------------------------------------------------
 ;;; utils
@@ -131,3 +131,9 @@
         (if (pred (car tail))
             i
             (loop (cdr tail) (+ i 1))))))
+
+(define (getf ls thing #!optional (default #f))
+  (let ((mtail (member thing ls)))
+    (if mtail
+        (cadr mtail)
+        default)))

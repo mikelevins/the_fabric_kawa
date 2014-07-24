@@ -14,7 +14,7 @@
 (require "model-frame.scm")
 (require "model-id.scm")
 
-(define-private-alias PMap com.github.krukow.clj_lang.PersistentHashMap)
+(import-as PMap com.github.krukow.clj_lang.PersistentHashMap)
 
 (define (kind? thing)
   (and (instance? thing PMap)

@@ -18,9 +18,8 @@
                defgeneric
                defmethod)
 
-
-(define-private-alias PersistentHashMap com.github.krukow.clj_lang.PersistentHashMap)
-(define-private-alias ProcedureN gnu.mapping.ProcedureN)
+(import-as PersistentHashMap com.github.krukow.clj_lang.PersistentHashMap)
+(import-as ProcedureN gnu.mapping.ProcedureN)
 
 (define (no-applicable-method . args)
   (error (format #f "No applicable method for arguments ~s with types ~s "

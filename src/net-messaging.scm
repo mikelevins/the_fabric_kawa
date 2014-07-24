@@ -17,35 +17,33 @@
 ;;; ---------------------------------------------------------------------
 
 (require "util-java.scm")
+(require "syntax-classes.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
-(define-private-alias AbstractMessage com.jme3.network.AbstractMessage)
-(define-private-alias Serializable com.jme3.network.serializing.Serializable)
-(define-private-alias String java.lang.String)
+(import-as AbstractMessage com.jme3.network.AbstractMessage)
+(import-as Serializable com.jme3.network.serializing.Serializable)
+(import-as String java.lang.String)
 
 ;;; ---------------------------------------------------------------------
 ;;; ChatMessage
 ;;; ---------------------------------------------------------------------
 
-(define-simple-class ChatMessage (AbstractMessage)(@Serializable)
-  (name :: String init-form: #!null)
-  (contents :: String init-form: #!null)
+(defclass ChatMessage (AbstractMessage)
+  (annotations: @Serializable)
+  (slots:
+   (name type: String init-form: #!null getter: getName setter: setName)
+   (contents type: String init-form: #!null getter: getContents setter: setContents))
+  (methods:
+   ((toString) (format #f "[~A] ~A" name contents))))
 
-  ((getName) name)
-  ((setName nm) (set! name nm))
-  ((getContents) contents)
-  ((setContents msg)(set! contents msg))
-  ((toString) (format #f "[~A] ~A" name contents)))
+(define (message-name msg::ChatMessage) (*:getName msg))
+(define (message-contents msg::ChatMessage) (*:getContents msg))
+(define (message-reliable? msg::ChatMessage) (*:isReliable msg))
 
-(defgetter (message-name ChatMessage) getName)
-(defgetter (message-contents ChatMessage) getContents)
-(defgetter (message-reliable? ChatMessage) isReliable)
-
-(defsetter (set-message-name! ChatMessage) setName)
-(defsetter (set-message-contents! ChatMessage) setContents)
-(defsetter (set-message-reliable! ChatMessage) setReliable)
-
+(define (set-message-name! msg::ChatMessage nm) (*:setName msg nm))
+(define (set-message-contents! msg::ChatMessage cts) (*:setContents msg cts))
+(define (set-message-reliable! msg::ChatMessage rel?) (*:setReliable msg rel?))
 
