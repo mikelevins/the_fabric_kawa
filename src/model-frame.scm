@@ -9,8 +9,9 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export frame? empty-frame frame empty? contains-key? contains-val? ensure-versioned
-               put-key get-key remove-key merge-keys keys vals)
+(module-export frame? empty-frame frame empty? contains-key?
+               contains-val? ensure-versioned put-key get-key
+               remove-key merge-keys keys vals)
 
 (require "util-java.scm")
 
