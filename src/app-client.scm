@@ -77,37 +77,13 @@
 (defclass FabricClient (FabricApp)
   (slots:
    (player init-form: #!null getter: getPlayer setter: setPlayer)
-   (player-node type: Node init-form: #!null getter: getPlayerNode setter: setPlayerNode)
-   (center-name type: String init-form: #!null getter: getCenterName setter: setCenterName)
-   (direction type: Vector3f init-form: (Vector3f) getter: getDirection setter: setDirection)
-   (network-client type: com.jme3.network.Client
-                   init-form: #!null getter: getNetworkClient setter: setNetworkClient)
-   (left-button? init-form: #f getter: getLeftButton setter: setLeftButton)
-   (right-button? init-form: #f getter: getRightButton setter: setRightButton)
-   (chat-hud init-form: #!null getter: getChatHud setter: setChatHud))
+   (player-node type: Node init-form: #!null getter: getPlayerNode setter: setPlayerNode))
 
   (methods:
    ((onAnalog name value tpf)(handle-analog-event (this) name value tpf))
    ((onAction name key-pressed? tpf)(handle-action-event (this) name key-pressed? tpf))
-   ((simpleInitApp)(init-client (this)))
-   ((getGuiNode) guiNode)
-   ((getGuiFont) guiFont)
-   ((getKeyInput) keyInput)
-   ((getStateManager) stateManager)
-   ((getInputManager) inputManager)
-   ((getViewport) viewPort)
-   ((getAudioRenderer) audioRenderer)
-   ((getCameraDirection) (*:getDirection cam))))
+   ((simpleInitApp)(init-client (this)))))
 
-
-;;; camera control
-;;; ---------------------------------------------------------------------
-
-(define (client-camera-left app :: FabricClient)
-  (*:getLeft (*:getCamera app)))
-
-(define (client-normalize-camera! app)
-  (*:normalizeLocal (*:getCameraDirection app)))
 
 ;;; ---------------------------------------------------------------------
 ;;; player setup
@@ -393,18 +369,18 @@
 (define (handle-analog-event app name value tpf)
   (on-analog (name)
              ("moveForward"
-              -> (begin (client-normalize-camera! app)
+              -> (begin (normalize-camera! app)
                         (*:setDirection app (*:getCameraDirection app))
                         (*:multLocal (*:getDirection app) (* 300 tpf))
                         (*:move (*:getPlayerNode app) (*:getDirection app))))
              ("maybeMoveForward"
               -> (when (*:getRightButton app)
-                   (client-normalize-camera! app)
+                   (normalize-camera! app)
                    (*:setDirection app (*:getCameraDirection app))
                    (*:multLocal (*:getDirection app) (* 300 tpf))
                    (*:move (*:getPlayerNode app) (*:getDirection app))))
              ("moveBackward"
-              -> (begin (client-normalize-camera! app)
+              -> (begin (normalize-camera! app)
                         (*:setDirection app (*:getCameraDirection app))
                         (*:multLocal (*:getDirection app) (* -200 tpf))
                         (*:move (*:getPlayerNode app) (*:getDirection app))))

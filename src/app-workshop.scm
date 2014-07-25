@@ -77,32 +77,12 @@
 (defclass FabricWorkshop (FabricApp)
   (slots:
    (worker init-form: #!null getter: getWorker setter: setWorker)
-   (worker-node :: Node init-form: #!null getter: getWorkerNode setter: setWorkerNode)
-   (center-name ::String init-form: #!null getter: getCenterName setter: setCenterName)
-   (direction ::Vector3f init-form: (Vector3f) getter: getDirection setter: setDirection)
-   (network-client ::com.jme3.network.Client init-form: #!null getter: getNetworkClient setter: setNetworkClient)
-   (left-button? init-form: #f getter: getLeftButton setter: setLeftButton)
-   (right-button? init-form: #f getter: getRightButton setter: setRightButton)
-   (chat-hud init-form: #!null getter: getChatHud setter: setChatHud))
+   (worker-node :: Node init-form: #!null getter: getWorkerNode setter: setWorkerNode))
 
   (methods:
-   ((getCameraDirection) (*:getDirection cam))
-   ((getAudioRenderer) audioRenderer)
-   ((getViewport) viewPort)
-   ((getInputManager) inputManager)
-   ((getStateManager) stateManager)
-   ((getKeyInput) keyInput)
-   ((getGuiFont) guiFont)
-   ((getGuiNode) guiNode)
    ((onAnalog name value tpf)(handle-analog-event (this) name value tpf))
    ((onAction name key-pressed? tpf)(handle-action-event (this) name key-pressed? tpf))
    ((simpleInitApp)(init-workshop (this)))))
-
-(define (workshop-camera-left app :: FabricWorkshop)
-  (*:getLeft (*:getCamera app)))
-
-(define (workshop-normalize-camera! app)
-  (*:normalizeLocal (*:getDirection (*:getCamera app))))
 
 ;;; ---------------------------------------------------------------------
 ;;; set up the worker character
@@ -376,18 +356,18 @@
 (define (handle-analog-event app name value tpf)
   (on-analog (name)
              ("moveForward"
-              -> (begin (workshop-normalize-camera! app)
+              -> (begin (normalize-camera! app)
                         (*:setDirection app (*:getCameraDirection app))
                         (*:multLocal (*:getDirection app) (* 300 tpf))
                         (*:move (*:getWorkerNode app) (*:getDirection app))))
              ("maybeMoveForward"
               -> (when (*:getRightButton app)
-                   (workshop-normalize-camera! app)
+                   (normalize-camera! app)
                    (*:setDirection app (*:getCameraDirection app))
                    (*:multLocal (*:getDirection app) (* 300 tpf))
                    (*:move (*:getWorkerNode app) (*:getDirection app))))
              ("moveBackward"
-              -> (begin (workshop-normalize-camera! app)
+              -> (begin (normalize-camera! app)
                         (*:setDirection app (*:getCameraDirection app))
                         (*:multLocal (*:getDirection app) (* -200 tpf))
                         (*:move (*:getWorkerNode app) (*:getDirection app))))
