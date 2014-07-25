@@ -9,25 +9,23 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export fabric-name-data fabric-name-bytes fabric-name-strings
-               fabric-name-bit-patterns fabric-name-bytestrings gen-name)
+(module-export  fabric-name-bytes fabric-name-strings fabric-name-bit-patterns
+                fabric-name-bytestrings gen-name)
 
 (require 'list-lib)
 (require "util-java.scm")
+(require "syntax-classes.scm")
 (require "util-random.scm")
 (require "util-lists.scm")
 (require "util-general.scm")
 (require "model-namegen-domains.scm")
 
-(define-simple-class fabric-name ()
-  (data type: gnu.math.IntNum init-keyword: data:)
-  ((getData) data))
-
-(define (fabric-name-data nm::fabric-name)
-  (*:getData nm))
+(defclass fabric-name ()
+  (slots: (data type: gnu.math.IntNum getter: getData setter: setData))
+  (methods: ((*init* num)(set! data num))))
 
 (define (fabric-name-bytes nm)
-  (integer->bytes (fabric-name-data nm)))
+  (integer->bytes (*:getData nm)))
 
 (define (bytes->strings bytes)
   (map (lambda (b)(format #f "~2,'0x" b))
@@ -41,7 +39,7 @@
        (fabric-name-bytes nm)))
 
 (define (fabric-name-strings nm)
-  (let* ((bytes (integer->bytes (fabric-name-data nm)))
+  (let* ((bytes (integer->bytes (*:getData nm)))
          (parts (map (lambda (b dom)(list-ref dom b))
                      bytes
                      (domain-name-lists))))
@@ -59,5 +57,5 @@
          (num (apply bytes->integer (shuffle (append bytes zeros)))))
     (if (zero? num)
         (gen-name)
-        (fabric-name data: num))))
+        (fabric-name num))))
 

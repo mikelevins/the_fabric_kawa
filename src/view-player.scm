@@ -71,7 +71,7 @@
 
 (define (make-player-character lit-color)
   (let* ((name (gen-name))
-         (name-bits (fabric-name-data name))
+         (name-bits (*:getData name))
          (cube (make-name-cube name-bits lit-color)))
     (entity name: name
             lit-color: lit-color
