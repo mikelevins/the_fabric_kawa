@@ -88,25 +88,6 @@
 ;;; FabricApp - the abstract client application class
 ;;; ---------------------------------------------------------------------
 
-;; (define-simple-class FabricApp (SimpleApplication AnalogListener ActionListener)
-;;   ;; slots
-;;   ;; -------
-;;   (app-settings init-form: (AppSettings #t))
-
-;;   ;; accessors
-;;   ;; ---------
-;;   ((getAppSettings) app-settings)
-
-;;   ;; implementation methods
-;;   ;; ---------
-
-;;   ;; AnalogListener and ActionListener implementation
-;;   ((onAnalog name value tpf) #!abstract)
-;;   ((onAction name key-pressed? tpf) #!abstract)
-  
-;;   ;; SimpleApplication implementation
-;;   ((simpleInitApp) #!abstract))
-
 (defclass FabricApp (SimpleApplication AnalogListener ActionListener)
   (slots:
    (app-settings init-form: (AppSettings #t) getter: getAppSettings))
@@ -115,10 +96,9 @@
    ((onAction name key-pressed? tpf) #!abstract)
    ((simpleInitApp) #!abstract)))
 
-
 ;;; ---------------------------------------------------------------------
 ;;; accessor functions
 ;;; ---------------------------------------------------------------------
 
-(defgetter (app-settings FabricApp) getAppSettings)
+(define (app-settings app::FabricApp)(*:getAppSettings app))
 

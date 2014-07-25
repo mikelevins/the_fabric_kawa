@@ -24,56 +24,45 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
-(define-private-alias Context com.jme3.system.JmeContext)
-(define-private-alias MessageListener com.jme3.network.MessageListener)
-(define-private-alias Network com.jme3.network.Network)
-(define-private-alias Serializable com.jme3.network.serializing.Serializable)
-(define-private-alias Serializer com.jme3.network.serializing.Serializer)
-(define-private-alias SimpleApplication com.jme3.app.SimpleApplication)
-(define-private-alias Server com.jme3.network.Server)
+(import-as Context com.jme3.system.JmeContext)
+(import-as MessageListener com.jme3.network.MessageListener)
+(import-as Network com.jme3.network.Network)
+(import-as Serializable com.jme3.network.serializing.Serializable)
+(import-as Serializer com.jme3.network.serializing.Serializer)
+(import-as SimpleApplication com.jme3.app.SimpleApplication)
+(import-as Server com.jme3.network.Server)
 
 
 ;;; ---------------------------------------------------------------------
 ;;; ServerChatHandler - aux class for handling icoming chat messages
 ;;; ---------------------------------------------------------------------
 
-(define-simple-class ServerChatHandler (MessageListener)
-  ((messageReceived source msg)
-   (format #t "~%Received message: ~s" msg)
-   (if (instance? msg ChatMessage)
-       (begin (*:setAttribute source "name" (*:getName msg))
-              (format #t "~%Broadcasting message: ~a..." (*:toString msg))
-              (*:broadcast (*:getServer source) msg))
-       (format #t "~%Unrecognized message: ~a~%" (*:toString msg)))))
+(defclass ServerChatHandler (MessageListener)
+  (methods:
+   ((messageReceived source msg)
+    (format #t "~%Received message: ~s" msg)
+    (if (instance? msg ChatMessage)
+        (begin (*:setAttribute source "name" (*:getName msg))
+               (format #t "~%Broadcasting message: ~a..." (*:toString msg))
+               (*:broadcast (*:getServer source) msg))
+        (format #t "~%Unrecognized message: ~a~%" (*:toString msg))))))
 
 ;;; ---------------------------------------------------------------------
 ;;; FabricManager - the server class
 ;;; ---------------------------------------------------------------------
 
-(define-simple-class FabricManager (SimpleApplication)
-  ;; slots
-  ;; -------
-  (network-listener::Server init-form: #!null)
-  (chat-handler::ServerChatHandler init-form: #!null)
-
-  ;; accessors
-  ;; ---------
-  ((getNetworkListener) network-listener)
-  ((setNetworkListener listener::Server) (set! network-listener listener))
-
-  ((getChatHandler) chat-handler)
-  ((setChatHandler handler::ServerChatHandler) (set! chat-handler handler))
-
-  ;; methods
-  ;; -------
-  ((simpleInitApp) #!void)
-  ((stopServer) (*:close network-listener))
-  ((printServer)(begin (format #t "~%The Fabric server: ~A" (fabric-version))
-                       (format #t "~% network listener: ~S" network-listener)
-                       (format #t "~% listener running? ~S" (and (not (jnull? network-listener))
-                                                                 (*:isRunning network-listener)))
-                       (format #t "~% ~A" (*:toString network-listener)))))
-
+(defclass FabricManager (SimpleApplication)
+  (slots:
+   (network-listener type: Server init-form: #!null getter: getNetworkListener setter: setNetworkListener)
+   (chat-handler type: ServerChatHandler init-form: #!null getter: getChatHandler setter: setChatHandler))
+  (methods:
+   ((simpleInitApp) #!void)
+   ((stopServer) (*:close network-listener))
+   ((printServer)(begin (format #t "~%The Fabric server: ~A" (fabric-version))
+                        (format #t "~% network listener: ~S" network-listener)
+                        (format #t "~% listener running? ~S" (and (not (jnull? network-listener))
+                                                                  (*:isRunning network-listener)))
+                        (format #t "~% ~A" (*:toString network-listener))))))
 
 ;;; ---------------------------------------------------------------------
 ;;; accessors
