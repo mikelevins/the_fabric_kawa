@@ -17,6 +17,7 @@
 
 (require 'list-lib)
 (require "util-java.scm")
+(require "syntax-classes.scm")
 (require "util-general.scm")
 (require "util-random.scm")
 (require "assets-general.scm")
