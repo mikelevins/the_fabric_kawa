@@ -32,7 +32,6 @@
 (import-as SimpleApplication com.jme3.app.SimpleApplication)
 (import-as Server com.jme3.network.Server)
 
-
 ;;; ---------------------------------------------------------------------
 ;;; ServerChatHandler - aux class for handling icoming chat messages
 ;;; ---------------------------------------------------------------------

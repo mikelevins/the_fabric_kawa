@@ -138,7 +138,7 @@
           fork="true">
       <classpath refid="library.class.path"/>
       <arg line="-C 'util-java.scm' 'util-random.scm' 'util-general.scm' 'util-lists.scm' 'init-config.scm'
-                 'model-id.scm' 'language-types.scm' 'language-gf.scm' 'model-frame.scm'
+                 'model-id.scm' 'model-frame.scm'
                  'model-namegen-domains.scm' 'model-namegen.scm' 'model-kind.scm' 'model-entity.scm'
                  'assets-general.scm' 'view-controls.scm'
                  'view-colors.scm' 'view-shapes.scm' 'view-plasma.scm' 'view-name-cube.scm' 'view-player.scm' 
