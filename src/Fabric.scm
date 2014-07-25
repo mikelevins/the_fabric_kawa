@@ -5,7 +5,6 @@
 
 (require "app-client.scm")
 
-
 (define $client (make-client))
 (invoke $client 'start)
 

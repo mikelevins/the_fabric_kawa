@@ -31,7 +31,6 @@
 (require "view-worker.scm")
 (require "init-config.scm")
 (require "view-node.scm")
-(require "interface-consp.scm")
 (require "syntax-events.scm")
 (require "app-common.scm")
 
@@ -124,9 +123,8 @@
 ;;; set up the worker character
 ;;; ---------------------------------------------------------------------
 
-;;; (assemble-worker-character pc-node pc-geom pc-controls)
+;;; assemble the worker
 ;;; ---------------------------------------------------------------------
-;;; assemble a worker-character's node, geometry, and controls
 
 (define (assemble-worker-character pc-node pc-geom pc-controls)
   (*:attachChild pc-node pc-geom)
@@ -134,7 +132,7 @@
               (*:addControl pc-geom ctrl))
             pc-controls))
 
-;;; (init-worker-camera app worker-node)
+;;; set up the worker's camera
 ;;; ---------------------------------------------------------------------
 
 (define (init-worker-camera app worker-node)
@@ -148,9 +146,8 @@
     ;; attach the camera to the worker character
     (*:attachChild worker-node cam-node)))
 
-;;; (init-worker-character app ::SimpleApplication)
-;;; ---------------------------------------------------------------------
 ;;; prepare a worker character and present it in the scene
+;;; ---------------------------------------------------------------------
 
 (define (init-worker-character app ::SimpleApplication)
   (let* ((worker-node (Node "Worker"))
@@ -182,7 +179,10 @@
     (*:attachChild (*:getRootNode app) worker-node)))
 
 ;;; ---------------------------------------------------------------------
-;;; WorkshopChatHandler - aux class for handling incoming chat messages
+;;; the chatbox
+;;; ---------------------------------------------------------------------
+
+;;; aux class for handling incoming chat messages
 ;;; ---------------------------------------------------------------------
 
 (defclass WorkshopChatHandler (MessageListener)
@@ -200,8 +200,8 @@
           (*:enqueue application updater))
         (format #t "Unrecognized message: ~s" msg)))))
 
-;;; ---------------------------------------------------------------------
-;;; set up the heads-up display and chatbox
+
+;;; helper functions
 ;;; ---------------------------------------------------------------------
 
 (define (workshop-report-failed-chat-message app chat-message chat-box)
@@ -240,6 +240,9 @@
         (*:send net-client chat-message)
         (workshop-report-failed-chat-message app chat-message (*:getChatHud app)))))
 
+;;; the chatboc class
+;;; ---------------------------------------------------------------------
+
 (defclass FabricChat (ChatBox)
   (methods:
    ((*init* screen :: Screen id :: String position :: Vector2f size :: Vector2f)
@@ -254,6 +257,9 @@
       (*:setReliable chat-message #t)
       (send-chat-message app chat-message)
       (*:resetTabFocus chatfield)))))
+
+;;; set up the HUD
+;;; ---------------------------------------------------------------------
 
 (define (init-hud app ::SimpleApplication name-string)
   (let ((screen (Screen app))
@@ -300,7 +306,7 @@
       (*:addElement screen chatbox))))
 
 ;;; ---------------------------------------------------------------------
-;;; set up worker controls
+;;; worker inputs
 ;;; ---------------------------------------------------------------------
 
 (define (setup-inputs app ::SimpleApplication)
@@ -337,7 +343,10 @@
                    "SPACE" "KEY_A")))
 
 ;;; ---------------------------------------------------------------------
-;;; set up the scene
+;;; scene setup
+;;; ---------------------------------------------------------------------
+
+;;; lighting
 ;;; ---------------------------------------------------------------------
 
 (define (setup-lighting app ::SimpleApplication)
@@ -349,9 +358,8 @@
     (*:addFilter filter-processor bloom)
     (*:addProcessor (*:getViewport app) filter-processor)))
 
-;;; (init-workshop app)
+;;; present the worker
 ;;; ---------------------------------------------------------------------
-;;; set up the scene and add the worker character
 
 (define (init-workshop app)
   (let* ((sky (make-workshop-sky app))
@@ -377,9 +385,8 @@
 ;;; set up event-handling
 ;;; ---------------------------------------------------------------------
 
-;;; (handle-analog-event app name value tpf)
-;;; ---------------------------------------------------------------------
 ;;; handle mouse movements and other continuous events
+;;; ---------------------------------------------------------------------
 
 (define (handle-analog-event app name value tpf)
   (on-analog (name)
@@ -428,9 +435,8 @@
               -> (when (*:getRightButton app)
                    (*:rotate (*:getWorkerNode app) (* 1 value) 0 0)))))
 
-;;; (handle-action-event app name key-pressed? tpf)
-;;; ---------------------------------------------------------------------
 ;;; handle keypresses, mouse clicks, and other discrete events
+;;; ---------------------------------------------------------------------
 
 (define (handle-action-event app name key-pressed? tpf)
   (on-action (name)
@@ -440,10 +446,6 @@
 ;;; ---------------------------------------------------------------------
 ;;; construct the workshop app
 ;;; ---------------------------------------------------------------------
-
-;;; (make-workshop)
-;;; ---------------------------------------------------------------------
-;;; puts everything together into a runnable workshop
 
 (define (make-workshop #!optional (center #f))
   (let* ((workshop :: FabricWorkshop (FabricWorkshop))

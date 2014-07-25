@@ -23,8 +23,6 @@
 ;; ;;; for testing against the server on explorersguild.com
 (require "init-config.scm")
 (require "model-id.scm")
-(require "language-types.scm")
-(require "language-gf.scm")
 (require "model-frame.scm")
 (require "model-namegen-domains.scm")
 (require "model-namegen.scm")

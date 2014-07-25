@@ -31,7 +31,6 @@
 (require "view-player.scm")
 (require "init-config.scm")
 (require "view-node.scm")
-(require "interface-consp.scm")
 (require "syntax-events.scm")
 (require "app-common.scm")
 
@@ -115,8 +114,8 @@
    ((getAudioRenderer) audioRenderer)
    ((getCameraDirection) (*:getDirection cam))))
 
-;;; ---------------------------------------------------------------------
-;;; FabricClient accessors
+
+;;; camera control
 ;;; ---------------------------------------------------------------------
 
 (define (client-camera-left app :: FabricClient)
@@ -126,12 +125,11 @@
   (*:normalizeLocal (*:getCameraDirection app)))
 
 ;;; ---------------------------------------------------------------------
-;;; set up the player character
+;;; player setup
 ;;; ---------------------------------------------------------------------
 
-;;; (assemble-player-character pc-node pc-geom pc-controls pc-armors)
+;;; assemble a player character
 ;;; ---------------------------------------------------------------------
-;;; assemble a player-character's node, geometry, controls, and armors
 
 (define (assemble-player-character pc-node pc-geom pc-controls pc-armors)
   (*:attachChild pc-node pc-geom)
@@ -143,7 +141,7 @@
               (*:setLocalTranslation armor 0 0 0))
             pc-armors))
 
-;;; (init-player-camera app player-node)
+;;; set up the player camera
 ;;; ---------------------------------------------------------------------
 
 (define (init-player-camera app player-node)
@@ -157,9 +155,8 @@
     ;; attach the camera to the player character
     (*:attachChild player-node cam-node)))
 
-;;; (init-player-character app ::SimpleApplication)
-;;; ---------------------------------------------------------------------
 ;;; prepare a player character and present it in the scene
+;;; ---------------------------------------------------------------------
 
 (define (init-player-character app ::SimpleApplication)
   (let* ((player-node (Node "Player"))
@@ -196,7 +193,10 @@
     (*:attachChild (*:getRootNode app) player-node)))
 
 ;;; ---------------------------------------------------------------------
-;;; ClientChatHandler - aux class for handling incoming chat messages
+;;; the chatbox
+;;; ---------------------------------------------------------------------
+
+;;; aux class for handling incoming chat messages
 ;;; ---------------------------------------------------------------------
 
 (defclass ClientChatHandler (MessageListener)
@@ -214,8 +214,8 @@
           (*:enqueue application updater))
         (format #t "Unrecognized message: ~s" msg)))))
 
-;;; ---------------------------------------------------------------------
-;;; set up the heads-up display and chatbox
+
+;;; helper functions
 ;;; ---------------------------------------------------------------------
 
 (define (client-report-failed-chat-message app chat-message chat-box)
@@ -254,6 +254,9 @@
         (*:send net-client chat-message)
         (client-report-failed-chat-message app chat-message (*:getChatHud app)))))
 
+;;; the chatbox class
+;;; ---------------------------------------------------------------------
+
 (defclass FabricChat (ChatBox)
   (methods:
    ((*init* screen :: Screen id :: String position :: Vector2f size :: Vector2f)
@@ -268,6 +271,10 @@
       (*:setReliable chat-message #t)
       (send-chat-message app chat-message)
       (*:resetTabFocus chatfield)))))
+
+;;; ---------------------------------------------------------------------
+;;; assemble the HUD
+;;; ---------------------------------------------------------------------
 
 (define (init-hud app ::SimpleApplication name-string)
   (let ((screen (Screen app))
@@ -314,7 +321,7 @@
       (*:addElement screen chatbox))))
 
 ;;; ---------------------------------------------------------------------
-;;; set up player controls
+;;; set up player inputs
 ;;; ---------------------------------------------------------------------
 
 (define (setup-inputs app ::SimpleApplication)
@@ -354,6 +361,9 @@
 ;;; set up the scene
 ;;; ---------------------------------------------------------------------
 
+;;; lighting
+;;; ---------------------------------------------------------------------
+
 (define (setup-lighting app ::SimpleApplication)
   (let* ((asset-manager::AssetManager (get-asset-manager))
          (bloom (BloomFilter BloomFilter:GlowMode:Objects))
@@ -364,9 +374,8 @@
     (*:addProcessor (*:getViewport app) filter-processor)))
 
 
-;;; (init-client app)
+;;; initializing the app
 ;;; ---------------------------------------------------------------------
-;;; set up the scene and add the player character
 
 (define (init-client app)
   (let* ((sky (make-sky app))
@@ -455,10 +464,6 @@
 ;;; ---------------------------------------------------------------------
 ;;; construct the client app
 ;;; ---------------------------------------------------------------------
-
-;;; (make-client)
-;;; ---------------------------------------------------------------------
-;;; puts everything together into a runnable client
 
 (define (make-client #!optional (center #f))
   (let* ((client :: FabricClient (FabricClient))
