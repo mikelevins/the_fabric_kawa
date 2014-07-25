@@ -65,13 +65,6 @@
                         (format #t "~% ~A" (*:toString network-listener))))))
 
 ;;; ---------------------------------------------------------------------
-;;; accessors
-;;; ---------------------------------------------------------------------
-
-(define (network-listener app)(*:getNetworkListener app))
-(define (set-network-listener! app listener)(*:setNetworkListener app listener))
-
-;;; ---------------------------------------------------------------------
 ;;; initialization
 ;;; ---------------------------------------------------------------------
 
@@ -87,12 +80,12 @@
 (define (start-listener app)
   (let ((listener (Network:createServer (server-name) (server-version) (server-port)(server-port)))
         (handler (ServerChatHandler)))
-    (set-network-listener! app listener)
+    (*:setNetworkListener app listener)
     (*:start listener)
     (*:addMessageListener listener handler ChatMessage)
     (*:printServer app)))
 
 (define (stop-listener app)
-  (let ((listener (network-listener app)))
-    (set-network-listener! app #!null)
+  (let ((listener (*:getNetworkListener app)))
+    (*:setNetworkListener app #!null)
     (*:close listener)))

@@ -11,6 +11,7 @@
 
 (module-export entity? ensure-entity-id empty-entity entity)
 
+(require "util-java.scm")
 (require "model-frame.scm")
 (require "model-id.scm")
 

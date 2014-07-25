@@ -74,11 +74,7 @@
 
 ;;; triangles -> polygons
 
-
-
 ;;; polygon -> triangles
-
-
 
 ;;; ---------------------------------------------------------------------
 ;;; finished shape constructors

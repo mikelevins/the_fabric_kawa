@@ -9,7 +9,7 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export import-as jnull? defgetter defsetter)
+(module-export import-as jnull?)
 
 (define (jnull? thing)
   (eqv? thing #!null))
@@ -18,15 +18,3 @@
   (syntax-rules ()
     ((import-as localname imported-name)
      (define-private-alias localname imported-name))))
-
-(define-syntax defgetter
-  (syntax-rules (::)
-    ((defgetter (getter-name classname) method-name)
-     (define (getter-name obj :: classname)
-       (invoke obj 'method-name)))))
-
-(define-syntax defsetter
-  (syntax-rules (:: val)
-    ((defsetter (setter-name classname) method-name)
-     (define (setter-name obj :: classname val)
-       (invoke obj 'method-name val)))))

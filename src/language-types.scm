@@ -34,7 +34,7 @@
       #t
       #f))
 
-(define (get-interfaces a-class)
+(define (get-interfaces a-class::Class)
   (gnu.lists.LList:makeList (*:getInterfaces a-class) 0))
 
 (define (direct-superclasses a-class::Class)

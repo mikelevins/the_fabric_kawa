@@ -22,9 +22,9 @@
 
 (define (any-lit-color)
   (let ((transp (any-transparency))
-        (red (choose-any '(0.25 0.5 0.75 1.0)))
-        (green (choose-any '(0.25 0.5 0.75 1.0)))
-        (blue (choose-any '(0.25 0.5 0.75 1.0))))
+        (red::float (choose-any '(0.25 0.5 0.75 1.0)))
+        (green::float (choose-any '(0.25 0.5 0.75 1.0)))
+        (blue::float (choose-any '(0.25 0.5 0.75 1.0))))
     (ColorRGBA red green blue transp)))
 
 (define (brighten color::ColorRGBA)

@@ -9,8 +9,7 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export ChatMessage message-name message-contents message-reliable?
-               set-message-name! set-message-contents! set-message-reliable!)
+(module-export ChatMessage)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -38,12 +37,4 @@
    (contents type: String init-form: #!null getter: getContents setter: setContents))
   (methods:
    ((toString) (format #f "[~A] ~A" name contents))))
-
-(define (message-name msg::ChatMessage) (*:getName msg))
-(define (message-contents msg::ChatMessage) (*:getContents msg))
-(define (message-reliable? msg::ChatMessage) (*:isReliable msg))
-
-(define (set-message-name! msg::ChatMessage nm) (*:setName msg nm))
-(define (set-message-contents! msg::ChatMessage cts) (*:setContents msg cts))
-(define (set-message-reliable! msg::ChatMessage rel?) (*:setReliable msg rel?))
 

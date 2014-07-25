@@ -19,7 +19,6 @@
       ((invoke evt-name 'equals s) expr) ...
       (#t #f)))))
 
-
 (define-syntax on-action
   (syntax-rules (->)
     ((on-action (evt-name)

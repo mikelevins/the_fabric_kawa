@@ -39,7 +39,8 @@
          (ssetter (if ssetter-form
                       `((,ssetter-form ,svar) (set! ,sname ,svar))
                       #f)))
-    (filter identity (list sgetter ssetter))))
+    (filter (lambda (x) x)
+            (list sgetter ssetter))))
 
 (defmacro defclass (classname superclasses . class-body)
   (let* ((annotations-clause (assoc annotations: class-body))

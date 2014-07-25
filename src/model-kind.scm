@@ -11,6 +11,7 @@
 
 (module-export kind? empty-kind kind)
 
+(require "util-java.scm")
 (require "model-frame.scm")
 (require "model-id.scm")
 

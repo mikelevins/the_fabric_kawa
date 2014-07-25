@@ -18,9 +18,9 @@
 (require "util-general.scm")
 (require "util-lists.scm")
 (require "syntax-classes.scm")
-;;; for local testing
-;;;(require "init-config-local.scm")
-;;; for testing against the server on explorersguild.com
+;; ;;; for local testing
+;; ;;;(require "init-config-local.scm")
+;; ;;; for testing against the server on explorersguild.com
 (require "init-config.scm")
 (require "model-id.scm")
 (require "language-types.scm")

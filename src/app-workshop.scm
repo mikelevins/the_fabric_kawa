@@ -114,44 +114,11 @@
    ((onAction name key-pressed? tpf)(handle-action-event (this) name key-pressed? tpf))
    ((simpleInitApp)(init-workshop (this)))))
 
-;;; ---------------------------------------------------------------------
-;;; FabricWorkshop accessors
-;;; ---------------------------------------------------------------------
-
-(defgetter (workshop-audio-renderer FabricWorkshop) getAudioRenderer)
-(defgetter (workshop-camera FabricWorkshop) getCamera)
-(defgetter (workshop-camera-direction FabricWorkshop) getCameraDirection)
-(defgetter (workshop-center-name FabricWorkshop) getCenterName)
-(defgetter (workshop-chat-hud FabricWorkshop) getChatHud)
-(defgetter (workshop-direction FabricWorkshop) getDirection)
-(defgetter (workshop-network-client FabricWorkshop) getNetworkClient)
-(defgetter (workshop-fly-by-camera FabricWorkshop) getFlyByCamera)
-(defgetter (workshop-gui-font FabricWorkshop) getGuiFont)
-(defgetter (workshop-gui-node FabricWorkshop) getGuiNode)
-(defgetter (workshop-input-manager FabricWorkshop) getInputManager)
-(defgetter (workshop-key-input FabricWorkshop) getKeyInput)
-(defgetter (workshop-left-button? FabricWorkshop) getLeftButton)
-(defgetter (workshop-worker FabricWorkshop) getWorker)
-(defgetter (workshop-worker-node FabricWorkshop) getWorkerNode)
-(defgetter (workshop-right-button? FabricWorkshop) getRightButton)
-(defgetter (workshop-root-node FabricWorkshop) getRootNode)
-(defgetter (workshop-state-manager FabricWorkshop) getStateManager)
-(defgetter (workshop-viewport FabricWorkshop) getViewport)
-
-(defsetter (set-center-name! FabricWorkshop) setCenterName)
-(defsetter (set-workshop-chat-hud! FabricWorkshop) setChatHud)
-(defsetter (set-workshop-direction! FabricWorkshop) setDirection)
-(defsetter (set-workshop-network-client! FabricWorkshop) setNetworkClient)
-(defsetter (set-workshop-left-button! FabricWorkshop) setLeftButton)
-(defsetter (set-workshop-worker! FabricWorkshop) setWorker)
-(defsetter (set-workshop-worker-node! FabricWorkshop) setWorkerNode)
-(defsetter (set-workshop-right-button! FabricWorkshop) setRightButton)
-
 (define (workshop-camera-left app :: FabricWorkshop)
-  (*:getLeft (workshop-camera app)))
+  (*:getLeft (*:getCamera app)))
 
 (define (workshop-normalize-camera! app)
-  (*:normalizeLocal (workshop-camera-direction app)))
+  (*:normalizeLocal (*:getDirection (*:getCamera app))))
 
 ;;; ---------------------------------------------------------------------
 ;;; set up the worker character
@@ -171,10 +138,10 @@
 ;;; ---------------------------------------------------------------------
 
 (define (init-worker-camera app worker-node)
-  (let* ((camera::com.jme3.renderer.Camera (workshop-camera app))
+  (let* ((camera::com.jme3.renderer.Camera (*:getCamera app))
          (cam-node (CameraNode "camera" camera)))
     (*:setControlDir cam-node CameraControl:ControlDirection:SpatialToCamera)
-    (*:setFrustumFar (workshop-camera app) 20000)
+    (*:setFrustumFar (*:getCamera app) 20000)
     ;; position the camera behind and above the worker and look at the worker
     (*:setLocalTranslation cam-node (Vector3f 0 30 -30))
     (*:lookAt cam-node (*:getLocalTranslation worker-node) Vector3f:UNIT_Y)
@@ -190,12 +157,12 @@
          (worker (make-worker-character (any-lit-color)))
          (worker-shape (get-key worker shape:))
          (worker-rotator (any-rotator)))
-    (set-workshop-worker! app worker)
-    (set-workshop-worker-node! app worker-node)
+    (*:setWorker app worker)
+    (*:setWorkerNode app worker-node)
     ;; don't seize the mouse from the worker
     (Mouse:setGrabbed #f)
     ;; disable the fly-by camera
-    (*:setEnabled (workshop-fly-by-camera app) #f)
+    (*:setEnabled (*:getFlyByCamera app) #f)
 
     ;; assemble the worker character's parts
     (assemble-worker-character worker-node worker-shape (list worker-rotator))
@@ -212,7 +179,7 @@
       (*:setLocalRotation worker-node rotation))
     
     ;; add the worker to the scene
-    (*:attachChild (workshop-root-node app) worker-node)))
+    (*:attachChild (*:getRootNode app) worker-node)))
 
 ;;; ---------------------------------------------------------------------
 ;;; WorkshopChatHandler - aux class for handling incoming chat messages
@@ -224,11 +191,10 @@
    ((*init* app)(set! application app))
    ((messageReceived source msg)
     (if (instance? msg ChatMessage)
-        (let* ((chatbox (workshop-chat-hud application))
-               (msg-name (message-name msg))
-               (msg-contents (message-contents msg))
-               (received-text (format #f "[~A] ~A"
-                                      msg-name msg-contents))
+        (let* ((chatbox (*:getChatHud application))
+               (msg-name (*:getName msg))
+               (msg-contents (*:getContents msg))
+               (received-text (format #f "[~A] ~A" msg-name msg-contents))
                (updater (runnable (lambda ()
                                     (*:receiveMsg chatbox received-text)))))
           (*:enqueue application updater))
@@ -239,8 +205,8 @@
 ;;; ---------------------------------------------------------------------
 
 (define (workshop-report-failed-chat-message app chat-message chat-box)
-  (let* ((msg-name (message-name chat-message))
-         (msg-contents (message-contents chat-message))
+  (let* ((msg-name (*:getName chat-message))
+         (msg-contents (*:getContents chat-message))
          (failed-text (format #f "Connection failed; unable to send message: [~A] ~A"
                               msg-name msg-contents)))
     (*:receiveMsg chat-box failed-text)))
@@ -249,19 +215,19 @@
   (try-catch
    (let ((new-connection (Network:connectToServer (server-name)(server-version)(server-host)
                                                   (server-port)(server-port))))
-     (set-workshop-network-client! app new-connection)
-     (*:addMessageListener (workshop-network-client app) (WorkshopChatHandler app))
-     (*:start (workshop-network-client app)))
-   (ex java.net.ConnectException (begin (set-workshop-network-client! app #!null)
+     (*:setNetworkClient app new-connection)
+     (*:addMessageListener (*:getNetworkClient app) (WorkshopChatHandler app))
+     (*:start (*:getNetworkClient app)))
+   (ex java.net.ConnectException (begin (*:setNetworkClient app #!null)
                                         (format #t "~%Failed to connect to Fabric server.")
                                         (format #t "~%~A" (*:toString ex))))))
 
 (define (ensure-valid-network-client app)
   (let ((net-client #f)
-        (found-client (workshop-network-client app)))
+        (found-client (*:getNetworkClient app)))
     (when (jnull? found-client)
       (workshop-connect-to-server app))
-    (set! net-client (workshop-network-client app))
+    (set! net-client (*:getNetworkClient app))
     (if (jnull? net-client)
         #f
         (if (*:isConnected net-client)
@@ -272,7 +238,7 @@
   (let ((net-client (ensure-valid-network-client app)))
     (if net-client
         (*:send net-client chat-message)
-        (workshop-report-failed-chat-message app chat-message (workshop-chat-hud app)))))
+        (workshop-report-failed-chat-message app chat-message (*:getChatHud app)))))
 
 (defclass FabricChat (ChatBox)
   (methods:
@@ -283,18 +249,18 @@
            (screen (*:getScreen (this)))
            (app (*:getApplication screen))
            (chat-message (ChatMessage)))
-      (set-message-name! chat-message (worker-namestring (workshop-worker app)))
-      (set-message-contents! chat-message msg)
-      (set-message-reliable! chat-message #t)
+      (*:setName chat-message (worker-namestring (*:getWorker app)))
+      (*:setContents chat-message msg)
+      (*:setReliable chat-message #t)
       (send-chat-message app chat-message)
       (*:resetTabFocus chatfield)))))
 
 (define (init-hud app ::SimpleApplication name-string)
   (let ((screen (Screen app))
-        (key-input ::KeyInput (workshop-key-input app)))
+        (key-input ::KeyInput (*:getKeyInput app)))
     (*:initialize screen)
-    (*:addControl (workshop-gui-node app) screen)
-    (let* ((settings (app-settings app))
+    (*:addControl (*:getGuiNode app) screen)
+    (let* ((settings (*:getAppSettings app))
            (Align BitmapFont:Align)
            (VAlign BitmapFont:VAlign)
            (width (*:getWidth settings))
@@ -317,7 +283,7 @@
       (*:setFontSize nameplate 30)
       (*:setFontColor nameplate ColorRGBA:Green)
 
-      (*:setText nodeplate (string-capitalize (workshop-center-name app)))
+      (*:setText nodeplate (string-capitalize (*:getCenterName app)))
       (*:setTextAlign nodeplate Align:Left)
       (*:setFont nodeplate "Interface/Fonts/Laconic24.fnt")
       (*:setFontSize nodeplate 24)
@@ -328,11 +294,10 @@
       (*:setFontSize chatfield 24)
       (*:setSendKey chatbox key-input:KEY_RETURN)
       
-      (set-workshop-chat-hud! app chatbox)
+      (*:setChatHud app chatbox)
       (*:addElement screen nameplate)
       (*:addElement screen nodeplate)
       (*:addElement screen chatbox))))
-
 
 ;;; ---------------------------------------------------------------------
 ;;; set up worker controls
@@ -340,38 +305,36 @@
 
 (define (setup-inputs app ::SimpleApplication)
   ;; set up the worker's controls
-  (let ((key-input ::KeyInput (workshop-key-input app)))
-    (*:addMapping (workshop-input-manager app) "moveForward" (KeyTrigger key-input:KEY_UP))
-    (*:addMapping (workshop-input-manager app) "moveForward" (KeyTrigger key-input:KEY_W))
-    (*:addMapping (workshop-input-manager app) "maybeMoveForward"
-                   (MouseButtonTrigger MouseInput:BUTTON_LEFT))
-    (*:addMapping (workshop-input-manager app) "leftButton"
-                   (MouseButtonTrigger MouseInput:BUTTON_LEFT))
-    (*:addMapping (workshop-input-manager app) "rightButton"
-                   (MouseButtonTrigger MouseInput:BUTTON_RIGHT))
-    (*:addMapping (workshop-input-manager app) "moveRight" (KeyTrigger key-input:KEY_RIGHT))
-    (*:addMapping (workshop-input-manager app) "moveRight" (KeyTrigger key-input:KEY_D))
-    (*:addMapping (workshop-input-manager app) "mouseRotateRight" (MouseAxisTrigger 0 #f))
-    (*:addMapping (workshop-input-manager app) "moveLeft" (KeyTrigger key-input:KEY_LEFT))
-    (*:addMapping (workshop-input-manager app) "moveLeft" (KeyTrigger key-input:KEY_A))
-    (*:addMapping (workshop-input-manager app) "mouseRotateLeft" (MouseAxisTrigger 0 #t))
-    (*:addMapping (workshop-input-manager app) "mouseRotateUp" (MouseAxisTrigger 1 #f))
-    (*:addMapping (workshop-input-manager app) "moveBackward" (KeyTrigger key-input:KEY_DOWN))
-    (*:addMapping (workshop-input-manager app) "moveBackward" (KeyTrigger key-input:KEY_S))
-    (*:addMapping (workshop-input-manager app) "mouseRotateDown" (MouseAxisTrigger 1 #t))
+  (let ((key-input ::KeyInput (*:getKeyInput app))
+        (input-manager (*:getInputManager app)))
+    (*:addMapping input-manager "moveForward" (KeyTrigger key-input:KEY_UP))
+    (*:addMapping input-manager "moveForward" (KeyTrigger key-input:KEY_W))
+    (*:addMapping input-manager "maybeMoveForward" (MouseButtonTrigger MouseInput:BUTTON_LEFT))
+    (*:addMapping input-manager "leftButton" (MouseButtonTrigger MouseInput:BUTTON_LEFT))
+    (*:addMapping input-manager "rightButton" (MouseButtonTrigger MouseInput:BUTTON_RIGHT))
+    (*:addMapping input-manager "moveRight" (KeyTrigger key-input:KEY_RIGHT))
+    (*:addMapping input-manager "moveRight" (KeyTrigger key-input:KEY_D))
+    (*:addMapping input-manager "mouseRotateRight" (MouseAxisTrigger 0 #f))
+    (*:addMapping input-manager "moveLeft" (KeyTrigger key-input:KEY_LEFT))
+    (*:addMapping input-manager "moveLeft" (KeyTrigger key-input:KEY_A))
+    (*:addMapping input-manager "mouseRotateLeft" (MouseAxisTrigger 0 #t))
+    (*:addMapping input-manager "mouseRotateUp" (MouseAxisTrigger 1 #f))
+    (*:addMapping input-manager "moveBackward" (KeyTrigger key-input:KEY_DOWN))
+    (*:addMapping input-manager "moveBackward" (KeyTrigger key-input:KEY_S))
+    (*:addMapping input-manager "mouseRotateDown" (MouseAxisTrigger 1 #t))
 
-       ;;; text inputs
-    (*:addMapping (workshop-input-manager app) "SPACE" (KeyTrigger key-input:KEY_SPACE))
-    (*:addMapping (workshop-input-manager app) "KEY_A" (KeyTrigger key-input:KEY_A))
+    ;; text inputs
+    (*:addMapping input-manager "SPACE" (KeyTrigger key-input:KEY_SPACE))
+    (*:addMapping input-manager "KEY_A" (KeyTrigger key-input:KEY_A))
 
-
-    (*:addListener (workshop-input-manager app) app
-                    ;; motion controls
-                    "moveForward" "maybeMoveForward" "moveBackward" "moveRight" "moveLeft"
-                    "leftButton" "rightButton" "rotateRight" "rotateLeft" "rotateUp" "rotateDown"
-                    "mouseRotateRight" "mouseRotateLeft" "mouseRotateUp" "mouseRotateDown"
-                    ;; chat input
-                    "SPACE" "KEY_A")))
+    ;; set up event listener
+    (*:addListener input-manager app
+                   ;; motion controls
+                   "moveForward" "maybeMoveForward" "moveBackward" "moveRight" "moveLeft"
+                   "leftButton" "rightButton" "rotateRight" "rotateLeft" "rotateUp" "rotateDown"
+                   "mouseRotateRight" "mouseRotateLeft" "mouseRotateUp" "mouseRotateDown"
+                   ;; chat input
+                   "SPACE" "KEY_A")))
 
 ;;; ---------------------------------------------------------------------
 ;;; set up the scene
@@ -384,7 +347,7 @@
     (*:setDownSamplingFactor bloom 2.0)
     (*:setBloomIntensity bloom 2.0)
     (*:addFilter filter-processor bloom)
-    (*:addProcessor (workshop-viewport app) filter-processor)))
+    (*:addProcessor (*:getViewport app) filter-processor)))
 
 ;;; (init-workshop app)
 ;;; ---------------------------------------------------------------------
@@ -396,14 +359,14 @@
 
     (setup-lighting app)
     (setup-inputs app)
-    (*:attachChild (workshop-root-node app) sky)
-    (when (eq? #!null (workshop-center-name app))
-      (set-center-name! app (choose-any (node-names))))
-    (set! center-body (make-center-body app (workshop-center-name app)))
-    (*:attachChild (workshop-root-node app) center-body)
+    (*:attachChild (*:getRootNode app) sky)
+    (when (eq? #!null (*:getCenterName app))
+      (*:setCenterName app (choose-any (node-names))))
+    (set! center-body (make-center-body app (*:getCenterName app)))
+    (*:attachChild (*:getRootNode app) center-body)
     (init-worker-character app)
 
-    (let ((worker (workshop-worker app)))
+    (let ((worker (*:getWorker app)))
       (init-hud app (worker-namestring worker)))
     (ensure-valid-network-client app)
     ;; uncomment to capture video to a file
@@ -422,48 +385,48 @@
   (on-analog (name)
              ("moveForward"
               -> (begin (workshop-normalize-camera! app)
-                        (set-workshop-direction! app (workshop-camera-direction app))
-                        (*:multLocal (workshop-direction app) (* 800 tpf))
-                        (*:move (workshop-worker-node app) (workshop-direction app))))
+                        (*:setDirection app (*:getCameraDirection app))
+                        (*:multLocal (*:getDirection app) (* 300 tpf))
+                        (*:move (*:getWorkerNode app) (*:getDirection app))))
              ("maybeMoveForward"
-              -> (when (workshop-right-button? app)
+              -> (when (*:getRightButton app)
                    (workshop-normalize-camera! app)
-                   (set-workshop-direction! app (workshop-camera-direction app))
-                   (*:multLocal (workshop-direction app) (* 800 tpf))
-                   (*:move (workshop-worker-node app) (workshop-direction app))))
+                   (*:setDirection app (*:getCameraDirection app))
+                   (*:multLocal (*:getDirection app) (* 300 tpf))
+                   (*:move (*:getWorkerNode app) (*:getDirection app))))
              ("moveBackward"
               -> (begin (workshop-normalize-camera! app)
-                        (set-workshop-direction! app (workshop-camera-direction app))
-                        (*:multLocal (workshop-direction app) (* -600 tpf))
-                        (*:move (workshop-worker-node app) (workshop-direction app))))
+                        (*:setDirection app (*:getCameraDirection app))
+                        (*:multLocal (*:getDirection app) (* -200 tpf))
+                        (*:move (*:getWorkerNode app) (*:getDirection app))))
              ("moveRight"
-              -> (begin (set-workshop-direction! app (*:normalizeLocal (*:getLeft (workshop-camera app))))
-                        (*:multLocal (workshop-direction app) (* -600 tpf))
-                        (*:move (workshop-worker-node app) (workshop-direction app))))
+              -> (begin (*:setDirection app (*:normalizeLocal (*:getLeft (*:getCamera app))))
+                        (*:multLocal (*:getDirection app) (* -150 tpf))
+                        (*:move (*:getWorkerNode app) (*:getDirection app))))
              ("moveLeft"
-              -> (begin (set-workshop-direction! app (*:normalizeLocal (*:getLeft (workshop-camera app))))
-                        (*:multLocal (workshop-direction app) (* 600 tpf))
-                        (*:move (workshop-worker-node app) (workshop-direction app))))
+              -> (begin (*:setDirection app (*:normalizeLocal (*:getLeft (*:getCamera app))))
+                        (*:multLocal (*:getDirection app) (* 150 tpf))
+                        (*:move (*:getWorkerNode app) (*:getDirection app))))
              ("rotateRight"
-              -> (*:rotate (workshop-worker-node app) 0 (* -0.25 tpf) 0))
+              -> (*:rotate (*:getWorkerNode app) 0 (* -0.25 tpf) 0))
              ("mouseRotateRight"
-              -> (when (workshop-right-button? app)
-                   (*:rotate (workshop-worker-node app) 0 (* -1 value) 0)))
+              -> (when (*:getRightButton app)
+                   (*:rotate (*:getWorkerNode app) 0 (* -1 value) 0)))
              ("rotateLeft"
-              -> (*:rotate (workshop-worker-node app) 0 (* 0.25 tpf) 0))
+              -> (*:rotate (*:getWorkerNode app) 0 (* 0.25 tpf) 0))
              ("mouseRotateLeft"
-              -> (when (workshop-right-button? app)
-                   (*:rotate (workshop-worker-node app) 0 (* 1 value) 0)))
+              -> (when (*:getRightButton app)
+                   (*:rotate (*:getWorkerNode app) 0 (* 1 value) 0)))
              ("rotateUp"
-              -> (*:rotate (workshop-worker-node app) (* -0.125 tpf) 0 0))
+              -> (*:rotate (*:getWorkerNode app) (* -0.125 tpf) 0 0))
              ("mouseRotateUp"
-              -> (when (workshop-right-button? app)
-                   (*:rotate (workshop-worker-node app) (* -1 value) 0 0)))
+              -> (when (*:getRightButton app)
+                   (*:rotate (*:getWorkerNode app) (* -1 value) 0 0)))
              ("rotateDown"
-              -> (*:rotate (workshop-worker-node app) (* 0.125 tpf) 0 0))
+              -> (*:rotate (*:getWorkerNode app) (* 0.125 tpf) 0 0))
              ("mouseRotateDown"
-              -> (when (workshop-right-button? app)
-                   (*:rotate (workshop-worker-node app) (* 1 value) 0 0)))))
+              -> (when (*:getRightButton app)
+                   (*:rotate (*:getWorkerNode app) (* 1 value) 0 0)))))
 
 ;;; (handle-action-event app name key-pressed? tpf)
 ;;; ---------------------------------------------------------------------
@@ -471,8 +434,8 @@
 
 (define (handle-action-event app name key-pressed? tpf)
   (on-action (name)
-             ("leftButton" -> (set-workshop-left-button! app key-pressed?))
-             ("rightButton" -> (set-workshop-right-button! app key-pressed?))))
+             ("leftButton" -> (*:setLeftButton app key-pressed?))
+             ("rightButton" -> (*:setRightButton app key-pressed?))))
 
 ;;; ---------------------------------------------------------------------
 ;;; construct the workshop app
@@ -484,9 +447,9 @@
 
 (define (make-workshop #!optional (center #f))
   (let* ((workshop :: FabricWorkshop (FabricWorkshop))
-	 (settings :: AppSettings (app-settings workshop)))
+	 (settings :: AppSettings (*:getAppSettings workshop)))
     (when center
-      (set-center-name! workshop center))
+      (*:setCenterName workshop center))
     (Serializer:registerClass ChatMessage)
     (*:setResolution settings 1920 1200)
     (*:setTitle settings "The Fabric")

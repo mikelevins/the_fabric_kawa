@@ -9,6 +9,7 @@
 ;;;;
 ;;;; ***********************************************************************
 
+(require "util-java.scm")
 (require "language-types.scm")
 (require "util-lists.scm")
 

@@ -79,7 +79,6 @@
 
 ;;; (make-player-character)
 
-
 (define (player-namestring player)
   (let* ((name-strings (fabric-name-strings (get-key player name: "")))
          (out-string (call-with-output-string

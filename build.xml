@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="fabric" default="jar">
+<project name="fabric" default="client">
 
   <path id="library.class.path">
     <pathelement location="../the_fabric_libraries/clj-ds-0.0.4.jar"/>
