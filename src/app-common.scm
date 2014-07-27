@@ -60,7 +60,6 @@
    ((onAction name key-pressed? tpf) #!abstract)
    ((simpleInitApp) #!abstract)))
 
-
 ;;; player-camera movement
 ;;; ---------------------------------------------------------------------
 

@@ -32,6 +32,7 @@
 (require "init-config.scm")
 (require "view-node.scm")
 (require "syntax-events.scm")
+(require "ui-chatbox.scm")
 (require "app-common.scm")
 
 ;;; ---------------------------------------------------------------------
@@ -142,86 +143,6 @@
     ;; add the worker to the scene
     (*:attachChild (*:getRootNode app) worker-node)))
 
-;;; ---------------------------------------------------------------------
-;;; the chatbox
-;;; ---------------------------------------------------------------------
-
-;;; aux class for handling incoming chat messages
-;;; ---------------------------------------------------------------------
-
-(defclass WorkshopChatHandler (MessageListener)
-  (slots: (application init-form: #!null))
-  (methods:
-   ((*init* app)(set! application app))
-   ((messageReceived source msg)
-    (if (instance? msg ChatMessage)
-        (let* ((chatbox (*:getChatHud application))
-               (msg-name (*:getName msg))
-               (msg-contents (*:getContents msg))
-               (received-text (format #f "[~A] ~A" msg-name msg-contents))
-               (updater (runnable (lambda ()
-                                    (*:receiveMsg chatbox received-text)))))
-          (*:enqueue application updater))
-        (format #t "Unrecognized message: ~s" msg)))))
-
-
-;;; helper functions
-;;; ---------------------------------------------------------------------
-
-(define (workshop-report-failed-chat-message app chat-message chat-box)
-  (let* ((msg-name (*:getName chat-message))
-         (msg-contents (*:getContents chat-message))
-         (failed-text (format #f "Connection failed; unable to send message: [~A] ~A"
-                              msg-name msg-contents)))
-    (*:receiveMsg chat-box failed-text)))
-
-(define (workshop-connect-to-server app)
-  (try-catch
-   (let ((new-connection (Network:connectToServer (server-name)(server-version)(server-host)
-                                                  (server-port)(server-port))))
-     (*:setNetworkClient app new-connection)
-     (*:addMessageListener (*:getNetworkClient app) (WorkshopChatHandler app))
-     (*:start (*:getNetworkClient app)))
-   (ex java.net.ConnectException (begin (*:setNetworkClient app #!null)
-                                        (format #t "~%Failed to connect to Fabric server.")
-                                        (format #t "~%~A" (*:toString ex))))))
-
-(define (ensure-valid-network-client app)
-  (let ((net-client #f)
-        (found-client (*:getNetworkClient app)))
-    (when (jnull? found-client)
-      (workshop-connect-to-server app))
-    (set! net-client (*:getNetworkClient app))
-    (if (jnull? net-client)
-        #f
-        (if (*:isConnected net-client)
-            net-client
-            #f))))
-
-(define (send-chat-message app chat-message)
-  (let ((net-client (ensure-valid-network-client app)))
-    (if net-client
-        (*:send net-client chat-message)
-        (workshop-report-failed-chat-message app chat-message (*:getChatHud app)))))
-
-;;; the chatboc class
-;;; ---------------------------------------------------------------------
-
-(defclass FabricChat (ChatBox)
-  (methods:
-   ((*init* screen :: Screen id :: String position :: Vector2f size :: Vector2f)
-    (invoke-special ChatBox (this) '*init* screen id position size))
-   ((onSendMsg msg::String)
-    (let* ((chatfield (*:getChildElementById (this) "chatbox:ChatInput"))
-           (screen (*:getScreen (this)))
-           (app (*:getApplication screen))
-           (chat-message (ChatMessage)))
-      (*:setName chat-message (worker-namestring (*:getWorker app)))
-      (*:setContents chat-message msg)
-      (*:setReliable chat-message #t)
-      (send-chat-message app chat-message)
-      (*:resetTabFocus chatfield)))))
-
 ;;; set up the HUD
 ;;; ---------------------------------------------------------------------
 
@@ -263,7 +184,8 @@
       (*:removeEffect chatfield EffectEvent:TabFocus)
       (*:setFontSize chatfield 24)
       (*:setSendKey chatbox key-input:KEY_RETURN)
-      
+      (*:setChatName chatbox name-string)      
+
       (*:setChatHud app chatbox)
       (*:addElement screen nameplate)
       (*:addElement screen nodeplate)
@@ -355,7 +277,7 @@
 
 (define (handle-analog-event app name value tpf)
   (let ((speed (*:getSpeed app))
-        (node (*:getPlayerNode app))
+        (node (*:getWorkerNode app))
         (right-button-down? (*:getRightButton app)))
     (on-analog (name)
                ("moveForward" -> (move-node-forward! app node (* speed tpf)))
@@ -399,6 +321,7 @@
     (*:setTitle settings "The Fabric")
     (*:setSettingsDialogImage settings "Interface/icon.jpg")
     (*:setSettings workshop settings)
+    (*:setSpeed workshop 800.0)
     (*:setDisplayFps workshop #f) ; #t to show FPS
     (*:setShowSettings workshop #t) ; #t to show settings dialog
     (*:setDisplayStatView workshop #f) ; #t to show stats

@@ -22,7 +22,6 @@
 (require "assets-general.scm")
 (require "model-frame.scm")
 (require "model-namegen.scm")
-(require "net-messaging.scm")
 (require "util-lists.scm")
 (require "view-shapes.scm")
 (require "view-controls.scm")
@@ -32,6 +31,7 @@
 (require "init-config.scm")
 (require "view-node.scm")
 (require "syntax-events.scm")
+(require "ui-chatbox.scm")
 (require "app-common.scm")
 
 ;;; ---------------------------------------------------------------------
@@ -45,7 +45,6 @@
 (import-as CameraControl com.jme3.scene.control.CameraControl)
 (import-as CameraNode com.jme3.scene.CameraNode)
 (import-as Client com.jme3.network.Client)
-(import-as ChatBox tonegod.gui.controls.extras.ChatBox)
 (import-as ColorRGBA com.jme3.math.ColorRGBA)
 (import-as ConnectException java.net.ConnectException)
 (import-as EffectEvent tonegod.gui.effects.Effect:EffectEvent)
@@ -53,12 +52,10 @@
 (import-as KeyInput com.jme3.input.KeyInput)
 (import-as KeyTrigger com.jme3.input.controls.KeyTrigger)
 (import-as TLabel tonegod.gui.controls.text.Label)
-(import-as MessageListener com.jme3.network.MessageListener)
 (import-as Mouse org.lwjgl.input.Mouse)
 (import-as MouseAxisTrigger com.jme3.input.controls.MouseAxisTrigger)
 (import-as MouseButtonTrigger com.jme3.input.controls.MouseButtonTrigger)
 (import-as MouseInput com.jme3.input.MouseInput)
-(import-as Network com.jme3.network.Network)
 (import-as Node com.jme3.scene.Node)
 (import-as PI com.jme3.math.FastMath:PI)
 (import-as Quaternion com.jme3.math.Quaternion)
@@ -153,86 +150,6 @@
     (*:attachChild (*:getRootNode app) player-node)))
 
 ;;; ---------------------------------------------------------------------
-;;; the chatbox
-;;; ---------------------------------------------------------------------
-
-;;; aux class for handling incoming chat messages
-;;; ---------------------------------------------------------------------
-
-(defclass ClientChatHandler (MessageListener)
-  (slots: (application init-form: #!null))
-  (methods:
-   ((*init* app)(set! application app))
-   ((messageReceived source msg)
-    (if (instance? msg ChatMessage)
-        (let* ((chatbox (*:getChatHud application))
-               (msg-name (*:getName msg))
-               (msg-contents (*:getContents msg))
-               (received-text (format #f "[~A] ~A" msg-name msg-contents))
-               (updater (runnable (lambda ()
-                                    (*:receiveMsg chatbox received-text)))))
-          (*:enqueue application updater))
-        (format #t "Unrecognized message: ~s" msg)))))
-
-
-;;; helper functions
-;;; ---------------------------------------------------------------------
-
-(define (client-report-failed-chat-message app chat-message chat-box)
-  (let* ((msg-name (*:getName chat-message))
-         (msg-contents (*:getContents chat-message))
-         (failed-text (format #f "Connection failed; unable to send message: [~A] ~A"
-                              msg-name msg-contents)))
-    (*:receiveMsg chat-box failed-text)))
-
-(define (client-connect-to-server app)
-  (try-catch
-   (let ((new-connection (Network:connectToServer (server-name)(server-version)(server-host)
-                                                  (server-port)(server-port))))
-     (*:setNetworkClient app new-connection)
-     (*:addMessageListener (*:getNetworkClient app) (ClientChatHandler app))
-     (*:start (*:getNetworkClient app)))
-   (ex java.net.ConnectException (begin (*:setNetworkClient app #!null)
-                                        (format #t "~%Failed to connect to Fabric server.")
-                                        (format #t "~%~A" (*:toString ex))))))
-
-(define (ensure-valid-network-client app)
-  (let ((net-client #f)
-        (found-client (*:getNetworkClient app)))
-    (when (jnull? found-client)
-      (client-connect-to-server app))
-    (set! net-client (*:getNetworkClient app))
-    (if (jnull? net-client)
-        #f
-        (if (*:isConnected net-client)
-            net-client
-            #f))))
-
-(define (send-chat-message app chat-message)
-  (let ((net-client (ensure-valid-network-client app)))
-    (if net-client
-        (*:send net-client chat-message)
-        (client-report-failed-chat-message app chat-message (*:getChatHud app)))))
-
-;;; the chatbox class
-;;; ---------------------------------------------------------------------
-
-(defclass FabricChat (ChatBox)
-  (methods:
-   ((*init* screen :: Screen id :: String position :: Vector2f size :: Vector2f)
-    (invoke-special ChatBox (this) '*init* screen id position size))
-   ((onSendMsg msg :: String)
-    (let* ((chatfield (*:getChildElementById (this) "chatbox:ChatInput"))
-           (screen (*:getScreen (this)))
-           (app (*:getApplication screen))
-           (chat-message (ChatMessage)))
-      (*:setName chat-message (player-namestring (*:getPlayer app)))
-      (*:setContents chat-message msg)
-      (*:setReliable chat-message #t)
-      (send-chat-message app chat-message)
-      (*:resetTabFocus chatfield)))))
-
-;;; ---------------------------------------------------------------------
 ;;; assemble the HUD
 ;;; ---------------------------------------------------------------------
 
@@ -274,6 +191,7 @@
       (*:removeEffect chatfield EffectEvent:TabFocus)
       (*:setFontSize chatfield 24)
       (*:setSendKey chatbox key-input:KEY_RETURN)
+      (*:setChatName chatbox (player-namestring (*:getPlayer app)))
       
       (*:setChatHud app chatbox)
       (*:addElement screen nameplate)
