@@ -352,52 +352,30 @@
 ;;; handle mouse movements and other continuous events
 ;;; ---------------------------------------------------------------------
 
+
 (define (handle-analog-event app name value tpf)
-  (on-analog (name)
-             ("moveForward"
-              -> (begin (normalize-camera! app)
-                        (*:setDirection app (*:getCameraDirection app))
-                        (*:multLocal (*:getDirection app) (* 300 tpf))
-                        (*:move (*:getWorkerNode app) (*:getDirection app))))
-             ("maybeMoveForward"
-              -> (when (*:getRightButton app)
-                   (normalize-camera! app)
-                   (*:setDirection app (*:getCameraDirection app))
-                   (*:multLocal (*:getDirection app) (* 300 tpf))
-                   (*:move (*:getWorkerNode app) (*:getDirection app))))
-             ("moveBackward"
-              -> (begin (normalize-camera! app)
-                        (*:setDirection app (*:getCameraDirection app))
-                        (*:multLocal (*:getDirection app) (* -200 tpf))
-                        (*:move (*:getWorkerNode app) (*:getDirection app))))
-             ("moveRight"
-              -> (begin (*:setDirection app (*:normalizeLocal (*:getLeft (*:getCamera app))))
-                        (*:multLocal (*:getDirection app) (* -150 tpf))
-                        (*:move (*:getWorkerNode app) (*:getDirection app))))
-             ("moveLeft"
-              -> (begin (*:setDirection app (*:normalizeLocal (*:getLeft (*:getCamera app))))
-                        (*:multLocal (*:getDirection app) (* 150 tpf))
-                        (*:move (*:getWorkerNode app) (*:getDirection app))))
-             ("rotateRight"
-              -> (*:rotate (*:getWorkerNode app) 0 (* -0.25 tpf) 0))
-             ("mouseRotateRight"
-              -> (when (*:getRightButton app)
-                   (*:rotate (*:getWorkerNode app) 0 (* -1 value) 0)))
-             ("rotateLeft"
-              -> (*:rotate (*:getWorkerNode app) 0 (* 0.25 tpf) 0))
-             ("mouseRotateLeft"
-              -> (when (*:getRightButton app)
-                   (*:rotate (*:getWorkerNode app) 0 (* 1 value) 0)))
-             ("rotateUp"
-              -> (*:rotate (*:getWorkerNode app) (* -0.125 tpf) 0 0))
-             ("mouseRotateUp"
-              -> (when (*:getRightButton app)
-                   (*:rotate (*:getWorkerNode app) (* -1 value) 0 0)))
-             ("rotateDown"
-              -> (*:rotate (*:getWorkerNode app) (* 0.125 tpf) 0 0))
-             ("mouseRotateDown"
-              -> (when (*:getRightButton app)
-                   (*:rotate (*:getWorkerNode app) (* 1 value) 0 0)))))
+  (let ((speed (*:getSpeed app))
+        (node (*:getPlayerNode app))
+        (right-button-down? (*:getRightButton app)))
+    (on-analog (name)
+               ("moveForward" -> (move-node-forward! app node (* speed tpf)))
+               ("maybeMoveForward" -> (when right-button-down?
+                                        (move-node-forward! app node (* speed tpf))))
+               ("moveBackward" -> (move-node-backward! app node (* 0.6 speed tpf)))
+               ("moveRight" -> (move-node-right! app node (* speed tpf)))
+               ("moveLeft" -> (move-node-left! app node (* speed tpf)))
+               ("rotateRight" -> (rotate-node-right! node (* 0.25 tpf)))
+               ("mouseRotateRight" -> (when right-button-down?
+                                        (rotate-node-right! node value)))
+               ("rotateLeft" -> (rotate-node-left! node (* 0.25 tpf)))
+               ("mouseRotateLeft" -> (when right-button-down?
+                                       (rotate-node-left! node value)))
+               ("rotateUp" -> (rotate-node-up! node (* 0.125 tpf)))
+               ("mouseRotateUp" -> (when right-button-down?
+                                     (rotate-node-up! node value)))
+               ("rotateDown" -> (rotate-node-down! node (* 0.125 tpf)))
+               ("mouseRotateDown" -> (when right-button-down?
+                                       (rotate-node-down! node value))))))
 
 ;;; handle keypresses, mouse clicks, and other discrete events
 ;;; ---------------------------------------------------------------------

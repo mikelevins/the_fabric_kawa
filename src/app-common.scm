@@ -68,29 +68,29 @@
   (let ((dir :: Vector3f (*:getCameraDirection app)))
     (*:normalizeLocal dir)))
 
-(define (move-node!  app :: FabricApp amount :: float invert?)
+(define (move-node!  app :: FabricApp node :: Node amount :: float invert?)
   (let ((dir :: Vector3f (*:getDirection app))
         (sign (if invert? -1 1)))
     (*:multLocal dir (* sign amount))
-    (*:move (*:getPlayerNode app) dir)))
+    (*:move node dir)))
 
 (define (move-node-forward! app :: FabricApp node :: Node amount :: float)
   (normalize-camera! app)
   (*:setDirection app (*:getCameraDirection app))
-  (move-node! app amount #f))
+  (move-node! app node amount #f))
 
 (define (move-node-backward! app :: FabricApp node :: Node amount :: float)
   (normalize-camera! app)
   (*:setDirection app (*:getCameraDirection app))
-  (move-node! app amount #t))
+  (move-node! app node amount #t))
 
 (define (move-node-left! app :: FabricApp node :: Node amount :: float)
   (*:setDirection app (*:normalizeLocal (*:getLeft (*:getCamera app))))
-  (move-node! app amount #f))
+  (move-node! app node amount #f))
 
 (define (move-node-right! app :: FabricApp node :: Node amount :: float)
   (*:setDirection app (*:normalizeLocal (*:getLeft (*:getCamera app))))
-  (move-node! app amount #t))
+  (move-node! app node amount #t))
 
 (define (rotate-node-right! node :: Node amount :: float)
   (*:rotate node 0 (* -1 amount) 0))
