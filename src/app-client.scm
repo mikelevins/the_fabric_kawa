@@ -368,34 +368,27 @@
 
 (define (handle-analog-event app name value tpf)
   (let ((speed (*:getSpeed app))
-        (node (*:getPlayerNode app)))
+        (node (*:getPlayerNode app))
+        (right-button-down? (*:getRightButton app)))
     (on-analog (name)
                ("moveForward" -> (move-node-forward! app node (* speed tpf)))
-               ("maybeMoveForward" -> (when (*:getRightButton app)
+               ("maybeMoveForward" -> (when right-button-down?
                                         (move-node-forward! app node (* speed tpf))))
                ("moveBackward" -> (move-node-backward! app node (* 0.6 speed tpf)))
                ("moveRight" -> (move-node-right! app node (* speed tpf)))
                ("moveLeft" -> (move-node-left! app node (* speed tpf)))
-               ("rotateRight"
-                -> (*:rotate (*:getPlayerNode app) 0 (* -0.25 tpf) 0))
-               ("mouseRotateRight"
-                -> (when (*:getRightButton app)
-                     (*:rotate (*:getPlayerNode app) 0 (* -1 value) 0)))
-               ("rotateLeft"
-                -> (*:rotate (*:getPlayerNode app) 0 (* 0.25 tpf) 0))
-               ("mouseRotateLeft"
-                -> (when (*:getRightButton app)
-                     (*:rotate (*:getPlayerNode app) 0 (* 1 value) 0)))
-               ("rotateUp"
-                -> (*:rotate (*:getPlayerNode app) (* -0.125 tpf) 0 0))
-               ("mouseRotateUp"
-                -> (when (*:getRightButton app)
-                     (*:rotate (*:getPlayerNode app) (* -1 value) 0 0)))
-               ("rotateDown"
-                -> (*:rotate (*:getPlayerNode app) (* 0.125 tpf) 0 0))
-               ("mouseRotateDown"
-                -> (when (*:getRightButton app)
-                     (*:rotate (*:getPlayerNode app) (* 1 value) 0 0))))))
+               ("rotateRight" -> (*:rotate node 0 (* -0.25 tpf) 0))
+               ("mouseRotateRight" -> (when right-button-down?
+                                        (*:rotate node 0 (* -1 value) 0)))
+               ("rotateLeft" -> (*:rotate node 0 (* 0.25 tpf) 0))
+               ("mouseRotateLeft" -> (when right-button-down?
+                                       (*:rotate node 0 (* 1 value) 0)))
+               ("rotateUp" -> (*:rotate node (* -0.125 tpf) 0 0))
+               ("mouseRotateUp" -> (when right-button-down?
+                                     (*:rotate node (* -1 value) 0 0)))
+               ("rotateDown" -> (*:rotate node (* 0.125 tpf) 0 0))
+               ("mouseRotateDown" -> (when right-button-down?
+                                       (*:rotate node (* 1 value) 0 0))))))
 
 ;;; (handle-action-event app name key-pressed? tpf)
 ;;; ---------------------------------------------------------------------
