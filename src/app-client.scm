@@ -64,7 +64,6 @@
 (import-as Quaternion com.jme3.math.Quaternion)
 (import-as Screen tonegod.gui.core.Screen)
 (import-as Serializer com.jme3.network.serializing.Serializer)
-(import-as SimpleApplication com.jme3.app.SimpleApplication)
 (import-as String java.lang.String)
 (import-as Vector2f com.jme3.math.Vector2f)
 (import-as Vector3f com.jme3.math.Vector3f)
@@ -119,7 +118,7 @@
 ;;; prepare a player character and present it in the scene
 ;;; ---------------------------------------------------------------------
 
-(define (init-player-character app ::SimpleApplication)
+(define (init-player-character app ::FabricApp)
   (let* ((player-node (Node "Player"))
          (player (make-player-character (any-lit-color)))
          (player-cube (get-key player name-cube:))
@@ -237,7 +236,7 @@
 ;;; assemble the HUD
 ;;; ---------------------------------------------------------------------
 
-(define (init-hud app ::SimpleApplication name-string)
+(define (init-hud app ::FabricApp name-string)
   (let ((screen (Screen app))
         (key-input ::KeyInput (*:getKeyInput app)))
     (*:initialize screen)
@@ -285,7 +284,7 @@
 ;;; set up player inputs
 ;;; ---------------------------------------------------------------------
 
-(define (setup-inputs app ::SimpleApplication)
+(define (setup-inputs app ::FabricApp)
   ;; set up the player's controls
   (let ((key-input ::KeyInput (*:getKeyInput app))
         (input-manager (*:getInputManager app)))
@@ -325,7 +324,7 @@
 ;;; lighting
 ;;; ---------------------------------------------------------------------
 
-(define (setup-lighting app ::SimpleApplication)
+(define (setup-lighting app ::FabricApp)
   (let* ((asset-manager::AssetManager (get-asset-manager))
          (bloom (BloomFilter BloomFilter:GlowMode:Objects))
          (filter-processor::FilterPostProcessor (FilterPostProcessor asset-manager)))

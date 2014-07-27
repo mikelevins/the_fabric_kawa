@@ -64,7 +64,6 @@
 (import-as Quaternion com.jme3.math.Quaternion)
 (import-as Screen tonegod.gui.core.Screen)
 (import-as Serializer com.jme3.network.serializing.Serializer)
-(import-as SimpleApplication com.jme3.app.SimpleApplication)
 (import-as String java.lang.String)
 (import-as Vector2f com.jme3.math.Vector2f)
 (import-as Vector3f com.jme3.math.Vector3f)
@@ -114,7 +113,7 @@
 ;;; prepare a worker character and present it in the scene
 ;;; ---------------------------------------------------------------------
 
-(define (init-worker-character app ::SimpleApplication)
+(define (init-worker-character app ::FabricApp)
   (let* ((worker-node (Node "Worker"))
          (worker (make-worker-character (any-lit-color)))
          (worker-shape (get-key worker shape:))
@@ -226,7 +225,7 @@
 ;;; set up the HUD
 ;;; ---------------------------------------------------------------------
 
-(define (init-hud app ::SimpleApplication name-string)
+(define (init-hud app ::FabricApp name-string)
   (let ((screen (Screen app))
         (key-input ::KeyInput (*:getKeyInput app)))
     (*:initialize screen)
@@ -274,7 +273,7 @@
 ;;; worker inputs
 ;;; ---------------------------------------------------------------------
 
-(define (setup-inputs app ::SimpleApplication)
+(define (setup-inputs app ::FabricApp)
   ;; set up the worker's controls
   (let ((key-input ::KeyInput (*:getKeyInput app))
         (input-manager (*:getInputManager app)))
@@ -314,7 +313,7 @@
 ;;; lighting
 ;;; ---------------------------------------------------------------------
 
-(define (setup-lighting app ::SimpleApplication)
+(define (setup-lighting app ::FabricApp)
   (let* ((asset-manager::AssetManager (get-asset-manager))
          (bloom (BloomFilter BloomFilter:GlowMode:Objects))
          (filter-processor::FilterPostProcessor (FilterPostProcessor asset-manager)))
