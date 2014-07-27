@@ -374,16 +374,8 @@
                ("maybeMoveForward" -> (when (*:getRightButton app)
                                         (move-node-forward! app node (* speed tpf))))
                ("moveBackward" -> (move-node-backward! app node (* 0.6 speed tpf)))
-               ("moveRight"
-                -> (let ((speed (*:getSpeed app)))
-                     (*:setDirection app (*:normalizeLocal (*:getLeft (*:getCamera app))))
-                     (*:multLocal (*:getDirection app) (* -0.5 speed tpf))
-                     (*:move (*:getPlayerNode app) (*:getDirection app))))
-               ("moveLeft"
-                -> (let ((speed (*:getSpeed app)))
-                     (*:setDirection app (*:normalizeLocal (*:getLeft (*:getCamera app))))
-                     (*:multLocal (*:getDirection app) (* 0.5 speed tpf))
-                     (*:move (*:getPlayerNode app) (*:getDirection app))))
+               ("moveRight" -> (move-node-right! app node (* speed tpf)))
+               ("moveLeft" -> (move-node-left! app node (* speed tpf)))
                ("rotateRight"
                 -> (*:rotate (*:getPlayerNode app) 0 (* -0.25 tpf) 0))
                ("mouseRotateRight"

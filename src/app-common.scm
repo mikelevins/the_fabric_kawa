@@ -10,7 +10,8 @@
 ;;;; ***********************************************************************
 
 (module-export FabricApp camera-left normalize-camera!
-               move-node-forward! move-node-backward!)
+               move-node-forward! move-node-backward!
+               move-node-left! move-node-right!)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -76,6 +77,16 @@
 (define (move-node-backward! app :: FabricApp node :: Node speed :: float)
   (normalize-camera! app)
   (*:setDirection app (*:getCameraDirection app))
+  (*:multLocal (*:getDirection app) (* -1 speed))
+  (*:move (*:getPlayerNode app) (*:getDirection app)))
+
+(define (move-node-left! app :: FabricApp node :: Node speed :: float)
+  (*:setDirection app (*:normalizeLocal (*:getLeft (*:getCamera app))))
+  (*:multLocal (*:getDirection app) speed)
+  (*:move (*:getPlayerNode app) (*:getDirection app)))
+
+(define (move-node-right! app :: FabricApp node :: Node speed :: float)
+  (*:setDirection app (*:normalizeLocal (*:getLeft (*:getCamera app))))
   (*:multLocal (*:getDirection app) (* -1 speed))
   (*:move (*:getPlayerNode app) (*:getDirection app)))
 
