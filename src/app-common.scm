@@ -36,6 +36,7 @@
   (slots:
    (app-settings init-form: (AppSettings #t) getter: getAppSettings)
    (direction type: Vector3f init-form: (Vector3f) getter: getDirection setter: setDirection)
+   (speed type: float init-form: 0.0 getter: getSpeed setter: setSpeed)
    (network-client ::com.jme3.network.Client init-form: #!null getter: getNetworkClient setter: setNetworkClient)
    (center-name ::String init-form: #!null getter: getCenterName setter: setCenterName)
    (left-button? init-form: #f getter: getLeftButton setter: setLeftButton)

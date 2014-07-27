@@ -369,29 +369,34 @@
 (define (handle-analog-event app name value tpf)
   (on-analog (name)
              ("moveForward"
-              -> (begin (normalize-camera! app)
+              -> (let ((speed (*:getSpeed app)))
+                   (normalize-camera! app)
                         (*:setDirection app (*:getCameraDirection app))
-                        (*:multLocal (*:getDirection app) (* 300 tpf))
+                        (*:multLocal (*:getDirection app) (* speed tpf))
                         (*:move (*:getPlayerNode app) (*:getDirection app))))
              ("maybeMoveForward"
               -> (when (*:getRightButton app)
+                   (let ((speed (*:getSpeed app)))
+                     (normalize-camera! app)
+                     (*:setDirection app (*:getCameraDirection app))
+                     (*:multLocal (*:getDirection app) (* speed tpf))
+                     (*:move (*:getPlayerNode app) (*:getDirection app)))))
+             ("moveBackward"
+              -> (let ((speed (*:getSpeed app)))
                    (normalize-camera! app)
                    (*:setDirection app (*:getCameraDirection app))
-                   (*:multLocal (*:getDirection app) (* 300 tpf))
+                   (*:multLocal (*:getDirection app) (* -0.6 speed tpf))
                    (*:move (*:getPlayerNode app) (*:getDirection app))))
-             ("moveBackward"
-              -> (begin (normalize-camera! app)
-                        (*:setDirection app (*:getCameraDirection app))
-                        (*:multLocal (*:getDirection app) (* -200 tpf))
-                        (*:move (*:getPlayerNode app) (*:getDirection app))))
              ("moveRight"
-              -> (begin (*:setDirection app (*:normalizeLocal (*:getLeft (*:getCamera app))))
-                        (*:multLocal (*:getDirection app) (* -150 tpf))
-                        (*:move (*:getPlayerNode app) (*:getDirection app))))
+              -> (let ((speed (*:getSpeed app)))
+                   (*:setDirection app (*:normalizeLocal (*:getLeft (*:getCamera app))))
+                   (*:multLocal (*:getDirection app) (* -0.5 speed tpf))
+                   (*:move (*:getPlayerNode app) (*:getDirection app))))
              ("moveLeft"
-              -> (begin (*:setDirection app (*:normalizeLocal (*:getLeft (*:getCamera app))))
-                        (*:multLocal (*:getDirection app) (* 150 tpf))
-                        (*:move (*:getPlayerNode app) (*:getDirection app))))
+              -> (let ((speed (*:getSpeed app)))
+                   (*:setDirection app (*:normalizeLocal (*:getLeft (*:getCamera app))))
+                   (*:multLocal (*:getDirection app) (* 0.5 speed tpf))
+                   (*:move (*:getPlayerNode app) (*:getDirection app))))
              ("rotateRight"
               -> (*:rotate (*:getPlayerNode app) 0 (* -0.25 tpf) 0))
              ("mouseRotateRight"
@@ -435,6 +440,7 @@
     (*:setTitle settings "The Fabric")
     (*:setSettingsDialogImage settings "Interface/icon.jpg")
     (*:setSettings client settings)
+    (*:setSpeed client 300.0)
     (*:setDisplayFps client #f) ; #t to show FPS
     (*:setShowSettings client #t) ; #t to show settings dialog
     (*:setDisplayStatView client #f) ; #t to show stats
