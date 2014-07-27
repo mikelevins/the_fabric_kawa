@@ -9,9 +9,11 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export FabricApp camera-left normalize-camera!
+(module-export FabricApp normalize-camera!
                move-node-forward! move-node-backward!
-               move-node-left! move-node-right!)
+               move-node-left! move-node-right!
+               rotate-node-left! rotate-node-right!
+               rotate-node-up! rotate-node-down!)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -59,34 +61,48 @@
    ((simpleInitApp) #!abstract)))
 
 
-;;; camera control
+;;; player-camera movement
 ;;; ---------------------------------------------------------------------
 
-(define (camera-left app :: FabricApp)
-  (*:getLeft (*:getCamera app)))
-
 (define (normalize-camera! app :: FabricApp)
-  (*:normalizeLocal (*:getCameraDirection app)))
+  (let ((dir :: Vector3f (*:getCameraDirection app)))
+    (*:normalizeLocal dir)))
 
-(define (move-node-forward! app :: FabricApp node :: Node speed :: float)
+(define (move-node!  app :: FabricApp amount :: float invert?)
+  (let ((dir :: Vector3f (*:getDirection app))
+        (sign (if invert? -1 1)))
+    (*:multLocal dir (* sign amount))
+    (*:move (*:getPlayerNode app) dir)))
+
+(define (move-node-forward! app :: FabricApp node :: Node amount :: float)
   (normalize-camera! app)
   (*:setDirection app (*:getCameraDirection app))
-  (*:multLocal (*:getDirection app) speed)
-  (*:move (*:getPlayerNode app) (*:getDirection app)))
+  (move-node! app amount #f))
 
-(define (move-node-backward! app :: FabricApp node :: Node speed :: float)
+(define (move-node-backward! app :: FabricApp node :: Node amount :: float)
   (normalize-camera! app)
   (*:setDirection app (*:getCameraDirection app))
-  (*:multLocal (*:getDirection app) (* -1 speed))
-  (*:move (*:getPlayerNode app) (*:getDirection app)))
+  (move-node! app amount #t))
 
-(define (move-node-left! app :: FabricApp node :: Node speed :: float)
+(define (move-node-left! app :: FabricApp node :: Node amount :: float)
   (*:setDirection app (*:normalizeLocal (*:getLeft (*:getCamera app))))
-  (*:multLocal (*:getDirection app) speed)
-  (*:move (*:getPlayerNode app) (*:getDirection app)))
+  (move-node! app amount #f))
 
-(define (move-node-right! app :: FabricApp node :: Node speed :: float)
+(define (move-node-right! app :: FabricApp node :: Node amount :: float)
   (*:setDirection app (*:normalizeLocal (*:getLeft (*:getCamera app))))
-  (*:multLocal (*:getDirection app) (* -1 speed))
-  (*:move (*:getPlayerNode app) (*:getDirection app)))
+  (move-node! app amount #t))
+
+(define (rotate-node-right! node :: Node amount :: float)
+  (*:rotate node 0 (* -1 amount) 0))
+
+(define (rotate-node-left! node :: Node amount :: float)
+  (*:rotate node 0 amount 0))
+
+(define (rotate-node-up! node :: Node amount :: float)
+  (*:rotate node (* -1 amount) 0 0))
+
+(define (rotate-node-down! node :: Node amount :: float)
+  (*:rotate node amount 0 0))
+
+
 

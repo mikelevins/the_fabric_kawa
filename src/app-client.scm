@@ -376,18 +376,18 @@
                ("moveBackward" -> (move-node-backward! app node (* 0.6 speed tpf)))
                ("moveRight" -> (move-node-right! app node (* speed tpf)))
                ("moveLeft" -> (move-node-left! app node (* speed tpf)))
-               ("rotateRight" -> (*:rotate node 0 (* -0.25 tpf) 0))
+               ("rotateRight" -> (rotate-node-right! node (* 0.25 tpf)))
                ("mouseRotateRight" -> (when right-button-down?
-                                        (*:rotate node 0 (* -1 value) 0)))
-               ("rotateLeft" -> (*:rotate node 0 (* 0.25 tpf) 0))
+                                        (rotate-node-right! node value)))
+               ("rotateLeft" -> (rotate-node-left! node (* 0.25 tpf)))
                ("mouseRotateLeft" -> (when right-button-down?
-                                       (*:rotate node 0 (* 1 value) 0)))
-               ("rotateUp" -> (*:rotate node (* -0.125 tpf) 0 0))
+                                       (rotate-node-left! node value)))
+               ("rotateUp" -> (rotate-node-up! node (* 0.125 tpf)))
                ("mouseRotateUp" -> (when right-button-down?
-                                     (*:rotate node (* -1 value) 0 0)))
-               ("rotateDown" -> (*:rotate node (* 0.125 tpf) 0 0))
+                                     (rotate-node-up! node value)))
+               ("rotateDown" -> (rotate-node-down! node (* 0.125 tpf)))
                ("mouseRotateDown" -> (when right-button-down?
-                                       (*:rotate node (* 1 value) 0 0))))))
+                                       (rotate-node-down! node value))))))
 
 ;;; (handle-action-event app name key-pressed? tpf)
 ;;; ---------------------------------------------------------------------
