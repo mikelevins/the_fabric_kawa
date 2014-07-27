@@ -9,7 +9,8 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export FabricApp camera-left normalize-camera!)
+(module-export FabricApp camera-left normalize-camera!
+               move-node-forward! move-node-backward!)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -25,6 +26,7 @@
 (import-as ActionListener com.jme3.input.controls.ActionListener)
 (import-as AnalogListener com.jme3.input.controls.AnalogListener)
 (import-as AppSettings com.jme3.system.AppSettings)
+(import-as Node com.jme3.scene.Node)
 (import-as SimpleApplication com.jme3.app.SimpleApplication)
 (import-as Vector3f com.jme3.math.Vector3f)
 
@@ -64,4 +66,16 @@
 
 (define (normalize-camera! app :: FabricApp)
   (*:normalizeLocal (*:getCameraDirection app)))
+
+(define (move-node-forward! app :: FabricApp node :: Node speed :: float)
+  (normalize-camera! app)
+  (*:setDirection app (*:getCameraDirection app))
+  (*:multLocal (*:getDirection app) speed)
+  (*:move (*:getPlayerNode app) (*:getDirection app)))
+
+(define (move-node-backward! app :: FabricApp node :: Node speed :: float)
+  (normalize-camera! app)
+  (*:setDirection app (*:getCameraDirection app))
+  (*:multLocal (*:getDirection app) (* -1 speed))
+  (*:move (*:getPlayerNode app) (*:getDirection app)))
 

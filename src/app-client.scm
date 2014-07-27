@@ -367,56 +367,43 @@
 ;;; handle mouse movements and other continuous events
 
 (define (handle-analog-event app name value tpf)
-  (on-analog (name)
-             ("moveForward"
-              -> (let ((speed (*:getSpeed app)))
-                   (normalize-camera! app)
-                        (*:setDirection app (*:getCameraDirection app))
-                        (*:multLocal (*:getDirection app) (* speed tpf))
-                        (*:move (*:getPlayerNode app) (*:getDirection app))))
-             ("maybeMoveForward"
-              -> (when (*:getRightButton app)
-                   (let ((speed (*:getSpeed app)))
-                     (normalize-camera! app)
-                     (*:setDirection app (*:getCameraDirection app))
-                     (*:multLocal (*:getDirection app) (* speed tpf))
-                     (*:move (*:getPlayerNode app) (*:getDirection app)))))
-             ("moveBackward"
-              -> (let ((speed (*:getSpeed app)))
-                   (normalize-camera! app)
-                   (*:setDirection app (*:getCameraDirection app))
-                   (*:multLocal (*:getDirection app) (* -0.6 speed tpf))
-                   (*:move (*:getPlayerNode app) (*:getDirection app))))
-             ("moveRight"
-              -> (let ((speed (*:getSpeed app)))
-                   (*:setDirection app (*:normalizeLocal (*:getLeft (*:getCamera app))))
-                   (*:multLocal (*:getDirection app) (* -0.5 speed tpf))
-                   (*:move (*:getPlayerNode app) (*:getDirection app))))
-             ("moveLeft"
-              -> (let ((speed (*:getSpeed app)))
-                   (*:setDirection app (*:normalizeLocal (*:getLeft (*:getCamera app))))
-                   (*:multLocal (*:getDirection app) (* 0.5 speed tpf))
-                   (*:move (*:getPlayerNode app) (*:getDirection app))))
-             ("rotateRight"
-              -> (*:rotate (*:getPlayerNode app) 0 (* -0.25 tpf) 0))
-             ("mouseRotateRight"
-              -> (when (*:getRightButton app)
-                   (*:rotate (*:getPlayerNode app) 0 (* -1 value) 0)))
-             ("rotateLeft"
-              -> (*:rotate (*:getPlayerNode app) 0 (* 0.25 tpf) 0))
-             ("mouseRotateLeft"
-              -> (when (*:getRightButton app)
-                   (*:rotate (*:getPlayerNode app) 0 (* 1 value) 0)))
-             ("rotateUp"
-              -> (*:rotate (*:getPlayerNode app) (* -0.125 tpf) 0 0))
-             ("mouseRotateUp"
-              -> (when (*:getRightButton app)
-                   (*:rotate (*:getPlayerNode app) (* -1 value) 0 0)))
-             ("rotateDown"
-              -> (*:rotate (*:getPlayerNode app) (* 0.125 tpf) 0 0))
-             ("mouseRotateDown"
-              -> (when (*:getRightButton app)
-                   (*:rotate (*:getPlayerNode app) (* 1 value) 0 0)))))
+  (let ((speed (*:getSpeed app))
+        (node (*:getPlayerNode app)))
+    (on-analog (name)
+               ("moveForward" -> (move-node-forward! app node (* speed tpf)))
+               ("maybeMoveForward" -> (when (*:getRightButton app)
+                                        (move-node-forward! app node (* speed tpf))))
+               ("moveBackward" -> (move-node-backward! app node (* 0.6 speed tpf)))
+               ("moveRight"
+                -> (let ((speed (*:getSpeed app)))
+                     (*:setDirection app (*:normalizeLocal (*:getLeft (*:getCamera app))))
+                     (*:multLocal (*:getDirection app) (* -0.5 speed tpf))
+                     (*:move (*:getPlayerNode app) (*:getDirection app))))
+               ("moveLeft"
+                -> (let ((speed (*:getSpeed app)))
+                     (*:setDirection app (*:normalizeLocal (*:getLeft (*:getCamera app))))
+                     (*:multLocal (*:getDirection app) (* 0.5 speed tpf))
+                     (*:move (*:getPlayerNode app) (*:getDirection app))))
+               ("rotateRight"
+                -> (*:rotate (*:getPlayerNode app) 0 (* -0.25 tpf) 0))
+               ("mouseRotateRight"
+                -> (when (*:getRightButton app)
+                     (*:rotate (*:getPlayerNode app) 0 (* -1 value) 0)))
+               ("rotateLeft"
+                -> (*:rotate (*:getPlayerNode app) 0 (* 0.25 tpf) 0))
+               ("mouseRotateLeft"
+                -> (when (*:getRightButton app)
+                     (*:rotate (*:getPlayerNode app) 0 (* 1 value) 0)))
+               ("rotateUp"
+                -> (*:rotate (*:getPlayerNode app) (* -0.125 tpf) 0 0))
+               ("mouseRotateUp"
+                -> (when (*:getRightButton app)
+                     (*:rotate (*:getPlayerNode app) (* -1 value) 0 0)))
+               ("rotateDown"
+                -> (*:rotate (*:getPlayerNode app) (* 0.125 tpf) 0 0))
+               ("mouseRotateDown"
+                -> (when (*:getRightButton app)
+                     (*:rotate (*:getPlayerNode app) (* 1 value) 0 0))))))
 
 ;;; (handle-action-event app name key-pressed? tpf)
 ;;; ---------------------------------------------------------------------
