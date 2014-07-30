@@ -259,6 +259,7 @@
   (let* ((sky (make-sky app))
          (center-body #f))
 
+    ;; set up the scene
     (setup-lighting app)
     (setup-inputs app)
     (*:attachChild (*:getRootNode app) sky)
@@ -268,11 +269,12 @@
     (*:attachChild (*:getRootNode app) center-body)
     (init-player-character app)
 
+    ;; set up the UI
     (let ((player (*:getPlayer app)))
       (init-hud app (player-namestring player)))
     (ensure-valid-network-client app)
-    ;;uncomment to capture video to a file
-    ;;(*:attach (client-state-manager app) (VideoRecorderAppState))
+    (when (*:isVideoCapture app)
+      (*:attach (client-state-manager app) (VideoRecorderAppState)))
     #!void))
 
 ;;; ---------------------------------------------------------------------

@@ -46,7 +46,8 @@
    (center-name ::String init-form: #!null getter: getCenterName setter: setCenterName)
    (left-button? init-form: #f getter: getLeftButton setter: setLeftButton)
    (right-button? init-form: #f getter: getRightButton setter: setRightButton)
-   (chat-hud init-form: #!null getter: getChatHud setter: setChatHud))
+   (chat-hud init-form: #!null getter: getChatHud setter: setChatHud)
+   (video-capture? init-form: #f getter: isVideoCapture setter: setVideoCapture))
   (methods:
    ((getCameraDirection) (*:getDirection cam))
    ((getAudioRenderer) audioRenderer)
