@@ -1,8 +1,8 @@
 ;;;; ***********************************************************************
 ;;;;
-;;;; Name:          appstate-play.scm
+;;;; Name:          appstate-login.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
-;;;; Purpose:       play the game
+;;;; Purpose:       log in to the Fabric server
 ;;;; Author:        mikel evins
 ;;;; Copyright:     2014 by mikel evins
 ;;;;
@@ -24,8 +24,8 @@
 (import-as AbstractAppState com.jme3.app.state.AbstractAppState)
 
 ;;; ---------------------------------------------------------------------
-;;; the PlayAppState class
+;;; the LoginAppState class
 ;;; ---------------------------------------------------------------------
 
-(defclass PlayAppState (AbstractAppState)
+(defclass LoginAppState (AbstractAppState)
   )

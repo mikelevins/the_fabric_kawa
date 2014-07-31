@@ -272,7 +272,6 @@
 ;;; handle mouse movements and other continuous events
 ;;; ---------------------------------------------------------------------
 
-
 (define (handle-analog-event app name value tpf)
   (let ((speed (*:getSpeed app))
         (node (*:getWorkerNode app))

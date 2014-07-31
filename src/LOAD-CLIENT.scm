@@ -37,6 +37,8 @@
 (require "view-player.scm")
 (require "view-node.scm")
 (require "net-messaging.scm")
+(require "appstate-login.scm")
+(require "appstate-pick.scm")
 (require "appstate-play.scm")
 (require "app-common.scm")
 (require "app-client.scm")
