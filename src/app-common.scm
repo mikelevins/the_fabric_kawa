@@ -32,6 +32,7 @@
 (import-as Node com.jme3.scene.Node)
 (import-as SimpleApplication com.jme3.app.SimpleApplication)
 (import-as Vector3f com.jme3.math.Vector3f)
+(import-as VideoRecorderAppState com.jme3.app.state.VideoRecorderAppState)
 
 ;;; ---------------------------------------------------------------------
 ;;; FabricApp - the abstract client application class
@@ -59,7 +60,10 @@
    ((getKeyInput) keyInput)
    ((onAnalog name value tpf) #!abstract)
    ((onAction name key-pressed? tpf) #!abstract)
-   ((simpleInitApp) #!abstract)))
+   ((simpleInitApp) #!abstract))
+  (init: (when (*:isVideoCapture (this))
+           (*:attach (*:getStateManager (this))
+                     (VideoRecorderAppState)))))
 
 ;;; player-camera movement
 ;;; ---------------------------------------------------------------------

@@ -68,7 +68,6 @@
 (import-as String java.lang.String)
 (import-as Vector2f com.jme3.math.Vector2f)
 (import-as Vector3f com.jme3.math.Vector3f)
-(import-as VideoRecorderAppState com.jme3.app.state.VideoRecorderAppState)
 
 ;;; ---------------------------------------------------------------------
 ;;; FabricWorkshop - the workshop class
@@ -263,8 +262,7 @@
     (let ((worker (*:getWorker app)))
       (init-hud app (worker-namestring worker)))
     (ensure-valid-network-client app)
-    ;; uncomment to capture video to a file
-    ;; (*:attach (workshop-state-manager app) (VideoRecorderAppState))
+
     #!void))
 
 ;;; ---------------------------------------------------------------------

@@ -64,7 +64,6 @@
 (import-as String java.lang.String)
 (import-as Vector2f com.jme3.math.Vector2f)
 (import-as Vector3f com.jme3.math.Vector3f)
-(import-as VideoRecorderAppState com.jme3.app.state.VideoRecorderAppState)
 
 ;;; ---------------------------------------------------------------------
 ;;; FabricClient - the client class
@@ -269,12 +268,13 @@
     (*:attachChild (*:getRootNode app) center-body)
     (init-player-character app)
 
+    ;; set up connectivity
+    (ensure-valid-network-client app)
     ;; set up the UI
     (let ((player (*:getPlayer app)))
       (init-hud app (player-namestring player)))
-    (ensure-valid-network-client app)
-    (when (*:isVideoCapture app)
-      (*:attach (client-state-manager app) (VideoRecorderAppState)))
+
+    ;; return void to make Java happy
     #!void))
 
 ;;; ---------------------------------------------------------------------
