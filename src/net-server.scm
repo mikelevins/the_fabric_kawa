@@ -9,7 +9,7 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export make-server network-listener start-listener stop-listener)
+(module-export make-server start-listener stop-listener)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -17,6 +17,7 @@
 
 (require "version.scm")
 (require "util-java.scm")
+(require "syntax-classes.scm")
 (require "init-config.scm")
 (require "net-messaging.scm")
 

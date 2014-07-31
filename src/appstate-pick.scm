@@ -8,6 +8,12 @@
 ;;;;
 ;;;; ***********************************************************************
 
+;;; NOTE: picking also means picking the node of the Fabric. If creating
+;;; a new character the player must choose that character's starting
+;;; node. If returning to an existing character, the player must choose
+;;; which save node to activate (unless the player's character only has
+;;; one, but that should be relatively rare)
+
 (module-export )
 
 ;;; ---------------------------------------------------------------------
@@ -29,3 +35,4 @@
 
 (defclass PickAppState (AbstractAppState)
   )
+
