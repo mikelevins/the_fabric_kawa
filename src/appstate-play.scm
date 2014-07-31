@@ -1,8 +1,8 @@
 ;;;; ***********************************************************************
 ;;;;
-;;;; Name:          appstate-node.scm
+;;;; Name:          appstate-play.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
-;;;; Purpose:       the appstate for an in-game node
+;;;; Purpose:       the appstate for a player in the game world
 ;;;; Author:        mikel evins
 ;;;; Copyright:     2014 by mikel evins
 ;;;;
@@ -27,5 +27,5 @@
 ;;; the NodeAppState class
 ;;; ---------------------------------------------------------------------
 
-(defclass NodeAppState (AbstractAppState)
+(defclass PlayAppState (AbstractAppState)
   )
