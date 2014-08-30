@@ -25,6 +25,7 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
+(import-as Client com.jme3.network.Client)
 (import-as Context com.jme3.system.JmeContext)
 (import-as MessageListener com.jme3.network.MessageListener)
 (import-as Network com.jme3.network.Network)
@@ -39,13 +40,11 @@
 
 (defclass ServerChatHandler (MessageListener)
   (methods:
-   ((messageReceived source msg)
+   ((messageReceived source ::Client  msg ::ChatMessage)
     (format #t "~%Received message: ~s" msg)
-    (if (instance? msg ChatMessage)
-        (begin (*:setAttribute source "name" (*:getName msg))
-               (format #t "~%Broadcasting message: ~a..." (*:toString msg))
-               (*:broadcast (*:getServer source) msg))
-        (format #t "~%Unrecognized message: ~a~%" (*:toString msg))))))
+    (*:setAttribute source "name" (*:getName chatmsg))
+    (format #t "~%Broadcasting message: ~a..." (*:toString chatmsg))
+    (*:broadcast (*:getServer source) chatmsg))))
 
 ;;; ---------------------------------------------------------------------
 ;;; FabricManager - the server class
@@ -83,9 +82,11 @@
     (*:setNetworkListener app listener)
     (*:start listener)
     (*:addMessageListener listener handler ChatMessage)
+    (*:start app Context:Type:Headless)
     (*:printServer app)))
 
 (define (stop-listener app)
   (let ((listener (*:getNetworkListener app)))
     (*:setNetworkListener app #!null)
-    (*:close listener)))
+    (*:close listener)
+    (*:stop app)))
