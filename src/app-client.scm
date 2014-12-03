@@ -132,7 +132,10 @@
     (assemble-player-character player-node
                                player-cube
                                (list player-rotator)
-                               (make-armors armor-count))
+                               (make-armors armor-count)
+                               ;; with no armors
+                               ;;'()
+                               )
     
     ;; set up the player character's camera
     (init-player-camera app player-node)
@@ -256,7 +259,8 @@
 
 (define (init-client app)
   (let* ((sky (make-sky app))
-         (center-body #f))
+         ;;(center-body #f)
+         )
 
     ;; set up the scene
     (setup-lighting app)
@@ -264,8 +268,8 @@
     (*:attachChild (*:getRootNode app) sky)
     (when (eq? #!null (*:getCenterName app))
       (*:setCenterName app (choose-any (node-names))))
-    (set! center-body (make-center-body app (*:getCenterName app)))
-    (*:attachChild (*:getRootNode app) center-body)
+    ;;(set! center-body (make-center-body app (*:getCenterName app)))
+    ;;(*:attachChild (*:getRootNode app) center-body)
     (init-player-character app)
 
     ;; set up connectivity
@@ -335,5 +339,5 @@
     (*:setDisplayFps client #f) ; #t to show FPS
     (*:setShowSettings client #t) ; #t to show settings dialog
     (*:setDisplayStatView client #f) ; #t to show stats
-    (*:setPauseOnLostFocus client #f)
+    (*:setPauseOnLostFocus client #t)
     client))

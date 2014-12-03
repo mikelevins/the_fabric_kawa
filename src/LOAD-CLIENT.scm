@@ -44,5 +44,5 @@
 (require "app-client.scm")
 
 ;;; (define $the-client (make-client))
-;;; (define $the-client (make-client "The Moon"))
+;;; (define $the-client (make-client "Jupiter"))
 ;;; (*:start $the-client)

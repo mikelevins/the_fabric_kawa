@@ -71,7 +71,8 @@
     (SkyFactory:createSky asset-manager 
                           (*:loadTexture asset-manager "Textures/tycholeft.png")
                           (*:loadTexture asset-manager "Textures/tychoright.png")
-                          (*:loadTexture asset-manager "Textures/tychofront.png")
+                          ;;(*:loadTexture asset-manager "Textures/tychofront.png")
+                          (*:loadTexture asset-manager "Textures/tychofront-jupiter.png")
                           (*:loadTexture asset-manager "Textures/tychoback.png")
                           (*:loadTexture asset-manager "Textures/tychotop.png")
                           (*:loadTexture asset-manager "Textures/tychobottom.png"))))
