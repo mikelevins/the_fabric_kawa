@@ -1,14 +1,15 @@
 ;;;; ***********************************************************************
 ;;;;
-;;;; Name:          LOAD-CLIENT.scm
+;;;; Name:          LOAD-SERVER.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
-;;;; Purpose:       the game login and loading client
+;;;; Purpose:       the game server
 ;;;; Author:        mikel evins
 ;;;; Copyright:     2014 by mikel evins
 ;;;;
 ;;;; ***********************************************************************
 
-(require 'list-lib)
-(require 'srfi-95) ; sorting
 (require "version.scm")
+(require "util-java.scm")
 (require "model-id.scm")
+(require "server-config.scm")
+
