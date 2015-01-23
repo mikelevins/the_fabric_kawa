@@ -11,5 +11,7 @@
 (require "version.scm")
 (require "util-java.scm")
 (require "model-id.scm")
-(require "server-config.scm")
+(require "init-config-local.scm")
+;;(require "init-config.scm")
+
 
