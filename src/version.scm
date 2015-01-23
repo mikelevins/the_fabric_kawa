@@ -1,5 +1,4 @@
 ;;;; ***********************************************************************
-;;;; FILE IDENTIFICATION
 ;;;;
 ;;;; Name:          version.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
@@ -12,5 +11,3 @@
 (module-export fabric-version)
 
 (define fabric-version (make-parameter "0.1.0d183"))
-
-

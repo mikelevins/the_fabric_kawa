@@ -1,13 +1,16 @@
 ;;;; ***********************************************************************
+;;;; FILE IDENTIFICATION
 ;;;;
-;;;; Name:          LOAD-CLIENT.scm
+;;;; Name:          version.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
-;;;; Purpose:       the game login and loading client
+;;;; Purpose:       the current fabric version
 ;;;; Author:        mikel evins
 ;;;; Copyright:     2014 by mikel evins
 ;;;;
 ;;;; ***********************************************************************
 
-(require 'list-lib)
-(require 'srfi-95) ; sorting
-(require "version.scm")
+(module-export fabric-version)
+
+(define fabric-version (make-parameter "0.1.0d183"))
+
+

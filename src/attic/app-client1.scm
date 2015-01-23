@@ -267,7 +267,7 @@
     (setup-inputs app)
     (*:attachChild (*:getRootNode app) sky)
     (when (eq? #!null (*:getCenterName app))
-      (*:setCenterName app (choose-any (node-names))))
+      (*:setCenterName app "Jupiter"))
     ;;(set! center-body (make-center-body app (*:getCenterName app)))
     ;;(*:attachChild (*:getRootNode app) center-body)
     (init-player-character app)

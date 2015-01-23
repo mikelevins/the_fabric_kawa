@@ -9,17 +9,16 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export )
+(module-export user)
 
 (require "util-java.scm")
 (require "model-frame.scm")
 (require "model-id.scm")
-(require "model-kind.scm")
-(require "model-entity.scm")
 
 (define user-account-kind (kind name: "User Account"))
 
 (define (user #!key
+              (userid #f)
               (username #f)
               (hashed-password #f)
               (owner-name #f)
@@ -27,12 +26,13 @@
               (admin-info #f)
               (characters '()))
   (if username
-      (entity username: username
-              hashed-password: hashed-password
-              owner-name: owner-name
-              billing-info: billing-info
-              admin-info: admin-info
-              characters: characters)
+      (frame userid: (or userid (id->string (makeid)))
+             username: username
+             hashed-password: hashed-password
+             owner-name: owner-name
+             billing-info: billing-info
+             admin-info: admin-info
+             characters: characters)
       (error "Creating a user requires a username")))
 
 ;;; (define $me (user username: "mikel"))

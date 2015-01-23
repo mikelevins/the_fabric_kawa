@@ -30,7 +30,7 @@
     <pathelement location="../the_fabric_libraries/stack-alloc-3.0.0.jar"/>
     <pathelement location="../the_fabric_libraries/vecmath-3.0.0.jar"/>
     <pathelement location="../the_fabric_libraries/xmlpull-xpp3-3.0.0.jar"/>
-    <pathelement location="../the_fabric_libraries/kawa-1.14.jar"/>
+    <pathelement location="../the_fabric_libraries/kawa-2.0.jar"/>
     <pathelement location="../the_fabric_libraries/tonegod.gui.jar"/>
     <pathelement location="./src"/>
     <pathelement location="."/>
@@ -43,7 +43,7 @@
          basedir="./src"
          includes="**/*.class"
          manifest="manifest-client.txt">
-      <zipfileset src="../the_fabric_libraries/kawa-1.14.jar"/>
+      <zipfileset src="../the_fabric_libraries/kawa-2.0.jar"/>
       <zipfileset src="../the_fabric_libraries/clj-ds-0.0.4.jar"/>
       <zipfileset src="../the_fabric_libraries/geronimo-jta_1.1_spec-1.1.1.jar"/>
       <zipfileset src="../the_fabric_libraries/eventbus-3.0.0.jar"/>
@@ -82,7 +82,7 @@
          basedir="./src"
          includes="**/*.class"
          manifest="manifest-server.txt">
-      <zipfileset src="../the_fabric_libraries/kawa-1.14.jar"/>
+      <zipfileset src="../the_fabric_libraries/kawa-2.0.jar"/>
       <zipfileset src="../the_fabric_libraries/clj-ds-0.0.4.jar"/>
       <zipfileset src="../the_fabric_libraries/geronimo-jta_1.1_spec-1.1.1.jar"/>
       <zipfileset src="../the_fabric_libraries/eventbus-3.0.0.jar"/>
@@ -112,7 +112,7 @@
          basedir="./src"
          includes="**/*.class"
          manifest="manifest-server.txt">
-      <zipfileset src="../the_fabric_libraries/kawa-1.14.jar"/>
+      <zipfileset src="../the_fabric_libraries/kawa-2.0.jar"/>
       <zipfileset src="../the_fabric_libraries/clj-ds-0.0.4.jar"/>
       <zipfileset src="../the_fabric_libraries/geronimo-jta_1.1_spec-1.1.1.jar"/>
       <zipfileset src="../the_fabric_libraries/eventbus-3.0.0.jar"/>

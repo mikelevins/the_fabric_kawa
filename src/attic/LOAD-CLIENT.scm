@@ -1,6 +1,7 @@
 ;;;; ***********************************************************************
+;;;; FILE IDENTIFICATION
 ;;;;
-;;;; Name:          LOAD-CLIENT.scm
+;;;; Name:          LOAD-LOADER.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
 ;;;; Purpose:       the game login and loading client
 ;;;; Author:        mikel evins
@@ -8,6 +9,8 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(require 'list-lib)
-(require 'srfi-95) ; sorting
 (require "version.scm")
+(require "util-java.scm")
+(require "util-general.scm")
+(require "init-config-local.scm")
+(require "app-client.scm")

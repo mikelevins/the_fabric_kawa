@@ -19,7 +19,7 @@
 ;;; setup site-specific variables
 ;;; ---------------------------------------------------------------------
 
-;;; (load "/Users/mikel/Workshop/fabric/emacs/fabric.el")
+;;; (load "/Users/mikel/Workshop/programming/the_fabric/emacs/fabric.el")
 
 ;;; find this file
 (defvar $this-file-path nil)

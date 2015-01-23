@@ -9,7 +9,7 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export kind? empty-kind kind)
+;;;(module-export kind? empty-kind kind)
 
 (require "util-java.scm")
 (require "model-frame.scm")
@@ -25,7 +25,8 @@
   (if (contains-key? f kind-id:)
       f
       (let ((id (or id (makeid))))
-	(invoke f 'assoc kind-id: id))))
+	(invoke f 'assoc 'kind-id: id))))
+
 
 (define (empty-kind) 
   (ensure-kind-id (ensure-versioned (empty-frame)) 0))

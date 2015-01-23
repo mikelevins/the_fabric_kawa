@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PROJECT_DIR=/Users/mikel/Workshop/fabric
+PROJECT_DIR=/Users/mikel/Workshop/programming/the_fabric
 JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home
 
 BUILD_DIR=/Users/mikel/Desktop/Fabric_build/macosx
