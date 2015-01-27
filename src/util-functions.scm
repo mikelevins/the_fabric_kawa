@@ -1,36 +1,25 @@
 ;;;; ***********************************************************************
 ;;;;
-;;;; Name:          id.scm
+;;;; Name:          util-functions.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
-;;;; Purpose:       unique identifiers
+;;;; Purpose:       utilities for working with functions
 ;;;; Author:        mikel evins
-;;;; Copyright:     2014 by mikel evins
+;;;; Copyright:     2015 by mikel evins
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export makeid id=? string->id id->string)
-
-(require "util-java.scm")
+(module-export complement)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
-(import-as UUID java.util.UUID)
+(import-as Object java.lang.Object)
 
 ;;; ---------------------------------------------------------------------
-;;; identifiers
+;;; function utilities
 ;;; ---------------------------------------------------------------------
 
-(define (makeid . args)
-  (UUID:randomUUID))
-
-(define (id=? id1 id2)
-  (*:equals id1 id2))
-
-(define (string->id uustr)
-  (UUID:fromString uustr))
-
-(define (id->string uuid :: UUID)
-  (*:toString uuid))
-
+(define (complement fn)
+  (lambda args
+    (not (apply fn args))))

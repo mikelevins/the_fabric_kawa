@@ -1,9 +1,8 @@
 ;;;; ***********************************************************************
-;;;; FILE IDENTIFICATION
 ;;;;
-;;;; Name:          methods.scm
+;;;; Name:          util-java.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
-;;;; Purpose:       method-invocation conveniences
+;;;; Purpose:       java conveniences
 ;;;; Author:        mikel evins
 ;;;; Copyright:     2014 by mikel evins
 ;;;;

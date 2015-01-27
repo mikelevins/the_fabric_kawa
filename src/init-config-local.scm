@@ -1,5 +1,4 @@
 ;;;; ***********************************************************************
-;;;; FILE IDENTIFICATION
 ;;;;
 ;;;; Name:          config.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
