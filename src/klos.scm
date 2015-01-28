@@ -8,7 +8,9 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export type-object?)
+(module-export add-method! all-superclasses defgeneric defmethod
+               direct-superclasses generic-function get-class get-interfaces
+               no-applicable-method subclass? type-object?)
 
 (require "sort.scm")
 (require "util-functions.scm")
@@ -128,7 +130,7 @@
   (let ((matching-methods (find-matching-methods type-list method-table)))
     (if (null? matching-methods)
         #f
-        (cdr (car matching-methods)))))
+        (method-entry-procedure (car matching-methods)))))
 
 (define (merge-method type-list method-proc method-table)
   (add-method type-list
@@ -172,5 +174,5 @@
 ;;; (gadd 2 3)
 ;;; (defmethod gadd ((x java.lang.String) (y java.lang.String)) (string-append x y))
 ;;; (gadd "Foo" "bar")
-;;; (gadd "Foo" 3) ; should be error: no applicable method
+;;; (gadd "Foo" 3) ; should be an error: no applicable method
 

@@ -8,7 +8,7 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export array->list copy-list remove-duplicates some?)
+(module-export array->list every? copy-list every? filter remove-duplicates some?)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
