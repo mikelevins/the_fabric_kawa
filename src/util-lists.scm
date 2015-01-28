@@ -20,7 +20,7 @@
 ;;; list utilities
 ;;; ---------------------------------------------------------------------
 
-(define (array->list arr::Object[])
+(define (array->list arr)
   (let loop ((i 0)
              (result '()))
     (if (< i arr:length)

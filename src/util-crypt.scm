@@ -10,6 +10,7 @@
 
 (module-export compute-random-salt text->digest)
 
+(require "util-lists.scm")
 (require "util-java.scm")
 (require "util-random.scm")
 
@@ -22,18 +23,19 @@
   (let ((rand (Random:getInstance "SHA1PRNG"))
         (bytes (byte[] length: 8)))
     (*:nextBytes rand bytes)
-    bytes))
+    (array->list bytes)))
 
 (define (compute-salted-digest text salt)
-  (let* ((iterations 10000)
+  (let* ((salt-bytes (apply byte[] salt))
+         (iterations 10000)
          (digest-length 160)
          (algo "PBKDF2WithHmacSHA1")
          (spec (PBEKeySpec (*:toCharArray text)
-                           salt
+                           salt-bytes
                            iterations
                            digest-length))
          (factory (SecretKeyFactory:getInstance algo)))
-    (*:getEncoded (*:generateSecret factory spec))))
+    (array->list (*:getEncoded (*:generateSecret factory spec)))))
 
 (define (digest->base64 digest::byte[])
   (let* ((encoder (Base64:getEncoder))
@@ -45,4 +47,8 @@
     (*:decode decoder text)))
 
 (define (text->digest text salt)
-  (digest->base64 (compute-salted-digest text salt)))
+  (let* ((bytes (compute-salted-digest text salt))
+         (byte-array (apply byte[] bytes)))
+    (digest->base64 byte-array)))
+
+

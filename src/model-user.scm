@@ -18,3 +18,4 @@
    (username init-form: #f getter: getUsername)
    (password init-form: "" getter: getPassword setter: setPassword)
    (salt init-form: (compute-random-salt) getter: getSalt setter: setSalt)))
+
