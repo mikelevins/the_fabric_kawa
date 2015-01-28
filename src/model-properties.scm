@@ -8,15 +8,16 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export )
+(module-export object->property-string property-string->object)
 
 (require "klos.scm")
 (require "syntax-classes.scm")
+
+(define (property-string->object str)
+  (call-with-input-string str (lambda (in)(read in))))
 
 (defgeneric object->property-string)
 
 (defmethod object->property-string ((ls gnu.lists.LList))
   (format #f "~s" ls))
 
-(define (property-string->object str)
-  (call-with-input-string str (lambda (in)(read in))))
