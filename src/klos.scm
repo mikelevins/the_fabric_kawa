@@ -112,14 +112,13 @@
 
 (define (more-specific-types? type-list1 type-list2)
   (and (every? subclass? type-list1 type-list2)
-       (every? (complement subclass?) type-list1 type-list2)))
+       (every? (complement subclass?) type-list2 type-list1)))
 
 (define (find-matching-methods type-list method-table)
   (let* ((argcount (length type-list))
          (right-length-entries (filter (lambda (m)(= argcount (length (car m))))
                                        method-table))
-         (matching-entries (filter (lambda (m)(matching-types? (car m)
-                                                               type-list))
+         (matching-entries (filter (lambda (m)(matching-types? type-list (car m)))
                                    method-table)))
     (sort matching-entries
           (lambda (x y)
@@ -175,4 +174,8 @@
 ;;; (defmethod gadd ((x java.lang.String) (y java.lang.String)) (string-append x y))
 ;;; (gadd "Foo" "bar")
 ;;; (gadd "Foo" 3) ; should be an error: no applicable method
-
+;;; (defgeneric what?)
+;;; (defmethod what? ((x java.lang.Object)) 'object)
+;;; (defmethod what? ((x java.lang.String)) 'string)
+;;; (what? "foo")
+;;; (what? (vector 1 2 3))
