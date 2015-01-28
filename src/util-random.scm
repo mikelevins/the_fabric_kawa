@@ -1,18 +1,23 @@
 ;;;; ***********************************************************************
 ;;;;
-;;;; Name:          LOAD-SERVER.scm
+;;;; Name:          util-random.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
-;;;; Purpose:       the game server
+;;;; Purpose:       random number generators
 ;;;; Author:        mikel evins
 ;;;; Copyright:     2014 by mikel evins
 ;;;;
 ;;;; ***********************************************************************
 
-(require "version.scm")
+(module-export random-integer)
+
 (require "util-java.scm")
-(require "model-id.scm")
-(require "klos.scm")
-(require "init-config-local.scm")
-;;(require "init-config.scm")
-(require "model-user.scm")
+
+(define $random-state
+  (make-parameter (java.util.Random (*:getTime (java.util.Date)))))
+
+(define (random-integer n)
+  (let ((rs::java.util.Random ($random-state)))
+    (*:nextInt rs n)))
+
+
 

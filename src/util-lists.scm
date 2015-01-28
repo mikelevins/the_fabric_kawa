@@ -8,7 +8,7 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export array->list every? copy-list every? filter remove-duplicates some?)
+(module-export array->list every? copy-list every? filter getf remove-duplicates some?)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -52,6 +52,12 @@
                         result))
             (loop (cdr items)
                   result)))))
+
+(define (getf ls thing #!optional (default #f))
+  (let ((mtail (member thing ls)))
+    (if mtail
+        (cadr mtail)
+        default)))
 
 (define (remove-duplicates ls #!optional (test eq?))
   (let loop ((items ls)
