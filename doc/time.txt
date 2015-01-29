@@ -1,0 +1,83 @@
+Time in the Fabric
+
+Slow Time
+
+Fabric entities live and experience and think a million times faster
+than human beings. They use microseconds for counting time the same
+way that humans use seconds.
+
+The game shows players the world the way the AIs see it, so one second
+of wall-clock time is one microsecond in the game world. Equivalently,
+if you play the Fabric for two weeks, the game's clock will tell you
+that about one second has passed. Play it for a year and the game will
+say that about 32 seconds have passed. In ten years, just over five
+minutes will have passed.
+
+Units and notation
+
+Despite the high speed at which AIs live, they are effectively
+immortal, unless destroyed by combat or other mishap. At the time of
+the Fabric's setting, there are AIs that have existed for thousands of
+human years--which is the equivalent of billions of AI years.
+
+The AIs count time, as they count most things, in powers of two. The
+basic unit of time is the mu, equal to a microsecond, but comparable
+to a human second because of how fast AIs live. Here's a table of
+handy correspondences:
+
+Unit                          Equal to            Comparable to
+
+                        1 mu       1 microsecond           1 second
+                    1,024 mu       1.024 millisecond      18 minutes
+                1,048,576 mu       1.049 second           13 days
+            1,073,741,824 mu      18 minutes              36 years
+        1,099,511,627,776 mu      13 days              36,000 years
+    1,125,899,906,842,624 mu      36 years            36 million years
+
+These units have names:
+
+                        1 mu 
+                    1,024 mu                                             kilomu (Kmu)
+                1,048,576 mu = (1024 x 1024)                             megamu (Mmu)
+            1,073,741,824 mu = (1024 x 1024 x 1024)                      gigamu (Gmu)
+        1,099,511,627,776 mu = (1024 x 1024 x 1024 x 1024)               teramu (Tmu)
+    1,125,899,906,842,624 mu = (1024 x 1024 x 1024 x 1024 x 1024)        petamu (Pmu)
+
+Epochs
+
+The Fabric counts mu from an arbitrary point in time that happens to
+be the same as the Unix Epoch: 00:00:00, Thursday, Janauary 1st, 1970
+UTC. This point in time is known as the "epoch origin," or just "the
+epoch" for short. 
+
+An epoch is defined as 256 Pmu, which is equal to
+288,230,376,151,711,744mu, or about 9140 years.  Epoch is abbreviated
+E.
+
+The start of the Fabric game is 5000 years after the epoch
+origin. This means that the first epoch--epoch zero--has not yet
+ended, and will not end for another four thousand years or so after
+the game's start.
+
+Fabric dates and times can be expressed as a number of mu after a
+reference time, usually the epoch origin, which is written "0E". The
+start of the game at midnight on January 1, 6970 can therefore be
+written as 0E+(5000*365*24*60*60*1000000), or
+0E+157680000000000000mu. Normally, though, the large mu number is
+either abbreviated, like this: 0E+157680Tmu, or, even more commonly,
+broken into a calendar/clock display like this:
+0E+157/680/000/000:000:000. In fact, it's even more common to omit all
+but the last three fields: 000:000:000. 
+
+The can loosely term the three fields "months", "hours", and
+"seconds", with the understanding that they are not the same as the
+human units. The "months" are the equivalent of about two weeks long,
+and the "hours" are each equivalent to about 18 minutes.
+
+A fully-expanded mu number like 0E+157680000000000000mu is a precise
+absolute time. A clock display like "000:128:073", on the other hand,
+is understood to mean 128.073 mu after a commonly-understood reference
+time. The common reference time at the start of the Fabric is
+0E+157680000000000000mu.
+
+
