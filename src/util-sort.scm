@@ -1,6 +1,6 @@
 ;;;; ***********************************************************************
 ;;;;
-;;;; Name:          sort.scm
+;;;; Name:          util-sort.scm
 ;;;; Project:       the Fabric
 ;;;; Purpose:       sort function from Gambit
 ;;;; Author:        Marc Feeley

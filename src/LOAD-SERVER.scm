@@ -11,8 +11,10 @@
 (require "version.scm")
 (require "util-java.scm")
 (require "model-id.scm")
-(require "klos.scm")
+(require "model-klos.scm")
 (require "init-config-local.scm")
 ;;(require "init-config.scm")
 (require "util-crypt.scm")
+(require "system-store.scm")
+
 

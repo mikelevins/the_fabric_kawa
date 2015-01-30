@@ -8,7 +8,8 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export array->list every? copy-list every? filter getf remove-duplicates some?)
+(module-export array->list every? copy-list drop every? filter getf
+               position-if putf remove-duplicates some? take)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -32,6 +33,16 @@
   (map (lambda (x) x)
        ls))
 
+(define (drop n ls)
+  (let loop ((i n)
+             (items ls))
+    (if (<= i 0)
+        items
+        (if (null? items)
+            (error "Index out of range" n)
+            (loop (- i 1)
+                  (cdr items))))))
+
 (define (every? test ls #!rest (more-lists '()))
   (let loop ((lists (cons ls more-lists)))
     (if (some? null? lists)
@@ -53,11 +64,15 @@
             (loop (cdr items)
                   result)))))
 
-(define (getf ls thing #!optional (default #f))
-  (let ((mtail (member thing ls)))
-    (if mtail
-        (cadr mtail)
-        default)))
+(define (position-if test ls)
+  (let loop ((i 0)
+             (items ls))
+    (if (null? items)
+        #f
+        (if (test (car items))
+            i
+            (loop (+ 1 i)
+                  (cdr items))))))
 
 (define (remove-duplicates ls #!optional (test eq?))
   (let loop ((items ls)
@@ -80,3 +95,34 @@
             (car items)
             (loop (cdr items))))))
 
+(define (take n ls)
+  (let loop ((i n)
+             (items ls)
+             (result '()))
+    (if (<= i 0)
+        (reverse result)
+        (if (null? items)
+            (error "Index out of range" n)
+            (loop (- i 1)
+                  (cdr items)
+                  (cons (car items)
+                        result))))))
+
+;;; ---------------------------------------------------------------------
+;;; property lists
+;;; ---------------------------------------------------------------------
+
+(define (getf ls thing #!optional (default #f))
+  (let ((mtail (member thing ls)))
+    (if mtail
+        (cadr mtail)
+        default)))
+
+(define (putf ls key val)
+  (let ((keypos (position-if (lambda (x)(equal? key x)) ls)))
+    (if keypos
+        (let ((head (take keypos ls))
+              (tail (drop (+ keypos 2) ls)))
+          (append head
+                  (cons key (cons val tail))))
+        (cons key (cons val ls)))))

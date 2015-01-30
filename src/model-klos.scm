@@ -1,6 +1,6 @@
 ;;;; ***********************************************************************
 ;;;;
-;;;; Name:          klos.scm
+;;;; Name:          model-klos.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
 ;;;; Purpose:       generic functions for Kawa
 ;;;; Author:        mikel evins
@@ -12,7 +12,7 @@
                direct-superclasses generic-function get-class get-interfaces
                no-applicable-method subclass? type-object?)
 
-(require "sort.scm")
+(require "util-sort.scm")
 (require "util-functions.scm")
 (require "util-java.scm")
 (require "util-lists.scm")
