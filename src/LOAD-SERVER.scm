@@ -15,6 +15,7 @@
 (require "init-config-local.scm")
 ;;(require "init-config.scm")
 (require "util-crypt.scm")
+(require "server-config.scm")
 (require "system-store.scm")
 
 

@@ -18,6 +18,7 @@
 (import-as PBEKeySpec javax.crypto.spec.PBEKeySpec)
 (import-as Random java.security.SecureRandom)
 (import-as SecretKeyFactory javax.crypto.SecretKeyFactory)
+(import-as String java.lang.String)
 
 (define (compute-random-salt)
   (let ((rand (Random:getInstance "SHA1PRNG"))
@@ -25,7 +26,7 @@
     (*:nextBytes rand bytes)
     (array->list bytes)))
 
-(define (compute-salted-digest text salt)
+(define (compute-salted-digest text::String salt)
   (let* ((salt-bytes (apply byte[] salt))
          (iterations 10000)
          (digest-length 160)

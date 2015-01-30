@@ -8,9 +8,9 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export close-fabric-store fabric-store fabric-store-path
-               get-root-object open-fabric-store set-root-object!)
+(module-export close-store get-root-object open-store set-root-object!)
 
+(require "server-config.scm")
 (require "util-java.scm")
 
 ;;; ---------------------------------------------------------------------
@@ -25,29 +25,17 @@
 ;;; store parameters
 ;;; ---------------------------------------------------------------------
 
-(define fabric-store (make-parameter #f))
-(define fabric-store-path (make-parameter "/Users/mikel/Desktop/fabricStore"))
-
-(define (open-fabric-store)
-  (let ((db (*:createStorage (StorageFactory:getInstance)))
-        (path::String (fabric-store-path)))
+(define (open-store path::String)
+  (let ((db::Storage (*:createStorage (StorageFactory:getInstance))))
     (*:open db path)
-    (fabric-store db)
     db))
 
-(define (close-fabric-store)
-  (let ((store::Storage (fabric-store)))
-    (*:close store)
-    (fabric-store #f)))
+(define (close-store store::Storage)
+  (*:close store))
 
-(define (get-root-object store)
+(define (get-root-object store::Storage)
   (*:getRoot store))
 
-(define (set-root-object! store val)
+(define (set-root-object! store::Storage val)
   (*:setRoot store val))
 
-;;; (fabric-store)
-;;; (open-fabric-store)
-;;; (close-fabric-store)
-;;; (get-root-object (fabric-store))
-;;; (set-root-object! (fabric-store) (list 'a 'b 'c))
