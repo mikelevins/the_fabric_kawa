@@ -17,8 +17,6 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
-(import-as Storage org.garret.perst.Storage)
-(import-as StorageFactory org.garret.perst.StorageFactory)
 (import-as String java.lang.String)
 
 ;;; ---------------------------------------------------------------------
@@ -26,16 +24,9 @@
 ;;; ---------------------------------------------------------------------
 
 (define (open-store path::String)
-  (let ((db::Storage (*:createStorage (StorageFactory:getInstance))))
-    (*:open db path)
-    db))
+  #f)
 
 (define (close-store store::Storage)
-  (*:close store))
+  #f)
 
-(define (get-root-object store::Storage)
-  (*:getRoot store))
-
-(define (set-root-object! store::Storage val)
-  (*:setRoot store val))
 
