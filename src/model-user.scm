@@ -8,28 +8,19 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export )
+(module-export user user?)
 
 (require "util-lists.scm")
 
 (import-as String java.lang.String)
 
-;;; ---------------------------------------------------------------------
-;;; reading and writing the static user database
-;;; ---------------------------------------------------------------------
+(define (user #!key username id password salt name roles)
+  (let ((id (or id (makeid)))
+        (salt (or salt (compute-random-salt)))
+        (roles (or roles '("player"))))
+    (list 'user username: username id: id password: password salt: salt name: name roles: roles)))
 
-(define (read-users path::String)
-  (with-input-from-file path
-    (lambda ()
-      (let loop ((result '())
-                 (next (read)))
-        (if (eqv? next #!eof)
-            (reverse result)
-            (loop (cons next result)
-                  (read)))))))
-
-;;; (define $users (read-users "/Users/mikel/Workshop/programming/the_fabric/etc/users.scm"))
-;;; (define $mikel (list-ref $users 0))
-;;; (getf $mikel username:)
-;;; (getf $mikel password:)
+(define (user? thing)
+  (and (pair? thing)
+       (eqv? 'user (car thing))))
 

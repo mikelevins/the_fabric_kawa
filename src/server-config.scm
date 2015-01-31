@@ -16,7 +16,6 @@
 ;;; parameters such as the server pathname and the pathname
 ;;; for server data files
 
-(module-export fabric-data-root)
+(module-export)
 
-(define fabric-data-root (make-parameter (string-append (fabric-root) "share")))
 
