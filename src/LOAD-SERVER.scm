@@ -16,7 +16,7 @@
 ;;(require "init-config.scm")
 (require "util-crypt.scm")
 (require "server-config.scm")
+(require "model-entity.scm")
 (require "model-user.scm")
 (require "storage-users.scm")
-
 

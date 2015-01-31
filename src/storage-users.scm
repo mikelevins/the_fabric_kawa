@@ -30,7 +30,7 @@
 ;;; (users)
 
 (define (find-username username)
-  (filter (lambda (u)(equal? username (getf u username:)))
+  (filter (lambda (u)(equal? username (get-key u username:)))
           (users)))
 
 ;;; (find-username "mikel")

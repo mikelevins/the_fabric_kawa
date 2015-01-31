@@ -11,6 +11,7 @@
 (module-export user user?)
 
 (require "util-lists.scm")
+(require "model-entity.scm")
 
 (import-as String java.lang.String)
 
@@ -18,9 +19,9 @@
   (let ((id (or id (makeid)))
         (salt (or salt (compute-random-salt)))
         (roles (or roles '("player"))))
-    (list 'user username: username id: id password: password salt: salt name: name roles: roles)))
+    (entity 'user username: username id: id password: password salt: salt name: name roles: roles)))
 
 (define (user? thing)
-  (and (pair? thing)
-       (eqv? 'user (car thing))))
+  (and (entity? thing)
+       (eqv? 'user (entity-type thing))))
 

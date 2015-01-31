@@ -8,8 +8,8 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export array->list every? copy-list drop every? filter getf
-               position-if putf remove-duplicates some? take)
+(module-export array->list every? copy-list drop every? filter get-key
+               position-if put-key remove-duplicates some? take)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -112,13 +112,13 @@
 ;;; property lists
 ;;; ---------------------------------------------------------------------
 
-(define (getf ls thing #!optional (default #f))
+(define (get-key ls thing #!optional (default #f))
   (let ((mtail (member thing ls)))
     (if mtail
         (cadr mtail)
         default)))
 
-(define (putf ls key val)
+(define (put-key ls key val)
   (let ((keypos (position-if (lambda (x)(equal? key x)) ls)))
     (if keypos
         (let ((head (take keypos ls))

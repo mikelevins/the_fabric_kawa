@@ -21,18 +21,18 @@
 (define (%slotspec form)
   (let* ((sname (car form))
          (inits (cdr form))
-         (sinit (getf inits init-form: #!null))
-         (stype (getf inits type: java.lang.Object)))
+         (sinit (get-key inits init-form: #!null))
+         (stype (get-key inits type: java.lang.Object)))
     (list sname type: stype init-form: sinit)))
 
 (define (%slotaccessors form)
   (let* ((sname (car form))
          (inits (cdr form))
-         (sgetter-form (getf inits getter: #f))
+         (sgetter-form (get-key inits getter: #f))
          (sgetter (if sgetter-form
                       `((,sgetter-form) ,sname)
                       #f))
-         (ssetter-form (getf inits setter: #f))
+         (ssetter-form (get-key inits setter: #f))
          (svar (gentemp))
          (ssetter (if ssetter-form
                       `((,ssetter-form ,svar) (set! ,sname ,svar))
