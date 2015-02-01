@@ -19,4 +19,5 @@
 (require "model-entity.scm")
 (require "model-user.scm")
 (require "storage-users.scm")
+(require "server-main.scm")
 
