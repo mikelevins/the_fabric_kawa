@@ -41,6 +41,7 @@
 (import-as Client com.jme3.network.Client)
 (import-as ColorRGBA com.jme3.math.ColorRGBA)
 (import-as ConnectException java.net.ConnectException)
+(import-as DefaultClient com.jme3.network.base.DefaultClient)
 (import-as EffectEvent tonegod.gui.effects.Effect:EffectEvent)
 (import-as FilterPostProcessor com.jme3.post.FilterPostProcessor)
 (import-as KeyInput com.jme3.input.KeyInput)
@@ -110,7 +111,7 @@
   (slots: (application type: FabricClient init-form: #!null))
   (methods:
    ((*init* app)(set! application app))
-   ((messageReceived source msg::ChatMessage)
+   ((messageReceived source::DefaultClient msg::ChatMessage)
     (if (instance? msg ChatMessage)
         (let* ((chatbox::ChatBox (*:getChatHud application))
                (msg-name (*:getName msg))
@@ -148,16 +149,16 @@
       (connect-to-server app))
     (set! net-client (*:getNetworkClient app))
     (if (jnull? net-client)
-        #f
+        net-client
         (if (*:isConnected net-client)
             net-client
-            #f))))
+            #!null))))
 
 (define (send-chat-message app::FabricClient chat-message)
   (let ((net-client::Client (ensure-valid-network-client app)))
-    (if net-client
-        (*:send net-client chat-message)
-        (report-failed-chat-message app chat-message (*:getChatHud app)))))
+    (if (jnull? net-client)
+        (report-failed-chat-message app chat-message (*:getChatHud app))
+        (*:send net-client chat-message))))
 
 ;;; the chatbox class
 ;;; ---------------------------------------------------------------------
@@ -280,6 +281,30 @@
 ;;; initializing the app
 ;;; ---------------------------------------------------------------------
 
+(define (init-ui app::FabricClient)
+  (let ((screen::Screen (Screen app))
+        (key-input::KeyInput (*:getKeyInput app)))
+    (*:initialize screen)
+    (*:addControl (*:getGuiNode app) screen)
+    (let* ((settings (*:getAppSettings app))
+           (Align BitmapFont:Align)
+           (VAlign BitmapFont:VAlign)
+           (width (*:getWidth settings))
+           (height (*:getHeight settings))
+           (chatbox (FabricChat screen "chatbox"
+                                (Vector2f 15 (- height 220))
+                                (Vector2f 400 200)))
+           (chatfield (*:getChildElementById chatbox "chatbox:ChatInput"))
+           (chatlog (*:getChildElementById chatbox "chatbox:ChatArea")))
+
+      (*:setFontColor chatlog ColorRGBA:Green)
+      (*:removeEffect chatfield EffectEvent:TabFocus)
+      (*:setFontSize chatfield 24)
+      (*:setSendKey chatbox key-input:KEY_RETURN)
+      
+      (*:setChatHud app chatbox)
+      (*:addElement screen chatbox))))
+
 (define (init-client app::FabricClient)
   ;; set up the scene
   (setup-lighting app)
@@ -287,6 +312,7 @@
   ;; set up connectivity
   (ensure-valid-network-client app)
   ;; set up the UI
+  (init-ui app)
   ;; don't seize the mouse from the player
   (Mouse:setGrabbed #f)
   ;; disable the fly-by camera

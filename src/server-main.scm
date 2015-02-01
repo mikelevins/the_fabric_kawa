@@ -26,6 +26,7 @@
 
 (import-as Client com.jme3.network.Client)
 (import-as Context com.jme3.system.JmeContext)
+(import-as HostedConnection com.jme3.network.HostedConnection)
 (import-as MessageListener com.jme3.network.MessageListener)
 (import-as Network com.jme3.network.Network)
 (import-as Serializable com.jme3.network.serializing.Serializable)
@@ -39,7 +40,7 @@
 
 (defclass ServerChatHandler (MessageListener)
   (methods:
-   ((messageReceived source::Client  msg::ChatMessage)
+   ((messageReceived source::HostedConnection  msg::ChatMessage)
     (format #t "~%Received message: ~s" msg)
     (*:setAttribute source "name" (*:getName msg))
     (format #t "~%Broadcasting message: ~a..." (*:toString msg))
