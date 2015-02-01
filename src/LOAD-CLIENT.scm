@@ -8,7 +8,14 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(require 'list-lib)
-(require 'srfi-95) ; sorting
 (require "version.scm")
+(require "util-java.scm")
 (require "model-id.scm")
+(require "model-klos.scm")
+(require "init-config-local.scm")
+;;(require "init-config.scm")
+(require "util-crypt.scm")
+(require "model-entity.scm")
+(require "model-user.scm")
+(require "storage-users.scm")
+(require "client-main.scm")
