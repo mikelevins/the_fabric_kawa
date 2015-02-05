@@ -13,6 +13,6 @@
 (define-syntax warn
   (syntax-rules ()
     ((warn msg arg ...)
-     (format #t msg arg ...))))
+     (format #t (string-append "~%Warning: " msg) arg ...))))
 
 

@@ -19,6 +19,7 @@
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
+(require "util-error.scm")
 (require "util-java.scm")
 (require "net-messaging.scm")
 (require "syntax-classes.scm")
@@ -119,7 +120,7 @@
                (received-text (format #f "[~A] ~A" msg-name msg-contents))
                (updater (runnable (lambda ()(*:receiveMsg chatbox received-text)))))
           (*:enqueue application updater))
-        (format #t "Unrecognized message: ~s" msg)))))
+        (warn "unrecognized message: ~s" msg)))))
 
 ;;; helper functions
 ;;; ---------------------------------------------------------------------
@@ -127,7 +128,7 @@
 (define (report-failed-chat-message app::FabricClient chat-message::ChatMessage chat-box::ChatBox)
   (let* ((msg-name (*:getName chat-message))
          (msg-contents (*:getContents chat-message))
-         (failed-text (format #f "Connection failed; unable to send message: [~A] ~A"
+         (failed-text (format #f "Warning: connection failed; unable to send message: [~A] ~A"
                               msg-name msg-contents)))
     (*:receiveMsg chat-box failed-text)))
 
@@ -139,8 +140,8 @@
      (*:addMessageListener new-connection (ClientChatHandler app))
      (*:start new-connection))
    (ex ConnectException (begin (*:setNetworkClient app #!null)
-                               (format #t "~%Failed to connect to Fabric server.")
-                               (format #t "~%~A" (*:toString ex))))))
+                               (warn "failed to connect to Fabric server.")
+                               (warn "~A" (*:toString ex))))))
 
 (define (ensure-valid-network-client app::FabricClient)
   (let ((net-client::Client #!null)
@@ -231,26 +232,26 @@
   ;; set up the player's controls
   (let ((key-input ::KeyInput (*:getKeyInput app))
         (input-manager (*:getInputManager app)))
-    (*:addMapping input-manager "moveForward" (KeyTrigger key-input:KEY_UP))
-    (*:addMapping input-manager "moveForward" (KeyTrigger key-input:KEY_W))
-    (*:addMapping input-manager "maybeMoveForward" (MouseButtonTrigger MouseInput:BUTTON_LEFT))
-    (*:addMapping input-manager "leftButton" (MouseButtonTrigger MouseInput:BUTTON_LEFT))
-    (*:addMapping input-manager "rightButton" (MouseButtonTrigger MouseInput:BUTTON_RIGHT))
-    (*:addMapping input-manager "moveRight" (KeyTrigger key-input:KEY_RIGHT))
-    (*:addMapping input-manager "moveRight" (KeyTrigger key-input:KEY_D))
-    (*:addMapping input-manager "mouseRotateRight" (MouseAxisTrigger 0 #f))
-    (*:addMapping input-manager "moveLeft" (KeyTrigger key-input:KEY_LEFT))
-    (*:addMapping input-manager "moveLeft" (KeyTrigger key-input:KEY_A))
-    (*:addMapping input-manager "mouseRotateLeft" (MouseAxisTrigger 0 #t))
-    (*:addMapping input-manager "mouseRotateUp" (MouseAxisTrigger 1 #f))
-    (*:addMapping input-manager "moveBackward" (KeyTrigger key-input:KEY_DOWN))
-    (*:addMapping input-manager "moveBackward" (KeyTrigger key-input:KEY_S))
-    (*:addMapping input-manager "mouseRotateDown" (MouseAxisTrigger 1 #t))
+    (route-keys (input-manager)
+                ((KeyTrigger key-input:KEY_UP) -> "moveForward")
+                ((KeyTrigger key-input:KEY_W) ->  "moveForward")
+                ((MouseButtonTrigger MouseInput:BUTTON_LEFT) ->  "maybeMoveForward")
+                ((MouseButtonTrigger MouseInput:BUTTON_LEFT) ->  "leftButton")
+                ((MouseButtonTrigger MouseInput:BUTTON_RIGHT) -> "rightButton")
+                ((KeyTrigger key-input:KEY_RIGHT) -> "moveRight")
+                ((KeyTrigger key-input:KEY_D) -> "moveRight")
+                ((MouseAxisTrigger 0 #f) -> "mouseRotateRight")
+                ((KeyTrigger key-input:KEY_LEFT) -> "moveLeft")
+                ((KeyTrigger key-input:KEY_A) -> "moveLeft")
+                ((MouseAxisTrigger 0 #t) -> "mouseRotateLeft")
+                ((MouseAxisTrigger 1 #f) -> "mouseRotateUp")
+                ((KeyTrigger key-input:KEY_DOWN) -> "moveBackward")
+                ((KeyTrigger key-input:KEY_S) -> "moveBackward")
+                ((MouseAxisTrigger 1 #t) -> "mouseRotateDown")
 
-    ;; text inputs
-    (*:addMapping input-manager "SPACE" (KeyTrigger key-input:KEY_SPACE))
-    (*:addMapping input-manager "KEY_A" (KeyTrigger key-input:KEY_A))
-
+                ;; text inputs
+                ((KeyTrigger key-input:KEY_SPACE) -> "SPACE")
+                ((KeyTrigger key-input:KEY_A) -> "KEY_A"))
     ;; set up the event listener
     (*:addListener input-manager app
                    ;; motion controls
@@ -286,7 +287,7 @@
         (key-input::KeyInput (*:getKeyInput app)))
     (*:initialize screen)
     (*:addControl (*:getGuiNode app) screen)
-    (let* ((settings (*:getAppSettings app))
+    (let* ((settings::AppSettings (*:getAppSettings app))
            (Align BitmapFont:Align)
            (VAlign BitmapFont:VAlign)
            (width (*:getWidth settings))
@@ -383,3 +384,4 @@
 
 ;;; (define $client (make-client))
 ;;; (*:start $client)
+

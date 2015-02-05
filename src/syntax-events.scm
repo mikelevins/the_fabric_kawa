@@ -8,7 +8,7 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export on-analog on-action)
+(module-export on-analog on-action route-keys)
 
 (define-syntax on-analog
   (syntax-rules (->)
@@ -25,3 +25,13 @@
      (cond
       ((invoke evt-name 'equals s) expr) ...
       (#t #f)))))
+
+(define-syntax route-keys
+  (syntax-rules (->)
+    ((route-keys (input-manager-object)
+                 (trigger-object -> event-name)
+                 ...)
+     (begin
+       (*:addMapping input-manager-object event-name trigger-object)
+       ...))))
+
