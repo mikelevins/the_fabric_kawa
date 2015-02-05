@@ -18,6 +18,7 @@
 (require "util-java.scm")
 (require "net-messaging.scm")
 (require "syntax-classes.scm")
+(require "appstate-login.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -26,6 +27,7 @@
 (import-as ActionListener com.jme3.input.controls.ActionListener)
 (import-as AnalogListener com.jme3.input.controls.AnalogListener)
 (import-as AppSettings com.jme3.system.AppSettings)
+(import-as AppStateManager com.jme3.app.state.AppStateManager)
 (import-as BitmapFont com.jme3.font.BitmapFont)
 (import-as Client com.jme3.network.Client)
 (import-as ConnectException java.net.ConnectException)
@@ -78,7 +80,8 @@
 (defclass FabricClient (SimpleApplication AnalogListener ActionListener)
   (slots:
    (app-settings init-form: (AppSettings #t) getter: getAppSettings)
-   (network-client ::com.jme3.network.Client init-form: #!null getter: getNetworkClient setter: setNetworkClient))
+   (network-client::com.jme3.network.Client
+    init-form: #!null getter: getNetworkClient setter: setNetworkClient))
   (methods:
    ((getCameraDirection) (*:getDirection cam))
    ((getAudioRenderer) audioRenderer)
@@ -94,9 +97,10 @@
    ;; init the app
    ((simpleInitApp)(init-client (this)))))
 
-
 (define (init-appstate app)
-  #f)
+  (let ((state-manager::AppStateManager (*:getStateManager app))
+        (login-state (LoginAppState)))
+    (*:attach state-manager login-state)))
 
 (define (init-client app::FabricClient)
   ;; set up connectivity
@@ -130,4 +134,6 @@
 
 ;;; (define $client (make-client))
 ;;; (*:start $client)
+;;; (*:getState (*:getStateManager $client) LoginAppState:class)
+
 
