@@ -30,6 +30,8 @@
 ;;; (users)
 
 (define (find-username username)
+  (if (not (users))
+      (read-users))
   (filter (lambda (u)(equal? username (get-key u username:)))
           (users)))
 

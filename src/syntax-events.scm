@@ -1,5 +1,4 @@
 ;;; ***********************************************************************
-;;;; FILE IDENTIFICATION
 ;;;;
 ;;;; Name:          syntax-events.scm
 ;;;; Project:       The Fabric: a far-future MMORPG

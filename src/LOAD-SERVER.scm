@@ -9,6 +9,7 @@
 ;;;; ***********************************************************************
 
 (require "version.scm")
+(require "util-error.scm")
 (require "util-java.scm")
 (require "model-id.scm")
 (require "model-klos.scm")
