@@ -42,11 +42,13 @@
   (slots:
    (app init-form: #!null getter: getApp setter: setApp))
   (methods:
-   ((asInput bytes::byte[] how-many::long) #f)))
+   ((asInput bytes::byte[] offset::long) 0)
+   ((getOutput offset::long how-many::int) #!null)))
 
 (defclass BrocadeApp (SimpleApplication)
   (slots:
-   (app-settings init-form: (AppSettings #t) getter: getAppSettings))
+   (app-settings init-form: (AppSettings #t) getter: getAppSettings)
+   (server init-form: #!null getter: getServer setter: setServer))
   (methods:
    ((getCameraDirection) (*:getDirection cam))
    ((getAudioRenderer) audioRenderer)
@@ -80,8 +82,11 @@
 
 (define (make-brocade #!optional (center #f))
   (let* ((app :: BrocadeApp (BrocadeApp))
-	 (settings :: AppSettings (*:getAppSettings app)))
+	 (settings :: AppSettings (*:getAppSettings app))
+         (server :: BrocadeServer (BrocadeServer)))
     ;;(Serializer:registerClass ChatMessage)
+    (*:setServer app server)
+    (*:setApp server app)
     (*:setResolution settings 1920 1200)
     (*:setTitle settings "The Fabric")
     (*:setSettingsDialogImage settings "Interface/icon.jpg")
