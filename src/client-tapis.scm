@@ -1,6 +1,6 @@
 ;;;; ***********************************************************************
 ;;;;
-;;;; Name:          client-brocade.scm
+;;;; Name:          client-tapis.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
 ;;;; Purpose:       the fabric client presentation server
 ;;;; Author:        mikel evins
@@ -8,12 +8,12 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export make-brocade)
+(module-export make-tapis)
 
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
 ;;; ---------------------------------------------------------------------
-;;; brocade is a presentation server that uses the 9P protocol to
+;;; tapis is a presentation server that uses the 9P protocol to
 ;;; present its services to client programs, whether in-process or
 ;;; running in separate processes.
 
@@ -35,17 +35,17 @@
 (import-as SimpleApplication com.jme3.app.SimpleApplication)
 
 ;;; ---------------------------------------------------------------------
-;;; brocade
+;;; tapis
 ;;; ---------------------------------------------------------------------
 
-(defclass BrocadeServer (ProcessFile:Listener)
+(defclass TapisServer (ProcessFile:Listener)
   (slots:
    (app init-form: #!null getter: getApp setter: setApp))
   (methods:
    ((asInput bytes::byte[] offset::long) 0)
    ((getOutput offset::long how-many::int) #!null)))
 
-(defclass BrocadeApp (SimpleApplication)
+(defclass TapisApp (SimpleApplication)
   (slots:
    (app-settings init-form: (AppSettings #t) getter: getAppSettings)
    (server init-form: #!null getter: getServer setter: setServer))
@@ -62,13 +62,13 @@
    ((onAnalog name value tpf) #f) 
    ((onAction name key-pressed? tpf) #f)
    ;; init the app
-   ((simpleInitApp)(init-brocade (this)))))
+   ((simpleInitApp)(init-tapis (this)))))
 
 ;;; ---------------------------------------------------------------------
 ;;; initialization
 ;;; ---------------------------------------------------------------------
 
-(define (init-brocade app::BrocadeApp)
+(define (init-tapis app::TapisApp)
   ;; don't seize the mouse from the player
   (Mouse:setGrabbed #f)
   ;; disable the fly-by camera
@@ -77,13 +77,13 @@
   #!void)
 
 ;;; ---------------------------------------------------------------------
-;;; construct the brocade server
+;;; construct the tapis server
 ;;; ---------------------------------------------------------------------
 
-(define (make-brocade #!optional (center #f))
-  (let* ((app :: BrocadeApp (BrocadeApp))
+(define (make-tapis #!optional (center #f))
+  (let* ((app :: TapisApp (TapisApp))
 	 (settings :: AppSettings (*:getAppSettings app))
-         (server :: BrocadeServer (BrocadeServer)))
+         (server :: TapisServer (TapisServer)))
     ;;(Serializer:registerClass ChatMessage)
     (*:setServer app server)
     (*:setApp server app)
@@ -97,5 +97,5 @@
     (*:setPauseOnLostFocus app #f)
     app))
 
-;;; (define $client::BrocadeApp (make-brocade))
+;;; (define $client::TapisApp (make-tapis))
 ;;; (*:start $client)
