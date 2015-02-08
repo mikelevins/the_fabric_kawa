@@ -23,11 +23,13 @@
 ;;; ---------------------------------------------------------------------
 
 (import-as AbstractAppState com.jme3.app.state.AbstractAppState)
+(import-as AppStateManager com.jme3.app.state.AppStateManager)
 (import-as Client com.jme3.network.Client)
 (import-as ConnectException java.net.ConnectException)
 (import-as DefaultClient com.jme3.network.base.DefaultClient)
 (import-as Network com.jme3.network.Network)
 (import-as Serializer com.jme3.network.serializing.Serializer)
+(import-as SimpleApplication com.jme3.app.SimpleApplication)
 
 ;;; ---------------------------------------------------------------------
 ;;; the LoginAppState class
@@ -35,8 +37,15 @@
 
 (defclass LoginAppState (AbstractAppState)
   (slots:
+   (app::SimpleApplication init-form: #!null getter: getApp setter: setApp)
    (network-client::com.jme3.network.Client
-    init-form: #!null getter: getNetworkClient setter: setNetworkClient)))
+    init-form: #!null getter: getNetworkClient setter: setNetworkClient))
+  (methods:
+   ((initialize mgr::AppStateManager client::SimpleApplication)
+    (begin (invoke-special AbstractAppState (this) 'initialize mgr client)
+           (*:setApp (this) client)
+           (let ((gui-node (*:getGuiNode app)))
+             #!void)))))
 
 ;;; ---------------------------------------------------------------------
 ;;; network connectivity
