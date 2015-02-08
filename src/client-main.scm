@@ -18,6 +18,7 @@
 (require "util-java.scm")
 (require "syntax-classes.scm")
 (require "appstate-login.scm")
+(require "client-tapis.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -47,7 +48,8 @@
 
 (defclass FabricClient (SimpleApplication AnalogListener ActionListener)
   (slots:
-   (app-settings init-form: (AppSettings #t) getter: getAppSettings))
+   (app-settings init-form: (AppSettings #t) getter: getAppSettings)
+   (presentation-server init-form: #!null getter: getPresentationServer setter: setPresentationServer))
   (methods:
    ((getCameraDirection) (*:getDirection cam))
    ((getAudioRenderer) audioRenderer)

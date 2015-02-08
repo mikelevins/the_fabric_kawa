@@ -8,7 +8,7 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export compute-random-salt text->digest)
+(module-export base64->digest compute-random-salt text->digest)
 
 (require "util-lists.scm")
 (require "util-java.scm")

@@ -8,7 +8,7 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export LoginAppState)
+(module-export LoginAppState connect-to-server ensure-valid-network-client)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules

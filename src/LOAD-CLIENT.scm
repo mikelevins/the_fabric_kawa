@@ -21,4 +21,4 @@
 (require "storage-users.scm")
 (require "appstate-login.scm")
 (require "client-tapis.scm")
-;(require "client-main.scm")
+(require "client-main.scm")

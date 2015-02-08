@@ -8,7 +8,7 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export make-tapis)
+(module-export TapisServer)
 
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
@@ -29,10 +29,7 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
-(import-as AppSettings com.jme3.system.AppSettings)
-(import-as Mouse org.lwjgl.input.Mouse)
 (import-as ProcessFile j9p.ns.handlers.ProcessFile)
-(import-as SimpleApplication com.jme3.app.SimpleApplication)
 
 ;;; ---------------------------------------------------------------------
 ;;; tapis
@@ -45,57 +42,3 @@
    ((asInput bytes::byte[] offset::long) 0)
    ((getOutput offset::long how-many::int) #!null)))
 
-(defclass TapisApp (SimpleApplication)
-  (slots:
-   (app-settings init-form: (AppSettings #t) getter: getAppSettings)
-   (server init-form: #!null getter: getServer setter: setServer))
-  (methods:
-   ((getCameraDirection) (*:getDirection cam))
-   ((getAudioRenderer) audioRenderer)
-   ((getViewport) viewPort)
-   ((getInputManager) inputManager)
-   ((getStateManager) stateManager)
-   ((getGuiNode) guiNode)
-   ((getGuiFont) guiFont)
-   ((getKeyInput) keyInput)
-   ;; stubs for now; fix up in AppState
-   ((onAnalog name value tpf) #f) 
-   ((onAction name key-pressed? tpf) #f)
-   ;; init the app
-   ((simpleInitApp)(init-tapis (this)))))
-
-;;; ---------------------------------------------------------------------
-;;; initialization
-;;; ---------------------------------------------------------------------
-
-(define (init-tapis app::TapisApp)
-  ;; don't seize the mouse from the player
-  (Mouse:setGrabbed #f)
-  ;; disable the fly-by camera
-  (*:setEnabled (*:getFlyByCamera app) #f)
-  ;; return void to make Java happy
-  #!void)
-
-;;; ---------------------------------------------------------------------
-;;; construct the tapis server
-;;; ---------------------------------------------------------------------
-
-(define (make-tapis #!optional (center #f))
-  (let* ((app :: TapisApp (TapisApp))
-	 (settings :: AppSettings (*:getAppSettings app))
-         (server :: TapisServer (TapisServer)))
-    ;;(Serializer:registerClass ChatMessage)
-    (*:setServer app server)
-    (*:setApp server app)
-    (*:setResolution settings 1920 1200)
-    (*:setTitle settings "The Fabric")
-    (*:setSettingsDialogImage settings "Interface/icon.jpg")
-    (*:setSettings app settings)
-    (*:setDisplayFps app #f) ; #t to show FPS
-    (*:setShowSettings app #t) ; #t to show settings dialog
-    (*:setDisplayStatView app #f) ; #t to show stats
-    (*:setPauseOnLostFocus app #f)
-    app))
-
-;;; (define $client::TapisApp (make-tapis))
-;;; (*:start $client)
