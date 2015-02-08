@@ -35,10 +35,22 @@
 ;;; tapis
 ;;; ---------------------------------------------------------------------
 
+(define (default-tapis-filesystem)
+  '((config . ())
+    (state . ((current)
+              (auth)
+              (character)
+              (scene)))
+    (w . ())))
+
 (defclass TapisServer (ProcessFile:Listener)
   (slots:
-   (app init-form: #!null getter: getApp setter: setApp))
+   (app init-form: #!null getter: getApp setter: setApp)
+   ;; the in-RAM filesystem, represented as an alist
+   (fs init-form: '() getter: getFS setter: setFS))
   (methods:
    ((asInput bytes::byte[] offset::long) 0)
-   ((getOutput offset::long how-many::int) #!null)))
+   ((getOutput offset::long how-many::int) #!null))
+  (init: (*:setFS (this) (default-tapis-filesystem))))
+
 

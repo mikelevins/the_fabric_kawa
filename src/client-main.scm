@@ -88,6 +88,7 @@
   (let* ((client :: FabricClient (FabricClient))
 	 (settings :: AppSettings (*:getAppSettings client)))
     ;;(Serializer:registerClass ChatMessage)
+    (*:setPresentationServer client (TapisServer))
     (*:setResolution settings 1920 1200)
     (*:setTitle settings "The Fabric")
     (*:setSettingsDialogImage settings "Interface/icon.jpg")

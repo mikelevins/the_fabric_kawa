@@ -1,4 +1,4 @@
-# brocade
+# tapis
 the Fabric's presentation server
 
 ## Overview
@@ -22,12 +22,12 @@ connectivity, and because the presentation server uses the far simpler
 9P protocol.
 
 This is a preliminary document that sketches the high-level design of
-the brocade server and its APIs. Expect details to change as we
+the tapis server and its APIs. Expect details to change as we
 discover improvements to the organization of the API.
 
-## The brocade filesystem
+## The tapis filesystem
 
-As in all 9P applications, brocade presents its services as a logical
+As in all 9P applications, tapis presents its services as a logical
 filesystem. The top levels of the filesystem look like this:
 
     /
@@ -66,15 +66,15 @@ modes the application can be in, including:
 - playing the game, and therefore rendering a scene
 
 From the point of view of client programs, all of these activities are
-performed through operations on the brocade filesystem. For example,
+performed through operations on the tapis filesystem. For example,
 to log in to the game a user enters credentials and clicks a button;
-the client program writes the credentials to brocade's
+the client program writes the credentials to tapis's
 /state/auth/request file and then waits for /state/auth/response to be
 written. If /state/auth/response appears then the client copies its
 contents to the session file; if not, then the client resets after a
 timeout.
 
-Brocade always has a current state, represented by the directory
+Tapis always has a current state, represented by the directory
 /state/current/. /state/current cotains a link to one of the other
 state directories. When the server initially starts up, the current
 state is represented by /state/current/auth. Once authentication and
@@ -112,20 +112,20 @@ text to the event log.
 
 The format of the event log looks like this:
 
-    (event sender kind xcoord ycoord time flags text)
+    (event sender: sender kind: kind xcoord: xcoord ycoord: ycoord time: time flags: flags text: text)
 
 ## Scenes
 
 Each scene directory provides a view into an active scene in the
 running game. The Fabric runs on a scene graph engine, which is
-convenient for the purposes of the brocade server. It presents the
+convenient for the purposes of the tapis server. It presents the
 graph of scene nodes as a filesystem. Each node in the scene graph is
 a node in the logical filesystem. The root node of the scene graph is
 represented by the scene directory. Each child node of the root node
 is represented by a directory or file in the scene directory.
 
 Here's an example of a simple Fabric scene as it appears in the
-brocade filesystem:
+tapis filesystem:
 
     scene/
     +--------iulQwBjPrFaPyHM+5349TaGD3qg=/
