@@ -18,7 +18,6 @@
 (require "util-java.scm")
 (require "syntax-classes.scm")
 (require "appstate-login.scm")
-(require "client-tapis.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -87,8 +86,6 @@
 (define (make-client #!optional (center #f))
   (let* ((client :: FabricClient (FabricClient))
 	 (settings :: AppSettings (*:getAppSettings client)))
-    ;;(Serializer:registerClass ChatMessage)
-    (*:setPresentationServer client (TapisServer))
     (*:setResolution settings 1920 1200)
     (*:setTitle settings "The Fabric")
     (*:setSettingsDialogImage settings "Interface/icon.jpg")
@@ -101,6 +98,5 @@
 
 ;;; (define $client (make-client))
 ;;; (*:start $client)
-;;; (*:getState (*:getStateManager $client) LoginAppState:class)
 
 

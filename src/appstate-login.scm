@@ -44,7 +44,7 @@
    ((initialize mgr::AppStateManager client::SimpleApplication)
     (begin (invoke-special AbstractAppState (this) 'initialize mgr client)
            (*:setApp (this) client)
-           (let ((gui-node (*:getGuiNode app)))
+           (let ((gui-node (*:getGuiNode client)))
              #!void)))))
 
 ;;; ---------------------------------------------------------------------

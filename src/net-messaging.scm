@@ -8,7 +8,7 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export ChatMessage)
+(module-export CreateAccountMessage ChatMessage LoginMessage)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -24,6 +24,30 @@
 (import-as AbstractMessage com.jme3.network.AbstractMessage)
 (import-as Serializable com.jme3.network.serializing.Serializable)
 (import-as String java.lang.String)
+
+;;; ---------------------------------------------------------------------
+;;; CreateAccountMessage
+;;; ---------------------------------------------------------------------
+
+(defclass CreateAccountMessage (AbstractMessage)
+  (annotations: @Serializable)
+  (slots:
+   (username type: String init-form: #!null getter: getUserame setter: setUserame)
+   (passwordHash type: String init-form: #!null getter: getPasswordHash setter: setPasswordHash))
+  (methods:
+   ((toString) (format #f "Create: ~A" username))))
+
+;;; ---------------------------------------------------------------------
+;;; LoginMessage
+;;; ---------------------------------------------------------------------
+
+(defclass LoginMessage (AbstractMessage)
+  (annotations: @Serializable)
+  (slots:
+   (username type: String init-form: #!null getter: getUserame setter: setUserame)
+   (passwordHash type: String init-form: #!null getter: getPasswordHash setter: setPasswordHash))
+  (methods:
+   ((toString) (format #f "Login: ~A" username))))
 
 ;;; ---------------------------------------------------------------------
 ;;; ChatMessage
