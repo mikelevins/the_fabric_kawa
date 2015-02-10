@@ -21,7 +21,7 @@
 ;;; list utilities
 ;;; ---------------------------------------------------------------------
 
-(define (array->list arr)
+(define (array->list arr::Object[])
   (let loop ((i 0)
              (result '()))
     (if (< i arr:length)
