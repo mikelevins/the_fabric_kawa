@@ -40,6 +40,10 @@
 ;;; =====================================================================
 ;;; Message types
 ;;; =====================================================================
+;;; all messages except RequestCreateAccountMessage and
+;;; RequestLoginMessage require auth tokens in order to be
+;;; accepted by client or server. RequestLoginMessage requests
+;;; an auth token which is supplied by a successful ResponseLoginMessage.
 
 ;;; ---------------------------------------------------------------------
 ;;; RequestCreateAccountMessage
