@@ -8,7 +8,7 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export make-server start-server stop-server)
+(module-export make-server register-auth start-server stop-server)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -16,6 +16,7 @@
 
 (require "version.scm")
 (require "util-java.scm")
+(require "util-lists.scm")
 (require "syntax-classes.scm")
 (require "init-config.scm")
 (require "net-messaging.scm")
@@ -26,25 +27,11 @@
 
 (import-as Client com.jme3.network.Client)
 (import-as Context com.jme3.system.JmeContext)
-(import-as HostedConnection com.jme3.network.HostedConnection)
-(import-as MessageListener com.jme3.network.MessageListener)
 (import-as Network com.jme3.network.Network)
 (import-as Serializable com.jme3.network.serializing.Serializable)
 (import-as Serializer com.jme3.network.serializing.Serializer)
 (import-as SimpleApplication com.jme3.app.SimpleApplication)
 (import-as Server com.jme3.network.Server)
-
-;;; ---------------------------------------------------------------------
-;;; ServerChatHandler - aux class for handling icoming chat messages
-;;; ---------------------------------------------------------------------
-
-(defclass ServerChatHandler (MessageListener)
-  (methods:
-   ((messageReceived source::HostedConnection  msg::ChatMessage)
-    (format #t "~%Received message: ~s" msg)
-    (*:setAttribute source "name" (*:getName msg))
-    (format #t "~%Broadcasting message: ~a..." (*:toString msg))
-    (*:broadcast (*:getServer source) msg))))
 
 ;;; ---------------------------------------------------------------------
 ;;; FabricServer - the server class
@@ -53,7 +40,8 @@
 (defclass FabricServer (SimpleApplication)
   (slots:
    (network-listener type: Server init-form: #!null getter: getNetworkListener setter: setNetworkListener)
-   (chat-handler type: ServerChatHandler init-form: #!null getter: getChatHandler setter: setChatHandler))
+   (chat-handler type: ServerChatHandler init-form: #!null getter: getChatHandler setter: setChatHandler)
+   (auth-table init-form: '() getter: getAuthTable setter: setAuthTable))
   (methods:
    ((simpleInitApp) #!void)
    ((stopServer) (*:close network-listener))
@@ -62,6 +50,11 @@
                         (format #t "~% listener running? ~S" (and (not (jnull? network-listener))
                                                                   (*:isRunning network-listener)))
                         (format #t "~% ~A" (*:toString network-listener))))))
+
+(define (register-auth server::FabricServer username token)
+  (let* ((old-table (*:getAuthTable server))
+         (new-table (put-key old-table username token)))
+    (*:setAuthTable server new-table)))
 
 ;;; ---------------------------------------------------------------------
 ;;; initialization
@@ -78,10 +71,10 @@
 
 (define (start-server app::FabricServer)
   (let ((listener (Network:createServer (server-name) (server-version) (server-port)(server-port)))
-        (handler (ServerChatHandler)))
+        (chat-handler (ServerChatHandler)))
     (*:setNetworkListener app listener)
     (*:start listener)
-    (*:addMessageListener listener handler ChatMessage)
+    (*:addMessageListener listener chat-handler ChatMessage)
     (*:start app Context:Type:Headless)
     (*:printServer app)))
 
