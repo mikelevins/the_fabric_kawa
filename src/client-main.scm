@@ -17,6 +17,7 @@
 (require "util-error.scm")
 (require "util-java.scm")
 (require "syntax-classes.scm")
+(require "net-messaging.scm")
 (require "appstate-login.scm")
 
 ;;; ---------------------------------------------------------------------
@@ -35,6 +36,7 @@
 (import-as Node com.jme3.scene.Node)
 (import-as PI com.jme3.math.FastMath:PI)
 (import-as Screen tonegod.gui.core.Screen)
+(import-as Serializer com.jme3.network.serializing.Serializer)
 (import-as SimpleApplication com.jme3.app.SimpleApplication)
 (import-as String java.lang.String)
 (import-as TextField tonegod.gui.controls.text.TextField)
@@ -88,8 +90,13 @@
 ;;; ---------------------------------------------------------------------
 
 (define (make-client #!optional (center #f))
-  (let* ((client :: FabricClient (FabricClient))
-	 (settings :: AppSettings (*:getAppSettings client)))
+  (let* ((client::FabricClient (FabricClient))
+	 (settings::AppSettings (*:getAppSettings client)))
+    (Serializer:registerClass ChatMessage)
+    (Serializer:registerClass RequestLoginMessage)
+    (Serializer:registerClass ResponseLoginMessage )
+    (Serializer:registerClass RequestCreateAccountMessage)
+    (Serializer:registerClass ResponseCreateAccountMessage)
     (*:setResolution settings 1920 1200)
     (*:setTitle settings "The Fabric")
     (*:setSettingsDialogImage settings "Interface/icon.jpg")

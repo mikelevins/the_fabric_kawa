@@ -63,6 +63,10 @@
 
 (define (make-server)
   (Serializer:registerClass ChatMessage)
+  (Serializer:registerClass RequestLoginMessage)
+  (Serializer:registerClass ResponseLoginMessage )
+  (Serializer:registerClass RequestCreateAccountMessage)
+  (Serializer:registerClass ResponseCreateAccountMessage)
   (let* ((server (FabricServer)))
     server))
 

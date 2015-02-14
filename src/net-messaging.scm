@@ -11,7 +11,9 @@
 (module-export
  ChatMessage
  RequestLoginMessage
- RequestCreateAccountMessage)
+ ResponseLoginMessage
+ RequestCreateAccountMessage
+ ResponseCreateAccountMessage)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -50,6 +52,19 @@
   (slots:
    (username type: String init-form: #!null getter: getUsername setter: setUsername)
    (passwordHash type: String init-form: #!null getter: getPasswordHash setter: setPasswordHash))
+  (methods:
+   ((toString) (format #f "Create: ~A" username))))
+
+;;; ---------------------------------------------------------------------
+;;; ResponseCreateAccountMessage
+;;; ---------------------------------------------------------------------
+
+(defclass ResponseCreateAccountMessage (AbstractMessage)
+  (annotations: @Serializable)
+  (slots:
+   (username type: String init-form: #!null getter: getUsername setter: setUsername)
+   (auth-token init-form: #!null getter: getAuthToken setter: setAuthToken)
+   (succeeded? init-form: #!null getter: getSucceeded setter: setSucceeded))
   (methods:
    ((toString) (format #f "Create: ~A" username))))
 
