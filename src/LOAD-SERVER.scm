@@ -20,5 +20,6 @@
 (require "model-entity.scm")
 (require "model-user.scm")
 (require "storage-users.scm")
+(require "net-messaging.scm")
 (require "server-main.scm")
 

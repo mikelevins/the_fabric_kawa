@@ -20,6 +20,7 @@
 (require "syntax-classes.scm")
 (require "init-config.scm")
 (require "net-messaging.scm")
+(require "server-messaging.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
