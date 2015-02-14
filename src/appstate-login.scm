@@ -24,19 +24,32 @@
 
 (import-as AbstractAppState com.jme3.app.state.AbstractAppState)
 (import-as AppStateManager com.jme3.app.state.AppStateManager)
+(import-as ButtonAdapter tonegod.gui.controls.buttons.ButtonAdapter)
 (import-as Client com.jme3.network.Client)
 (import-as ConnectException java.net.ConnectException)
 (import-as DefaultClient com.jme3.network.base.DefaultClient)
+(import-as Label tonegod.gui.controls.text.Label)
+(import-as LoginBox tonegod.gui.controls.windows.LoginBox)
+(import-as MouseButtonEvent com.jme3.input.event.MouseButtonEvent)
 (import-as Network com.jme3.network.Network)
 (import-as Screen tonegod.gui.core.Screen)
 (import-as Serializer com.jme3.network.serializing.Serializer)
 (import-as SimpleApplication com.jme3.app.SimpleApplication)
 (import-as Vector2f com.jme3.math.Vector2f)
+(import-as Vector4f com.jme3.math.Vector4f)
 (import-as Window tonegod.gui.controls.windows.Window)
 
 ;;; ---------------------------------------------------------------------
 ;;; the LoginAppState class
 ;;; ---------------------------------------------------------------------
+
+(defclass FabricLoginBox (LoginBox)
+  (methods:
+   ((*init* screen :: Screen uid :: String position :: Vector2f size :: Vector2f)
+    (invoke-special LoginBox (this) '*init* screen uid position size))
+   ((onButtonLoginPressed evt::MouseButtonEvent toggle::boolean) #!void)
+   ((onButtonCancelPressed evt::MouseButtonEvent toggle::boolean) #!void)))
+
 
 (defclass LoginAppState (AbstractAppState)
   (slots:
@@ -49,6 +62,6 @@
     (*:setApp (this) client)
     (let* ((screen (Screen client))
            (gui-node (*:getGuiNode client))
-           (win (Window screen "login" (Vector2f 700 300) (Vector2f 600 300))))
+           (win (FabricLoginBox screen "login" (Vector2f 700 300)(Vector2f 700 300))))
       (*:addElement screen win)
       (*:addControl gui-node screen)))))
