@@ -23,5 +23,5 @@
 
 (define (user? thing)
   (and (entity? thing)
-       (eqv? 'user (entity-type thing))))
+       (entity-type? thing 'user)))
 

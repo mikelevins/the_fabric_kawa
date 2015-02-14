@@ -8,7 +8,7 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export entity entity? entity-properties entity-type)
+(module-export entity entity? entity-properties entity-type entity-type?)
 
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
@@ -30,6 +30,9 @@
 
 (define (entity-type thing)
   (car thing))
+
+(define (entity-type? thing type)
+  (eqv? type (entity-type thing)))
 
 (define (entity-properties thing)
   (cdr thing))
