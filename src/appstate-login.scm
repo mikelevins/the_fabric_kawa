@@ -56,12 +56,14 @@
    (app::SimpleApplication init-form: #!null getter: getApp setter: setApp)
    (state-manager::AppStateManager init-form: #!null getter: getStateManager setter: setStateManager)
    (network-client::com.jme3.network.Client
-    init-form: #!null getter: getNetworkClient setter: setNetworkClient))
+    init-form: #!null getter: getNetworkClient setter: setNetworkClient)
+   (login-box::FabricLoginBox init-form: #!null getter: getLoginBox setter: setLoginBox))
   (methods:
    ((initialize mgr::AppStateManager client::SimpleApplication)
     (*:setApp (this) client)
     (let* ((screen (Screen client))
            (gui-node (*:getGuiNode client))
            (win (FabricLoginBox screen "login" (Vector2f 700 300)(Vector2f 700 300))))
+      (*:setLoginBox (this) win)
       (*:addElement screen win)
       (*:addControl gui-node screen)))))
