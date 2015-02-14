@@ -39,9 +39,12 @@
 ;;; Message types
 ;;; =====================================================================
 ;;; all messages except RequestCreateAccountMessage and
-;;; RequestLoginMessage require auth tokens in order to be
-;;; accepted by client or server. RequestLoginMessage requests
-;;; an auth token which is supplied by a successful ResponseLoginMessage.
+;;; RequestLoginMessage require auth tokens in order to be accepted by
+;;; client or server. RequestCreateAccountMessage requests the
+;;; creation of a new account; if it's successful then an auth token
+;;; is returned for a login session for the newly-created
+;;; account. RequestLoginMessage requests an auth token which is
+;;; supplied by a successful ResponseLoginMessage.
 
 ;;; ---------------------------------------------------------------------
 ;;; RequestCreateAccountMessage
@@ -96,6 +99,8 @@
 ;;; ---------------------------------------------------------------------
 ;;; ChatMessage
 ;;; ---------------------------------------------------------------------
+;;; Chat messages are broadcast to all logged-in user.
+;;; TODO: create chat channels
 
 (defclass ChatMessage (AbstractMessage)
   (annotations: @Serializable)
@@ -104,4 +109,22 @@
    (contents type: String init-form: #!null getter: getContents setter: setContents))
   (methods:
    ((toString) (format #f "[~A] ~A" name contents))))
+
+;;; ---------------------------------------------------------------------
+;;; Messages needed
+;;; ---------------------------------------------------------------------
+;;; - creating and naming characters
+;;; - using the transit network
+;;; - in-zone movement
+;;; - combat actions
+;;; - crafting actions
+;;; - interaction with in-zone affordances (quests, tools, traps, etc.)
+;;; - add objects and characters to a scene (server->client)
+;;;
+;;; Developer tools
+;;; - add and delete network nodes
+;;; - delete, add, and modify objects in nodes
+;;; - add and delete transit portals
+;;; - add NPCs and spawns
+;;; - add archives (places that killed player characters can respawn)
 
