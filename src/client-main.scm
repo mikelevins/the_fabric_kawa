@@ -67,6 +67,7 @@
 (define (init-appstate app::FabricClient)
   (let ((state-manager::AppStateManager (*:getStateManager app))
         (login-state (LoginAppState)))
+    (*:initialize login-state state-manager app)
     (*:attach state-manager login-state)))
 
 (define (init-client app::FabricClient)
