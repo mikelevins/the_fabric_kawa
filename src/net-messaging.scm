@@ -51,7 +51,7 @@
   (annotations: @Serializable)
   (slots:
    (username type: String init-form: #!null getter: getUsername setter: setUsername)
-   (passwordHash type: String init-form: #!null getter: getPasswordHash setter: setPasswordHash))
+   (password type: String init-form: #!null getter: getPassword setter: setPassword))
   (methods:
    ((toString) (format #f "Create: ~A" username))))
 
@@ -76,7 +76,7 @@
   (annotations: @Serializable)
   (slots:
    (username type: String init-form: #!null getter: getUsername setter: setUsername)
-   (passwordHash type: String init-form: #!null getter: getPasswordHash setter: setPasswordHash))
+   (password type: String init-form: #!null getter: getPassword setter: setPassword))
   (methods:
    ((toString) (format #f "Login: ~A" username))))
 

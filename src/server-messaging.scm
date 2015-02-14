@@ -53,10 +53,10 @@
    ((messageReceived source::HostedConnection  msg::RequestLoginMessage)
     (let* ((username (*:getUsername msg))
            (user-entity (find-username username))
-           (offered-password-hash (*:getPasswordHash msg)))
+           (offered-password (*:getPassword msg)))
       (format #t "~%Received message: ~s" msg)
       (if user-entity
-          (if (equal? offered-password-hash
+          (if (equal? offered-password
                       (get-key (entity-properties user-entity)
                                password:
                                #f))

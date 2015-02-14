@@ -15,11 +15,12 @@
 
 (import-as String java.lang.String)
 
-(define (user #!key username id password salt name roles)
+(define (user #!key username id hashed-password salt name roles)
   (let ((id (or id (makeid)))
         (salt (or salt (compute-random-salt)))
         (roles (or roles '("player"))))
-    (entity 'user username: username id: id password: password salt: salt name: name roles: roles)))
+    (entity 'user username: username id: id hashed-password: hashed-password
+            salt: salt name: name roles: roles)))
 
 (define (user? thing)
   (and (entity? thing)
