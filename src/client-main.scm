@@ -28,6 +28,7 @@
 (import-as AppSettings com.jme3.system.AppSettings)
 (import-as AppStateManager com.jme3.app.state.AppStateManager)
 (import-as BitmapFont com.jme3.font.BitmapFont)
+(import-as Client com.jme3.network.Client)
 (import-as EffectEvent tonegod.gui.effects.Effect:EffectEvent)
 (import-as MessageListener com.jme3.network.MessageListener)
 (import-as Mouse org.lwjgl.input.Mouse)
@@ -48,7 +49,9 @@
 (defclass FabricClient (SimpleApplication AnalogListener ActionListener)
   (slots:
    (app-settings init-form: (AppSettings #t) getter: getAppSettings)
-   (presentation-server init-form: #!null getter: getPresentationServer setter: setPresentationServer))
+   (presentation-server init-form: #!null getter: getPresentationServer setter: setPresentationServer)
+   (network-client::com.jme3.network.Client
+    init-form: #!null getter: getNetworkClient setter: setNetworkClient))
   (methods:
    ((getCameraDirection) (*:getDirection cam))
    ((getAudioRenderer) audioRenderer)

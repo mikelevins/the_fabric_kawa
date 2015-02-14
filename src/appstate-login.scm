@@ -17,6 +17,7 @@
 (require "util-java.scm")
 (require "syntax-classes.scm")
 (require "net-messaging.scm")
+(require "client-main.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -43,20 +44,34 @@
 ;;; the LoginAppState class
 ;;; ---------------------------------------------------------------------
 
+(define (connect-to-server)
+  (try-catch
+   (let ((new-connection (Network:connectToServer (server-name)(server-version)(server-host)
+                                                  (server-port)(server-port))))
+     (*:start new-connection)
+     new-connection)
+   (ex ConnectException (begin (warn "failed to connect to Fabric server.")
+                               (warn "~A" (*:toString ex))
+                               #!null))))
+
 (defclass FabricLoginBox (LoginBox)
   (methods:
    ((*init* screen :: Screen uid :: String position :: Vector2f size :: Vector2f)
     (invoke-special LoginBox (this) '*init* screen uid position size))
-   ((onButtonLoginPressed evt::MouseButtonEvent toggle::boolean) #!void)
-   ((onButtonCancelPressed evt::MouseButtonEvent toggle::boolean) #!void)))
-
+   ((onButtonLoginPressed evt::MouseButtonEvent toggle::boolean)
+    (let ((server-connection (connect-to-server)))
+      (if (jnull? server-connection)
+          (warn "Connection to server failed")
+          (let ((client::FabricClient app))
+            (warn "Connection to server succeeded")
+            (*:setNetworkClient client server-connection)))))
+   ((onButtonCancelPressed evt::MouseButtonEvent toggle::boolean)
+    (*:stop app))))
 
 (defclass LoginAppState (AbstractAppState)
   (slots:
    (app::SimpleApplication init-form: #!null getter: getApp setter: setApp)
    (state-manager::AppStateManager init-form: #!null getter: getStateManager setter: setStateManager)
-   (network-client::com.jme3.network.Client
-    init-form: #!null getter: getNetworkClient setter: setNetworkClient)
    (login-box::FabricLoginBox init-form: #!null getter: getLoginBox setter: setLoginBox))
   (methods:
    ((initialize mgr::AppStateManager client::SimpleApplication)
