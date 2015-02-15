@@ -17,6 +17,7 @@
 ;;(require "init-config.scm")
 (require "util-crypt.scm")
 (require "model-entity.scm")
+(require "assets-general.scm")
 (require "appstate-login.scm")
 (require "client-main.scm")
 (require "net-messaging.scm")

@@ -19,6 +19,7 @@
 (require "syntax-classes.scm")
 (require "net-messaging.scm")
 (require "appstate-login.scm")
+(require "appstate-character-creator.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -69,11 +70,27 @@
    ;; init the app
    ((simpleInitApp)(init-client (this)))))
 
+;;; ---------------------------------------------------------------------
+;;; AppStates
+;;; ---------------------------------------------------------------------
+
+;;; make LoginAppState the initial state
+;; (define (init-appstate app::FabricClient)
+;;   (let ((state-manager::AppStateManager (*:getStateManager app))
+;;         (login-state (LoginAppState)))
+;;     (*:initialize login-state state-manager app)
+;;     (*:attach state-manager login-state)))
+
+;;; make CharacterCreatorAppState the initial state
 (define (init-appstate app::FabricClient)
   (let ((state-manager::AppStateManager (*:getStateManager app))
-        (login-state (LoginAppState)))
-    (*:initialize login-state state-manager app)
-    (*:attach state-manager login-state)))
+        (char-state (CharacterCreatorAppState)))
+    (*:initialize char-state state-manager app)
+    (*:attach state-manager char-state)))
+
+;;; ---------------------------------------------------------------------
+;;; client init
+;;; ---------------------------------------------------------------------
 
 (define (init-client app::FabricClient)
   ;; set up the initial AppState
@@ -109,5 +126,3 @@
 
 ;;; (define $client (make-client))
 ;;; (*:start $client)
-
-
