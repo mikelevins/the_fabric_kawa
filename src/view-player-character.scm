@@ -8,7 +8,9 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export make-player-character)
+(module-export abjurers-character-color caretakers-character-color
+               make-player-character rogues-character-color
+               set-player-character-cube-color!)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -29,6 +31,7 @@
 (import-as Node com.jme3.scene.Node)
 (import-as RenderQueue com.jme3.renderer.queue.RenderQueue)
 (import-as RenderState com.jme3.material.RenderState)
+(import-as SafeArrayList com.jme3.util.SafeArrayList)
 
 ;;; ---------------------------------------------------------------------
 ;;; player characters
@@ -74,3 +77,23 @@
 (define (make-player-character)
   (let* ((cube (make-player-character-cube)))
     (entity 'player-character cube: cube)))
+
+(define (caretakers-character-color)
+  (ColorRGBA 0.0 0.5 0.0 0.5))
+
+(define (rogues-character-color)
+  (ColorRGBA 0.0 0.0 0.5 0.5))
+
+(define (abjurers-character-color)
+  (ColorRGBA 0.5 0.0 0.0 0.5))
+
+(define (set-player-character-cube-color! char-cube::Node character-color)
+  (let* ((cubes::SafeArrayList (*:getChildren char-cube))
+         (cube-count (*:size cubes)))
+    (let loop ((i 0))
+      (if (< i cube-count)
+          (let* ((cube::Geometry (*:get cubes i))
+                 (mat::Material (*:getMaterial cube)))
+            (*:setColor mat "Color" character-color)
+            (loop (+ i 1)))
+          char-cube))))

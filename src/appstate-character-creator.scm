@@ -60,14 +60,30 @@
                           (*:loadTexture asset-manager "Textures/tychobottom.png"))))
 
 (defclass FactionButtonGroup (RadioButtonGroup)
+  (slots:
+   (app-state init-form: #!null getter: getAppState setter: setAppState))
   (methods:
    ((*init* screen::Screen uid::String)
     (invoke-special RadioButtonGroup (this) '*init* screen uid))
    ((onSelect index::int value::Button)
-    (format #t "button selected: ~A" value))))
+    (let ((button-id (*:getUID value))
+          (state::CharacterCreatorAppState (get-app-state (this))))
+      (cond
+       ((equal? "CaretakerButton" button-id)(set-current-faction state 'caretakers))
+       ((equal? "RogueButton" button-id)(set-current-faction state 'rogues))
+       ((equal? "AbjurerButton" button-id)(set-current-faction state 'abjurers))
+       (else (format #t "~%Unknown faction selected")))))))
+
+(define (get-app-state group::FactionButtonGroup)
+  (*:getAppState group))
+
+(define (set-app-state! group::FactionButtonGroup state::CharacterCreatorAppState)
+  (*:setAppState group state))
 
 (defclass CharacterCreatorAppState (AbstractAppState)
   (slots:
+   (current-character init-form: #f getter: getCurrentCharacter setter: setCurrentCharacter)
+   (current-faction init-form: #f getter: getCurrentFaction setter: setCurrentFaction)
    (app::SimpleApplication init-form: #!null getter: getApp setter: setApp)
    (state-manager::AppStateManager init-form: #!null getter: getStateManager setter: setStateManager))
   (methods:
@@ -87,23 +103,25 @@
            (rogue-button (RadioButton screen "RogueButton"(Vector2f 264 32)(Vector2f 128 128)))
            (character (make-player-character))
            (char-cube (get-property character 'cube: default: #f)))
+      (set-app-state! faction-group (this))
       (*:attachChild root-node sky)
       (if char-cube
-          (*:attachChild root-node char-cube))
+          (begin (*:attachChild root-node char-cube)
+                 (*:setCurrentCharacter (this) character)))
       (*:setWindowTitle faction-palette "Choose a Faction:")
-      (*:setButtonIcon caretaker-button 128 128 "Interface/caretaker_icon.png")
+      (*:setButtonIcon caretaker-button 128 128 "Interface/caretakers-icon128.png")
       (*:setText caretaker-button "Caretakers")
       (*:setTextAlign caretaker-button align:Center)
       (*:setTextVAlign caretaker-button valign:Bottom)
       (*:setFontSize caretaker-button 18)
       (*:addButton faction-group caretaker-button)
-      (*:setButtonIcon abjurer-button 128 128 "Interface/abjurer_icon.png")
+      (*:setButtonIcon abjurer-button 128 128 "Interface/abjurers-icon128.png")
       (*:setText abjurer-button "Abjurers")
       (*:setTextAlign abjurer-button align:Center)
       (*:setTextVAlign abjurer-button valign:Bottom)
       (*:setFontSize abjurer-button 18)
       (*:addButton faction-group abjurer-button)
-      (*:setButtonIcon rogue-button 128 128 "Interface/rogue_icon.png")
+      (*:setButtonIcon rogue-button 128 128 "Interface/rogues-icon128.png")
       (*:setText rogue-button "Rogues")
       (*:setTextAlign rogue-button align:Center)
       (*:setTextVAlign rogue-button valign:Bottom)
@@ -114,3 +132,21 @@
       (*:addChild faction-palette rogue-button)
       (*:addElement screen faction-palette)
       (*:addControl gui-node screen)))))
+
+(define (update-state-for-faction state::CharacterCreatorAppState faction)
+  (let* ((character-entity (*:getCurrentCharacter state)))
+    (if (member faction '(caretakers rogues abjurers))
+        (let ((char-cube (get-property character-entity 'cube: default: #f)))
+          (if char-cube
+              (case faction
+                ((caretakers)(set-player-character-cube-color! char-cube (caretakers-character-color)))
+                ((rogues)(set-player-character-cube-color! char-cube (rogues-character-color)))
+                ((abjurers)(set-player-character-cube-color! char-cube (abjurers-character-color))))
+              (error "update-state-for-faction: missing character cube ")))
+        (error "set-current-faction: unrecognized faction: " faction))))
+
+(define (set-current-faction state::CharacterCreatorAppState faction)
+  (if (member faction '(caretakers rogues abjurers))
+      (begin (*:setCurrentFaction state faction)
+             (update-state-for-faction state faction))
+      (error "set-current-faction: unrecognized faction: " faction)))

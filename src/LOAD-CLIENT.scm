@@ -20,3 +20,6 @@
 (require "data-assets.scm")
 (require "net-messaging.scm")
 (require "client-main.scm")
+
+;;; (define $client (make-client))
+;;; (*:start $client)
