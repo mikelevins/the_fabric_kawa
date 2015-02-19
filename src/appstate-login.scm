@@ -56,7 +56,7 @@
 
 (defclass FabricLoginBox (LoginBox)
   (methods:
-   ((*init* screen :: Screen uid :: String position :: Vector2f size :: Vector2f)
+   ((*init* screen::Screen uid::String position::Vector2f size::Vector2f)
     (invoke-special LoginBox (this) '*init* screen uid position size))
    ((onButtonLoginPressed evt::MouseButtonEvent toggle::boolean)
     (let ((server-connection (connect-to-server)))

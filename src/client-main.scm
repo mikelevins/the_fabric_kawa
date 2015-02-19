@@ -74,14 +74,14 @@
 ;;; AppStates
 ;;; ---------------------------------------------------------------------
 
-;;; make LoginAppState the initial state
+;; 1. LoginAppState as the initial state
 ;; (define (init-appstate app::FabricClient)
 ;;   (let ((state-manager::AppStateManager (*:getStateManager app))
 ;;         (login-state (LoginAppState)))
 ;;     (*:initialize login-state state-manager app)
 ;;     (*:attach state-manager login-state)))
 
-;;; make CharacterCreatorAppState the initial state
+;; 2. CharacterCreatorAppState as the initial state
 (define (init-appstate app::FabricClient)
   (let ((state-manager::AppStateManager (*:getStateManager app))
         (char-state (CharacterCreatorAppState)))

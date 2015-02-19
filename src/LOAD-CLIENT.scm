@@ -19,5 +19,4 @@
 (require "model-entity.scm")
 (require "data-assets.scm")
 (require "net-messaging.scm")
-(require "appstate-login.scm")
 (require "client-main.scm")

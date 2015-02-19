@@ -8,7 +8,7 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export makeid id=? string->id id->string)
+(module-export id=? id->string makeid string->id)
 
 (require "util-java.scm")
 
@@ -22,15 +22,15 @@
 ;;; identifiers
 ;;; ---------------------------------------------------------------------
 
-(define (makeid . args)
-  (UUID:randomUUID))
-
 (define (id=? id1 id2)
   (*:equals id1 id2))
 
-(define (string->id uustr)
-  (UUID:fromString uustr))
-
 (define (id->string uuid :: UUID)
   (*:toString uuid))
+
+(define (makeid . args)
+  (UUID:randomUUID))
+
+(define (string->id uustr)
+  (UUID:fromString uustr))
 

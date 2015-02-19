@@ -16,6 +16,7 @@
 
 (require "util-java.scm")
 (require "syntax-classes.scm")
+(require "view-player-character.scm")
 (require "client-main.scm")
 
 ;;; ---------------------------------------------------------------------
@@ -60,7 +61,7 @@
 
 (defclass FactionButtonGroup (RadioButtonGroup)
   (methods:
-   ((*init* screen :: Screen uid :: String)
+   ((*init* screen::Screen uid::String)
     (invoke-special RadioButtonGroup (this) '*init* screen uid))
    ((onSelect index::int value::Button)
     (format #t "button selected: ~A" value))))
@@ -74,7 +75,7 @@
     (*:setApp (this) client)
     (let* ((screen (Screen client))
            (gui-node (*:getGuiNode client))
-           (root-node (*:getRootNode app))
+           (root-node (*:getRootNode (as SimpleApplication app)))
            (align BitmapFont:Align)
            (valign BitmapFont:VAlign)
            (sky (make-sky app))
@@ -83,8 +84,12 @@
            (highlight-color (ColorRGBA 1.0 1.0 0.0 1.0))
            (caretaker-button (RadioButton screen "CaretakerButton"(Vector2f 8 32)(Vector2f 128 128)))
            (abjurer-button (RadioButton screen "AbjurerButton"(Vector2f 136 32)(Vector2f 128 128)))
-           (rogue-button (RadioButton screen "RogueButton"(Vector2f 264 32)(Vector2f 128 128))))
+           (rogue-button (RadioButton screen "RogueButton"(Vector2f 264 32)(Vector2f 128 128)))
+           (character (make-player-character))
+           (char-cube (get-property character 'cube: default: #f)))
       (*:attachChild root-node sky)
+      (if char-cube
+          (*:attachChild root-node char-cube))
       (*:setWindowTitle faction-palette "Choose a Faction:")
       (*:setButtonIcon caretaker-button 128 128 "Interface/caretaker_icon.png")
       (*:setText caretaker-button "Caretakers")
