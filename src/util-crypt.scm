@@ -8,7 +8,17 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export base64->digest compute-random-salt text->digest)
+(module-export
+ base64->digest
+ compute-random-salt
+ text->digest)
+
+;;; ---------------------------------------------------------------------
+;;; ABOUT
+;;; ---------------------------------------------------------------------
+;;; This file provides cryptographic utilities used by the Fabric,
+;;; including cryptographic hashing for passwords and other sensitive
+;;; data.
 
 (require "util-lists.scm")
 (require "util-java.scm")

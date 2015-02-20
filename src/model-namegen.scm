@@ -9,8 +9,23 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export  fabric-name fabric-name-bytes fabric-name-strings
-                fabric-name-bit-patterns fabric-name-bytestrings gen-name)
+(module-export
+ fabric-name
+ fabric-name-bit-patterns
+ fabric-name-bytes
+ fabric-name-bytestrings
+ fabric-name-strings
+ gen-name)
+
+;;; ---------------------------------------------------------------------
+;;; ABOUT
+;;; ---------------------------------------------------------------------
+;;; This file implements the Fabric name generator, which can
+;;; construct arbitrary Fabric names from the data in the
+;;; data-names.scm file. It also provides utilities for converting
+;;; among the different representations of a Fabric name: 64-bit
+;;; integer, a sequence of up to 8 text strings, bit strings, and
+;;; hexadecimal byte strings.
 
 (require 'list-lib)
 (require "util-java.scm")

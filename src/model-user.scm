@@ -10,6 +10,12 @@
 
 (module-export user user?)
 
+;;; ---------------------------------------------------------------------
+;;; ABOUT
+;;; ---------------------------------------------------------------------
+;;; this file implements the user entity, a data structure that
+;;; represents in software an authenticated user of the game
+
 (require "util-lists.scm")
 (require "model-entity.scm")
 

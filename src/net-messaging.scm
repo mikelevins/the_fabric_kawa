@@ -10,10 +10,18 @@
 
 (module-export
  ChatMessage
- RequestLoginMessage
- ResponseLoginMessage
  RequestCreateAccountMessage
- ResponseCreateAccountMessage)
+ RequestLoginMessage
+ ResponseCreateAccountMessage
+ ResponseLoginMessage)
+
+;;; ---------------------------------------------------------------------
+;;; ABOUT
+;;; ---------------------------------------------------------------------
+;;; This file implements the message classes used by the Fabric client
+;;; and server to coordinate with each other and to pass data back and
+;;; forth. It also implements the code that makes network connections
+;;; in order to pass messages.
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules

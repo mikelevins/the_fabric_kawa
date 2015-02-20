@@ -8,15 +8,30 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export entity entity? entity-properties entity-type entity-type?
-               get-property put-property)
+(module-export
+ entity
+ entity-properties
+ entity-type
+ entity-type?
+ entity?
+ get-property
+ put-property)
 
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
 ;;; ---------------------------------------------------------------------
-;;; an entity is represented as a cons cell whose car is a symbol
-;;; that names the entity type, and whose cdr is a property list
-;;; that represents the entity's properties
+;;; This file implements an extremely simple form of an entity data
+;;; structure. Entities are flexibile, composable structure used to
+;;; represent game objects with flexible schemas. An entity is
+;;; represented as a list whose head is a symbol that names the
+;;; entity type, and whose tail is a property list representing the
+;;; entity's properties.
+;;;
+;;; It's best to pretend you don't know that entities are lists and
+;;; avoid using list functions on them. Instead, use (and extend) the
+;;; APIs in this file. That way if we need to change the
+;;; representation of entities for some reason in the future, we can
+;;; do so with minimal impact on the rest of the code.
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules

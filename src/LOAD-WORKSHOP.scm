@@ -8,6 +8,13 @@
 ;;;;
 ;;;; ***********************************************************************
 
+;;; ---------------------------------------------------------------------
+;;; ABOUT
+;;; ---------------------------------------------------------------------
+;;; load this file in order to load the Fabric workshop in an
+;;; interactive session. The workshop is a work-in-progress
+;;; development too.
+
 (require "version.scm")
 (require "util-error.scm")
 (require "util-java.scm")

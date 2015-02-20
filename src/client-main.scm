@@ -8,7 +8,16 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export FabricClient make-client)
+(module-export
+ FabricClient
+ make-client)
+
+;;; ---------------------------------------------------------------------
+;;; ABOUT
+;;; ---------------------------------------------------------------------
+;;; This file implements the main Fabric client, the program that
+;;; renders the game world and provides the user interface of the
+;;; game.
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules

@@ -8,6 +8,12 @@
 ;;;;
 ;;;; ***********************************************************************
 
+;;; ---------------------------------------------------------------------
+;;; ABOUT
+;;; ---------------------------------------------------------------------
+;;; load this file in order to load the Fabric server in an
+;;; interactive session
+
 (require "version.scm")
 (require "util-error.scm")
 (require "util-java.scm")
@@ -23,3 +29,11 @@
 (require "net-messaging.scm")
 (require "server-main.scm")
 
+;;; ---------------------------------------------------------------------
+;;; loading
+;;; ---------------------------------------------------------------------
+;;; evaluate these expressions to create, start, and stop the Fabric server
+
+;;; (define $server (make-server))
+;;; (start-server $server)
+;;; (stop-server $server)

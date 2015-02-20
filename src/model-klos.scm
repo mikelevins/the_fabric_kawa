@@ -8,9 +8,29 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export add-method! all-superclasses defgeneric defmethod
-               direct-superclasses generic-function get-class get-interfaces
-               no-applicable-method subclass? type-object?)
+(module-export
+ add-method!
+ all-superclasses
+ defgeneric
+ defmethod
+ direct-superclasses
+ generic-function
+ get-class
+ get-interfaces
+ no-applicable-method
+ subclass?
+ type-object?)
+
+;;; ---------------------------------------------------------------------
+;;; ABOUT
+;;; ---------------------------------------------------------------------
+;;; This file implements a simplified form of CLOS-style generic
+;;; functions that work with Kawa and Java types. Generic functions
+;;; are useful for providing uniform extensible APIs that must work on
+;;; open sets of types--for example, for providing common sets of
+;;; functions to construct and deconstruct structures that are
+;;; represented by various different types, or for serializing
+;;; a variety of types of data.
 
 (require 'list-lib)
 (require "util-sort.scm")

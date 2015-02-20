@@ -8,7 +8,17 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export current-thread context-class-loader get-resource import-as jnull?)
+(module-export
+ context-class-loader
+ current-thread
+ get-resource
+ import-as
+ jnull?)
+
+;;; ---------------------------------------------------------------------
+;;; ABOUT
+;;; ---------------------------------------------------------------------
+;;; utilities for interacting with the JVM from Kawa
 
 (define (context-class-loader thread::java.lang.Thread)
   (*:getContextClassLoader thread))

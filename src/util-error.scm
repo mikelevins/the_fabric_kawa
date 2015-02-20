@@ -10,6 +10,11 @@
 
 (module-export warn)
 
+;;; ---------------------------------------------------------------------
+;;; ABOUT
+;;; ---------------------------------------------------------------------
+;;; conveniences for issuing errors and warnings
+
 (define-syntax warn
   (syntax-rules ()
     ((warn msg arg ...)

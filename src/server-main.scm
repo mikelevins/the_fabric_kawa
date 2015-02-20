@@ -11,6 +11,15 @@
 (module-export make-server register-auth start-server stop-server)
 
 ;;; ---------------------------------------------------------------------
+;;; ABOUT
+;;; ---------------------------------------------------------------------
+;;; this file implements the main Fabric server program, which
+;;; maintains and updates the software model of the shared world and
+;;; provides access to the world for authenticated players. The server
+;;; is a long-running headless network service that runs on a host
+;;; provided by the Fabric team.
+
+;;; ---------------------------------------------------------------------
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 

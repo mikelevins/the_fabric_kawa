@@ -8,7 +8,19 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export id=? id->string makeid string->id)
+(module-export
+ id->string
+ id=?
+ makeid
+ string->id)
+
+;;; ---------------------------------------------------------------------
+;;; ABOUT
+;;; ---------------------------------------------------------------------
+;;; The functions in this file compute UUID objects for use
+;;; as unique identifiers in the Fabric system. We use these ids
+;;; for game objects like nodes and characters, and also to
+;;; identify messages passed between client and server.
 
 (require "util-java.scm")
 

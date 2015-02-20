@@ -8,6 +8,12 @@
 ;;;;
 ;;;; ***********************************************************************
 
+;;; ---------------------------------------------------------------------
+;;; ABOUT
+;;; ---------------------------------------------------------------------
+;;; load this file in order to load the Fabric client in an
+;;; interactive session
+
 (require "version.scm")
 (require "util-error.scm")
 (require "util-java.scm")
@@ -21,6 +27,11 @@
 (require "data-assets.scm")
 (require "net-messaging.scm")
 (require "client-main.scm")
+
+;;; ---------------------------------------------------------------------
+;;; loading
+;;; ---------------------------------------------------------------------
+;;; evaluate these expressions to create and run the Fabric client
 
 ;;; (define $client (make-client))
 ;;; (*:start $client)

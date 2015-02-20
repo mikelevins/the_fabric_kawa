@@ -10,6 +10,14 @@
 
 (module-export find-username read-users users)
 
+;;; ---------------------------------------------------------------------
+;;; ABOUT
+;;; ---------------------------------------------------------------------
+;;; this file implements access to a persistent store of user
+;;; entities.  it's used by the Fabric server to look up and
+;;; authenticate users who attempt to connect to the game, and to
+;;; authorize them for access to their in-game resources.
+
 (require "server-config.scm")
 (require "util-lists.scm")
 

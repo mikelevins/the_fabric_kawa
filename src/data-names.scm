@@ -10,6 +10,34 @@
 
 (module-export domain-indexes name-domains)
 
+;;; ---------------------------------------------------------------------
+;;; ABOUT
+;;; ---------------------------------------------------------------------
+;;; This file defines the **name domains** used for constructing
+;;; Fabric names. A name domain is a set of 256 names, all
+;;; thematically related in some way. For example, domain 7 is
+;;; surnames of well-known scientists and natural philosophers.
+;;; Element zero of each domain is an empty string.
+;;;
+;;; It's important to maintain the invariant that no name appears in
+;;; more than one domain. That way our code can always tell
+;;; by inspection which domain a name belongs to.
+;;;
+;;; Fabric names are 64-bit integers. The string names are mnemonics,
+;;; each one corresponding to an 8-bit bit-pattern. For example, in
+;;; domain 7, 00000000 is the empty string, 00000001 is "Abbot",
+;;; 00000010 is "Abelson", and so on.
+;;;
+;;; The domain number corresponds to an index into the bytes that
+;;; makeup a Fabric name's 64-bit integer. Domain 0 is the 0th byte;
+;;; domain 1 is the 1st byte; and so on. Because each name string
+;;; appears in only one domain, our code can tell which byte it
+;;; represents by inspection, even if the name strings are presented
+;;; out of order.
+;;;
+;;; The empty name (that is, 64-bit zero) is reserved to the system;
+;;; no player character may use it.
+
 (require 'list-lib)
 
 (define domain-indexes (make-parameter (iota 256)))
