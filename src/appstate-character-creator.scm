@@ -14,6 +14,7 @@
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
+(require 'list-lib)
 (require "util-java.scm")
 (require "syntax-classes.scm")
 (require "data-names.scm")
@@ -60,8 +61,7 @@
   (methods:
    ((*init* screen::Screen uid::String position::Vector2f size::Vector2f)
     (invoke-special SelectBox (this) '*init* screen uid position size))
-   ((onChange index::int value::Object)
-    (format #t "~%name menu item selected: ~S" value))))
+   ((onChange index::int value::Object) #!void)))
 
 ;;; class FactionButtonGroup
 ;;; ---------------------------------------------------------------------
@@ -166,51 +166,87 @@
   (let ((width (*:getWidth screen)))
     (Vector2f (- width 20) 160)))
 
+(define (compute-name-menu-bounds size)
+  (let* ((width (*:getX size))
+         (adjusted-width (- width 16))
+         (segment-width (/ adjusted-width 8))
+         (adjusted-segment-width (- segment-width 32))
+         (lefts (map (lambda (i)
+                       (+ 48
+                          (* i 24)
+                          (* i adjusted-segment-width)))
+                     (iota 8)))
+         (tops (map (lambda (i) 40)
+                    (iota 8)))
+         (widths (map (lambda (i) adjusted-segment-width)
+                      (iota 8)))
+         (heights (map (lambda (i) 24)
+                       (iota 8))))
+    (values lefts tops widths heights)))
+
 (define (make-name-palette screen::Screen)
-  (let ((palette (Window screen "NamePalette"
-                         (compute-name-palette-origin screen)
-                         (compute-name-palette-size screen)))
-        (domain0-menu (NameMenu screen "Domain0Menu" (Vector2f 16 40)(Vector2f 160 24)))
-        (domain1-menu (NameMenu screen "Domain1Menu" (Vector2f 176 40)(Vector2f 160 24)))
-        (domain2-menu (NameMenu screen "Domain2Menu" (Vector2f 352 40)(Vector2f 160 24)))
-        (domain3-menu (NameMenu screen "Domain3Menu" (Vector2f 528 40)(Vector2f 160 24)))
-        (domain4-menu (NameMenu screen "Domain4Menu" (Vector2f 704 40)(Vector2f 160 24)))
-        (domain5-menu (NameMenu screen "Domain5Menu" (Vector2f 880 40)(Vector2f 160 24)))
-        (domain6-menu (NameMenu screen "Domain6Menu" (Vector2f 1056 40)(Vector2f 160 24)))
-        (domain7-menu (NameMenu screen "Domain7Menu" (Vector2f 1232 40)(Vector2f 160 24))))
-    ;; domain0
-    (for-each (lambda (nm)(*:addListItem domain0-menu nm nm))
-              (list-ref (name-domains) 0))
-    (*:addChild palette domain0-menu)
-    ;; domain1
-    (for-each (lambda (nm::int)(*:addListItem domain1-menu (format #f "~a" nm) (Integer nm)))
-              (list-ref (name-domains) 1))
-    (*:addChild palette domain1-menu)
-    ;; domain2
-    (for-each (lambda (nm)(*:addListItem domain2-menu nm nm))
-              (list-ref (name-domains) 2))
-    (*:addChild palette domain2-menu)
-    ;; domain3
-    (for-each (lambda (nm)(*:addListItem domain3-menu nm nm))
-              (list-ref (name-domains) 3))
-    (*:addChild palette domain3-menu)
-    ;; domain4
-    (for-each (lambda (nm)(*:addListItem domain4-menu nm nm))
-              (list-ref (name-domains) 4))
-    (*:addChild palette domain4-menu)
-    ;; domain5
-    (for-each (lambda (nm)(*:addListItem domain5-menu nm nm))
-              (list-ref (name-domains) 5))
-    (*:addChild palette domain5-menu)
-    ;; domain6
-    (for-each (lambda (nm)(*:addListItem domain6-menu nm nm))
-              (list-ref (name-domains) 6))
-    (*:addChild palette domain6-menu)
-    ;; domain7
-    (for-each (lambda (nm)(*:addListItem domain7-menu nm nm))
-              (list-ref (name-domains) 7))
-    (*:addChild palette domain7-menu)
-    palette))
+  (let ((size (compute-name-palette-size screen)))
+    (receive (lefts tops widths heights) (compute-name-menu-bounds size)
+      (let* ((origin (compute-name-palette-origin screen))
+             (palette (Window screen "NamePalette" origin size))
+             (domain0-menu (NameMenu screen "Domain0Menu"
+                                     (Vector2f (list-ref lefts 0)(list-ref tops 0))
+                                     (Vector2f (list-ref widths 0)(list-ref heights 0))))
+             (domain1-menu (NameMenu screen "Domain1Menu"
+                                     (Vector2f (list-ref lefts 1)(list-ref tops 1))
+                                     (Vector2f (list-ref widths 1)(list-ref heights 1))))
+             (domain2-menu (NameMenu screen "Domain2Menu"
+                                     (Vector2f (list-ref lefts 2)(list-ref tops 2))
+                                     (Vector2f (list-ref widths 2)(list-ref heights 2))))
+             (domain3-menu (NameMenu screen "Domain3Menu"
+                                     (Vector2f (list-ref lefts 3)(list-ref tops 3))
+                                     (Vector2f (list-ref widths 3)(list-ref heights 3))))
+             (domain4-menu (NameMenu screen "Domain4Menu"
+                                     (Vector2f (list-ref lefts 4)(list-ref tops 4))
+                                     (Vector2f (list-ref widths 4)(list-ref heights 4))))
+             (domain5-menu (NameMenu screen "Domain5Menu"
+                                     (Vector2f (list-ref lefts 5)(list-ref tops 5))
+                                     (Vector2f (list-ref widths 5)(list-ref heights 5))))
+             (domain6-menu (NameMenu screen "Domain6Menu"
+                                     (Vector2f (list-ref lefts 6)(list-ref tops 6))
+                                     (Vector2f (list-ref widths 6)(list-ref heights 6))))
+             (domain7-menu (NameMenu screen "Domain7Menu"
+                                     (Vector2f (list-ref lefts 7)(list-ref tops 7))
+                                     (Vector2f (list-ref widths 7)(list-ref heights 7)))))
+        
+        ;; domain0
+        (for-each (lambda (nm)(*:addListItem domain0-menu nm nm))
+                  (list-ref (name-domains) 0))
+        (*:addChild palette domain0-menu)
+        ;; domain1
+        (for-each (lambda (nm::int)(*:addListItem domain1-menu (format #f "~a" nm) (Integer nm)))
+                  (list-ref (name-domains) 1))
+        (*:addChild palette domain1-menu)
+        ;; domain2
+        (for-each (lambda (nm)(*:addListItem domain2-menu nm nm))
+                  (list-ref (name-domains) 2))
+        (*:addChild palette domain2-menu)
+        ;; domain3
+        (for-each (lambda (nm)(*:addListItem domain3-menu nm nm))
+                  (list-ref (name-domains) 3))
+        (*:addChild palette domain3-menu)
+        ;; domain4
+        (for-each (lambda (nm)(*:addListItem domain4-menu nm nm))
+                  (list-ref (name-domains) 4))
+        (*:addChild palette domain4-menu)
+        ;; domain5
+        (for-each (lambda (nm)(*:addListItem domain5-menu nm nm))
+                  (list-ref (name-domains) 5))
+        (*:addChild palette domain5-menu)
+        ;; domain6
+        (for-each (lambda (nm)(*:addListItem domain6-menu nm nm))
+                  (list-ref (name-domains) 6))
+        (*:addChild palette domain6-menu)
+        ;; domain7
+        (for-each (lambda (nm)(*:addListItem domain7-menu nm nm))
+                  (list-ref (name-domains) 7))
+        (*:addChild palette domain7-menu)
+        palette))))
 
 (define (compute-armor-palette-origin screen::Screen)
   (let ((faction-palette-origin (compute-faction-palette-origin screen))
