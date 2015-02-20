@@ -13,7 +13,15 @@
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; the PlayAppState constructs and manages the gameplay state for
+;;; users, enabling them to interact with the game world and with
+;;; other players. It sets up rendering and event handling for
+;;; in-game scenes and maintains a network connection that enables
+;;; it to remain synchronized with other players and with the game
+;;; server
+
+;;; TODO: reintegrate with the client. The Play AppState is currently
+;;;       not complete or working.
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -34,6 +42,12 @@
 ;;; the PlayAppState class
 ;;; ---------------------------------------------------------------------
 
+
+;;; CLASS PlayAppState
+;;; ---------------------------------------------------------------------
+;;; the AppState class that sets up and manages playable scenes for
+;;; users
+
 (defclass PlayAppState (AbstractAppState)
   (slots:
    (direction type: Vector3f init-form: (Vector3f) getter: getDirection setter: setDirection)
@@ -52,17 +66,14 @@
            (*:attach (*:getStateManager (this))
                      (VideoRecorderAppState)))))
 
-;;; =====================================================================
-;;; code harvested from client-main.scm
-;;; =====================================================================
-
 ;;; ---------------------------------------------------------------------
 ;;; chatbox
 ;;; ---------------------------------------------------------------------
 
 
-;;; aux class for handling incoming chat messages
+;;; CLASS ClientChatHandler
 ;;; ---------------------------------------------------------------------
+;;; a MessageListener subclass that handles incoming chat messages
 
 (defclass ClientChatHandler (MessageListener)
   (slots: (application type: FabricClient init-form: #!null))
@@ -79,8 +90,9 @@
         (warn "unrecognized message: ~s" msg)))))
 
 
-;;; helper functions
+;;; (report-failed-chat-message app::FabricClient chat-message::ChatMessage chat-box::ChatBox)
 ;;; ---------------------------------------------------------------------
+;;; displays a warning when a posted chat message cannot be sent
 
 (define (report-failed-chat-message app::FabricClient chat-message::ChatMessage chat-box::ChatBox)
   (let* ((msg-name (*:getName chat-message))
@@ -89,9 +101,9 @@
                               msg-name msg-contents)))
     (*:receiveMsg chat-box failed-text)))
 
-;;; 
+;;; (send-chat-message app::FabricClient chat-message)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; attempts to send _chat-message_ to _app_'s current Fabric server
 
 (define (send-chat-message app::FabricClient chat-message)
   (let ((net-client::Client (ensure-valid-network-client app)))
@@ -99,8 +111,10 @@
         (report-failed-chat-message app chat-message (*:getChatHud app))
         (*:send net-client chat-message))))
 
-;;; the chatbox class
+;;; CLASS FabricChat
 ;;; ---------------------------------------------------------------------
+;;; a ChatBox subclass that displays chat messages sent by the local
+;;; player and received from remote players
 
 (defclass FabricChat (ChatBox)
   (slots: (chatname type: String init-form: "" getter: getChatName setter: setChatName))
@@ -122,17 +136,20 @@
 ;;; player movement
 ;;; ---------------------------------------------------------------------
 
-;;; 
+
+;;; (normalize-camera! app :: FabricClient)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; orients the camera to where the player's character node is facing
 
 (define (normalize-camera! app :: FabricClient)
   (let ((dir :: Vector3f (*:getCameraDirection app)))
     (*:normalizeLocal dir)))
 
-;;; 
+
+;;; (move-player!  app :: FabricClient node :: Node amount :: float invert?)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; moves the player's node _node_  an distance along an arbitrary vector.
+;;; used by more specific move- functions like move-player-forward!
 
 (define (move-player!  app :: FabricClient node :: Node amount :: float invert?)
   (let ((dir :: Vector3f (*:getDirection app))
@@ -140,75 +157,86 @@
     (*:multLocal dir (* sign amount))
     (*:move node dir)))
 
-;;; 
+
+;;; (move-player-forward! app :: FabricClient node :: Node amount :: float)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; moves _node_ forward a distance of _amount_
 
 (define (move-player-forward! app :: FabricClient node :: Node amount :: float)
   (normalize-camera! app)
   (*:setDirection app (*:getCameraDirection app))
   (move-player! app node amount #f))
 
-;;; 
+
+;;; (move-player-backward! app :: FabricClient node :: Node amount :: float)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; moves _node_ backward a distance of _amount_
 
 (define (move-player-backward! app :: FabricClient node :: Node amount :: float)
   (normalize-camera! app)
   (*:setDirection app (*:getCameraDirection app))
   (move-player! app node amount #t))
 
-;;; 
+
+;;; (move-player-left! app :: FabricClient node :: Node amount :: float)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; moves _node_ to the left a distance of _amount_
 
 (define (move-player-left! app :: FabricClient node :: Node amount :: float)
   (*:setDirection app (*:normalizeLocal (*:getLeft (*:getCamera app))))
   (move-player! app node amount #f))
 
-;;; 
+
+;;; (move-player-right! app :: FabricClient node :: Node amount :: float)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; moves _node_ to the right a distance of _amount_
 
 (define (move-player-right! app :: FabricClient node :: Node amount :: float)
   (*:setDirection app (*:normalizeLocal (*:getLeft (*:getCamera app))))
   (move-player! app node amount #t))
 
-;;; 
+
+;;; (rotate-player-right! node :: Node amount :: float)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; rotates _node_ to the right an angle of _amount_ 
 
 (define (rotate-player-right! node :: Node amount :: float)
   (*:rotate node 0 (* -1 amount) 0))
 
-;;; 
+
+;;; (rotate-player-left! node :: Node amount :: float)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; rotates _node_ to the left an angle of _amount_ 
 
 (define (rotate-player-left! node :: Node amount :: float)
   (*:rotate node 0 amount 0))
 
-;;; 
+
+;;; (rotate-player-up! node :: Node amount :: float)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; rotates _node_ upward an angle of _amount_ 
 
 (define (rotate-player-up! node :: Node amount :: float)
   (*:rotate node (* -1 amount) 0 0))
 
-;;; 
+
+;;; (rotate-player-down! node :: Node amount :: float)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; rotates _node_ downward an angle of _amount_ 
 
 (define (rotate-player-down! node :: Node amount :: float)
   (*:rotate node amount 0 0))
+
 
 ;;; ---------------------------------------------------------------------
 ;;; set up player inputs
 ;;; ---------------------------------------------------------------------
 
-;;; 
+
+;;; (setup-inputs app::FabricClient)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; establishes the event handlers that translate keypresses and
+;;; mouse movements into movements of the player's node and camera
 
 (define (setup-inputs app::FabricClient)
   ;; set up the player's controls
@@ -247,8 +275,9 @@
 ;;; scene-setting
 ;;; ---------------------------------------------------------------------
 
-;;; lighting
+;;; (setup-lighting app::FabricClient)
 ;;; ---------------------------------------------------------------------
+;;; sets up the lighting used in the game scene
 
 (define (setup-lighting app::FabricClient)
   (let* ((asset-manager::AssetManager (get-asset-manager))
@@ -261,8 +290,9 @@
     (*:addProcessor viewport filter-processor)))
 
 
-;;; initializing the app
+;;; (init-ui app::FabricClient)
 ;;; ---------------------------------------------------------------------
+;;; sets up the user interface in a game scene 
 
 (define (init-ui app::FabricClient)
   (let ((screen::Screen (Screen app))
@@ -331,9 +361,10 @@
              ("rightButton" -> (*:setRightButton app key-pressed?))))
 
 
-;;; 
+;;; (init-play-app-state app::FabricClient)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; sets up the game scene for play. sets up lighting, event handlers,
+;;; user interface, and scene rendering
 
 (define (init-play-app-state app::FabricClient)
   ;; set up the scene

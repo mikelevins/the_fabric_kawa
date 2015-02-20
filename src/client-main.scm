@@ -58,9 +58,12 @@
 ;;; FabricClient - the client application class
 ;;; ---------------------------------------------------------------------
 
-;;; 
+;;; CLASS FabricClient
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; a SimpleApplication subclass that represents the Fabric client
+;;; application. FabricClient renders the game world, provides all
+;;; user interface, and manages network connections that make it
+;;; possible to play the game.
 
 (defclass FabricClient (SimpleApplication AnalogListener ActionListener)
   (slots:
@@ -83,22 +86,12 @@
    ;; init the app
    ((simpleInitApp)(init-client (this)))))
 
+;;; (init-appstate app::FabricClient)
 ;;; ---------------------------------------------------------------------
-;;; AppStates
-;;; ---------------------------------------------------------------------
-
-;; 1. LoginAppState as the initial state
-;; (define (init-appstate app::FabricClient)
-;;   (let ((state-manager::AppStateManager (*:getStateManager app))
-;;         (login-state (LoginAppState)))
-;;     (*:initialize login-state state-manager app)
-;;     (*:attach state-manager login-state)))
-
-;; 2. CharacterCreatorAppState as the initial state
-
-;;; 
-;;; ---------------------------------------------------------------------
-;;; 
+;;; initializes and activates the client's starting AppState.
+;;; during testing, this function may set up any AppState as the
+;;; initial one; in production, the initial state is always
+;;; the Login AppState.
 
 (define (init-appstate app::FabricClient)
   (let ((state-manager::AppStateManager (*:getStateManager app))
@@ -110,9 +103,10 @@
 ;;; client init
 ;;; ---------------------------------------------------------------------
 
-;;; 
+;;; (init-client app::FabricClient)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; initializes the client, includng setting up the initial AppState,
+;;; camera, and event handlers
 
 (define (init-client app::FabricClient)
   ;; set up the initial AppState
@@ -128,9 +122,11 @@
 ;;; construct the client app
 ;;; ---------------------------------------------------------------------
 
-;;; 
+;;; (make-client #!optional (center #f))
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; returns a newly-created and -configured instance of the
+;;; client application. The game can be started by calling
+;;; the new client application's start method.
 
 (define (make-client #!optional (center #f))
   (let* ((client::FabricClient (FabricClient))
@@ -150,5 +146,9 @@
     (*:setPauseOnLostFocus client #t)
     client))
 
+;;; ---------------------------------------------------------------------
+;;; testing code
+;;; ---------------------------------------------------------------------
 ;;; (define $client (make-client))
 ;;; (*:start $client)
+

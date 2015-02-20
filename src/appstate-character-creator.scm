@@ -13,7 +13,8 @@
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; the character creator provides players the ability to create and
+;;; customize new playable characters
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -58,9 +59,10 @@
 ;;; the CharacterCreatorAppState class
 ;;; ---------------------------------------------------------------------
 
-;;; class NameMenu
+;;; CLASS NameMenu
 ;;; ---------------------------------------------------------------------
-
+;;; a SelectBox subclass used to present name options for player
+;;; characters
 
 (defclass NameMenu (SelectBox)
   (slots:)
@@ -69,8 +71,10 @@
     (invoke-special SelectBox (this) '*init* screen uid position size))
    ((onChange index::int value::Object) #!void)))
 
-;;; class FactionButtonGroup
+;;; CLASS FactionButtonGroup
 ;;; ---------------------------------------------------------------------
+;;; a RadioButtonGroup subclass used to present faction options to
+;;; players
 
 (defclass FactionButtonGroup (RadioButtonGroup)
   (slots:
@@ -87,26 +91,27 @@
        ((equal? "AbjurerButton" button-id)(set-current-faction state 'abjurers))
        (else (format #t "~%Unknown faction selected")))))))
 
-;;; 
+;;; (get-app-state group::FactionButtonGroup)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; returns _group_'s AppState object 
 
 (define (get-app-state group::FactionButtonGroup)
   (*:getAppState group))
 
-;;; 
+;;; (set-app-state! group::FactionButtonGroup state::CharacterCreatorAppState)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; assigns _state_ to _group_'s app-state slot
 
 (define (set-app-state! group::FactionButtonGroup state::CharacterCreatorAppState)
   (*:setAppState group state))
 
-;;; functions for building the display
+;;; ---------------------------------------------------------------------
+;;; the skybox
 ;;; ---------------------------------------------------------------------
 
-;;; 
+;;; (make-sky app::SimpleApplication)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; returns a newly-constructed Fabric skybox
 
 (define (make-sky app::SimpleApplication)
   (let ((asset-manager::AssetManager (get-asset-manager)))
@@ -118,143 +123,189 @@
                           (*:loadTexture asset-manager "Textures/tychotop.png")
                           (*:loadTexture asset-manager "Textures/tychobottom.png"))))
 
-;;; 
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; the faction nameplate
+;;; ---------------------------------------------------------------------
 
-(define (compute-nameplate-origin screen::Screen)
+;;; (compute-faction-nameplate-origin screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; computes and returns a suitable origin for the faction nameplate,
+;;; taking into accoun the dimensions of the screen
+
+(define (compute-faction-nameplate-origin screen::Screen)
   (let ((width (*:getWidth screen))
         (height (*:getHeight screen)))
     (Vector2f (/ width 2.0) 8)))
 
-;;; 
-;;; ---------------------------------------------------------------------
-;;; 
 
-(define (compute-nameplate-size screen::Screen)
+;;; (compute-faction-nameplate-size screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; computes and returns a suitable size for the faction nameplate,
+;;; taking into accoun the dimensions of the screen
+
+(define (compute-faction-nameplate-size screen::Screen)
   (let ((width (*:getWidth screen)))
     (Vector2f (/ width 5.0) 40)))
 
-;;; 
-;;; ---------------------------------------------------------------------
-;;; 
 
-(define (make-nameplate screen::Screen)
+;;; (make-faction-nameplate screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; constructs and returns a new TLabel object for use as the faction
+;;; nameplate
+
+(define (make-faction-nameplate screen::Screen)
   (TLabel screen "FactionNameplate"
-          (compute-nameplate-origin screen)
-          (compute-nameplate-size screen)))
+          (compute-faction-nameplate-origin screen)
+          (compute-faction-nameplate-size screen)))
 
-;;; 
+
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; the faction palette
+;;; ---------------------------------------------------------------------
+
+
+;;; (compute-faction-palette-origin screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; computes and returns a suitable origin for the faction palette,
+;;; taking into accoun the dimensions of the screen
 
 (define (compute-faction-palette-origin screen::Screen)
   (Vector2f 10 10))
 
-;;; 
+
+;;; (compute-faction-palette-size screen::Screen)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; computes and returns a suitable size for the faction palette,
+;;; taking into accoun the dimensions of the screen
+
 
 (define (compute-faction-palette-size screen::Screen)
   (Vector2f 400 256))
 
-;;; 
+
+;;; (make-faction-palette screen::Screen)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; returns a newly-constructed and -populated faction-palette window
 
 (define (make-faction-palette screen::Screen)
   (Window screen "FactionPalette"
           (compute-faction-palette-origin screen)
           (compute-faction-palette-size screen)))
 
-;;; 
+
+;;; (compute-caretaker-button-origin screen::Screen)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; computes and returns a suitable origin for the caretakers faction
+;;; button
+
 
 (define (compute-caretaker-button-origin screen::Screen)
   (Vector2f 8 32))
 
-;;; 
+
+;;; (compute-caretaker-button-size screen::Screen)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; computes and returns a suitable size for the caretakers faction
+;;; button
+
 
 (define (compute-caretaker-button-size screen::Screen)
   (Vector2f 128 128))
 
-;;; 
+
+;;; (make-caretaker-button screen::Screen)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; returns a newly-constructed caretakers faction button
 
 (define (make-caretaker-button screen::Screen)
   (RadioButton screen "CaretakerButton"
                (compute-caretaker-button-origin screen)
                (compute-caretaker-button-size screen)))
 
-;;; 
+
+;;; (compute-abjurer-button-origin screen::Screen)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; computes and returns a suitable origin for the abjurers faction
+;;; button
 
 (define (compute-abjurer-button-origin screen::Screen)
   (Vector2f 136 32))
 
-;;; 
+
+;;; (compute-abjurer-button-size screen::Screen)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; computes and returns a suitable size for the abjurers faction
+;;; button
 
 (define (compute-abjurer-button-size screen::Screen)
   (Vector2f 128 128))
 
-;;; 
+
+;;; (make-abjurer-button screen::Screen)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; returns a newly-constructed abjurers faction button
 
 (define (make-abjurer-button screen::Screen)
   (RadioButton screen "AbjurerButton"
                (compute-abjurer-button-origin screen)
                (compute-abjurer-button-size screen)))
 
-;;; 
+
+;;; (compute-rogue-button-origin screen::Screen)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; computes and returns a suitable origin for the rogues faction
+;;; button
 
 (define (compute-rogue-button-origin screen::Screen)
   (Vector2f 264 32))
 
-;;; 
+
+;;; (compute-rogue-button-size screen::Screen)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; computes and returns a suitable size for the rogues faction
+;;; button
 
 (define (compute-rogue-button-size screen::Screen)
   (Vector2f 128 128))
 
-;;; 
+
+;;; (make-rogue-button screen::Screen)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; returns a newly-constructed rogues faction button
 
 (define (make-rogue-button screen::Screen)
   (RadioButton screen "RogueButton"
                (compute-rogue-button-origin screen)
                (compute-rogue-button-size screen)))
 
-;;; 
+
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; the name palette
+;;; ---------------------------------------------------------------------
+
+
+;;; (compute-name-palette-origin screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; computes and returns a suitable origin for the name palette
 
 (define (compute-name-palette-origin screen::Screen)
   (let ((height (*:getHeight screen)))
     (Vector2f 10 (- height 180))))
 
-;;; 
+
+;;; (compute-name-palette-size screen::Screen)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; computes and returns a suitable size for the name palette
 
 (define (compute-name-palette-size screen::Screen)
   (let ((width (*:getWidth screen)))
     (Vector2f (- width 20) 160)))
 
-;;; 
+
+;;; (compute-name-menu-bounds size)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; computes and returns lists of coordinates to be used as the bounds
+;;; of name menus in the name palette
 
 (define (compute-name-menu-bounds size)
   (let* ((width (*:getX size))
@@ -274,9 +325,10 @@
                        (iota 8))))
     (values lefts tops widths heights)))
 
-;;; 
+
+;;; (make-name-palette screen::Screen)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; returns a newly-constructed and -populated name palette
 
 (define (make-name-palette screen::Screen)
   (let ((size (compute-name-palette-size screen)))
@@ -342,9 +394,16 @@
         (*:addChild palette domain7-menu)
         palette))))
 
-;;; 
+
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; the armor palette
+;;; ---------------------------------------------------------------------
+
+
+;;; (compute-armor-palette-origin screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; computes and returns a suitable origin for the armor palette, taking
+;;; into account the dimensions of the screen
 
 (define (compute-armor-palette-origin screen::Screen)
   (let ((faction-palette-origin (compute-faction-palette-origin screen))
@@ -354,9 +413,11 @@
                  (*:getY faction-palette-size)
                  8))))
 
-;;; 
+
+;;; (compute-armor-palette-size screen::Screen)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; computes and returns a suitable size for the armor palette, taking
+;;; into account the dimensions of the screen
 
 (define (compute-armor-palette-size screen::Screen)
   (let* ((armor-palette-origin (compute-armor-palette-origin screen))
@@ -368,18 +429,26 @@
          (width (- (/ screen-width 8.0) 10)))
     (Vector2f width height)))
 
-;;; 
+
+;;; (make-armor-palette screen::Screen)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; returns a newly-contructed armor palette
 
 (define (make-armor-palette screen::Screen)
   (Window screen "ArmorPalette"
           (compute-armor-palette-origin screen)
           (compute-armor-palette-size screen)))
 
-;;; 
+
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; the weapons palette
+;;; ---------------------------------------------------------------------
+
+
+;;; (compute-weapons-palette-origin screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; computes and returns a suitable origin for the weapons palette, taking
+;;; into account the dimensions of the screen
 
 (define (compute-weapons-palette-origin screen::Screen)
   (let ((armor-palette-origin (compute-armor-palette-origin screen))
@@ -388,27 +457,37 @@
     (Vector2f (- screen-width (*:getX armor-palette-size) 8)
               (*:getY armor-palette-origin))))
 
-;;; 
+
+;;; (compute-weapons-palette-size screen::Screen)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; computes and returns a suitable size for the weapons palette, taking
+;;; into account the dimensions of the screen
 
 (define (compute-weapons-palette-size screen::Screen)
   (let ((armor-palette-size (compute-armor-palette-size screen)))
     (Vector2f (*:getX armor-palette-size)
               (*:getY armor-palette-size))))
 
-;;; 
+
+;;; (make-weapons-palette screen::Screen)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; returns a newly-contructed weapons palette
 
 (define (make-weapons-palette screen::Screen)
   (Window screen "WeaponsPalette"
           (compute-weapons-palette-origin screen)
           (compute-weapons-palette-size screen)))
 
-;;; 
+
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; the AppState
+;;; ---------------------------------------------------------------------
+
+
+;;; CLASS CharacterCreatorAppState
+;;; ---------------------------------------------------------------------
+;;; the AppState class that constructs and manages the character
+;;; creator scene in the Fabric client
 
 (defclass CharacterCreatorAppState (AbstractAppState)
   (slots:
@@ -426,7 +505,7 @@
            (align BitmapFont:Align)
            (valign BitmapFont:VAlign)
            (sky (make-sky app))
-           (nameplate::TLabel (make-nameplate screen))
+           (fnameplate::TLabel (make-faction-nameplate screen))
            (faction-palette (make-faction-palette screen))
            (faction-group (FactionButtonGroup screen "FactionGroup"))
            (highlight-color (ColorRGBA 1.0 1.0 0.0 1.0))
@@ -453,15 +532,15 @@
           (begin (*:attachChild root-node char-cube)
                  (*:setCurrentCharacter (this) character)))
       ;; --------------------
-      ;; add the nameplate
+      ;; add the faction-nameplate
       ;; --------------------
-      (set! faction-nameplate nameplate)
-      (*:setText nameplate "")
-      (*:setTextAlign nameplate align:Left)
-      (*:setFont nameplate "Interface/Fonts/Laconic30.fnt")
-      (*:setFontSize nameplate 30)
-      (*:setFontColor nameplate ColorRGBA:Green)
-      (*:addElement screen nameplate)
+      (set! faction-nameplate fnameplate)
+      (*:setText fnameplate "")
+      (*:setTextAlign fnameplate align:Left)
+      (*:setFont fnameplate "Interface/Fonts/Laconic30.fnt")
+      (*:setFontSize fnameplate 30)
+      (*:setFontColor fnameplate ColorRGBA:Green)
+      (*:addElement screen fnameplate)
       ;; --------------------
       ;; faction palette
       ;; --------------------
@@ -514,9 +593,11 @@
       ;; --------------------
       (*:addControl gui-node screen)))))
 
-;;; 
+
+;;; (update-state-for-faction state::CharacterCreatorAppState faction)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; updates the display state of the character creator's user interface
+;;; in response to any changes made by the user or the game
 
 (define (update-state-for-faction state::CharacterCreatorAppState faction)
   (let* ((character-entity (*:getCurrentCharacter state)))
@@ -524,21 +605,23 @@
         (let ((char-cube (get-property character-entity 'cube: default: #f)))
           (if char-cube
               (case faction
-                ((caretakers)(let ((nameplate::TLabel (*:getFactionNameplate state)))
+                ((caretakers)(let ((fnameplate::TLabel (*:getFactionNameplate state)))
                                (set-player-character-cube-color! char-cube (caretakers-character-color))
-                               (*:setText nameplate "Faction: Caretakers")))
-                ((rogues)(let ((nameplate::TLabel (*:getFactionNameplate state)))
+                               (*:setText fnameplate "Faction: Caretakers")))
+                ((rogues)(let ((fnameplate::TLabel (*:getFactionNameplate state)))
                            (set-player-character-cube-color! char-cube (rogues-character-color))
-                           (*:setText nameplate "Faction: Rogues")))
-                ((abjurers)(let ((nameplate::TLabel (*:getFactionNameplate state)))
+                           (*:setText fnameplate "Faction: Rogues")))
+                ((abjurers)(let ((fnameplate::TLabel (*:getFactionNameplate state)))
                              (set-player-character-cube-color! char-cube (abjurers-character-color))
-                             (*:setText nameplate "Faction: Abjurers"))))
+                             (*:setText fnameplate "Faction: Abjurers"))))
               (error "update-state-for-faction: missing character cube ")))
         (error "set-current-faction: unrecognized faction: " faction))))
 
-;;; 
+
+;;; (set-current-faction state::CharacterCreatorAppState faction)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; updates the currently-selected player faction in the character
+;;; creator in response to a user selection
 
 (define (set-current-faction state::CharacterCreatorAppState faction)
   (if (member faction '(caretakers rogues abjurers))

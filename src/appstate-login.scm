@@ -49,9 +49,11 @@
 ;;; the LoginAppState class
 ;;; ---------------------------------------------------------------------
 
-;;; 
+;;; (connect-to-server)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; TODO: make this function available to other AppStates
+;;; attempts to open a network connection from the Fabric client to
+;;; the server in order to pass messages
 
 (define (connect-to-server)
   (try-catch
@@ -63,9 +65,10 @@
                                (warn "~A" (*:toString ex))
                                #!null))))
 
-;;; 
+;;; CLASS FabricLoginBox
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; a LoginBox subclass that presents a form that enables players to
+;;; log in to the remote Fabric server in order to play
 
 (defclass FabricLoginBox (LoginBox)
   (methods:
@@ -81,9 +84,10 @@
    ((onButtonCancelPressed evt::MouseButtonEvent toggle::boolean)
     (*:stop app))))
 
-;;; 
+;;; CLASS LoginAppState
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; an AppState class that constructs and managers the Login scene in
+;;; the Fabric client
 
 (defclass LoginAppState (AbstractAppState)
   (slots:
