@@ -11,6 +11,11 @@
 (module-export )
 
 ;;; ---------------------------------------------------------------------
+;;; ABOUT
+;;; ---------------------------------------------------------------------
+;;; 
+
+;;; ---------------------------------------------------------------------
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
@@ -84,6 +89,10 @@
                               msg-name msg-contents)))
     (*:receiveMsg chat-box failed-text)))
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (send-chat-message app::FabricClient chat-message)
   (let ((net-client::Client (ensure-valid-network-client app)))
     (if (jnull? net-client)
@@ -113,9 +122,17 @@
 ;;; player movement
 ;;; ---------------------------------------------------------------------
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (normalize-camera! app :: FabricClient)
   (let ((dir :: Vector3f (*:getCameraDirection app)))
     (*:normalizeLocal dir)))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (move-player!  app :: FabricClient node :: Node amount :: float invert?)
   (let ((dir :: Vector3f (*:getDirection app))
@@ -123,32 +140,64 @@
     (*:multLocal dir (* sign amount))
     (*:move node dir)))
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (move-player-forward! app :: FabricClient node :: Node amount :: float)
   (normalize-camera! app)
   (*:setDirection app (*:getCameraDirection app))
   (move-player! app node amount #f))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (move-player-backward! app :: FabricClient node :: Node amount :: float)
   (normalize-camera! app)
   (*:setDirection app (*:getCameraDirection app))
   (move-player! app node amount #t))
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (move-player-left! app :: FabricClient node :: Node amount :: float)
   (*:setDirection app (*:normalizeLocal (*:getLeft (*:getCamera app))))
   (move-player! app node amount #f))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (move-player-right! app :: FabricClient node :: Node amount :: float)
   (*:setDirection app (*:normalizeLocal (*:getLeft (*:getCamera app))))
   (move-player! app node amount #t))
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (rotate-player-right! node :: Node amount :: float)
   (*:rotate node 0 (* -1 amount) 0))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (rotate-player-left! node :: Node amount :: float)
   (*:rotate node 0 amount 0))
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (rotate-player-up! node :: Node amount :: float)
   (*:rotate node (* -1 amount) 0 0))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (rotate-player-down! node :: Node amount :: float)
   (*:rotate node amount 0 0))
@@ -156,6 +205,10 @@
 ;;; ---------------------------------------------------------------------
 ;;; set up player inputs
 ;;; ---------------------------------------------------------------------
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (setup-inputs app::FabricClient)
   ;; set up the player's controls
@@ -278,6 +331,9 @@
              ("rightButton" -> (*:setRightButton app key-pressed?))))
 
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (init-play-app-state app::FabricClient)
   ;; set up the scene

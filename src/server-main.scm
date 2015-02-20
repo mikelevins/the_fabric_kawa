@@ -47,6 +47,10 @@
 ;;; FabricServer - the server class
 ;;; ---------------------------------------------------------------------
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (defclass FabricServer (SimpleApplication)
   (slots:
    (network-listener type: Server init-form: #!null getter: getNetworkListener setter: setNetworkListener)
@@ -61,6 +65,10 @@
                                                                   (*:isRunning network-listener)))
                         (format #t "~% ~A" (*:toString network-listener))))))
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (register-auth server::FabricServer username token)
   (let* ((old-table (*:getAuthTable server))
          (new-table (put-key old-table username token)))
@@ -69,6 +77,10 @@
 ;;; ---------------------------------------------------------------------
 ;;; initialization
 ;;; ---------------------------------------------------------------------
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (make-server)
   (Serializer:registerClass ChatMessage)
@@ -83,6 +95,10 @@
 ;;; startup and shutdown
 ;;; ---------------------------------------------------------------------
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (start-server app::FabricServer)
   (let ((listener (Network:createServer (server-name) (server-version) (server-port)(server-port)))
         (chat-handler (ServerChatHandler)))
@@ -91,6 +107,10 @@
     (*:addMessageListener listener chat-handler ChatMessage)
     (*:start app Context:Type:Headless)
     (*:printServer app)))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (stop-server app::FabricServer)
   (let ((listener::Server (*:getNetworkListener app)))

@@ -31,10 +31,22 @@
 ;;; the asset amanager
 ;;; ---------------------------------------------------------------------
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define %asset-manager (make-parameter #f))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (new-asset-manager config::java.net.URL)
   (com.jme3.system.JmeSystem:newAssetManager config))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (get-asset-manager)
   (or (%asset-manager)

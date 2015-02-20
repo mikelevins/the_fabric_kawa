@@ -58,6 +58,10 @@
 ;;; RequestCreateAccountMessage
 ;;; ---------------------------------------------------------------------
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (defclass RequestCreateAccountMessage (AbstractMessage)
   (annotations: @Serializable)
   (slots:
@@ -69,6 +73,10 @@
 ;;; ---------------------------------------------------------------------
 ;;; ResponseCreateAccountMessage
 ;;; ---------------------------------------------------------------------
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (defclass ResponseCreateAccountMessage (AbstractMessage)
   (annotations: @Serializable)
@@ -83,6 +91,10 @@
 ;;; RequestLoginMessage
 ;;; ---------------------------------------------------------------------
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (defclass RequestLoginMessage (AbstractMessage)
   (annotations: @Serializable)
   (slots:
@@ -94,6 +106,10 @@
 ;;; ---------------------------------------------------------------------
 ;;; ResponseLoginMessage
 ;;; ---------------------------------------------------------------------
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (defclass ResponseLoginMessage (AbstractMessage)
   (annotations: @Serializable)
@@ -109,6 +125,10 @@
 ;;; ---------------------------------------------------------------------
 ;;; Chat messages are broadcast to all logged-in user.
 ;;; TODO: create chat channels
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (defclass ChatMessage (AbstractMessage)
   (annotations: @Serializable)

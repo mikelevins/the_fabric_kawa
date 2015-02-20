@@ -18,10 +18,19 @@
 ;;; authenticate users who attempt to connect to the game, and to
 ;;; authorize them for access to their in-game resources.
 
+(require 'list-lib)
 (require "server-config.scm")
 (require "util-lists.scm")
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define users (make-parameter #f))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (read-users)
   (let* ((root (fabric-root))
@@ -36,6 +45,10 @@
 
 ;;; (read-users)
 ;;; (users)
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (find-username username)
   (if (not (users))

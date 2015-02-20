@@ -58,6 +58,10 @@
 ;;; FabricClient - the client application class
 ;;; ---------------------------------------------------------------------
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (defclass FabricClient (SimpleApplication AnalogListener ActionListener)
   (slots:
    (app-settings init-form: (AppSettings #t) getter: getAppSettings)
@@ -91,6 +95,11 @@
 ;;     (*:attach state-manager login-state)))
 
 ;; 2. CharacterCreatorAppState as the initial state
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (init-appstate app::FabricClient)
   (let ((state-manager::AppStateManager (*:getStateManager app))
         (char-state (CharacterCreatorAppState)))
@@ -100,6 +109,10 @@
 ;;; ---------------------------------------------------------------------
 ;;; client init
 ;;; ---------------------------------------------------------------------
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (init-client app::FabricClient)
   ;; set up the initial AppState
@@ -114,6 +127,10 @@
 ;;; ---------------------------------------------------------------------
 ;;; construct the client app
 ;;; ---------------------------------------------------------------------
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (make-client #!optional (center #f))
   (let* ((client::FabricClient (FabricClient))

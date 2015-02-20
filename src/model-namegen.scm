@@ -35,23 +35,47 @@
 (require "util-lists.scm")
 (require "data-names.scm")
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (defclass fabric-name ()
   (slots: (data type: gnu.math.IntNum getter: getData setter: setData))
   (methods: ((*init* num)(set! data num))))
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (fabric-name-bytes nm :: fabric-name)
   (integer->bytes (*:getData nm)))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (bytes->strings bytes)
   (map (lambda (b)(format #f "~2,'0x" b))
        bytes))
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (fabric-name-bytestrings nm)
   (bytes->strings (fabric-name-bytes nm)))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (fabric-name-bit-patterns nm)
   (map (lambda (b)(format #f "~8,'0b" b))
        (fabric-name-bytes nm)))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (fabric-name-strings nm :: fabric-name)
   (let* ((bytes (integer->bytes (*:getData nm)))
@@ -62,9 +86,17 @@
                                 (equal? p ""))))
             parts)))
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (gen-bytes n)
   (map (lambda (i)(random-integer 255))
        (iota n)))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (gen-name)
   (let* ((bytes (gen-bytes (choose-any '(1 2 3 4))))

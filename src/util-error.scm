@@ -15,6 +15,10 @@
 ;;; ---------------------------------------------------------------------
 ;;; conveniences for issuing errors and warnings
 
+;;; (warn format-string args)
+;;; ---------------------------------------------------------------------
+;;; print a warning that includes the format-string in the output
+
 (define-syntax warn
   (syntax-rules ()
     ((warn msg arg ...)

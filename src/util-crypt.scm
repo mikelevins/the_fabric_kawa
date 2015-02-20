@@ -30,11 +30,19 @@
 (import-as SecretKeyFactory javax.crypto.SecretKeyFactory)
 (import-as String java.lang.String)
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (compute-random-salt)
   (let ((rand (Random:getInstance "SHA1PRNG"))
         (bytes (byte[] length: 8)))
     (*:nextBytes rand bytes)
     (array->list bytes)))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (compute-salted-digest text::String salt)
   (let* ((salt-bytes (apply byte[] salt))
@@ -48,14 +56,26 @@
          (factory (SecretKeyFactory:getInstance algo)))
     (array->list (*:getEncoded (*:generateSecret factory spec)))))
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (digest->base64 digest::byte[])
   (let* ((encoder (Base64:getEncoder))
          (bytes::byte[] (*:encode encoder digest)))
     (java.lang.String bytes)))
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (base64->digest text::java.lang.String)
   (let* ((decoder (Base64:getDecoder)))
     (*:decode decoder text)))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (text->digest text salt)
   (let* ((bytes (compute-salted-digest text salt))

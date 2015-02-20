@@ -34,14 +34,32 @@
 ;;; identifiers
 ;;; ---------------------------------------------------------------------
 
+;;; (id=? id1 id2)
+;;; ---------------------------------------------------------------------
+;;; returns true if id1 and id2 are the same id, even if they are not
+;;; represented by the same object
+
 (define (id=? id1 id2)
   (*:equals id1 id2))
+
+;;; (id->string uuid :: UUID)
+;;; ---------------------------------------------------------------------
+;;; returns a string in standard UUID format that is equivalent to _uuid_
 
 (define (id->string uuid :: UUID)
   (*:toString uuid))
 
-(define (makeid . args)
+;;; (makeid)
+;;; ---------------------------------------------------------------------
+;;; returns a new UUID object
+
+(define (makeid)
   (UUID:randomUUID))
+
+
+;;; (string->id uustr)
+;;; ---------------------------------------------------------------------
+;;; converts a string in standard UUID format to a UUID object
 
 (define (string->id uustr)
   (UUID:fromString uustr))

@@ -11,6 +11,11 @@
 (module-export make-workshop Workshop)
 
 ;;; ---------------------------------------------------------------------
+;;; ABOUT
+;;; ---------------------------------------------------------------------
+;;; 
+
+;;; ---------------------------------------------------------------------
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
@@ -43,6 +48,10 @@
 ;;; Workshop - the workshop application class
 ;;; ---------------------------------------------------------------------
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (defclass Workshop (SimpleApplication AnalogListener ActionListener)
   (slots:
    (app-settings init-form: (AppSettings #t) getter: getAppSettings))
@@ -61,6 +70,10 @@
    ;; init the app
    ((simpleInitApp)(init-workshop (this)))))
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (init-workshop app::Workshop)
   ;; don't seize the mouse from the player
   (Mouse:setGrabbed #f)
@@ -72,6 +85,10 @@
 ;;; ---------------------------------------------------------------------
 ;;; construct the workshop app
 ;;; ---------------------------------------------------------------------
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (make-workshop #!optional (center #f))
   (let* ((app::Workshop (Workshop))

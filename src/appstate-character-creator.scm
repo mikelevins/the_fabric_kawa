@@ -11,6 +11,11 @@
 (module-export CharacterCreatorAppState)
 
 ;;; ---------------------------------------------------------------------
+;;; ABOUT
+;;; ---------------------------------------------------------------------
+;;; 
+
+;;; ---------------------------------------------------------------------
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
@@ -56,6 +61,7 @@
 ;;; class NameMenu
 ;;; ---------------------------------------------------------------------
 
+
 (defclass NameMenu (SelectBox)
   (slots:)
   (methods:
@@ -81,14 +87,26 @@
        ((equal? "AbjurerButton" button-id)(set-current-faction state 'abjurers))
        (else (format #t "~%Unknown faction selected")))))))
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (get-app-state group::FactionButtonGroup)
   (*:getAppState group))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (set-app-state! group::FactionButtonGroup state::CharacterCreatorAppState)
   (*:setAppState group state))
 
 ;;; functions for building the display
 ;;; ---------------------------------------------------------------------
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (make-sky app::SimpleApplication)
   (let ((asset-manager::AssetManager (get-asset-manager)))
@@ -100,71 +118,143 @@
                           (*:loadTexture asset-manager "Textures/tychotop.png")
                           (*:loadTexture asset-manager "Textures/tychobottom.png"))))
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (compute-nameplate-origin screen::Screen)
   (let ((width (*:getWidth screen))
         (height (*:getHeight screen)))
     (Vector2f (/ width 2.0) 8)))
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (compute-nameplate-size screen::Screen)
   (let ((width (*:getWidth screen)))
     (Vector2f (/ width 5.0) 40)))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (make-nameplate screen::Screen)
   (TLabel screen "FactionNameplate"
           (compute-nameplate-origin screen)
           (compute-nameplate-size screen)))
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (compute-faction-palette-origin screen::Screen)
   (Vector2f 10 10))
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (compute-faction-palette-size screen::Screen)
   (Vector2f 400 256))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (make-faction-palette screen::Screen)
   (Window screen "FactionPalette"
           (compute-faction-palette-origin screen)
           (compute-faction-palette-size screen)))
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (compute-caretaker-button-origin screen::Screen)
   (Vector2f 8 32))
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (compute-caretaker-button-size screen::Screen)
   (Vector2f 128 128))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (make-caretaker-button screen::Screen)
   (RadioButton screen "CaretakerButton"
                (compute-caretaker-button-origin screen)
                (compute-caretaker-button-size screen)))
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (compute-abjurer-button-origin screen::Screen)
   (Vector2f 136 32))
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (compute-abjurer-button-size screen::Screen)
   (Vector2f 128 128))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (make-abjurer-button screen::Screen)
   (RadioButton screen "AbjurerButton"
                (compute-abjurer-button-origin screen)
                (compute-abjurer-button-size screen)))
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (compute-rogue-button-origin screen::Screen)
   (Vector2f 264 32))
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (compute-rogue-button-size screen::Screen)
   (Vector2f 128 128))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (make-rogue-button screen::Screen)
   (RadioButton screen "RogueButton"
                (compute-rogue-button-origin screen)
                (compute-rogue-button-size screen)))
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (compute-name-palette-origin screen::Screen)
   (let ((height (*:getHeight screen)))
     (Vector2f 10 (- height 180))))
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (compute-name-palette-size screen::Screen)
   (let ((width (*:getWidth screen)))
     (Vector2f (- width 20) 160)))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (compute-name-menu-bounds size)
   (let* ((width (*:getX size))
@@ -183,6 +273,10 @@
          (heights (map (lambda (i) 24)
                        (iota 8))))
     (values lefts tops widths heights)))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (make-name-palette screen::Screen)
   (let ((size (compute-name-palette-size screen)))
@@ -248,6 +342,10 @@
         (*:addChild palette domain7-menu)
         palette))))
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (compute-armor-palette-origin screen::Screen)
   (let ((faction-palette-origin (compute-faction-palette-origin screen))
         (faction-palette-size (compute-faction-palette-size screen)))
@@ -255,6 +353,10 @@
               (+ (*:getY faction-palette-origin)
                  (*:getY faction-palette-size)
                  8))))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (compute-armor-palette-size screen::Screen)
   (let* ((armor-palette-origin (compute-armor-palette-origin screen))
@@ -266,10 +368,18 @@
          (width (- (/ screen-width 8.0) 10)))
     (Vector2f width height)))
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (make-armor-palette screen::Screen)
   (Window screen "ArmorPalette"
           (compute-armor-palette-origin screen)
           (compute-armor-palette-size screen)))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (compute-weapons-palette-origin screen::Screen)
   (let ((armor-palette-origin (compute-armor-palette-origin screen))
@@ -278,15 +388,27 @@
     (Vector2f (- screen-width (*:getX armor-palette-size) 8)
               (*:getY armor-palette-origin))))
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (compute-weapons-palette-size screen::Screen)
   (let ((armor-palette-size (compute-armor-palette-size screen)))
     (Vector2f (*:getX armor-palette-size)
               (*:getY armor-palette-size))))
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (make-weapons-palette screen::Screen)
   (Window screen "WeaponsPalette"
           (compute-weapons-palette-origin screen)
           (compute-weapons-palette-size screen)))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (defclass CharacterCreatorAppState (AbstractAppState)
   (slots:
@@ -392,6 +514,10 @@
       ;; --------------------
       (*:addControl gui-node screen)))))
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (update-state-for-faction state::CharacterCreatorAppState faction)
   (let* ((character-entity (*:getCurrentCharacter state)))
     (if (member faction '(caretakers rogues abjurers))
@@ -409,6 +535,10 @@
                              (*:setText nameplate "Faction: Abjurers"))))
               (error "update-state-for-faction: missing character cube ")))
         (error "set-current-faction: unrecognized faction: " faction))))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (set-current-faction state::CharacterCreatorAppState faction)
   (if (member faction '(caretakers rogues abjurers))

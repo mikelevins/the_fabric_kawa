@@ -44,21 +44,45 @@
 ;;; 
 ;;; ---------------------------------------------------------------------
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (entity entity-type . properties)
   (cons entity-type properties))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (entity? thing)
   (and (pair? thing)
        (symbol? (car thing))))
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (entity-type thing)
   (car thing))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (entity-type? thing type)
   (eqv? type (entity-type thing)))
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (entity-properties thing)
   (cdr thing))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (get-property thing property #!key (default #f))
   (let* ((props (entity-properties thing))
@@ -66,6 +90,10 @@
     (if tail
         (cadr tail)
         default)))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (put-property thing property val)
   (let ((keypos (position-if (lambda (it)(eqv? property it)) thing)))

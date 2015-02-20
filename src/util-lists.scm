@@ -22,6 +22,11 @@
  shuffle
  some?)
 
+;;; ---------------------------------------------------------------------
+;;; ABOUT
+;;; ---------------------------------------------------------------------
+;;; 
+
 (require 'list-lib)
 (require "util-random.scm")
 (require "util-sort.scm")
@@ -36,6 +41,10 @@
 ;;; list utilities
 ;;; ---------------------------------------------------------------------
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (array->list arr::Object[])
   (let loop ((i 0)
              (result '()))
@@ -44,12 +53,24 @@
               (cons (arr i) result))
         (reverse result))))
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (choose-any ls)
   (list-ref ls (random-integer (length ls))))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (copy-list ls)
   (map (lambda (x) x)
        ls))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (every? test ls #!rest (more-lists '()))
   (let loop ((lists (cons ls more-lists)))
@@ -60,6 +81,10 @@
               (loop (map cdr lists))
               #f)))))
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (list-fill n thing)
   (let loop ((result '())
              (count 0))
@@ -67,6 +92,10 @@
         (loop (cons thing result)
               (+ count 1))
         result)))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (position-if test ls)
   (let loop ((i 0)
@@ -77,6 +106,10 @@
             i
             (loop (+ 1 i)
                   (cdr items))))))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (remove-duplicates ls #!optional (test eq?))
   (let loop ((items ls)
@@ -91,8 +124,16 @@
               (loop (cdr items)
                     (cons next result)))))))
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (shuffle ls)
   (sort ls (lambda (x y)(zero? (random-integer 2)))))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (some? test ls)
   (let loop ((items ls))
@@ -106,11 +147,19 @@
 ;;; property lists
 ;;; ---------------------------------------------------------------------
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (get-key ls thing #!optional (default #f))
   (let ((mtail (member thing ls)))
     (if mtail
         (cadr mtail)
         default)))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (put-key ls key val)
   (let ((keypos (position-if (lambda (x)(equal? key x)) ls)))

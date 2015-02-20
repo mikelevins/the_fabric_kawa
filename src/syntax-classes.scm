@@ -13,11 +13,24 @@
 (require 'list-lib)
 (require "util-lists.scm")
 
+;;; ---------------------------------------------------------------------
+;;; ABOUT
+;;; ---------------------------------------------------------------------
+;;; 
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define-syntax definterface
   (syntax-rules ()
     ((definterface ifname supers method-prototype ...)
      (define-simple-class ifname supers interface: #t
        (method-prototype  #!abstract) ...))))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (%slotspec form)
   (let* ((sname (car form))
@@ -25,6 +38,10 @@
          (sinit (get-key inits init-form: #!null))
          (stype (get-key inits type: java.lang.Object)))
     (list sname type: stype init-form: sinit)))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (define (%slotaccessors form)
   (let* ((sname (car form))
@@ -40,6 +57,10 @@
                       #f)))
     (filter (lambda (x) x)
             (list sgetter ssetter))))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (defmacro defclass (classname superclasses . class-body)
   (let* ((annotations-clause (assoc annotations: class-body))

@@ -11,6 +11,11 @@
 (module-export LoginAppState)
 
 ;;; ---------------------------------------------------------------------
+;;; ABOUT
+;;; ---------------------------------------------------------------------
+;;; 
+
+;;; ---------------------------------------------------------------------
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
@@ -44,6 +49,10 @@
 ;;; the LoginAppState class
 ;;; ---------------------------------------------------------------------
 
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
+
 (define (connect-to-server)
   (try-catch
    (let ((new-connection (Network:connectToServer (server-name)(server-version)(server-host)
@@ -53,6 +62,10 @@
    (ex ConnectException (begin (warn "failed to connect to Fabric server.")
                                (warn "~A" (*:toString ex))
                                #!null))))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (defclass FabricLoginBox (LoginBox)
   (methods:
@@ -67,6 +80,10 @@
             (*:setNetworkClient client server-connection)))))
    ((onButtonCancelPressed evt::MouseButtonEvent toggle::boolean)
     (*:stop app))))
+
+;;; 
+;;; ---------------------------------------------------------------------
+;;; 
 
 (defclass LoginAppState (AbstractAppState)
   (slots:
