@@ -25,7 +25,7 @@
   (methods: ((*init* num)(set! data num))))
 
 (define (fabric-name-bytes nm :: fabric-name)
-  (reverse (integer->bytes (*:getData nm))))
+  (integer->bytes (*:getData nm)))
 
 (define (bytes->strings bytes)
   (map (lambda (b)(format #f "~2,'0x" b))
@@ -39,7 +39,7 @@
        (fabric-name-bytes nm)))
 
 (define (fabric-name-strings nm :: fabric-name)
-  (let* ((bytes (reverse (integer->bytes (*:getData nm))))
+  (let* ((bytes (integer->bytes (*:getData nm)))
          (parts (map (lambda (b dom)(list-ref dom b))
                      bytes
                      (name-domains))))

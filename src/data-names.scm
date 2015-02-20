@@ -12,9 +12,9 @@
 
 (require 'list-lib)
 
-(define domain-indexes (make-parameter (list->vector (iota 256))))
+(define domain-indexes (make-parameter (iota 256)))
 
-(define domain0
+(define domain7
   (make-parameter
    (list
     "" "Abbott" "Abelson" "Ackermann" "Adler" "Aho" "Alcubierre" "Ambrose" "Amdahl" "Ampère" "Appel"
@@ -44,7 +44,7 @@
     "Volta" "Von Braun" "Wadler" "Warren" "Watt" "Weizenbaum" "Wheeler" "Whitehead" "Wilks" "Winograd"
     "Wirth" "Wittgenstein" "Zeno" "Zermelo" "Zinovyev")))
 
-(define domain1
+(define domain6
   (make-parameter
    (list
     "" "Abnormally" "Absentmindedly" "Actively" "Advanced" "Adventurous" "Affectionate" "Agitated"
@@ -77,7 +77,7 @@
     "Visually" "Vivid" "Webbed" "Weighty" "When" "Where" "Which" "While" "Whirlwind" "Wide" "Wilted"
     "Winged" "Wiry" "Wonderful" "Worthy" "Wry" "Yesterday")))
 
-(define domain2
+(define domain5
   (make-parameter
    (list
     "" "Alcyone" "Aldebaran" "Algol" "Alioth" "Alkaid" "Altair" "Amphitrite" "Andromeda" "Antares"
@@ -105,7 +105,7 @@
     "Kiev" "London" "Minneapolis" "Monaco" "Montreal" "Moscow" "Nairobi" "Oslo" "Paris" "Philadelphia"
     "Prague" "Rome" "Seattle" "Stockholm" "Sydney" "Tokyo" "Toronto" "Tulsa" "Vienna" "Warsaw" "Zagreb")))
 
-(define domain3
+(define domain4
   (make-parameter
    (list
     "" "Accepts" "Amuses" "Announces" "Apologises" "Appears" "Appreciates" "Arranges" "Attempts" "Avoids"
@@ -133,7 +133,7 @@
     "Weeps" "Whistles" "Wins" "Winks" "Wipes" "Wishes" "Wobbles" "Works" "Worries" "Wraps" "Wriggles" "Writes"
     "Zips"))) 
 
-(define domain4
+(define domain3
   (make-parameter
    (list
     "" "Actinium" "Agate" "Alabaster" "Almandine" "Aluminium" "Amalgum" "Americium" "Amethyst" "Amphibole"
@@ -164,7 +164,7 @@
     "Titanium" "Topaz" "Tourmaline" "Tungsten" "Tyrolite" "Uranium" "Vanadium" "Vauxite" "Vermiculite"
     "Wolframite" "Wormhole" "Xenon" "Ytterbium" "Yttrium" "Zinc" "Zircon" "Zirconium")))
 
-(define domain5
+(define domain2
   (make-parameter
    (list
     "" "Almond" "Amaranth" "Amber" "Apple" "Apricot" "Aqua" "Aquamarine" "Artichoke" "Asparagus" "Auburn"
@@ -192,9 +192,9 @@
     "Ultramarine" "Umber" "Urobilin" "Vanilla" "Verdigris" "Vermilion" "Veronica" "Viridian" "Violet" "Wenge"
     "Wheat" "White" "Wine" "Wintergreen" "Wisteria" "Yellow")))
 
-(define domain6 (make-parameter (domain-indexes)))
+(define domain1 (make-parameter (domain-indexes)))
 
-(define domain7
+(define domain0
   (make-parameter
    (list
     "" "Adam" "Adlai" "Agatha" "Ahmed" "Alan" "Alastair" "Albert" "Alexander" "Alexis" "Alfred"
@@ -225,11 +225,12 @@
     "William" "Winifred" "Winston" "Wolfgang" "Woody")))
 
 (define name-domains
-  (list (domain0)
-        (domain1)
-        (domain2)
-        (domain3)
-        (domain4)
-        (domain5)
-        (domain6)
-        (domain7)))
+  (make-parameter
+   (list (domain0)
+         (domain1)
+         (domain2)
+         (domain3)
+         (domain4)
+         (domain5)
+         (domain6)
+         (domain7))))
