@@ -102,12 +102,25 @@
            (abjurer-button (RadioButton screen "AbjurerButton"(Vector2f 136 32)(Vector2f 128 128)))
            (rogue-button (RadioButton screen "RogueButton"(Vector2f 264 32)(Vector2f 128 128)))
            (character (make-player-character))
-           (char-cube (get-property character 'cube: default: #f)))
+           (char-cube (get-property character 'cube: default: #f))
+           (name-palette (Window screen "NamePalette" (Vector2f 25 1000)(Vector2f 1850 180))))
+      ;; --------------------
+      ;; init the faction button group
+      ;; --------------------
       (set-app-state! faction-group (this))
+      ;; --------------------
+      ;; add the sky to the scene
+      ;; --------------------
       (*:attachChild root-node sky)
+      ;; --------------------
+      ;; character model
+      ;; --------------------
       (if char-cube
           (begin (*:attachChild root-node char-cube)
                  (*:setCurrentCharacter (this) character)))
+      ;; --------------------
+      ;; faction palette
+      ;; --------------------
       (*:setWindowTitle faction-palette "Choose a Faction:")
       (*:setButtonIcon caretaker-button 128 128 "Interface/caretakers-icon128.png")
       (*:setText caretaker-button "Caretakers")
@@ -131,6 +144,14 @@
       (*:addChild faction-palette abjurer-button)
       (*:addChild faction-palette rogue-button)
       (*:addElement screen faction-palette)
+      ;; --------------------
+      ;; name palette palette
+      ;; --------------------
+      (*:setWindowTitle name-palette "Choose a Name:")
+      (*:addElement screen name-palette)
+      ;; --------------------
+      ;; add the gui to the scene
+      ;; --------------------
       (*:addControl gui-node screen)))))
 
 (define (update-state-for-faction state::CharacterCreatorAppState faction)
