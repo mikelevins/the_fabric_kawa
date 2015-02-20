@@ -8,8 +8,23 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export array->list every? copy-list drop every? filter get-key
-               position-if put-key remove-duplicates some? take)
+(module-export
+ array->list
+ choose-any
+ copy-list
+ every?
+ every?
+ get-key
+ list-fill
+ position-if
+ put-key
+ remove-duplicates
+ shuffle
+ some?)
+
+(require 'list-lib)
+(require "util-random.scm")
+(require "util-sort.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -29,19 +44,12 @@
               (cons (arr i) result))
         (reverse result))))
 
+(define (choose-any ls)
+  (list-ref ls (random-integer (length ls))))
+
 (define (copy-list ls)
   (map (lambda (x) x)
        ls))
-
-(define (drop n ls)
-  (let loop ((i n)
-             (items ls))
-    (if (<= i 0)
-        items
-        (if (null? items)
-            (error "Index out of range" n)
-            (loop (- i 1)
-                  (cdr items))))))
 
 (define (every? test ls #!rest (more-lists '()))
   (let loop ((lists (cons ls more-lists)))
@@ -52,17 +60,13 @@
               (loop (map cdr lists))
               #f)))))
 
-(define (filter test ls)
-  (let loop ((items ls)
-             (result '()))
-    (if (null? items)
-        (reverse result)
-        (if (test (car items))
-            (loop (cdr items)
-                  (cons (car items)
-                        result))
-            (loop (cdr items)
-                  result)))))
+(define (list-fill n thing)
+  (let loop ((result '())
+             (count 0))
+    (if (< count n)
+        (loop (cons thing result)
+              (+ count 1))
+        result)))
 
 (define (position-if test ls)
   (let loop ((i 0)
@@ -87,6 +91,9 @@
               (loop (cdr items)
                     (cons next result)))))))
 
+(define (shuffle ls)
+  (sort ls (lambda (x y)(zero? (random-integer 2)))))
+
 (define (some? test ls)
   (let loop ((items ls))
     (if (null? items)
@@ -94,19 +101,6 @@
         (if (test (car items))
             (car items)
             (loop (cdr items))))))
-
-(define (take n ls)
-  (let loop ((i n)
-             (items ls)
-             (result '()))
-    (if (<= i 0)
-        (reverse result)
-        (if (null? items)
-            (error "Index out of range" n)
-            (loop (- i 1)
-                  (cdr items)
-                  (cons (car items)
-                        result))))))
 
 ;;; ---------------------------------------------------------------------
 ;;; property lists
@@ -121,8 +115,8 @@
 (define (put-key ls key val)
   (let ((keypos (position-if (lambda (x)(equal? key x)) ls)))
     (if keypos
-        (let ((head (take keypos ls))
-              (tail (drop (+ keypos 2) ls)))
+        (let ((head (take ls keypos))
+              (tail (drop ls (+ keypos 2))))
           (append head
                   (cons key (cons val tail))))
         (cons key (cons val ls)))))

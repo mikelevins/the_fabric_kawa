@@ -10,6 +10,7 @@
 
 (module-export definterface defclass)
 
+(require 'list-lib)
 (require "util-lists.scm")
 
 (define-syntax definterface

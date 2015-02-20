@@ -17,6 +17,7 @@
 ;;(require "init-config.scm")
 (require "util-crypt.scm")
 (require "model-entity.scm")
+(require "model-namegen.scm")
 (require "data-assets.scm")
 (require "net-messaging.scm")
 (require "client-main.scm")

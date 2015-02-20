@@ -22,6 +22,7 @@
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
+(require 'list-lib)
 (require "util-lists.scm")
 
 ;;; ---------------------------------------------------------------------
@@ -54,8 +55,8 @@
 (define (put-property thing property val)
   (let ((keypos (position-if (lambda (it)(eqv? property it)) thing)))
     (if keypos
-        (let ((head (take keypos thing))
-              (tail (drop (+ 2 keypos) thing)))
+        (let ((head (take thing keypos))
+              (tail (drop thing (+ 2 keypos))))
           (append head
                   (cons property
                         (cons val tail))))

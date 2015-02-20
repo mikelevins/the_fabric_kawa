@@ -12,6 +12,7 @@
                direct-superclasses generic-function get-class get-interfaces
                no-applicable-method subclass? type-object?)
 
+(require 'list-lib)
 (require "util-sort.scm")
 (require "util-functions.scm")
 (require "util-java.scm")
