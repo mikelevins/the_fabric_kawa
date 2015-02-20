@@ -109,7 +109,9 @@
            (rogue-button (RadioButton screen "RogueButton"(Vector2f 264 32)(Vector2f 128 128)))
            (character (make-player-character))
            (char-cube (get-property character 'cube: default: #f))
-           (name-palette (Window screen "NamePalette" (Vector2f 25 1000)(Vector2f 1850 180))))
+           (name-palette (Window screen "NamePalette" (Vector2f 25 1000)(Vector2f 1850 180)))
+           (armor-palette (Window screen "ArmorPalette" (Vector2f 10 256)(Vector2f 400 600)))
+           (weapons-palette (Window screen "WeaponsPalette" (Vector2f 1510 256)(Vector2f 400 600))))
       ;; --------------------
       ;; init the faction buttons
       ;; --------------------
@@ -171,6 +173,16 @@
       ;; --------------------
       (*:setWindowTitle name-palette "Choose a Name:")
       (*:addElement screen name-palette)
+      ;; --------------------
+      ;; armor palette
+      ;; --------------------
+      (*:setWindowTitle armor-palette "Choose Armor:")
+      (*:addElement screen armor-palette)
+      ;; --------------------
+      ;; weapons palette
+      ;; --------------------
+      (*:setWindowTitle weapons-palette "Choose Weapons:")
+      (*:addElement screen weapons-palette)
       ;; --------------------
       ;; add the gui to the scene
       ;; --------------------
