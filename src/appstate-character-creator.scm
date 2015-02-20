@@ -32,6 +32,7 @@
 (import-as ColorRGBA com.jme3.math.ColorRGBA)
 (import-as Label tonegod.gui.controls.text.Label)
 (import-as MouseButtonEvent com.jme3.input.event.MouseButtonEvent)
+(import-as Panel tonegod.gui.controls.windows.Panel)
 (import-as RadioButton tonegod.gui.controls.buttons.RadioButton)
 (import-as RadioButtonGroup tonegod.gui.controls.buttons.RadioButtonGroup)
 (import-as Screen tonegod.gui.core.Screen)
@@ -110,8 +111,8 @@
            (character (make-player-character))
            (char-cube (get-property character 'cube: default: #f))
            (name-palette (Window screen "NamePalette" (Vector2f 25 1000)(Vector2f 1850 180)))
-           (armor-palette (Window screen "ArmorPalette" (Vector2f 10 256)(Vector2f 400 600)))
-           (weapons-palette (Window screen "WeaponsPalette" (Vector2f 1510 256)(Vector2f 400 600))))
+           (armor-palette (Window screen "ArmorPalette" (Vector2f 10 256)(Vector2f 200 700)))
+           (weapons-palette (Window screen "WeaponsPalette" (Vector2f 1680 256)(Vector2f 200 700))))
       ;; --------------------
       ;; init the faction buttons
       ;; --------------------
