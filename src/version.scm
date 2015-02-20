@@ -10,6 +10,6 @@
 
 (module-export fabric-version)
 
-(define fabric-version (make-parameter "0.1.1d148"))
+(define fabric-version (make-parameter "0.1.1d160"))
 
 
