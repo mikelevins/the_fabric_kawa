@@ -79,13 +79,13 @@
     (entity 'player-character cube: cube)))
 
 (define (caretakers-character-color)
-  (ColorRGBA 0.0 0.4 0.0 0.4))
+  (ColorRGBA 0.0 0.4 0.0 0.3))
 
 (define (rogues-character-color)
-  (ColorRGBA 0.0 0.2 0.5 0.4))
+  (ColorRGBA 0.0 0.3 0.5 0.3))
 
 (define (abjurers-character-color)
-  (ColorRGBA 0.4 0.0 0.0 0.4))
+  (ColorRGBA 0.4 0.0 0.0 0.3))
 
 (define (set-player-character-cube-color! char-cube::Node character-color)
   (let* ((cubes::SafeArrayList (*:getChildren char-cube))
