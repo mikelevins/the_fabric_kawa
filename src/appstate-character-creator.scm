@@ -48,18 +48,8 @@
 ;;; the CharacterCreatorAppState class
 ;;; ---------------------------------------------------------------------
 
-;;; (make-sky app ::SimpleApplication)
+;;; class FactionButtonGroup
 ;;; ---------------------------------------------------------------------
-
-(define (make-sky app::SimpleApplication)
-  (let ((asset-manager::AssetManager (get-asset-manager)))
-    (SkyFactory:createSky asset-manager 
-                          (*:loadTexture asset-manager "Textures/tycholeft.png")
-                          (*:loadTexture asset-manager "Textures/tychoright.png")
-                          (*:loadTexture asset-manager "Textures/tychofront.png")
-                          (*:loadTexture asset-manager "Textures/tychoback.png")
-                          (*:loadTexture asset-manager "Textures/tychotop.png")
-                          (*:loadTexture asset-manager "Textures/tychobottom.png"))))
 
 (defclass FactionButtonGroup (RadioButtonGroup)
   (slots:
@@ -82,8 +72,129 @@
 (define (set-app-state! group::FactionButtonGroup state::CharacterCreatorAppState)
   (*:setAppState group state))
 
-;;; TODO: calculate proper placements for the GIU elements instead of
-;;;       hardcoding them
+;;; functions for building the display
+;;; ---------------------------------------------------------------------
+
+(define (make-sky app::SimpleApplication)
+  (let ((asset-manager::AssetManager (get-asset-manager)))
+    (SkyFactory:createSky asset-manager 
+                          (*:loadTexture asset-manager "Textures/tycholeft.png")
+                          (*:loadTexture asset-manager "Textures/tychoright.png")
+                          (*:loadTexture asset-manager "Textures/tychofront.png")
+                          (*:loadTexture asset-manager "Textures/tychoback.png")
+                          (*:loadTexture asset-manager "Textures/tychotop.png")
+                          (*:loadTexture asset-manager "Textures/tychobottom.png"))))
+
+(define (compute-nameplate-origin screen)
+  (let ((width (*:getWidth screen))
+        (height (*:getHeight screen)))
+    (Vector2f (/ width 2.0) 8)))
+
+(define (compute-nameplate-size screen)
+  (let ((width (*:getWidth screen)))
+    (Vector2f (/ width 5.0) 40)))
+
+(define (make-nameplate screen)
+  (TLabel screen "FactionNameplate"
+          (compute-nameplate-origin screen)
+          (compute-nameplate-size screen)))
+
+(define (compute-faction-palette-origin screen)
+  (Vector2f 10 10))
+
+(define (compute-faction-palette-size screen)
+  (Vector2f 400 256))
+
+(define (make-faction-palette screen)
+  (Window screen "FactionPalette"
+          (compute-faction-palette-origin screen)
+          (compute-faction-palette-size screen)))
+
+(define (compute-caretaker-button-origin screen)
+  (Vector2f 8 32))
+
+(define (compute-caretaker-button-size screen)
+  (Vector2f 128 128))
+
+(define (make-caretaker-button screen)
+  (RadioButton screen "CaretakerButton"
+               (compute-caretaker-button-origin screen)
+               (compute-caretaker-button-size screen)))
+
+(define (compute-abjurer-button-origin screen)
+  (Vector2f 136 32))
+
+(define (compute-abjurer-button-size screen)
+  (Vector2f 128 128))
+
+(define (make-abjurer-button screen)
+  (RadioButton screen "AbjurerButton"
+               (compute-abjurer-button-origin screen)
+               (compute-abjurer-button-size screen)))
+
+(define (compute-rogue-button-origin screen)
+  (Vector2f 264 32))
+
+(define (compute-rogue-button-size screen)
+  (Vector2f 128 128))
+
+(define (make-rogue-button screen)
+  (RadioButton screen "RogueButton"
+               (compute-rogue-button-origin screen)
+               (compute-rogue-button-size screen)))
+
+(define (compute-name-palette-origin screen)
+  (let ((height (*:getHeight screen)))
+    (Vector2f 10 (- height 180))))
+
+(define (compute-name-palette-size screen)
+  (let ((width (*:getWidth screen)))
+    (Vector2f (- width 20) 160)))
+
+(define (make-name-palette screen)
+  (Window screen "NamePalette"
+          (compute-name-palette-origin screen)
+          (compute-name-palette-size screen)))
+
+(define (compute-armor-palette-origin screen)
+  (let ((faction-palette-origin (compute-faction-palette-origin screen))
+        (faction-palette-size (compute-faction-palette-size screen)))
+    (Vector2f 10
+              (+ (*:getY faction-palette-origin)
+                 (*:getY faction-palette-size)
+                 8))))
+
+(define (compute-armor-palette-size screen)
+  (let* ((armor-palette-origin (compute-armor-palette-origin screen))
+         (name-palette-origin (compute-name-palette-origin screen))
+         (height (- (*:getY name-palette-origin)
+                    (*:getY armor-palette-origin)
+                    8))
+         (screen-width (*:getWidth screen))
+         (width (- (/ screen-width 8.0) 10)))
+    (Vector2f width height)))
+
+(define (make-armor-palette screen)
+  (Window screen "ArmorPalette"
+          (compute-armor-palette-origin screen)
+          (compute-armor-palette-size screen)))
+
+(define (compute-weapons-palette-origin screen)
+  (let ((armor-palette-origin (compute-armor-palette-origin screen))
+        (armor-palette-size (compute-armor-palette-size screen))
+        (screen-width (*:getWidth screen)))
+    (Vector2f (- screen-width (*:getX armor-palette-size) 8)
+              (*:getY armor-palette-origin))))
+
+(define (compute-weapons-palette-size screen)
+  (let ((armor-palette-size (compute-armor-palette-size screen)))
+    (Vector2f (*:getX armor-palette-size)
+              (*:getY armor-palette-size))))
+
+(define (make-weapons-palette screen)
+  (Window screen "WeaponsPalette"
+          (compute-weapons-palette-origin screen)
+          (compute-weapons-palette-size screen)))
 
 (defclass CharacterCreatorAppState (AbstractAppState)
   (slots:
@@ -101,18 +212,18 @@
            (align BitmapFont:Align)
            (valign BitmapFont:VAlign)
            (sky (make-sky app))
-           (nameplate::TLabel (TLabel screen "FactionNameplate" (Vector2f 860 8)(Vector2f 900 40)))
-           (faction-palette (Window screen "FactionPalette" (Vector2f 10 10)(Vector2f 400 232)))
+           (nameplate::TLabel (make-nameplate screen))
+           (faction-palette (make-faction-palette screen))
            (faction-group (FactionButtonGroup screen "FactionGroup"))
            (highlight-color (ColorRGBA 1.0 1.0 0.0 1.0))
-           (caretaker-button (RadioButton screen "CaretakerButton"(Vector2f 8 32)(Vector2f 128 128)))
-           (abjurer-button (RadioButton screen "AbjurerButton"(Vector2f 136 32)(Vector2f 128 128)))
-           (rogue-button (RadioButton screen "RogueButton"(Vector2f 264 32)(Vector2f 128 128)))
+           (caretaker-button (make-caretaker-button screen))
+           (abjurer-button (make-abjurer-button screen))
+           (rogue-button (make-rogue-button screen))
            (character (make-player-character))
            (char-cube (get-property character 'cube: default: #f))
-           (name-palette (Window screen "NamePalette" (Vector2f 25 1000)(Vector2f 1850 180)))
-           (armor-palette (Window screen "ArmorPalette" (Vector2f 10 256)(Vector2f 200 700)))
-           (weapons-palette (Window screen "WeaponsPalette" (Vector2f 1680 256)(Vector2f 200 700))))
+           (name-palette (make-name-palette screen))
+           (armor-palette (make-armor-palette screen))
+           (weapons-palette (make-weapons-palette screen)))
       ;; --------------------
       ;; init the faction buttons
       ;; --------------------
