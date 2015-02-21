@@ -10,7 +10,7 @@
 ;;;; ***********************************************************************
 
 (module-export
- fabric-name
+ FabricName
  fabric-name-bit-patterns
  fabric-name-bytes
  fabric-name-bytestrings
@@ -31,53 +31,54 @@
 (require "util-java.scm")
 (require "util-bytes.scm")
 (require "syntax-classes.scm")
+(require "util-bytes.scm")
 (require "util-random.scm")
 (require "util-lists.scm")
 (require "data-names.scm")
 
-;;; 
-;;; ---------------------------------------------------------------------
-;;; 
 
-(defclass fabric-name ()
+;;; CLASS FabricName
+;;; ---------------------------------------------------------------------
+;;; the class of Fabric names
+
+(defclass FabricName ()
   (slots: (data type: gnu.math.IntNum getter: getData setter: setData))
   (methods: ((*init* num)(set! data num))))
 
-;;; 
-;;; ---------------------------------------------------------------------
-;;; 
 
-(define (fabric-name-bytes nm :: fabric-name)
+;;; (fabric-name-bytes nm :: FabricName)
+;;; ---------------------------------------------------------------------
+;;; returns a list of bytes corresponding to the integer value of the
+;;; Fabric name
+
+(define (fabric-name-bytes nm::FabricName)
   (integer->bytes (*:getData nm)))
 
-;;; 
+
+;;; (fabric-name-bytestrings nm)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; returns a list of hexadecimal bytestrings corresponding
+;;; to the Fabric name
 
-(define (bytes->strings bytes)
-  (map (lambda (b)(format #f "~2,'0x" b))
-       bytes))
-
-;;; 
-;;; ---------------------------------------------------------------------
-;;; 
-
-(define (fabric-name-bytestrings nm)
+(define (fabric-name-bytestrings nm::FabricName)
   (bytes->strings (fabric-name-bytes nm)))
 
-;;; 
-;;; ---------------------------------------------------------------------
-;;; 
 
-(define (fabric-name-bit-patterns nm)
+;;; (fabric-name-bit-patterns nm)
+;;; ---------------------------------------------------------------------
+;;; returns a string that displays the pattern of bits in the Fabric name
+
+(define (fabric-name-bit-patterns nm::FabricName)
   (map (lambda (b)(format #f "~8,'0b" b))
        (fabric-name-bytes nm)))
 
-;;; 
-;;; ---------------------------------------------------------------------
-;;; 
 
-(define (fabric-name-strings nm :: fabric-name)
+;;; (fabric-name-strings nm :: FabricName)
+;;; ---------------------------------------------------------------------
+;;; returns the text version of the Fabric name as a list of strings,
+;;; with empty strings omitted
+
+(define (fabric-name-strings nm::FabricName)
   (let* ((bytes (integer->bytes (*:getData nm)))
          (parts (map (lambda (b dom)(list-ref dom b))
                      bytes
@@ -86,17 +87,11 @@
                                 (equal? p ""))))
             parts)))
 
-;;; 
-;;; ---------------------------------------------------------------------
-;;; 
 
-(define (gen-bytes n)
-  (map (lambda (i)(random-integer 255))
-       (iota n)))
 
-;;; 
+;;; (gen-name)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; generates a random Fabric name
 
 (define (gen-name)
   (let* ((bytes (gen-bytes (choose-any '(1 2 3 4))))
@@ -104,5 +99,5 @@
          (num (apply bytes->integer (shuffle (append bytes zeros)))))
     (if (zero? num)
         (gen-name)
-        (fabric-name num))))
+        (FabricName num))))
 

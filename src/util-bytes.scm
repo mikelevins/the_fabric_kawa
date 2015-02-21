@@ -8,29 +8,50 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export bytes->integer integer->bytes)
+(module-export
+ bytes->integer
+ bytes->strings
+ gen-bytes
+ integer->bytes)
 
 (require 'list-lib)
+(require "util-random.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; this file provides a set of byte-handling utilities.
 
+;;; (bytes->integer a b c d e f g h)
 ;;; ---------------------------------------------------------------------
-;;; bytes utilities
-;;; ---------------------------------------------------------------------
-
-;;; 
-;;; ---------------------------------------------------------------------
-;;; 
+;;; returns the integer corresponding to the given sequence of input bytes
 
 (define (bytes->integer a b c d e f g h)
   (gnu.math.IntNum:make (int[] a b c d e f g h)))
 
-;;; 
+
+;;; (bytes->strings bytes)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; returns a sequence of strings, each displaying the hexadecimal
+;;; value of the corresponding byte in _bytes_
+
+(define (bytes->strings bytes)
+  (map (lambda (b)(format #f "~2,'0x" b))
+       bytes))
+
+
+;;; (gen-bytes n)
+;;; ---------------------------------------------------------------------
+;;; returns a sequence of _n_ randomly-chosen bytes
+
+(define (gen-bytes n)
+  (map (lambda (i)(random-integer 255))
+       (iota n)))
+
+;;; (integer->bytes num::gnu.math.IntNum)
+;;; ---------------------------------------------------------------------
+;;; returns a sequence of bytes that corresponds to the value of the
+;;; integer _num_
 
 (define (integer->bytes num::gnu.math.IntNum)
   (let ((bytes num:words))

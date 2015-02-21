@@ -8,7 +8,8 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export get-asset-manager)
+(module-export
+ get-asset-manager)
 
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
@@ -28,25 +29,31 @@
 (import-as Thread java.lang.Thread)
 
 ;;; ---------------------------------------------------------------------
-;;; the asset amanager
+;;; the asset manager
 ;;; ---------------------------------------------------------------------
 
-;;; 
+
+;;; PARAMETER %asset-manager
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; a parameter that stores the current asset manager object,
+;;; or #f if the asset manager has not yet been constructed
 
 (define %asset-manager (make-parameter #f))
 
-;;; 
+
+;;; (new-asset-manager config::java.net.URL)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; returns a newly-constructed and initialized asset manager,
+;;; initialized with _config_ as its configration file
 
 (define (new-asset-manager config::java.net.URL)
   (com.jme3.system.JmeSystem:newAssetManager config))
 
-;;; 
+
+;;; (get-asset-manager)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; returns the asset managet singleton, constructing and initializing
+;;; it first if necessary
 
 (define (get-asset-manager)
   (or (%asset-manager)

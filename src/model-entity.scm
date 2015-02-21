@@ -40,49 +40,47 @@
 (require 'list-lib)
 (require "util-lists.scm")
 
+;;; (entity entity-type . properties)
 ;;; ---------------------------------------------------------------------
-;;; 
-;;; ---------------------------------------------------------------------
-
-;;; 
-;;; ---------------------------------------------------------------------
-;;; 
+;;; returns a new entity of type _entity-type_ (a symbol), and with
+;;; properties _properties_ (a plist whose keys are keywords)
 
 (define (entity entity-type . properties)
   (cons entity-type properties))
 
-;;; 
+;;; (entity? thing)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; returns true if _thing_ is an entity
 
 (define (entity? thing)
   (and (pair? thing)
        (symbol? (car thing))))
 
-;;; 
+;;; (entity-type thing)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; returns the entity type of _thing_. the entity type is a symbol
 
 (define (entity-type thing)
   (car thing))
 
-;;; 
+;;; (entity-type? thing type)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; returns true if _thing_'s entity type is _type_ (a symbol)
 
 (define (entity-type? thing type)
   (eqv? type (entity-type thing)))
 
-;;; 
+;;; (entity-properties thing)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; returns the entity's properties as a plist whose keys are keywords
 
 (define (entity-properties thing)
   (cdr thing))
 
-;;; 
+;;; (get-property thing property #!key (default #f))
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; returns the property value of _property_ in _thing_, if present
+;;; if the _property_ is not present in _thing_, returns _default_
 
 (define (get-property thing property #!key (default #f))
   (let* ((props (entity-properties thing))
@@ -91,9 +89,10 @@
         (cadr tail)
         default)))
 
-;;; 
+;;; (put-property thing property val)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; returns a new entity which is a copy of _thing_, but with the
+;;; property _property_ having the value _val_
 
 (define (put-property thing property val)
   (let ((keypos (position-if (lambda (it)(eqv? property it)) thing)))

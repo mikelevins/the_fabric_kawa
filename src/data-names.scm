@@ -8,7 +8,9 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export domain-indexes name-domains)
+(module-export
+ domain-indexes
+ name-domains)
 
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
@@ -37,6 +39,15 @@
 ;;;
 ;;; The empty name (that is, 64-bit zero) is reserved to the system;
 ;;; no player character may use it.
+;;;
+;;; The space of Fabric names is large (a bit less than twenty
+;;; quintillion names, or nearly three billion different names for
+;;; each person on Earth), but if we ever need more names we can
+;;; easily multiply the size of the space by adding another domain or
+;;; two, making the ID number longer by eight bits per domain. Doing
+;;; that is very easy: add the new domains to the file below and
+;;; remember to add them to the definition of _name-domains_ at the
+;;; bottom.
 
 (require 'list-lib)
 

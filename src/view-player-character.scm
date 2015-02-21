@@ -15,7 +15,9 @@
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; this file provides code for constructing and initializing the
+;;; geometric nodes used to represent player and non-player characters
+;;; in Fabric scenes
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -38,13 +40,16 @@
 (import-as RenderState com.jme3.material.RenderState)
 (import-as SafeArrayList com.jme3.util.SafeArrayList)
 
+
 ;;; ---------------------------------------------------------------------
-;;; player characters
+;;; characters
 ;;; ---------------------------------------------------------------------
 
-;;; 
+
+;;; (make-component-cube x y z)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; returns a new cube of the type used as a component in Fabric
+;;; character avatars
 
 (define (make-component-cube x y z)
   (let* ((asset-manager (get-asset-manager))
@@ -61,9 +66,12 @@
     (*:setLocalTranslation new-geom x y z)
     new-geom))
 
-;;; 
+
+;;; (make-player-character-cube)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; constructs the geometric node that serves as the image of a player
+;;; or non-player character avatar in Fabric scenes. the node is
+;;; constructed from 64 translucent, tinted cubes arranged in a cube.
 
 (define (make-player-character-cube)
   (let ((i 0)
@@ -87,38 +95,45 @@
               cubes)
     cubes-pivot))
 
-;;; 
+
+;;; (make-player-character)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; returns a newly-constructed player-character entity that contains
+;;; a cube node suitable for use as its avatar
 
 (define (make-player-character)
   (let* ((cube (make-player-character-cube)))
     (entity 'player-character cube: cube)))
 
-;;; 
+
+;;; (caretakers-character-color)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; returns the standard color used to tint Caretaker characters
 
 (define (caretakers-character-color)
   (ColorRGBA 0.0 0.4 0.0 0.3))
 
-;;; 
+
+;;; (rogues-character-color)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; returns the standard color used to tint Rogue characters
 
 (define (rogues-character-color)
   (ColorRGBA 0.0 0.3 0.5 0.3))
 
-;;; 
+
+;;; (abjurers-character-color)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; returns the standard color used to tint Abjurer characters
 
 (define (abjurers-character-color)
   (ColorRGBA 0.4 0.0 0.0 0.3))
 
-;;; 
+
+;;; (set-player-character-cube-color! char-cube::Node character-color)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; sets the tint of all component cubes in a character's avatar cube
+;;; to _character-color_
 
 (define (set-player-character-cube-color! char-cube::Node character-color)
   (let* ((cubes::SafeArrayList (*:getChildren char-cube))

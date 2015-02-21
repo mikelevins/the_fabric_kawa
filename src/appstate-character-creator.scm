@@ -8,7 +8,8 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export CharacterCreatorAppState)
+(module-export
+ CharacterCreatorAppState)
 
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT

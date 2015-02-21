@@ -8,7 +8,9 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export definterface defclass)
+(module-export
+ defclass
+ definterface)
 
 (require 'list-lib)
 (require "util-lists.scm")
@@ -16,11 +18,14 @@
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; this file implements macros that extend Kawa with more compact and
+;;; convenient syntax for defining Java classes and interfaces
 
-;;; 
+;;; MACRO (definterface ifname supers method-prototype...)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; define a new Java interfacename _ifname_. Each _method-prototype_
+;;; becomes a new abstract method defined by the interface. The
+;;; new interface extends the interfaces listed in _supers_.
 
 (define-syntax definterface
   (syntax-rules ()
@@ -28,9 +33,13 @@
      (define-simple-class ifname supers interface: #t
        (method-prototype  #!abstract) ...))))
 
-;;; 
+
+;;; (%slotspec form)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; returns a normalized slot description of the form
+;;; (sname type: stype init-form: sinit)
+;;; by parsing _form_, supplying default values for any
+;;; missing elements of the slot description
 
 (define (%slotspec form)
   (let* ((sname (car form))
@@ -39,9 +48,13 @@
          (stype (get-key inits type: java.lang.Object)))
     (list sname type: stype init-form: sinit)))
 
-;;; 
+
+;;; (%slotaccessors form)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; returns a list containing the slot-getter and the slot-setter from
+;;; form, if any. The getter and setter are returned only if present
+;;; in _form_. If neither is present in _form_ then %slotaccessors
+;;; returns '()
 
 (define (%slotaccessors form)
   (let* ((sname (car form))
@@ -58,9 +71,15 @@
     (filter (lambda (x) x)
             (list sgetter ssetter))))
 
-;;; 
+
+;;; MACRO (defclass classname superclasses . class-body)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; defines a new Java class using Kawa's define-simple-class form.
+;;; defclass provides a more compact and readable syntax for defining
+;;; classes, including syntax for automatically generating getter and
+;;; setter methods for slots, and for annotating classes, slots, and
+;;; methods. See numerous defclass forms in the Fabric sources for
+;;; examples of use.
 
 (defmacro defclass (classname superclasses . class-body)
   (let* ((annotations-clause (assoc annotations: class-body))

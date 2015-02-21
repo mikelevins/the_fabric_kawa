@@ -14,11 +14,14 @@
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; the sort routine in this file was written by Marc Feeley and is
+;;; distributed as part of the Gambit-C Scheme system. It has been
+;;; very lightly modified by mikel evins to work with the Fabric code.
 
-;;; 
+;;; (sort sequence less?)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; returns a new copy of _sequence_ whose elements have been sorted
+;;; in ascending order according to the comparison function _less?_
 
 (define (sort sequence less?)
   (define (sort-list lst less?)

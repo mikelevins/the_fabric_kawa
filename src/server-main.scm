@@ -47,9 +47,12 @@
 ;;; FabricServer - the server class
 ;;; ---------------------------------------------------------------------
 
-;;; 
+
+;;; CLASS FabricServer
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; the class of the long-running headless process that maintains
+;;; the state of the game world, synchronizes connected clients,
+;;; and distributes state updates among all connected players
 
 (defclass FabricServer (SimpleApplication)
   (slots:
@@ -65,9 +68,11 @@
                                                                   (*:isRunning network-listener)))
                         (format #t "~% ~A" (*:toString network-listener))))))
 
-;;; 
+
+;;; (register-auth server::FabricServer username token)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; adds an entry to the auth table for an authenticated user
+;;; TODO: add a timestamp and time-to-live to the created entry
 
 (define (register-auth server::FabricServer username token)
   (let* ((old-table (*:getAuthTable server))
@@ -78,9 +83,10 @@
 ;;; initialization
 ;;; ---------------------------------------------------------------------
 
-;;; 
+
+;;; (make-server)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; constructs and initializes the Fabric server
 
 (define (make-server)
   (Serializer:registerClass ChatMessage)
@@ -95,9 +101,10 @@
 ;;; startup and shutdown
 ;;; ---------------------------------------------------------------------
 
-;;; 
+;;; (start-server app::FabricServer)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; starts the Fabric server running, enabling it to process client
+;;; connections and requests
 
 (define (start-server app::FabricServer)
   (let ((listener (Network:createServer (server-name) (server-version) (server-port)(server-port)))
@@ -108,9 +115,9 @@
     (*:start app Context:Type:Headless)
     (*:printServer app)))
 
-;;; 
+;;; (stop-server app::FabricServer)
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; shuts down the Fabric server, terminating all services
 
 (define (stop-server app::FabricServer)
   (let ((listener::Server (*:getNetworkListener app)))
@@ -118,6 +125,11 @@
     (*:close listener)
     (*:stop app)))
 
+
+;;; ---------------------------------------------------------------------
+;;; testing code
+;;; ---------------------------------------------------------------------
 ;;; (define $server (make-server))
 ;;; (start-server $server)
 ;;; (stop-server $server)
+

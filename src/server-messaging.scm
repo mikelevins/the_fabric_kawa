@@ -13,7 +13,7 @@
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; This file implements server-specific message-handling features.
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -37,13 +37,10 @@
 ;;; Message Handlers
 ;;; =====================================================================
 
+;;; CLASS ServerChatHandler
 ;;; ---------------------------------------------------------------------
-;;; ServerChatHandler - aux server class for handling incoming chat messages
-;;; ---------------------------------------------------------------------
-
-;;; 
-;;; ---------------------------------------------------------------------
-;;; 
+;;; the class of chat handlers. The Fabric server creates a
+;;; ServerChatHandler instance to process incoming chat messages
 
 (defclass ServerChatHandler (MessageListener)
   (methods:
@@ -53,13 +50,10 @@
     (format #t "~%Broadcasting message: ~a..." (*:toString msg))
     (*:broadcast (*:getServer source) msg))))
 
+;;; CLASS ServerAuthHandler
 ;;; ---------------------------------------------------------------------
-;;; ServerAuthHandler - aux server class for handling incoming auth messages
-;;; ---------------------------------------------------------------------
-
-;;; 
-;;; ---------------------------------------------------------------------
-;;; 
+;;; the class of auth handlers. The Fabric server creates a
+;;; ServerAuthHandler instance to process incoming login messages
 
 (defclass ServerAuthHandler (MessageListener)
   (methods:

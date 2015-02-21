@@ -54,13 +54,10 @@
 ;;; account. RequestLoginMessage requests an auth token which is
 ;;; supplied by a successful ResponseLoginMessage.
 
+;;; CLASS RequestCreateAccountMessage
 ;;; ---------------------------------------------------------------------
-;;; RequestCreateAccountMessage
-;;; ---------------------------------------------------------------------
-
-;;; 
-;;; ---------------------------------------------------------------------
-;;; 
+;;; client -> server
+;;; the class of messages requesting creation of a new player account
 
 (defclass RequestCreateAccountMessage (AbstractMessage)
   (annotations: @Serializable)
@@ -70,13 +67,12 @@
   (methods:
    ((toString) (format #f "Create: ~A" username))))
 
-;;; ---------------------------------------------------------------------
-;;; ResponseCreateAccountMessage
-;;; ---------------------------------------------------------------------
 
-;;; 
+;;; CLASS ResponseCreateAccountMessage
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; client <- server
+;;; the class of messages responding to a request for the creation of a
+;;; new player account
 
 (defclass ResponseCreateAccountMessage (AbstractMessage)
   (annotations: @Serializable)
@@ -87,13 +83,11 @@
   (methods:
    ((toString) (format #f "Create: ~A" username))))
 
-;;; ---------------------------------------------------------------------
-;;; RequestLoginMessage
-;;; ---------------------------------------------------------------------
 
-;;; 
+;;; CLASS RequestLoginMessage
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; client -> server
+;;; the class of messages request a login session
 
 (defclass RequestLoginMessage (AbstractMessage)
   (annotations: @Serializable)
@@ -103,13 +97,11 @@
   (methods:
    ((toString) (format #f "Login: ~A" username))))
 
-;;; ---------------------------------------------------------------------
-;;; ResponseLoginMessage
-;;; ---------------------------------------------------------------------
 
-;;; 
+;;; CLASS ResponseLoginMessage
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; client <- server
+;;; the class of messages responding to a request for a login session
 
 (defclass ResponseLoginMessage (AbstractMessage)
   (annotations: @Serializable)
@@ -121,14 +113,16 @@
    ((toString) (format #f "Login response: succeeded? ~A" succeeded?))))
 
 ;;; ---------------------------------------------------------------------
-;;; ChatMessage
+;;; Chat messages
 ;;; ---------------------------------------------------------------------
-;;; Chat messages are broadcast to all logged-in user.
 ;;; TODO: create chat channels
 
-;;; 
+
+;;; CLASS ChatMessage
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; client <-> server
+;;; the class of chat messages, which carry chat text from clients to
+;;; the server, and are broadcast to all subscribed and connected users
 
 (defclass ChatMessage (AbstractMessage)
   (annotations: @Serializable)
@@ -139,7 +133,7 @@
    ((toString) (format #f "[~A] ~A" name contents))))
 
 ;;; ---------------------------------------------------------------------
-;;; Messages needed
+;;; NOTES: Messages needed
 ;;; ---------------------------------------------------------------------
 ;;; - creating and naming characters
 ;;; - using the transit network
@@ -155,4 +149,5 @@
 ;;; - add and delete transit portals
 ;;; - add NPCs and spawns
 ;;; - add archives (places that killed player characters can respawn)
+
 
