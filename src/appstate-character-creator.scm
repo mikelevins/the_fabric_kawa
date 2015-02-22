@@ -308,7 +308,7 @@
 ;;; computes and returns lists of coordinates to be used as the bounds
 ;;; of name menus in the name palette
 
-(define (compute-name-menu-bounds size)
+(define (compute-name-menu-bounds size::Vector2f)
   (let* ((width (*:getX size))
          (adjusted-width (- width 16))
          (segment-width (/ adjusted-width 8))
@@ -515,7 +515,7 @@
            (rogue-button (make-rogue-button screen))
            (character (make-player-character))
            (char-cube (get-property character 'cube: default: #f))
-           (name-palette (make-name-palette screen))
+           (name-palette::Window (make-name-palette screen))
            (armor-palette (make-armor-palette screen))
            (weapons-palette (make-weapons-palette screen)))
       ;; --------------------
