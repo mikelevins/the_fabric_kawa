@@ -730,10 +730,11 @@
 
 (define (compute-regen-armor-button-origin screen::Screen)
   (let ((armor-palette-size (compute-armor-palette-size screen))
-        (armor-button-size (compute-regen-armor-button-size screen)))
+        (armor-button-size (compute-absorb-armor-button-size screen)))
     (Vector2f (- (/ (*:getX armor-palette-size) 2.0)
                  (/ (*:getX armor-button-size) 2.0))
-              232)))
+              (- (/ (* 3 (*:getY armor-palette-size)) 8.0)
+                 (/ (*:getY armor-button-size) 2.0)))))
 
 
 ;;; (compute-regen-armor-button-size screen::Screen)
@@ -763,10 +764,11 @@
 
 (define (compute-power-armor-button-origin screen::Screen)
   (let ((armor-palette-size (compute-armor-palette-size screen))
-        (armor-button-size (compute-power-armor-button-size screen)))
+        (armor-button-size (compute-absorb-armor-button-size screen)))
     (Vector2f (- (/ (*:getX armor-palette-size) 2.0)
                  (/ (*:getX armor-button-size) 2.0))
-              384)))
+              (- (/ (* 5 (*:getY armor-palette-size)) 8.0)
+                 (/ (*:getY armor-button-size) 2.0)))))
 
 
 ;;; (compute-power-armor-button-size screen::Screen)
@@ -796,10 +798,11 @@
 
 (define (compute-energy-armor-button-origin screen::Screen)
   (let ((armor-palette-size (compute-armor-palette-size screen))
-        (armor-button-size (compute-energy-armor-button-size screen)))
+        (armor-button-size (compute-absorb-armor-button-size screen)))
     (Vector2f (- (/ (*:getX armor-palette-size) 2.0)
                  (/ (*:getX armor-button-size) 2.0))
-              536)))
+              (- (/ (* 7 (*:getY armor-palette-size)) 8.0)
+                 (/ (*:getY armor-button-size) 2.0)))))
 
 
 ;;; (compute-energy-armor-button-size screen::Screen)
