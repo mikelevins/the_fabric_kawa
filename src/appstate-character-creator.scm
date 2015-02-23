@@ -136,7 +136,7 @@
 (define (compute-faction-nameplate-origin screen::Screen)
   (let ((width (*:getWidth screen))
         (height (*:getHeight screen)))
-    (Vector2f (/ width 2.0) 8)))
+    (Vector2f (- (/ width 2.0) 120) 8)))
 
 
 ;;; (compute-faction-nameplate-size screen::Screen)
@@ -146,7 +146,7 @@
 
 (define (compute-faction-nameplate-size screen::Screen)
   (let ((width (*:getWidth screen)))
-    (Vector2f (/ width 5.0) 40)))
+    (Vector2f 280 40)))
 
 
 ;;; (make-faction-nameplate screen::Screen)
@@ -155,10 +155,12 @@
 ;;; nameplate
 
 (define (make-faction-nameplate screen::Screen)
-  (TLabel screen "FactionNameplate"
-          (compute-faction-nameplate-origin screen)
-          (compute-faction-nameplate-size screen)))
-
+  (let ((label (TLabel screen "FactionNameplate"
+                       (compute-faction-nameplate-origin screen)
+                       (compute-faction-nameplate-size screen)))
+        (Align BitmapFont:Align))
+    (*:setTextAlign label Align:Center)
+    label))
 
 ;;; ---------------------------------------------------------------------
 ;;; the faction palette
@@ -181,7 +183,7 @@
 
 
 (define (compute-faction-palette-size screen::Screen)
-  (Vector2f 400 256))
+  (Vector2f 400 200))
 
 
 ;;; (make-faction-palette screen::Screen)
@@ -201,7 +203,7 @@
 
 
 (define (compute-caretaker-button-origin screen::Screen)
-  (Vector2f 8 32))
+  (Vector2f 8 48))
 
 
 ;;; (compute-caretaker-button-size screen::Screen)
@@ -211,7 +213,7 @@
 
 
 (define (compute-caretaker-button-size screen::Screen)
-  (Vector2f 128 128))
+  (Vector2f 128 96))
 
 
 ;;; (make-caretaker-button screen::Screen)
@@ -230,7 +232,7 @@
 ;;; button
 
 (define (compute-abjurer-button-origin screen::Screen)
-  (Vector2f 136 32))
+  (Vector2f 136 48))
 
 
 ;;; (compute-abjurer-button-size screen::Screen)
@@ -239,7 +241,7 @@
 ;;; button
 
 (define (compute-abjurer-button-size screen::Screen)
-  (Vector2f 128 128))
+  (Vector2f 128 96))
 
 
 ;;; (make-abjurer-button screen::Screen)
@@ -258,7 +260,7 @@
 ;;; button
 
 (define (compute-rogue-button-origin screen::Screen)
-  (Vector2f 264 32))
+  (Vector2f 264 48))
 
 
 ;;; (compute-rogue-button-size screen::Screen)
@@ -267,7 +269,7 @@
 ;;; button
 
 (define (compute-rogue-button-size screen::Screen)
-  (Vector2f 128 128))
+  (Vector2f 128 96))
 
 
 ;;; (make-rogue-button screen::Screen)
@@ -397,6 +399,51 @@
 
 
 ;;; ---------------------------------------------------------------------
+;;; the weapons palette
+;;; ---------------------------------------------------------------------
+
+
+;;; (compute-weapons-palette-origin screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; computes and returns a suitable origin for the weapons palette, taking
+;;; into account the dimensions of the screen
+
+(define (compute-weapons-palette-origin screen::Screen)
+  (let ((faction-palette-origin (compute-faction-palette-origin screen))
+        (faction-palette-size (compute-faction-palette-size screen)))
+    (Vector2f 10
+              (+ (*:getY faction-palette-origin)
+                 (*:getY faction-palette-size)
+                 8))))
+
+
+;;; (compute-weapons-palette-size screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; computes and returns a suitable size for the weapons palette, taking
+;;; into account the dimensions of the screen
+
+(define (compute-weapons-palette-size screen::Screen)
+  (let* ((weapons-palette-origin (compute-weapons-palette-origin screen))
+         (name-palette-origin (compute-name-palette-origin screen))
+         (height (- (*:getY name-palette-origin)
+                    (*:getY weapons-palette-origin)
+                    8))
+         (screen-width (*:getWidth screen))
+         (width (- (/ screen-width 8.0) 10)))
+    (Vector2f width height)))
+
+
+;;; (make-weapons-palette screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; returns a newly-contructed weapons palette
+
+(define (make-weapons-palette screen::Screen)
+  (Window screen "WeaponsPalette"
+          (compute-weapons-palette-origin screen)
+          (compute-weapons-palette-size screen)))
+
+
+;;; ---------------------------------------------------------------------
 ;;; the armor palette
 ;;; ---------------------------------------------------------------------
 
@@ -407,12 +454,11 @@
 ;;; into account the dimensions of the screen
 
 (define (compute-armor-palette-origin screen::Screen)
-  (let ((faction-palette-origin (compute-faction-palette-origin screen))
-        (faction-palette-size (compute-faction-palette-size screen)))
-    (Vector2f 10
-              (+ (*:getY faction-palette-origin)
-                 (*:getY faction-palette-size)
-                 8))))
+  (let ((weapons-palette-origin (compute-weapons-palette-origin screen))
+        (weapons-palette-size (compute-weapons-palette-size screen))
+        (screen-width (*:getWidth screen)))
+    (Vector2f (- screen-width (*:getX weapons-palette-size) 8)
+              (*:getY weapons-palette-origin))))
 
 
 ;;; (compute-armor-palette-size screen::Screen)
@@ -421,14 +467,9 @@
 ;;; into account the dimensions of the screen
 
 (define (compute-armor-palette-size screen::Screen)
-  (let* ((armor-palette-origin (compute-armor-palette-origin screen))
-         (name-palette-origin (compute-name-palette-origin screen))
-         (height (- (*:getY name-palette-origin)
-                    (*:getY armor-palette-origin)
-                    8))
-         (screen-width (*:getWidth screen))
-         (width (- (/ screen-width 8.0) 10)))
-    (Vector2f width height)))
+  (let ((weapons-palette-size (compute-weapons-palette-size screen)))
+    (Vector2f (*:getX weapons-palette-size)
+              (*:getY weapons-palette-size))))
 
 
 ;;; (make-armor-palette screen::Screen)
@@ -442,43 +483,88 @@
 
 
 ;;; ---------------------------------------------------------------------
-;;; the weapons palette
+;;; the augment palette
 ;;; ---------------------------------------------------------------------
 
 
-;;; (compute-weapons-palette-origin screen::Screen)
+;;; (compute-augment-palette-origin screen::Screen)
 ;;; ---------------------------------------------------------------------
-;;; computes and returns a suitable origin for the weapons palette, taking
+;;; computes and returns a suitable origin for the augment palette, taking
 ;;; into account the dimensions of the screen
 
-(define (compute-weapons-palette-origin screen::Screen)
-  (let ((armor-palette-origin (compute-armor-palette-origin screen))
-        (armor-palette-size (compute-armor-palette-size screen))
+(define (compute-augment-palette-origin screen::Screen)
+  (let ((faction-palette-origin (compute-faction-palette-origin screen))
+        (faction-palette-size (compute-faction-palette-size screen)))
+    (Vector2f (+ (*:getX faction-palette-origin)
+                 (*:getX faction-palette-size)
+                 8)
+              (+ (*:getY faction-palette-origin)
+                 (/ (*:getY faction-palette-size)
+                    4.0)))))
+
+
+;;; (compute-augment-palette-size screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; computes and returns a suitable size for the augment palette, taking
+;;; into account the dimensions of the screen
+
+(define (compute-augment-palette-size screen::Screen)
+  (let ((faction-palette-origin (compute-faction-palette-origin screen))
+        (faction-palette-size (compute-faction-palette-size screen))
         (screen-width (*:getWidth screen)))
-    (Vector2f (- screen-width (*:getX armor-palette-size) 8)
-              (*:getY armor-palette-origin))))
+    (Vector2f (- screen-width
+                 (+ (*:getX faction-palette-size) 24))
+              (/ (* 3.0 (*:getY faction-palette-size))
+                 4.0))))
 
 
-;;; (compute-weapons-palette-size screen::Screen)
+;;; (make-augment-palette screen::Screen)
 ;;; ---------------------------------------------------------------------
-;;; computes and returns a suitable size for the weapons palette, taking
-;;; into account the dimensions of the screen
+;;; returns a newly-contructed augment palette
 
-(define (compute-weapons-palette-size screen::Screen)
-  (let ((armor-palette-size (compute-armor-palette-size screen)))
-    (Vector2f (*:getX armor-palette-size)
-              (*:getY armor-palette-size))))
+(define (make-augment-palette screen::Screen)
+  (Window screen "AugmentPalette"
+          (compute-augment-palette-origin screen)
+          (compute-augment-palette-size screen)))
 
 
-;;; (make-weapons-palette screen::Screen)
 ;;; ---------------------------------------------------------------------
-;;; returns a newly-contructed weapons palette
+;;; the character nameplate
+;;; ---------------------------------------------------------------------
 
-(define (make-weapons-palette screen::Screen)
-  (Window screen "WeaponsPalette"
-          (compute-weapons-palette-origin screen)
-          (compute-weapons-palette-size screen)))
+;;; (compute-character-nameplate-origin screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; computes and returns a suitable origin for the character nameplate,
+;;; taking into accoun the dimensions of the screen
 
+(define (compute-character-nameplate-origin screen::Screen)
+  (let ((width (*:getWidth screen))
+        (height (*:getHeight screen)))
+    (Vector2f (- (/ width 2.0) 120) 8)))
+
+
+;;; (compute-character-nameplate-size screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; computes and returns a suitable size for the character nameplate,
+;;; taking into accoun the dimensions of the screen
+
+(define (compute-character-nameplate-size screen::Screen)
+  (let ((width (*:getWidth screen)))
+    (Vector2f 280 40)))
+
+
+;;; (make-character-nameplate screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; constructs and returns a new TLabel object for use as the character
+;;; nameplate
+
+(define (make-character-nameplate screen::Screen)
+  (let ((label (TLabel screen "CharacterNameplate"
+                       (compute-character-nameplate-origin screen)
+                       (compute-character-nameplate-size screen)))
+        (Align BitmapFont:Align))
+    (*:setTextAlign label Align:Center)
+    label))
 
 ;;; ---------------------------------------------------------------------
 ;;; the AppState
@@ -517,7 +603,8 @@
            (char-cube (get-property character 'cube: default: #f))
            (name-palette::Window (make-name-palette screen))
            (armor-palette (make-armor-palette screen))
-           (weapons-palette (make-weapons-palette screen)))
+           (weapons-palette (make-weapons-palette screen))
+           (augment-palette (make-augment-palette screen)))
       ;; --------------------
       ;; init the faction buttons
       ;; --------------------
@@ -589,6 +676,11 @@
       ;; --------------------
       (*:setWindowTitle weapons-palette "Choose Weapons:")
       (*:addElement screen weapons-palette)
+      ;; --------------------
+      ;; augment palette
+      ;; --------------------
+      (*:setWindowTitle augment-palette "Choose Augments:")
+      (*:addElement screen augment-palette)
       ;; --------------------
       ;; add the gui to the scene
       ;; --------------------
