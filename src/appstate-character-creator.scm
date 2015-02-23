@@ -1305,7 +1305,7 @@
       (*:setButtonIcon turrets-augment-button 128 128 "Interface/turrets-augment-icon128.png")
       (*:setButtonPressedInfo turrets-augment-button "Interface/turrets-augment-icon128.png"
                               (ColorRGBA 0.0 6.0 1.0 1.0))
-      (*:setText turrets-augment-button "Bots")
+      (*:setText turrets-augment-button "Turrets")
       (*:setTextAlign turrets-augment-button align:Center)
       (*:setTextVAlign turrets-augment-button valign:Bottom)
       (*:setFontSize turrets-augment-button 20)
