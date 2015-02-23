@@ -11,9 +11,9 @@
 (module-export
  CharacterCreatorAppState)
 
-;;; ---------------------------------------------------------------------
+;;; =====================================================================
 ;;; ABOUT
-;;; ---------------------------------------------------------------------
+;;; =====================================================================
 ;;; the character creator provides players the ability to create and
 ;;; customize new playable characters
 
@@ -56,9 +56,11 @@
 (import-as Vector4f com.jme3.math.Vector4f)
 (import-as Window tonegod.gui.controls.windows.Window)
 
-;; ---------------------------------------------------------------------
-;;; the CharacterCreatorAppState class
-;;; ---------------------------------------------------------------------
+
+
+;;; =====================================================================
+;;; UI elements
+;;; =====================================================================
 
 ;;; CLASS NameMenu
 ;;; ---------------------------------------------------------------------
@@ -106,9 +108,11 @@
 (define (set-app-state! group::FactionButtonGroup state::CharacterCreatorAppState)
   (*:setAppState group state))
 
-;;; ---------------------------------------------------------------------
+
+
+;;; =====================================================================
 ;;; the skybox
-;;; ---------------------------------------------------------------------
+;;; =====================================================================
 
 ;;; (make-sky app::SimpleApplication)
 ;;; ---------------------------------------------------------------------
@@ -124,9 +128,11 @@
                           (*:loadTexture asset-manager "Textures/tychotop.png")
                           (*:loadTexture asset-manager "Textures/tychobottom.png"))))
 
-;;; ---------------------------------------------------------------------
+
+
+;;; =====================================================================
 ;;; the faction nameplate
-;;; ---------------------------------------------------------------------
+;;; =====================================================================
 
 ;;; (compute-faction-nameplate-origin screen::Screen)
 ;;; ---------------------------------------------------------------------
@@ -134,9 +140,9 @@
 ;;; taking into accoun the dimensions of the screen
 
 (define (compute-faction-nameplate-origin screen::Screen)
-  (let ((width (*:getWidth screen))
+  (let ((faction-palette-size (compute-faction-palette-size screen))
         (height (*:getHeight screen)))
-    (Vector2f (- (/ width 2.0) 120) 8)))
+    (Vector2f (+ 32 (*:getX faction-palette-size)) 8)))
 
 
 ;;; (compute-faction-nameplate-size screen::Screen)
@@ -162,10 +168,11 @@
     (*:setTextAlign label Align:Center)
     label))
 
-;;; ---------------------------------------------------------------------
-;;; the faction palette
-;;; ---------------------------------------------------------------------
 
+
+;;; =====================================================================
+;;; the faction palette
+;;; =====================================================================
 
 ;;; (compute-faction-palette-origin screen::Screen)
 ;;; ---------------------------------------------------------------------
@@ -183,7 +190,7 @@
 
 
 (define (compute-faction-palette-size screen::Screen)
-  (Vector2f 400 200))
+  (Vector2f 616 200))
 
 
 ;;; (make-faction-palette screen::Screen)
@@ -203,7 +210,16 @@
 
 
 (define (compute-caretaker-button-origin screen::Screen)
-  (Vector2f 8 48))
+  (let* ((button-width 128)
+         (button-height 96)
+         (palette-size (compute-faction-palette-size screen))
+         (palette-width (*:getX palette-size))
+         (palette-height (*:getY palette-size))
+         (x (- (/ palette-width 6.0)
+               (/ button-width 2.0)))
+         (y (- (/ palette-height 2.0)
+               (/ button-height 2.0))))
+    (Vector2f x y)))
 
 
 ;;; (compute-caretaker-button-size screen::Screen)
@@ -232,7 +248,16 @@
 ;;; button
 
 (define (compute-abjurer-button-origin screen::Screen)
-  (Vector2f 136 48))
+  (let* ((button-width 128)
+         (button-height 96)
+         (palette-size (compute-faction-palette-size screen))
+         (palette-width (*:getX palette-size))
+         (palette-height (*:getY palette-size))
+         (x (- (* 3 (/ palette-width 6.0))
+               (/ button-width 2.0)))
+         (y (- (/ palette-height 2.0)
+               (/ button-height 2.0))))
+    (Vector2f x y)))
 
 
 ;;; (compute-abjurer-button-size screen::Screen)
@@ -260,7 +285,16 @@
 ;;; button
 
 (define (compute-rogue-button-origin screen::Screen)
-  (Vector2f 264 48))
+  (let* ((button-width 128)
+         (button-height 96)
+         (palette-size (compute-faction-palette-size screen))
+         (palette-width (*:getX palette-size))
+         (palette-height (*:getY palette-size))
+         (x (- (* 5 (/ palette-width 6.0))
+               (/ button-width 2.0)))
+         (y (- (/ palette-height 2.0)
+               (/ button-height 2.0))))
+    (Vector2f x y)))
 
 
 ;;; (compute-rogue-button-size screen::Screen)
@@ -282,9 +316,10 @@
                (compute-rogue-button-size screen)))
 
 
-;;; ---------------------------------------------------------------------
+
+;;; =====================================================================
 ;;; the name palette
-;;; ---------------------------------------------------------------------
+;;; =====================================================================
 
 
 ;;; (compute-name-palette-origin screen::Screen)
@@ -398,11 +433,12 @@
         palette))))
 
 
-;;; ---------------------------------------------------------------------
-;;; the weapons palette
-;;; ---------------------------------------------------------------------
 
-;;; CLASS ArmoButtonGroup
+;;; =====================================================================
+;;; the weapons palette
+;;; =====================================================================
+
+;;; CLASS WeaponsButtonGroup
 ;;; ---------------------------------------------------------------------
 ;;; a RadioButtonGroup subclass used to present weapons options to
 ;;; players
@@ -462,21 +498,22 @@
 
 ;;; (compute-cannon-weapon-button-origin screen::Screen)
 ;;; ---------------------------------------------------------------------
-;;; computes and returns a suitable origin for the absorb armor
+;;; computes and returns a suitable origin for the cannon weapon
 ;;; button
 
 
 (define (compute-cannon-weapon-button-origin screen::Screen)
-  (let ((armor-palette-size (compute-armor-palette-size screen))
-        (armor-button-size (compute-cannon-weapon-button-size screen)))
-    (Vector2f (- (/ (*:getX armor-palette-size) 2.0)
-                 (/ (*:getX armor-button-size) 2.0))
-              64)))
+  (let ((weapons-palette-size (compute-weapons-palette-size screen))
+        (weapon-button-size (compute-cannon-weapon-button-size screen)))
+    (Vector2f (- (/ (*:getX weapons-palette-size) 2.0)
+                 (/ (*:getX weapon-button-size) 2.0))
+              (- (/ (*:getY weapons-palette-size) 8.0)
+                 (/ (*:getY weapon-button-size) 2.0)))))
 
 
 ;;; (compute-cannon-weapon-button-size screen::Screen)
 ;;; ---------------------------------------------------------------------
-;;; computes and returns a suitable size for the absorb armor
+;;; computes and returns a suitable size for the cannon weapon
 ;;; button
 
 
@@ -485,7 +522,7 @@
 
 ;;; (make-cannon-weapon-button screen::Screen)
 ;;; ---------------------------------------------------------------------
-;;; returns a newly-constructed absorb armor button
+;;; returns a newly-constructed cannon weapon button
 
 (define (make-cannon-weapon-button screen::Screen)
   (RadioButton screen "CannonWeaponButton"
@@ -495,21 +532,22 @@
 
 ;;; (compute-impulse-weapon-button-origin screen::Screen)
 ;;; ---------------------------------------------------------------------
-;;; computes and returns a suitable origin for the absorb armor
+;;; computes and returns a suitable origin for the impulse weapon
 ;;; button
 
 
 (define (compute-impulse-weapon-button-origin screen::Screen)
-  (let ((armor-palette-size (compute-armor-palette-size screen))
-        (armor-button-size (compute-impulse-weapon-button-size screen)))
-    (Vector2f (- (/ (*:getX armor-palette-size) 2.0)
-                 (/ (*:getX armor-button-size) 2.0))
-              232)))
+  (let ((weapons-palette-size (compute-weapons-palette-size screen))
+        (weapon-button-size (compute-cannon-weapon-button-size screen)))
+    (Vector2f (- (/ (*:getX weapons-palette-size) 2.0)
+                 (/ (*:getX weapon-button-size) 2.0))
+              (- (/ (* 3 (*:getY weapons-palette-size)) 8.0)
+                 (/ (*:getY weapon-button-size) 2.0)))))
 
 
 ;;; (compute-impulse-weapon-button-size screen::Screen)
 ;;; ---------------------------------------------------------------------
-;;; computes and returns a suitable size for the absorb armor
+;;; computes and returns a suitable size for the impulse weapon
 ;;; button
 
 
@@ -518,7 +556,7 @@
 
 ;;; (make-impulse-weapon-button screen::Screen)
 ;;; ---------------------------------------------------------------------
-;;; returns a newly-constructed absorb armor button
+;;; returns a newly-constructed impulse weapon button
 
 (define (make-impulse-weapon-button screen::Screen)
   (RadioButton screen "ImpulseWeaponButton"
@@ -528,21 +566,22 @@
 
 ;;; (compute-malware-weapon-button-origin screen::Screen)
 ;;; ---------------------------------------------------------------------
-;;; computes and returns a suitable origin for the absorb armor
+;;; computes and returns a suitable origin for the malware weapon
 ;;; button
 
 
 (define (compute-malware-weapon-button-origin screen::Screen)
-  (let ((armor-palette-size (compute-armor-palette-size screen))
-        (armor-button-size (compute-malware-weapon-button-size screen)))
-    (Vector2f (- (/ (*:getX armor-palette-size) 2.0)
-                 (/ (*:getX armor-button-size) 2.0))
-              384)))
+  (let ((weapons-palette-size (compute-weapons-palette-size screen))
+        (weapon-button-size (compute-cannon-weapon-button-size screen)))
+    (Vector2f (- (/ (*:getX weapons-palette-size) 2.0)
+                 (/ (*:getX weapon-button-size) 2.0))
+              (- (/ (* 5 (*:getY weapons-palette-size)) 8.0)
+                 (/ (*:getY weapon-button-size) 2.0)))))
 
 
 ;;; (compute-malware-weapon-button-size screen::Screen)
 ;;; ---------------------------------------------------------------------
-;;; computes and returns a suitable size for the absorb armor
+;;; computes and returns a suitable size for the malware weapon
 ;;; button
 
 
@@ -551,7 +590,7 @@
 
 ;;; (make-malware-weapon-button screen::Screen)
 ;;; ---------------------------------------------------------------------
-;;; returns a newly-constructed absorb armor button
+;;; returns a newly-constructed malware weapon button
 
 (define (make-malware-weapon-button screen::Screen)
   (RadioButton screen "MalwareWeaponButton"
@@ -561,21 +600,22 @@
 
 ;;; (compute-bots-weapon-button-origin screen::Screen)
 ;;; ---------------------------------------------------------------------
-;;; computes and returns a suitable origin for the absorb armor
+;;; computes and returns a suitable origin for the bots weapon
 ;;; button
 
 
 (define (compute-bots-weapon-button-origin screen::Screen)
-  (let ((armor-palette-size (compute-armor-palette-size screen))
-        (armor-button-size (compute-bots-weapon-button-size screen)))
-    (Vector2f (- (/ (*:getX armor-palette-size) 2.0)
-                 (/ (*:getX armor-button-size) 2.0))
-              536)))
+  (let ((weapons-palette-size (compute-weapons-palette-size screen))
+        (weapon-button-size (compute-cannon-weapon-button-size screen)))
+    (Vector2f (- (/ (*:getX weapons-palette-size) 2.0)
+                 (/ (*:getX weapon-button-size) 2.0))
+              (- (/ (* 7 (*:getY weapons-palette-size)) 8.0)
+                 (/ (*:getY weapon-button-size) 2.0)))))
 
 
 ;;; (compute-bots-weapon-button-size screen::Screen)
 ;;; ---------------------------------------------------------------------
-;;; computes and returns a suitable size for the absorb armor
+;;; computes and returns a suitable size for the bots weapon
 ;;; button
 
 
@@ -584,17 +624,19 @@
 
 ;;; (make-bots-weapon-button screen::Screen)
 ;;; ---------------------------------------------------------------------
-;;; returns a newly-constructed absorb armor button
+;;; returns a newly-constructed bots weapon button
 
 (define (make-bots-weapon-button screen::Screen)
   (RadioButton screen "BotsWeaponButton"
                (compute-bots-weapon-button-origin screen)
                (compute-bots-weapon-button-size screen)))
 
-;;; ---------------------------------------------------------------------
-;;; the armor palette
-;;; ---------------------------------------------------------------------
 
+
+
+;;; =====================================================================
+;;; the armor palette
+;;; =====================================================================
 
 ;;; CLASS ArmorButtonGroup
 ;;; ---------------------------------------------------------------------
@@ -621,9 +663,9 @@
 
 (define (compute-armor-palette-origin screen::Screen)
   (let ((weapons-palette-origin (compute-weapons-palette-origin screen))
-        (weapons-palette-size (compute-weapons-palette-size screen))
+        (armor-palette-size (compute-armor-palette-size screen))
         (screen-width (*:getWidth screen)))
-    (Vector2f (- screen-width (*:getX weapons-palette-size) 8)
+    (Vector2f (- screen-width (*:getX armor-palette-size) 8)
               (*:getY weapons-palette-origin))))
 
 
@@ -652,13 +694,13 @@
 ;;; computes and returns a suitable origin for the absorb armor
 ;;; button
 
-
 (define (compute-absorb-armor-button-origin screen::Screen)
   (let ((armor-palette-size (compute-armor-palette-size screen))
         (armor-button-size (compute-absorb-armor-button-size screen)))
     (Vector2f (- (/ (*:getX armor-palette-size) 2.0)
                  (/ (*:getX armor-button-size) 2.0))
-              64)))
+              (- (/ (* 1 (*:getY armor-palette-size)) 8.0)
+                 (/ (*:getY armor-button-size) 2.0)))))
 
 
 ;;; (compute-absorb-armor-button-size screen::Screen)
@@ -778,10 +820,30 @@
                (compute-energy-armor-button-origin screen)
                (compute-energy-armor-button-size screen)))
 
-;;; ---------------------------------------------------------------------
-;;; the augment palette
-;;; ---------------------------------------------------------------------
 
+
+
+;;; =====================================================================
+;;; the augment palette
+;;; =====================================================================
+
+;;; CLASS AugmentsButtonGroup
+;;; ---------------------------------------------------------------------
+;;; a RadioButtonGroup subclass used to present augments options to
+;;; players
+
+(defclass AugmentsButtonGroup (RadioButtonGroup)
+  (slots:
+   (app-state init-form: #!null getter: getAppState setter: setAppState))
+  (methods:
+   ((*init* screen::Screen uid::String)
+    (invoke-special RadioButtonGroup (this) '*init* screen uid))
+   ((onSelect index::int value::Button)
+    (let ((button-id (*:getUID value))
+          (state::CharacterCreatorAppState app-state))
+      (cond
+       ((equal? "AbsorbAugmentsButton" button-id)(set-current-augment state 'force-augment))
+       (else (format #t "~%Unknown augment selected")))))))
 
 ;;; (compute-augment-palette-origin screen::Screen)
 ;;; ---------------------------------------------------------------------
@@ -790,13 +852,10 @@
 
 (define (compute-augment-palette-origin screen::Screen)
   (let ((faction-palette-origin (compute-faction-palette-origin screen))
-        (faction-palette-size (compute-faction-palette-size screen)))
-    (Vector2f (+ (*:getX faction-palette-origin)
-                 (*:getX faction-palette-size)
-                 8)
-              (+ (*:getY faction-palette-origin)
-                 (/ (*:getY faction-palette-size)
-                    4.0)))))
+        (faction-palette-size (compute-faction-palette-size screen))
+        (screen-width (*:getWidth screen)))
+    (Vector2f (- screen-width (+ 616 8))
+              (*:getY faction-palette-origin))))
 
 
 ;;; (compute-augment-palette-size screen::Screen)
@@ -808,10 +867,8 @@
   (let ((faction-palette-origin (compute-faction-palette-origin screen))
         (faction-palette-size (compute-faction-palette-size screen))
         (screen-width (*:getWidth screen)))
-    (Vector2f (- screen-width
-                 (+ (*:getX faction-palette-size) 24))
-              (/ (* 3.0 (*:getY faction-palette-size))
-                 4.0))))
+    (Vector2f 616
+              (*:getY faction-palette-size))))
 
 
 ;;; (make-augment-palette screen::Screen)
@@ -824,9 +881,142 @@
           (compute-augment-palette-size screen)))
 
 
+;;; (compute-force-augment-button-origin screen::Screen)
 ;;; ---------------------------------------------------------------------
+;;; computes and returns a suitable origin for the absorb armor
+;;; button
+
+
+(define (compute-force-augment-button-origin screen::Screen)
+  (let ((augment-palette-size (compute-augment-palette-size screen))
+        (force-augment-button-size (compute-force-augment-button-size screen)))
+    (Vector2f 16
+              (- (/ (*:getY augment-palette-size) 2.0)
+                 (/ (*:getY force-augment-button-size) 2.0)))))
+
+
+;;; (compute-force-augment-button-size screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; computes and returns a suitable size for the absorb armor
+;;; button
+
+
+(define (compute-force-augment-button-size screen::Screen)
+  (Vector2f 128 96))
+
+;;; (make-force-augment-button screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; returns a newly-constructed absorb armor button
+
+(define (make-force-augment-button screen::Screen)
+  (RadioButton screen "ForceAugmentButton"
+               (compute-force-augment-button-origin screen)
+               (compute-force-augment-button-size screen)))
+
+
+;;; (compute-optics-augment-button-origin screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; computes and returns a suitable origin for the absorb armor
+;;; button
+
+
+(define (compute-optics-augment-button-origin screen::Screen)
+  (let ((augments-palette-size (compute-augment-palette-size screen))
+        (optics-augment-button-size (compute-optics-augment-button-size screen)))
+    (Vector2f 176
+              (- (/ (*:getY augments-palette-size) 2.0)
+                 (/ (*:getY optics-augment-button-size) 2.0)))))
+
+
+;;; (compute-optics-augment-button-size screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; computes and returns a suitable size for the absorb armor
+;;; button
+
+
+(define (compute-optics-augment-button-size screen::Screen)
+  (Vector2f 128 96))
+
+;;; (make-optics-augment-button screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; returns a newly-constructed absorb armor button
+
+(define (make-optics-augment-button screen::Screen)
+  (RadioButton screen "OpticsAugmentButton"
+               (compute-optics-augment-button-origin screen)
+               (compute-optics-augment-button-size screen)))
+
+
+;;; (compute-portals-augment-button-origin screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; computes and returns a suitable origin for the absorb armor
+;;; button
+
+
+(define (compute-portals-augment-button-origin screen::Screen)
+  (let ((augments-palette-size (compute-augment-palette-size screen))
+        (portals-augment-button-size (compute-portals-augment-button-size screen)))
+    (Vector2f 320
+              (- (/ (*:getY augments-palette-size) 2.0)
+                 (/ (*:getY portals-augment-button-size) 2.0)))))
+
+
+;;; (compute-portals-augment-button-size screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; computes and returns a suitable size for the absorb armor
+;;; button
+
+
+(define (compute-portals-augment-button-size screen::Screen)
+  (Vector2f 128 96))
+
+;;; (make-portals-augment-button screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; returns a newly-constructed absorb armor button
+
+(define (make-portals-augment-button screen::Screen)
+  (RadioButton screen "PortalsAugmentButton"
+               (compute-portals-augment-button-origin screen)
+               (compute-portals-augment-button-size screen)))
+
+
+;;; (compute-turrets-augment-button-origin screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; computes and returns a suitable origin for the absorb armor
+;;; button
+
+
+(define (compute-turrets-augment-button-origin screen::Screen)
+  (let ((augments-palette-size (compute-augment-palette-size screen))
+        (turrets-augment-button-size (compute-turrets-augment-button-size screen)))
+    (Vector2f 464
+              (- (/ (*:getY augments-palette-size) 2.0)
+                 (/ (*:getY turrets-augment-button-size) 2.0)))))
+
+
+;;; (compute-turrets-augment-button-size screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; computes and returns a suitable size for the absorb armor
+;;; button
+
+
+(define (compute-turrets-augment-button-size screen::Screen)
+  (Vector2f 128 96))
+
+;;; (make-turrets-augment-button screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; returns a newly-constructed absorb armor button
+
+(define (make-turrets-augment-button screen::Screen)
+  (RadioButton screen "TurretsAugmentButton"
+               (compute-turrets-augment-button-origin screen)
+               (compute-turrets-augment-button-size screen)))
+
+
+
+;;; =====================================================================
 ;;; the character nameplate
-;;; ---------------------------------------------------------------------
+;;; =====================================================================
 
 ;;; (compute-character-nameplate-origin screen::Screen)
 ;;; ---------------------------------------------------------------------
@@ -862,10 +1052,11 @@
     (*:setTextAlign label Align:Center)
     label))
 
-;;; ---------------------------------------------------------------------
-;;; the AppState
-;;; ---------------------------------------------------------------------
 
+
+;;; =====================================================================
+;;; the AppState Class
+;;; =====================================================================
 
 ;;; CLASS CharacterCreatorAppState
 ;;; ---------------------------------------------------------------------
@@ -910,7 +1101,12 @@
            (impulse-weapon-button (make-impulse-weapon-button screen))
            (malware-weapon-button (make-malware-weapon-button screen))
            (bots-weapon-button (make-bots-weapon-button screen))
-           (augment-palette (make-augment-palette screen)))
+           (augments-palette (make-augment-palette screen))
+           (force-augment-button (make-force-augment-button screen))
+           (optics-augment-button (make-optics-augment-button screen))
+           (portals-augment-button (make-portals-augment-button screen))
+           (turrets-augment-button (make-turrets-augment-button screen))
+           (augments-group (AugmentsButtonGroup screen "AugmentsGroup")))
       ;; --------------------
       ;; init the faction buttons
       ;; --------------------
@@ -1071,8 +1267,48 @@
       ;; --------------------
       ;; augment palette
       ;; --------------------
-      (*:setWindowTitle augment-palette "Choose Augments:")
-      (*:addElement screen augment-palette)
+      (*:setWindowTitle augments-palette "Choose Augments:")
+      ;; force augment button
+      (*:setButtonIcon force-augment-button 128 128 "Interface/force-augment-icon128.png")
+      (*:setButtonPressedInfo force-augment-button "Interface/force-augment-icon128.png"
+                              (ColorRGBA 1.0 1.0 0.0 1.0))
+      (*:setText force-augment-button "Force Fields")
+      (*:setTextAlign force-augment-button align:Center)
+      (*:setTextVAlign force-augment-button valign:Bottom)
+      (*:setFontSize force-augment-button 20)
+      (*:addButton augments-group force-augment-button)
+      (*:addChild augments-palette force-augment-button)
+      ;; optics augment button
+      (*:setButtonIcon optics-augment-button 128 128 "Interface/optics-augment-icon128.png")
+      (*:setButtonPressedInfo optics-augment-button "Interface/optics-augment-icon128.png"
+                              (ColorRGBA 0.0 1.0 0.0 1.0))
+      (*:setText optics-augment-button "Optics")
+      (*:setTextAlign optics-augment-button align:Center)
+      (*:setTextVAlign optics-augment-button valign:Bottom)
+      (*:setFontSize optics-augment-button 20)
+      (*:addButton augments-group optics-augment-button)
+      (*:addChild augments-palette optics-augment-button)
+      ;; portals augment button
+      (*:setButtonIcon portals-augment-button 128 128 "Interface/portals-augment-icon128.png")
+      (*:setButtonPressedInfo portals-augment-button "Interface/portals-augment-icon128.png"
+                              (ColorRGBA 1.0 0.5 0.0 1.0))
+      (*:setText portals-augment-button "Portals")
+      (*:setTextAlign portals-augment-button align:Center)
+      (*:setTextVAlign portals-augment-button valign:Bottom)
+      (*:setFontSize portals-augment-button 20)
+      (*:addButton augments-group portals-augment-button)
+      (*:addChild augments-palette portals-augment-button)
+      ;; turrets augment button
+      (*:setButtonIcon turrets-augment-button 128 128 "Interface/turrets-augment-icon128.png")
+      (*:setButtonPressedInfo turrets-augment-button "Interface/turrets-augment-icon128.png"
+                              (ColorRGBA 0.0 6.0 1.0 1.0))
+      (*:setText turrets-augment-button "Bots")
+      (*:setTextAlign turrets-augment-button align:Center)
+      (*:setTextVAlign turrets-augment-button valign:Bottom)
+      (*:setFontSize turrets-augment-button 20)
+      (*:addButton augments-group turrets-augment-button)
+      (*:addChild augments-palette turrets-augment-button)
+      (*:addElement screen augments-palette)
       ;; --------------------
       ;; add the gui to the scene
       ;; --------------------
@@ -1131,3 +1367,12 @@
 
 (define (set-current-weapon state::CharacterCreatorAppState weapon)
   (format #t "~%chose weapon: ~S" weapon))
+
+
+;;; (set-current-augment state::CharacterCreatorAppState augment)
+;;; ---------------------------------------------------------------------
+;;; updates the currently-selected player augment in the character
+;;; creator in response to a user selection
+
+(define (set-current-augment state::CharacterCreatorAppState augment)
+  (format #t "~%chose augment: ~S" augment))
