@@ -461,7 +461,7 @@
     (invoke-special RadioButtonGroup (this) '*init* screen uid))
    ((onSelect index::int value::Button)
     (let ((button-id (*:getUID value))
-          (state::CharacterCreatorAppState (get-app-state (this))))
+          (state::CharacterCreatorAppState app-state))
       (cond
        ((equal? "AbsorbArmorButton" button-id)(set-current-armor state 'absorb-armor))
        (else (format #t "~%Unknown armor selected")))))))
@@ -531,6 +531,38 @@
                (compute-absorb-armor-button-origin screen)
                (compute-absorb-armor-button-size screen)))
 
+
+;;; (compute-regen-armor-button-origin screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; computes and returns a suitable origin for the absorb armor
+;;; button
+
+
+(define (compute-regen-armor-button-origin screen::Screen)
+  (let ((armor-palette-size (compute-armor-palette-size screen))
+        (armor-button-size (compute-regen-armor-button-size screen)))
+    (Vector2f (- (/ (*:getX armor-palette-size) 2.0)
+                 (/ (*:getX armor-button-size) 2.0))
+              232)))
+
+
+;;; (compute-regen-armor-button-size screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; computes and returns a suitable size for the absorb armor
+;;; button
+
+
+(define (compute-regen-armor-button-size screen::Screen)
+  (Vector2f 128 96))
+
+;;; (make-regen-armor-button screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; returns a newly-constructed absorb armor button
+
+(define (make-regen-armor-button screen::Screen)
+  (RadioButton screen "RegenArmorButton"
+               (compute-regen-armor-button-origin screen)
+               (compute-regen-armor-button-size screen)))
 
 ;;; ---------------------------------------------------------------------
 ;;; the augment palette
@@ -655,6 +687,7 @@
            (armor-palette (make-armor-palette screen))
            (armor-group (ArmorButtonGroup screen "ArmorGroup"))
            (absorb-armor-button (make-absorb-armor-button screen))
+           (regen-armor-button (make-regen-armor-button screen))
            (weapons-palette (make-weapons-palette screen))
            (augment-palette (make-augment-palette screen)))
       ;; --------------------
@@ -725,8 +758,9 @@
       ;; armor palette
       ;; --------------------
       (*:setWindowTitle armor-palette "Choose Armor:")
+      ;; absorb armor button
       (*:setButtonIcon absorb-armor-button 128 128 "Interface/absorb-armor-icon128.png")
-      (*:setButtonPressedInfo caretaker-button "Interface/absorb-armor-icon128.png"
+      (*:setButtonPressedInfo absorb-armor-button "Interface/absorb-armor-icon128.png"
                               (ColorRGBA 1.0 1.0 0.0 1.0))
       (*:setText absorb-armor-button "Absorb")
       (*:setTextAlign absorb-armor-button align:Center)
@@ -734,6 +768,17 @@
       (*:setFontSize absorb-armor-button 20)
       (*:addButton armor-group absorb-armor-button)
       (*:addChild armor-palette absorb-armor-button)
+      ;; regen armor button
+      (*:setButtonIcon regen-armor-button 128 128 "Interface/regen-armor-icon128.png")
+      (*:setButtonPressedInfo regen-armor-button "Interface/absorb-armor-icon128.png"
+                              (ColorRGBA 0.0 1.0 0.0 1.0))
+      (*:setText regen-armor-button "Regenerate")
+      (*:setTextAlign regen-armor-button align:Center)
+      (*:setTextVAlign regen-armor-button valign:Bottom)
+      (*:setFontSize regen-armor-button 20)
+      (*:addButton armor-group regen-armor-button)
+      (*:addChild armor-palette regen-armor-button)
+      ;; add palette to screen
       (*:addElement screen armor-palette)
       ;; --------------------
       ;; weapons palette
