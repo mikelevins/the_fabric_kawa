@@ -402,6 +402,23 @@
 ;;; the weapons palette
 ;;; ---------------------------------------------------------------------
 
+;;; CLASS ArmoButtonGroup
+;;; ---------------------------------------------------------------------
+;;; a RadioButtonGroup subclass used to present weapons options to
+;;; players
+
+(defclass WeaponsButtonGroup (RadioButtonGroup)
+  (slots:
+   (app-state init-form: #!null getter: getAppState setter: setAppState))
+  (methods:
+   ((*init* screen::Screen uid::String)
+    (invoke-special RadioButtonGroup (this) '*init* screen uid))
+   ((onSelect index::int value::Button)
+    (let ((button-id (*:getUID value))
+          (state::CharacterCreatorAppState app-state))
+      (cond
+       ((equal? "CannonWeaponsButton" button-id)(set-current-weapon state 'cannon-weapons))
+       (else (format #t "~%Unknown weapon selected")))))))
 
 ;;; (compute-weapons-palette-origin screen::Screen)
 ;;; ---------------------------------------------------------------------
@@ -443,12 +460,143 @@
           (compute-weapons-palette-size screen)))
 
 
+;;; (compute-cannon-weapon-button-origin screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; computes and returns a suitable origin for the absorb armor
+;;; button
+
+
+(define (compute-cannon-weapon-button-origin screen::Screen)
+  (let ((armor-palette-size (compute-armor-palette-size screen))
+        (armor-button-size (compute-cannon-weapon-button-size screen)))
+    (Vector2f (- (/ (*:getX armor-palette-size) 2.0)
+                 (/ (*:getX armor-button-size) 2.0))
+              64)))
+
+
+;;; (compute-cannon-weapon-button-size screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; computes and returns a suitable size for the absorb armor
+;;; button
+
+
+(define (compute-cannon-weapon-button-size screen::Screen)
+  (Vector2f 128 96))
+
+;;; (make-cannon-weapon-button screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; returns a newly-constructed absorb armor button
+
+(define (make-cannon-weapon-button screen::Screen)
+  (RadioButton screen "CannonWeaponButton"
+               (compute-cannon-weapon-button-origin screen)
+               (compute-cannon-weapon-button-size screen)))
+
+
+;;; (compute-impulse-weapon-button-origin screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; computes and returns a suitable origin for the absorb armor
+;;; button
+
+
+(define (compute-impulse-weapon-button-origin screen::Screen)
+  (let ((armor-palette-size (compute-armor-palette-size screen))
+        (armor-button-size (compute-impulse-weapon-button-size screen)))
+    (Vector2f (- (/ (*:getX armor-palette-size) 2.0)
+                 (/ (*:getX armor-button-size) 2.0))
+              232)))
+
+
+;;; (compute-impulse-weapon-button-size screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; computes and returns a suitable size for the absorb armor
+;;; button
+
+
+(define (compute-impulse-weapon-button-size screen::Screen)
+  (Vector2f 128 96))
+
+;;; (make-impulse-weapon-button screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; returns a newly-constructed absorb armor button
+
+(define (make-impulse-weapon-button screen::Screen)
+  (RadioButton screen "ImpulseWeaponButton"
+               (compute-impulse-weapon-button-origin screen)
+               (compute-impulse-weapon-button-size screen)))
+
+
+;;; (compute-malware-weapon-button-origin screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; computes and returns a suitable origin for the absorb armor
+;;; button
+
+
+(define (compute-malware-weapon-button-origin screen::Screen)
+  (let ((armor-palette-size (compute-armor-palette-size screen))
+        (armor-button-size (compute-malware-weapon-button-size screen)))
+    (Vector2f (- (/ (*:getX armor-palette-size) 2.0)
+                 (/ (*:getX armor-button-size) 2.0))
+              384)))
+
+
+;;; (compute-malware-weapon-button-size screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; computes and returns a suitable size for the absorb armor
+;;; button
+
+
+(define (compute-malware-weapon-button-size screen::Screen)
+  (Vector2f 128 96))
+
+;;; (make-malware-weapon-button screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; returns a newly-constructed absorb armor button
+
+(define (make-malware-weapon-button screen::Screen)
+  (RadioButton screen "MalwareWeaponButton"
+               (compute-malware-weapon-button-origin screen)
+               (compute-malware-weapon-button-size screen)))
+
+
+;;; (compute-bots-weapon-button-origin screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; computes and returns a suitable origin for the absorb armor
+;;; button
+
+
+(define (compute-bots-weapon-button-origin screen::Screen)
+  (let ((armor-palette-size (compute-armor-palette-size screen))
+        (armor-button-size (compute-bots-weapon-button-size screen)))
+    (Vector2f (- (/ (*:getX armor-palette-size) 2.0)
+                 (/ (*:getX armor-button-size) 2.0))
+              536)))
+
+
+;;; (compute-bots-weapon-button-size screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; computes and returns a suitable size for the absorb armor
+;;; button
+
+
+(define (compute-bots-weapon-button-size screen::Screen)
+  (Vector2f 128 96))
+
+;;; (make-bots-weapon-button screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; returns a newly-constructed absorb armor button
+
+(define (make-bots-weapon-button screen::Screen)
+  (RadioButton screen "BotsWeaponButton"
+               (compute-bots-weapon-button-origin screen)
+               (compute-bots-weapon-button-size screen)))
+
 ;;; ---------------------------------------------------------------------
 ;;; the armor palette
 ;;; ---------------------------------------------------------------------
 
 
-;;; CLASS ArmoButtonGroup
+;;; CLASS ArmorButtonGroup
 ;;; ---------------------------------------------------------------------
 ;;; a RadioButtonGroup subclass used to present armor options to
 ;;; players
@@ -757,6 +905,11 @@
            (power-armor-button (make-power-armor-button screen))
            (energy-armor-button (make-energy-armor-button screen))
            (weapons-palette (make-weapons-palette screen))
+           (weapons-group (WeaponsButtonGroup screen "WeaponsGroup"))
+           (cannon-weapon-button (make-cannon-weapon-button screen))
+           (impulse-weapon-button (make-impulse-weapon-button screen))
+           (malware-weapon-button (make-malware-weapon-button screen))
+           (bots-weapon-button (make-bots-weapon-button screen))
            (augment-palette (make-augment-palette screen)))
       ;; --------------------
       ;; init the faction buttons
@@ -874,6 +1027,46 @@
       ;; weapons palette
       ;; --------------------
       (*:setWindowTitle weapons-palette "Choose Weapons:")
+      ;; cannon weapon button
+      (*:setButtonIcon cannon-weapon-button 128 128 "Interface/cannon-weapon-icon128.png")
+      (*:setButtonPressedInfo cannon-weapon-button "Interface/cannon-weapon-icon128.png"
+                              (ColorRGBA 1.0 1.0 0.0 1.0))
+      (*:setText cannon-weapon-button "Cannon")
+      (*:setTextAlign cannon-weapon-button align:Center)
+      (*:setTextVAlign cannon-weapon-button valign:Bottom)
+      (*:setFontSize cannon-weapon-button 20)
+      (*:addButton weapons-group cannon-weapon-button)
+      (*:addChild weapons-palette cannon-weapon-button)
+      ;; impulse weapon button
+      (*:setButtonIcon impulse-weapon-button 128 128 "Interface/impulse-weapon-icon128.png")
+      (*:setButtonPressedInfo impulse-weapon-button "Interface/impulse-weapon-icon128.png"
+                              (ColorRGBA 0.0 1.0 0.0 1.0))
+      (*:setText impulse-weapon-button "Impulse")
+      (*:setTextAlign impulse-weapon-button align:Center)
+      (*:setTextVAlign impulse-weapon-button valign:Bottom)
+      (*:setFontSize impulse-weapon-button 20)
+      (*:addButton weapons-group impulse-weapon-button)
+      (*:addChild weapons-palette impulse-weapon-button)
+      ;; malware weapon button
+      (*:setButtonIcon malware-weapon-button 128 128 "Interface/malware-weapon-icon128.png")
+      (*:setButtonPressedInfo malware-weapon-button "Interface/malware-weapon-icon128.png"
+                              (ColorRGBA 1.0 0.5 0.0 1.0))
+      (*:setText malware-weapon-button "Malware")
+      (*:setTextAlign malware-weapon-button align:Center)
+      (*:setTextVAlign malware-weapon-button valign:Bottom)
+      (*:setFontSize malware-weapon-button 20)
+      (*:addButton weapons-group malware-weapon-button)
+      (*:addChild weapons-palette malware-weapon-button)
+      ;; bots weapon button
+      (*:setButtonIcon bots-weapon-button 128 128 "Interface/bots-weapon-icon128.png")
+      (*:setButtonPressedInfo bots-weapon-button "Interface/bots-weapon-icon128.png"
+                              (ColorRGBA 0.0 6.0 1.0 1.0))
+      (*:setText bots-weapon-button "Bots")
+      (*:setTextAlign bots-weapon-button align:Center)
+      (*:setTextVAlign bots-weapon-button valign:Bottom)
+      (*:setFontSize bots-weapon-button 20)
+      (*:addButton weapons-group bots-weapon-button)
+      (*:addChild weapons-palette bots-weapon-button)
       (*:addElement screen weapons-palette)
       ;; --------------------
       ;; augment palette
@@ -929,3 +1122,12 @@
 
 (define (set-current-armor state::CharacterCreatorAppState armor)
   (format #t "~%chose armor: ~S" armor))
+
+
+;;; (set-current-weapon state::CharacterCreatorAppState weapon)
+;;; ---------------------------------------------------------------------
+;;; updates the currently-selected player weapon in the character
+;;; creator in response to a user selection
+
+(define (set-current-weapon state::CharacterCreatorAppState weapon)
+  (format #t "~%chose weapon: ~S" weapon))
