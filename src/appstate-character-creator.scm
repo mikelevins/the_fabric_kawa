@@ -448,6 +448,24 @@
 ;;; ---------------------------------------------------------------------
 
 
+;;; CLASS ArmoButtonGroup
+;;; ---------------------------------------------------------------------
+;;; a RadioButtonGroup subclass used to present armor options to
+;;; players
+
+(defclass ArmorButtonGroup (RadioButtonGroup)
+  (slots:
+   (app-state init-form: #!null getter: getAppState setter: setAppState))
+  (methods:
+   ((*init* screen::Screen uid::String)
+    (invoke-special RadioButtonGroup (this) '*init* screen uid))
+   ((onSelect index::int value::Button)
+    (let ((button-id (*:getUID value))
+          (state::CharacterCreatorAppState (get-app-state (this))))
+      (cond
+       ((equal? "AbsorbArmorButton" button-id)(set-current-armor state 'absorb-armor))
+       (else (format #t "~%Unknown armor selected")))))))
+
 ;;; (compute-armor-palette-origin screen::Screen)
 ;;; ---------------------------------------------------------------------
 ;;; computes and returns a suitable origin for the armor palette, taking
@@ -480,6 +498,38 @@
   (Window screen "ArmorPalette"
           (compute-armor-palette-origin screen)
           (compute-armor-palette-size screen)))
+
+;;; (compute-absorb-armor-button-origin screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; computes and returns a suitable origin for the absorb armor
+;;; button
+
+
+(define (compute-absorb-armor-button-origin screen::Screen)
+  (let ((armor-palette-size (compute-armor-palette-size screen))
+        (armor-button-size (compute-absorb-armor-button-size screen)))
+    (Vector2f (- (/ (*:getX armor-palette-size) 2.0)
+                 (/ (*:getX armor-button-size) 2.0))
+              64)))
+
+
+;;; (compute-absorb-armor-button-size screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; computes and returns a suitable size for the absorb armor
+;;; button
+
+
+(define (compute-absorb-armor-button-size screen::Screen)
+  (Vector2f 128 96))
+
+;;; (make-absorb-armor-button screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; returns a newly-constructed absorb armor button
+
+(define (make-absorb-armor-button screen::Screen)
+  (RadioButton screen "AbsorbArmorButton"
+               (compute-absorb-armor-button-origin screen)
+               (compute-absorb-armor-button-size screen)))
 
 
 ;;; ---------------------------------------------------------------------
@@ -603,6 +653,8 @@
            (char-cube (get-property character 'cube: default: #f))
            (name-palette::Window (make-name-palette screen))
            (armor-palette (make-armor-palette screen))
+           (armor-group (ArmorButtonGroup screen "ArmorGroup"))
+           (absorb-armor-button (make-absorb-armor-button screen))
            (weapons-palette (make-weapons-palette screen))
            (augment-palette (make-augment-palette screen)))
       ;; --------------------
@@ -633,6 +685,7 @@
       ;; faction palette
       ;; --------------------
       (*:setWindowTitle faction-palette "Choose a Faction:")
+      ;; caretaker button
       (*:setButtonIcon caretaker-button 128 128 "Interface/caretakers-icon128.png")
       (*:setButtonPressedInfo caretaker-button "Interface/caretakers-icon-lit128.png"
                               (ColorRGBA 0.0 1.0 0.0 1.0))
@@ -641,6 +694,7 @@
       (*:setTextVAlign caretaker-button valign:Bottom)
       (*:setFontSize caretaker-button 20)
       (*:addButton faction-group caretaker-button)
+      ;; abjurer button
       (*:setButtonIcon abjurer-button 128 128 "Interface/abjurers-icon128.png")
       (*:setButtonPressedInfo abjurer-button "Interface/abjurers-icon-lit128.png"
                               (ColorRGBA 1.0 0.0 0.0 1.0))
@@ -649,6 +703,7 @@
       (*:setTextVAlign abjurer-button valign:Bottom)
       (*:setFontSize abjurer-button 20)
       (*:addButton faction-group abjurer-button)
+      ;; rogue button
       (*:setButtonIcon rogue-button 128 128 "Interface/rogues-icon128.png")
       (*:setButtonPressedInfo rogue-button "Interface/rogues-icon-lit128.png"
                               (ColorRGBA 0.0 0.75 1.0 1.0))
@@ -670,6 +725,15 @@
       ;; armor palette
       ;; --------------------
       (*:setWindowTitle armor-palette "Choose Armor:")
+      (*:setButtonIcon absorb-armor-button 128 128 "Interface/absorb-armor-icon128.png")
+      (*:setButtonPressedInfo caretaker-button "Interface/absorb-armor-icon128.png"
+                              (ColorRGBA 1.0 1.0 0.0 1.0))
+      (*:setText absorb-armor-button "Absorb")
+      (*:setTextAlign absorb-armor-button align:Center)
+      (*:setTextVAlign absorb-armor-button valign:Bottom)
+      (*:setFontSize absorb-armor-button 20)
+      (*:addButton armor-group absorb-armor-button)
+      (*:addChild armor-palette absorb-armor-button)
       (*:addElement screen armor-palette)
       ;; --------------------
       ;; weapons palette
@@ -721,3 +785,12 @@
       (begin (*:setCurrentFaction state faction)
              (update-state-for-faction state faction))
       (error "set-current-faction: unrecognized faction: " faction)))
+
+
+;;; (set-current-armor state::CharacterCreatorAppState armor)
+;;; ---------------------------------------------------------------------
+;;; updates the currently-selected player armor in the character
+;;; creator in response to a user selection
+
+(define (set-current-armor state::CharacterCreatorAppState armor)
+  (format #t "~%chose armor: ~S" armor))
