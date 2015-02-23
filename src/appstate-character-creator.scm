@@ -702,7 +702,9 @@
       ;; add the character model
       ;; --------------------
       (if char-cube
-          (begin (*:attachChild root-node char-cube)
+          (begin ()
+                 (*:attachChild root-node char-cube)
+                 (*:setLocalTranslation char-cube 0.0 0.0 -4.0)
                  (*:setCurrentCharacter (this) character)))
       ;; --------------------
       ;; add the faction-nameplate
