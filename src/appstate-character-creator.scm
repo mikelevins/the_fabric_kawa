@@ -70,12 +70,14 @@
 ;;; characters
 
 (defclass NameMenu (SelectBox)
-  (slots:)
+  (slots:
+   (app-state::CharacterCreatorAppState init-form: #!null getter: getAppState setter: setAppState))
   (methods:
-   ((*init* screen::Screen uid::String position::Vector2f size::Vector2f)
-    (invoke-special SelectBox (this) '*init* screen uid position size))
+   ((*init* state::CharacterCreatorAppState screen::Screen uid::String position::Vector2f size::Vector2f)
+    (invoke-special SelectBox (this) '*init* screen uid position size)
+    (set! app-state state))
    ((onChange index::int value::Object)
-    (format #t "~%selected name: '~A'~%" value))))
+    (notify-name-selection-changed app-state index value))))
 
 ;;; CLASS FactionButtonGroup
 ;;; ---------------------------------------------------------------------
@@ -417,7 +419,7 @@
 ;;; ---------------------------------------------------------------------
 ;;; returns a newly-constructed and -populated name palette
 
-(define (make-name-palette screen::Screen)
+(define (make-name-palette app-state::CharacterCreatorAppState screen::Screen)
   (let ((size (compute-name-palette-size screen)))
     (receive (lefts tops widths heights) (compute-name-menu-bounds size)
       (let* ((origin (compute-name-palette-origin screen))
@@ -426,7 +428,8 @@
              (%make-menu (lambda (i)
                            (let* ((dom (list-ref (name-domains) i))
                                   (dom-menu::NameMenu
-                                   (NameMenu screen (format #f "Domain~dMenu" i)
+                                   (NameMenu app-state
+                                             screen (format #f "Domain~dMenu" i)
                                              (Vector2f (list-ref lefts i)(list-ref tops i))
                                              (Vector2f (list-ref widths i)(list-ref heights i))))
                                   (%add-item (lambda (nm)(*:addListItem dom-menu nm nm))))
@@ -1086,7 +1089,7 @@
            (rogue-button (make-rogue-button screen))
            (character (make-player-character))
            (char-cube (get-property character 'cube: default: #f))
-           (name-palette::Window (make-name-palette screen))
+           (name-palette::Window (make-name-palette (this) screen))
            (armor-palette (make-armor-palette screen))
            (armor-group (ArmorButtonGroup screen "ArmorGroup"))
            (absorb-armor-button (make-absorb-armor-button screen))
@@ -1385,3 +1388,7 @@
 
 (define (set-current-augment state::CharacterCreatorAppState augment)
   (format #t "~%chose augment: ~S" augment))
+
+(define (notify-name-selection-changed app-state index value)
+  (format #t "~%name selection changed; state: ~S, index: ~S, value: ~S"
+          app-state index value))
