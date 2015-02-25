@@ -14,9 +14,9 @@
  fabric-name-bit-patterns
  fabric-name-bytes
  fabric-name-bytestrings
- fabric-name-part->byte
  fabric-name-strings
- gen-name)
+ gen-name
+ name-part->domain-and-index)
 
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
@@ -91,17 +91,21 @@
                                 (equal? p ""))))
             parts)))
 
-(define (fabric-name-part->byte part::String)
-  (if (string=? part "")
-      0
-      (let loop ((doms (name-domains)))
-        (if (null? doms)
-            #f
-            (let* ((domain (car doms))
-                   (pos (position-if (lambda (nm)(string=? part nm))
-                                     domain)))
-              (or pos (loop (cdr doms))))))))
+(define (name-part->domain-index domain part)
+  (position-if (lambda (it)(equal? part it))
+               domain))
 
+(define (name-part->domain-and-index part)
+  (let* ((domains (name-domains))
+         (domain-count (length domains)))
+    (let loop ((i 0))
+      (if (< i domain-count)
+          (let* ((domain (list-ref domains i))
+                 (pos (name-part->domain-index domain part)))
+            (if pos
+                (values i pos)
+                (loop (+ 1 i))))
+          (values #f #f)))))
 
 ;;; (gen-name)
 ;;; ---------------------------------------------------------------------
