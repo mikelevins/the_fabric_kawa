@@ -56,7 +56,7 @@
 (define (integer->bytes num::gnu.math.IntNum)
   (let ((bytes num:words))
     (if (eq? bytes #!null)
-        (let ((val num:ival))
+        (let ((val num))
           (list (bitwise-and (bitwise-arithmetic-shift-right val (* 0 8)) #b11111111)
                 (bitwise-and (bitwise-arithmetic-shift-right val (* 1 8)) #b11111111)
                 (bitwise-and (bitwise-arithmetic-shift-right val (* 2 8)) #b11111111)

@@ -67,9 +67,9 @@
     "Eigen" "Einstein" "Elkins" "Engelbart" "Epictetus" "Euler" "Eötvös" "Fahlman" "Fahrenheit" "Faraday"
     "Feigenbaum" "Feinberg" "Fermi" "Feynman" "Field" "Fine" "Finkel" "Foucault" "Fourier" "Franklin" "Franz"
     "Freud" "Frege" "Fresnel" "Gabbay" "Gauss" "Geiger" "Gelernter" "Gibbons" "Goddard" "Goldberg"
-    "González" "Gosling" "Griswold" "Guha" "Gödel" "Hall" "Hamilton" "Harrington" "Hawking" "Hegel"
+    "González" "Gosling" "Griswold" "Gödel" "Hall" "Hamilton" "Harrington" "Hawking" "Hegel"
     "Heisenberg" "Helmholtz" "Hertz" "Hewitt" "Higgs" "Hilbert" "Hindley" "Hoare" "Hofstadter" "Holzmann"
-    "Hooke" "Hopper" "Hoyle" "Hubble" "Huffman" "Hume" "Huxley" "Huygens" "Ingalls" "Iverson" "Jacobson"
+    "Hooke" "Hopper" "Hoyle" "Hubble" "Huffman" "Hume" "Huxley" "Huygens" "Ingalls" "Isono" "Iverson" "Jacobson"
     "Josephson" "Jung" "Kay" "Kepler" "Kernighan" "Kiczales" "Kleene" "Knuth" "Kolmogorov" "Lagrange"
     "Lambert" "Lavrentyev" "Lawrence" "Leibniz" "Liskov" "Lomonosov" "Lorentz" "Mach" "Marconi" "Marshall"
     "Maxwell" "McCarthy" "Mendenhall" "Michelson" "Milner" "Minsky" "Moler" "Montague" "Montgomery"
@@ -125,7 +125,7 @@
     "Columba" "Corvus" "Cybele" "Cygnus" "Cynosure" "Delphinus" "Deneb" "Dione" "Draco" "Earth" "Electra"
     "Enceladus" "Epimetheus" "Eridanus" "Eris" "Eugenia" "Eunomia" "Euphrosyne" "Europa" "Fomalhaut" "Fornax"
     "Fortuna" "Ganymede" "Gemini" "Giedi" "Haumea" "Hebe" "Hektor" "Hercules" "Hermione" "Hydra" "Hygeia"
-    "Hyperion" "Iapetus" "Io" "Istanbul" "Ixion" "Janus" "Juno" "Jupiter" "Lacerta" "Lachesis" "Leo" "Libra"
+    "Hyperion" "Iapetus" "Io" "Istanbul" "Ixion" "Janus" "Juno" "Jupiter" "Keryx" "Lachesis" "Leo" "Libra"
     "Luna" "Lupus" "Lyra" "Maia" "Makemake" "Markab" "Mars" "Metis" "Mimas" "Miranda" "Mizar" "Monoceros"
     "Nemesis" "Neptune" "Oberon" "Octans" "Ophiucus" "Orcus" "Orion" "Pallas" "Pegasus" "Perseus" "Phoebe"
     "Phoenix" "Pictor" "Pisces" "Pleione" "Pluto" "Polaris" "Pollux" "Procyon" "Prometheus" "Propus"
@@ -231,13 +231,15 @@
     "Ultramarine" "Umber" "Urobilin" "Vanilla" "Verdigris" "Vermilion" "Veronica" "Viridian" "Violet" "Wenge"
     "Wheat" "White" "Wine" "Wintergreen" "Wisteria" "Yellow")))
 
-(define domain1 (make-parameter (map number->string (domain-indexes))))
+(define domain1 (make-parameter (cons ""
+                                      (map number->string
+                                           (cdr (domain-indexes))))))
 
 (define domain0
   (make-parameter
    (list
     "" "Adam" "Adlai" "Agatha" "Ahmed" "Alan" "Alastair" "Albert" "Alexander" "Alexis" "Alfred"
-    "Alison" "Alvin" "Amanda" "Amir" "Amos" "Anatoly" "Andrea" "Andreas" "Andrew" "Angela"
+    "Alison" "Alvin" "Amanda" "Amir" "Amos" "Anatoly" "Andrea" "Andrew" "Angela"
     "Angus" "Anton" "Antonio" "Arne" "Arnold" "Arthur" "Audrey" "Avery" "Barbara" "Barney"
     "Barton" "Benjamin" "Benson" "Bernard" "Bertrand" "Beverly" "Bjorne" "Blaine" "Blair" "Blake"
     "Bradley" "Brandon" "Brendan" "Brent" "Bret" "Brian" "Brooke" "Bruce" "Bruno" "Bryce"
@@ -249,8 +251,8 @@
     "Fletcher" "Florian" "Francisco" "Fred" "Fritz" "Gabriel" "Gail" "Gary" "Geoffrey" "George"
     "Giovanni" "Gordon" "Graham" "Gregor" "Heather" "Hector" "Horatio" "Howard" "Hubert" "Hugh"
     "Hunter" "Ilya" "Ira" "Isaac" "Izumi" "Janos" "Jared" "Jeremy" "Jerome" "Jesse"
-    "Jin" "Jiri" "Joel" "Jonathan" "Jose" "Klaus" "Knut" "Konrad" "Laurel" "Lee"
-    "Leigh" "Len" "Lester" "Lev" "Lex" "Lila" "Lindsay" "Lois" "Louis" "Louise"
+    "Jin" "Jiri" "Joel" "Jonathan" "Kenjiro" "Klaus" "Knut" "Koichi" "Konrad" "Laurel" "Lee"
+    "Leigh" "Len" "Lester" "Lev" "Lex" "Lila" "Lindsay" "Lois" "Louis" 
     "Luc" "Lucas" "Lucius" "Luis" "Luke" "Magnus" "Manuel" "Marco" "Marcus" "Marek"
     "Margot" "Maria" "Mario" "Marlena" "Marnie" "Martha" "Martin" "Marvin" "Mason" "Matthias"
     "Max" "Michael" "Miles" "Milo" "Miriam" "Mohammad" "Molly" "Morgan" "Moses" "Myron"
@@ -258,7 +260,7 @@
     "Noam" "Nora" "Oleg" "Oliver" "Omar" "Oscar" "Owen" "Pablo" "Pia" "Piet"
     "Pilar" "Prakash" "Ragnar" "Rainer" "Ram" "Ramon" "Ramsey" "Raphael" "Raul" "Ravi"
     "Ray" "Rex" "Rhys" "Roberto" "Robin" "Roland" "Roman" "Roxanne" "Rudolf" "Rupert"
-    "Ruth" "Sabrina" "Sally" "Samir" "Samuel" "Sandeep" "Sanjay" "Saul" "Sergio" "Seth"
+    "Ruth" "Sabrina" "Sally" "Samir" "Samuel" "Sandeep" "Sanjay" "Saul" "Sergio" "Seth" "Shiro"
     "Simon" "Skip" "Sofia" "Sriram" "Sunil" "Suresh" "Susan" "Takao" "Terence" "Timothy"
     "Tobias" "Valentin" "Valerie" "Victoria" "Vijay" "Vinod" "Vladimir" "Walter" "Wendy" "Wilhelm"
     "William" "Winifred" "Winston" "Wolfgang" "Woody")))

@@ -25,6 +25,7 @@
 (require "util-java.scm")
 (require "syntax-classes.scm")
 (require "data-names.scm")
+(require "model-namegen.scm")
 (require "view-player-character.scm")
 (require "client-main.scm")
 
@@ -1065,6 +1066,7 @@
 (defclass CharacterCreatorAppState (AbstractAppState)
   (slots:
    (current-character init-form: #f getter: getCurrentCharacter setter: setCurrentCharacter)
+   (character-name init-form: #f getter: getCharacterName setter: setCharacterName)
    (current-faction init-form: #f getter: getCurrentFaction setter: setCurrentFaction)
    (character-nameplate::TLabel init-form: #!null getter: getCharacterNameplate)
    (faction-nameplate::TLabel init-form: #!null getter: getFactionNameplate)
@@ -1073,6 +1075,7 @@
   (methods:
    ((initialize mgr::AppStateManager client::SimpleApplication)
     (*:setApp (this) client)
+    (set-current-fabric-name! (this) (blank-fabric-name))
     (let* ((screen (Screen client))
            (gui-node (*:getGuiNode client))
            (root-node (*:getRootNode (as SimpleApplication app)))
@@ -1389,6 +1392,14 @@
 (define (set-current-augment state::CharacterCreatorAppState augment)
   (format #t "~%chose augment: ~S" augment))
 
+(define (current-fabric-name app-state::CharacterCreatorAppState)
+  (*:getCharacterName app-state))
+
+(define (set-current-fabric-name! app-state new-name)
+  #f)
+
 (define (notify-name-selection-changed app-state index value)
-  (format #t "~%name selection changed; state: ~S, index: ~S, value: ~S"
-          app-state index value))
+  (receive (domain index)(name-part->domain-and-index value)
+    (let* ((current-name (current-fabric-name app-state))
+           (new-name (update-fabric-name current-name domain index)))
+      (set-current-fabric-name! app-state new-name))))

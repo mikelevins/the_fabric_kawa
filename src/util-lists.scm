@@ -19,6 +19,7 @@
  position-if
  put-key
  remove-duplicates
+ replace-element
  shuffle
  some?)
 
@@ -129,6 +130,19 @@
                     result)
               (loop (cdr items)
                     (cons next result)))))))
+
+;;; (replace-element ls index new-element)
+;;; ---------------------------------------------------------------------
+;;; returns a new list with the same elements as _ls_, except that
+;;; the element at _index_ has been replaced with _new-element_
+
+(define (replace-element ls index new-element)
+  (if (<= (length ls) index)
+      (error "Index out of range " index)
+      (let ((head (take ls index))
+            (tail (drop ls (+ 1 index))))
+        (append head
+                (cons new-element tail)))))
 
 ;;; (shuffle ls)
 ;;; ---------------------------------------------------------------------

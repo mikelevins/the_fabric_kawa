@@ -10,13 +10,16 @@
 ;;;; ***********************************************************************
 
 (module-export
+ blank-fabric-name
  FabricName
  fabric-name-bit-patterns
  fabric-name-bytes
  fabric-name-bytestrings
  fabric-name-strings
  gen-name
- name-part->domain-and-index)
+ name-part->domain-and-index
+ strings->fabric-name
+ update-fabric-name)
 
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
@@ -56,7 +59,11 @@
 ;;; Fabric name
 
 (define (fabric-name-bytes nm::FabricName)
-  (integer->bytes (*:getData nm)))
+  (let* ((data-bytes (integer->bytes (*:getData nm)))
+         (data-count (length data-bytes))
+         (result-bytes (list-fill 8 0)))
+    (append data-bytes
+            (drop result-bytes data-count))))
 
 
 ;;; (fabric-name-bytestrings nm)
@@ -83,13 +90,11 @@
 ;;; with empty strings omitted
 
 (define (fabric-name-strings nm::FabricName)
-  (let* ((bytes (integer->bytes (*:getData nm)))
+  (let* ((bytes (fabric-name-bytes nm))
          (parts (map (lambda (b dom)(list-ref dom b))
                      bytes
                      (name-domains))))
-    (filter (lambda (p)(not (or (equal? p 0)
-                                (equal? p ""))))
-            parts)))
+    parts))
 
 (define (name-part->domain-index domain part)
   (position-if (lambda (it)(equal? part it))
@@ -106,6 +111,23 @@
                 (values i pos)
                 (loop (+ 1 i))))
           (values #f #f)))))
+
+(define (blank-fabric-name)
+  (FabricName 0))
+
+(define (strings->fabric-name strings)
+  (let* ((bytes (map (lambda (domain part)(name-part->domain-index domain part))
+                     (name-domains)
+                     strings))
+         (data (apply bytes->integer bytes)))
+    (FabricName data)))
+
+(define (update-fabric-name current-name::FabricName domain-index part-index)
+  (let* ((old-strings (fabric-name-strings current-name))
+         (part-domain (list-ref (name-domains) domain-index))
+         (new-part (list-ref part-domain part-index))
+         (new-strings (replace-element old-strings domain-index new-part)))
+    (strings->fabric-name new-strings)))
 
 ;;; (gen-name)
 ;;; ---------------------------------------------------------------------
