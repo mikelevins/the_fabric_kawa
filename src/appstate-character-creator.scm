@@ -73,7 +73,8 @@
   (methods:
    ((*init* screen::Screen uid::String position::Vector2f size::Vector2f)
     (invoke-special SelectBox (this) '*init* screen uid position size))
-   ((onChange index::int value::Object) #!void)))
+   ((onChange index::int value::Object)
+    (format #t "~%selected name: '~A'~%" value))))
 
 ;;; CLASS FactionButtonGroup
 ;;; ---------------------------------------------------------------------
