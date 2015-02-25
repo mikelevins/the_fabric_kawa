@@ -43,6 +43,7 @@
 (import-as Integer java.lang.Integer)
 (import-as Label tonegod.gui.controls.text.Label)
 (import-as MouseButtonEvent com.jme3.input.event.MouseButtonEvent)
+(import-as Node com.jme3.scene.Node)
 (import-as Panel tonegod.gui.controls.windows.Panel)
 (import-as RadioButton tonegod.gui.controls.buttons.RadioButton)
 (import-as RadioButtonGroup tonegod.gui.controls.buttons.RadioButtonGroup)
@@ -127,6 +128,52 @@
                           (*:loadTexture asset-manager "Textures/tychoback.png")
                           (*:loadTexture asset-manager "Textures/tychotop.png")
                           (*:loadTexture asset-manager "Textures/tychobottom.png"))))
+
+
+
+
+;;; =====================================================================
+;;; the character nameplate
+;;; =====================================================================
+
+;;; (compute-character-nameplate-origin screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; computes and returns a suitable origin for the character nameplate,
+;;; taking into accoun the dimensions of the screen
+
+(define (compute-character-nameplate-origin screen::Screen)
+  (let ((weapons-palette-size (compute-weapons-palette-size screen))
+        (weapons-palette-origin (compute-weapons-palette-origin screen))
+        (nameplate-size (compute-character-nameplate-size screen)))
+    (Vector2f (+ 32 (*:getX weapons-palette-size))
+              (- (+ (*:getY weapons-palette-origin)
+                    (*:getY weapons-palette-size))
+                 (*:getY nameplate-size)
+                 8))))
+
+
+;;; (compute-character-nameplate-size screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; computes and returns a suitable size for the character nameplate,
+;;; taking into accoun the dimensions of the screen
+
+(define (compute-character-nameplate-size screen::Screen)
+  (let ((width (*:getWidth screen)))
+    (Vector2f 280 40)))
+
+
+;;; (make-character-nameplate screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; constructs and returns a new TLabel object for use as the character
+;;; nameplate
+
+(define (make-character-nameplate screen::Screen)
+  (let ((label (TLabel screen "CharacterNameplate"
+                       (compute-character-nameplate-origin screen)
+                       (compute-character-nameplate-size screen)))
+        (Align BitmapFont:Align))
+    (*:setTextAlign label Align:Center)
+    label))
 
 
 
@@ -373,65 +420,18 @@
     (receive (lefts tops widths heights) (compute-name-menu-bounds size)
       (let* ((origin (compute-name-palette-origin screen))
              (palette (Window screen "NamePalette" origin size))
-             (domain0-menu (NameMenu screen "Domain0Menu"
-                                     (Vector2f (list-ref lefts 0)(list-ref tops 0))
-                                     (Vector2f (list-ref widths 0)(list-ref heights 0))))
-             (domain1-menu (NameMenu screen "Domain1Menu"
-                                     (Vector2f (list-ref lefts 1)(list-ref tops 1))
-                                     (Vector2f (list-ref widths 1)(list-ref heights 1))))
-             (domain2-menu (NameMenu screen "Domain2Menu"
-                                     (Vector2f (list-ref lefts 2)(list-ref tops 2))
-                                     (Vector2f (list-ref widths 2)(list-ref heights 2))))
-             (domain3-menu (NameMenu screen "Domain3Menu"
-                                     (Vector2f (list-ref lefts 3)(list-ref tops 3))
-                                     (Vector2f (list-ref widths 3)(list-ref heights 3))))
-             (domain4-menu (NameMenu screen "Domain4Menu"
-                                     (Vector2f (list-ref lefts 4)(list-ref tops 4))
-                                     (Vector2f (list-ref widths 4)(list-ref heights 4))))
-             (domain5-menu (NameMenu screen "Domain5Menu"
-                                     (Vector2f (list-ref lefts 5)(list-ref tops 5))
-                                     (Vector2f (list-ref widths 5)(list-ref heights 5))))
-             (domain6-menu (NameMenu screen "Domain6Menu"
-                                     (Vector2f (list-ref lefts 6)(list-ref tops 6))
-                                     (Vector2f (list-ref widths 6)(list-ref heights 6))))
-             (domain7-menu (NameMenu screen "Domain7Menu"
-                                     (Vector2f (list-ref lefts 7)(list-ref tops 7))
-                                     (Vector2f (list-ref widths 7)(list-ref heights 7)))))
-        
-        ;; domain0
-        (for-each (lambda (nm)(*:addListItem domain0-menu nm nm))
-                  (list-ref (name-domains) 0))
-        (*:addChild palette domain0-menu)
-        ;; domain1
-        (for-each (lambda (nm::int)(*:addListItem domain1-menu (format #f "~a" nm) (Integer nm)))
-                  (list-ref (name-domains) 1))
-        (*:addChild palette domain1-menu)
-        ;; domain2
-        (for-each (lambda (nm)(*:addListItem domain2-menu nm nm))
-                  (list-ref (name-domains) 2))
-        (*:addChild palette domain2-menu)
-        ;; domain3
-        (for-each (lambda (nm)(*:addListItem domain3-menu nm nm))
-                  (list-ref (name-domains) 3))
-        (*:addChild palette domain3-menu)
-        ;; domain4
-        (for-each (lambda (nm)(*:addListItem domain4-menu nm nm))
-                  (list-ref (name-domains) 4))
-        (*:addChild palette domain4-menu)
-        ;; domain5
-        (for-each (lambda (nm)(*:addListItem domain5-menu nm nm))
-                  (list-ref (name-domains) 5))
-        (*:addChild palette domain5-menu)
-        ;; domain6
-        (for-each (lambda (nm)(*:addListItem domain6-menu nm nm))
-                  (list-ref (name-domains) 6))
-        (*:addChild palette domain6-menu)
-        ;; domain7
-        (for-each (lambda (nm)(*:addListItem domain7-menu nm nm))
-                  (list-ref (name-domains) 7))
-        (*:addChild palette domain7-menu)
+             (indexes (iota (length lefts)))
+             (%make-menu (lambda (i)
+                           (let* ((dom (list-ref (name-domains) i))
+                                  (dom-menu::NameMenu
+                                   (NameMenu screen (format #f "Domain~dMenu" i)
+                                             (Vector2f (list-ref lefts i)(list-ref tops i))
+                                             (Vector2f (list-ref widths i)(list-ref heights i))))
+                                  (%add-item (lambda (nm)(*:addListItem dom-menu nm nm))))
+                             (for-each %add-item dom)
+                             (*:addChild palette dom-menu)))))
+        (for-each %make-menu indexes)
         palette))))
-
 
 
 ;;; =====================================================================
@@ -1017,44 +1017,6 @@
 
 
 
-;;; =====================================================================
-;;; the character nameplate
-;;; =====================================================================
-
-;;; (compute-character-nameplate-origin screen::Screen)
-;;; ---------------------------------------------------------------------
-;;; computes and returns a suitable origin for the character nameplate,
-;;; taking into accoun the dimensions of the screen
-
-(define (compute-character-nameplate-origin screen::Screen)
-  (let ((width (*:getWidth screen))
-        (height (*:getHeight screen)))
-    (Vector2f (- (/ width 2.0) 120) 8)))
-
-
-;;; (compute-character-nameplate-size screen::Screen)
-;;; ---------------------------------------------------------------------
-;;; computes and returns a suitable size for the character nameplate,
-;;; taking into accoun the dimensions of the screen
-
-(define (compute-character-nameplate-size screen::Screen)
-  (let ((width (*:getWidth screen)))
-    (Vector2f 280 40)))
-
-
-;;; (make-character-nameplate screen::Screen)
-;;; ---------------------------------------------------------------------
-;;; constructs and returns a new TLabel object for use as the character
-;;; nameplate
-
-(define (make-character-nameplate screen::Screen)
-  (let ((label (TLabel screen "CharacterNameplate"
-                       (compute-character-nameplate-origin screen)
-                       (compute-character-nameplate-size screen)))
-        (Align BitmapFont:Align))
-    (*:setTextAlign label Align:Center)
-    label))
-
 
 
 ;;; =====================================================================
@@ -1070,6 +1032,7 @@
   (slots:
    (current-character init-form: #f getter: getCurrentCharacter setter: setCurrentCharacter)
    (current-faction init-form: #f getter: getCurrentFaction setter: setCurrentFaction)
+   (character-nameplate::TLabel init-form: #!null getter: getCharacterNameplate)
    (faction-nameplate::TLabel init-form: #!null getter: getFactionNameplate)
    (app::SimpleApplication init-form: #!null getter: getApp setter: setApp)
    (state-manager::AppStateManager init-form: #!null getter: getStateManager setter: setStateManager))
@@ -1082,6 +1045,7 @@
            (align BitmapFont:Align)
            (valign BitmapFont:VAlign)
            (sky (make-sky app))
+           (cnameplate::TLabel (make-character-nameplate screen))
            (fnameplate::TLabel (make-faction-nameplate screen))
            (faction-palette (make-faction-palette screen))
            (faction-group (FactionButtonGroup screen "FactionGroup"))
@@ -1123,9 +1087,19 @@
       ;; --------------------
       (if char-cube
           (begin ()
-                 (*:attachChild root-node char-cube)
-                 (*:setLocalTranslation char-cube 0.0 0.0 -4.0)
+                 (*:attachChild root-node (as Node char-cube))
+                 (*:setLocalTranslation (as Node char-cube) 0.0 0.0 -4.0)
                  (*:setCurrentCharacter (this) character)))
+      ;; --------------------
+      ;; add the character-nameplate
+      ;; --------------------
+      (set! character-nameplate cnameplate)
+      (*:setText cnameplate "")
+      (*:setTextAlign cnameplate align:Left)
+      (*:setFont cnameplate "Interface/Fonts/Laconic30.fnt")
+      (*:setFontSize cnameplate 30)
+      (*:setFontColor cnameplate ColorRGBA:Green)
+      (*:addElement screen cnameplate)
       ;; --------------------
       ;; add the faction-nameplate
       ;; --------------------
