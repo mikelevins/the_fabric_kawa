@@ -14,6 +14,7 @@
  fabric-name-bit-patterns
  fabric-name-bytes
  fabric-name-bytestrings
+ fabric-name-part->byte
  fabric-name-strings
  gen-name)
 
@@ -35,6 +36,9 @@
 (require "util-random.scm")
 (require "util-lists.scm")
 (require "data-names.scm")
+
+
+(import-as String java.lang.String)
 
 
 ;;; CLASS FabricName
@@ -87,6 +91,16 @@
                                 (equal? p ""))))
             parts)))
 
+(define (fabric-name-part->byte part::String)
+  (if (string=? part "")
+      0
+      (let loop ((doms (name-domains)))
+        (if (null? doms)
+            #f
+            (let* ((domain (car doms))
+                   (pos (position-if (lambda (nm)(string=? part nm))
+                                     domain)))
+              (or pos (loop (cdr doms))))))))
 
 
 ;;; (gen-name)

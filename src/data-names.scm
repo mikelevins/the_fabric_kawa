@@ -231,7 +231,7 @@
     "Ultramarine" "Umber" "Urobilin" "Vanilla" "Verdigris" "Vermilion" "Veronica" "Viridian" "Violet" "Wenge"
     "Wheat" "White" "Wine" "Wintergreen" "Wisteria" "Yellow")))
 
-(define domain1 (make-parameter (domain-indexes)))
+(define domain1 (make-parameter (map number->string (domain-indexes))))
 
 (define domain0
   (make-parameter
