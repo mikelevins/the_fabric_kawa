@@ -44,6 +44,7 @@
 (require "view-character-nameplate.scm")
 (require "view-controls.scm")
 (require "view-player-character.scm")
+(require "util-error.scm")
 (require "client-main.scm")
 
 ;;; ---------------------------------------------------------------------
@@ -98,7 +99,11 @@
     (init-character-creator (this) mgr client))))
 
 
-;;; (init-character-creator-sky app::CharacterCreatorAppState client::SimpleApplication)
+;;; =====================================================================
+;;; Scene setup
+;;; =====================================================================
+
+;;; (init-character-creator-sky client::SimpleApplication)
 ;;; ---------------------------------------------------------------------
 ;;; construct the character creator's skybox
 
@@ -107,8 +112,24 @@
          ;;(sky (make-sky-sphere client))
          (root-node (*:getRootNode (as SimpleApplication client))))
     ;; add the sky to the scene
-    ;; --------------------
     (*:attachChild root-node sky)))
+
+
+;;; (init-character-creator-model client::SimpleApplication)
+;;; ---------------------------------------------------------------------
+;;; construct the character creator's skybox
+
+(define (init-character-creator-model state::CharacterCreatorAppState client::SimpleApplication)
+  (let* ((root-node (*:getRootNode (as SimpleApplication client)))
+         (character (make-player-character))
+         (char-cube (get-property character 'cube: default: #f)))
+    (if char-cube
+        (let ((rotator::CharacterRotator (make-character-rotator)))
+          (*:attachChild root-node (as Node char-cube))
+          (*:setLocalTranslation (as Node char-cube) 0.0 0.0 -4.0)
+          (*:setCurrentCharacter state character)
+          (*:addControl (as Node char-cube) rotator))
+        (warn "init-character-creator-model: creating a starting character failed"))))
 
 ;;; (init-character-creator app::CharacterCreatorAppState client::SimpleApplication)
 ;;; ---------------------------------------------------------------------
@@ -130,8 +151,6 @@
          (caretaker-button (make-caretaker-button screen))
          (abjurer-button (make-abjurer-button screen))
          (rogue-button (make-rogue-button screen))
-         (character (make-player-character))
-         (char-cube (get-property character 'cube: default: #f))
          (name-palette::Window (make-name-palette state screen))
          (armor-palette (make-armor-palette screen))
          (armor-group (ArmorButtonGroup screen "ArmorGroup"))
@@ -163,12 +182,7 @@
     ;; --------------------
     ;; add the character model
     ;; --------------------
-    (if char-cube
-        (let ((rotator::CharacterRotator (make-character-rotator)))
-          (*:attachChild root-node (as Node char-cube))
-          (*:setLocalTranslation (as Node char-cube) 0.0 0.0 -4.0)
-          (*:setCurrentCharacter state character)
-          (*:addControl (as Node char-cube) rotator)))
+    (init-character-creator-model state client)
     ;; --------------------
     ;; add the character-nameplate
     ;; --------------------
