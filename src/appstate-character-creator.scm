@@ -31,6 +31,7 @@
 (require "view-skybox.scm")
 (require "view-name-menu.scm")
 (require "view-faction-palette.scm")
+(require "view-controls.scm")
 (require "view-player-character.scm")
 (require "client-main.scm")
 
@@ -39,7 +40,6 @@
 ;;; ---------------------------------------------------------------------
 
 (import-as AbstractAppState com.jme3.app.state.AbstractAppState)
-(import-as AbstractControl com.jme3.scene.control.AbstractControl)
 (import-as AppStateManager com.jme3.app.state.AppStateManager)
 (import-as AssetManager com.jme3.asset.AssetManager)
 (import-as BitmapFont com.jme3.font.BitmapFont)
@@ -812,34 +812,6 @@
 ;;; the AppState Class
 ;;; =====================================================================
 
-;;; CLASS CharacterRotator (AbstractControl)
-;;; ---------------------------------------------------------------------
-;;; a control that slowly rotates a character that is under construction
-
-(defclass CharacterRotator (AbstractControl)
-  (slots:
-   (xrate type: float init-form: 0.0 getter: getXRate setter: setXRate)
-   (yrate type: float init-form: 0.0 getter: getYRate setter: setYRate)
-   (zrate type: float init-form: 0.0 getter: getZRate setter: setZRate))
-  (methods:
-   ((*init* xr yr zr)(begin (set! xrate xr)
-                            (set! yrate yr)
-                            (set! zrate zr)))
-   ((controlUpdate tpf)
-    (when (*:getSpatial (this))
-      (*:rotate (*:getSpatial (this))
-                (* tpf xrate)
-                (* tpf yrate)
-                (* tpf zrate))))
-   ;; dummy update method to make Java happy
-   ((controlRender renderManager viewPort) #!void)))
-
-;;; (make-character-creator-rotator)
-;;; ---------------------------------------------------------------------
-;;; returns a control that slowly rotates the character cube that is
-;;; under construction
-(define (make-character-creator-rotator)
-  (CharacterRotator 0.1 0.2 0.0))
 
 ;;; CLASS CharacterCreatorAppState
 ;;; ---------------------------------------------------------------------
@@ -906,7 +878,7 @@
       ;; add the character model
       ;; --------------------
       (if char-cube
-          (let ((rotator::CharacterRotator (make-character-creator-rotator)))
+          (let ((rotator::CharacterRotator (make-character-rotator)))
             (*:attachChild root-node (as Node char-cube))
             (*:setLocalTranslation (as Node char-cube) 0.0 0.0 -4.0)
             (*:setCurrentCharacter (this) character)
