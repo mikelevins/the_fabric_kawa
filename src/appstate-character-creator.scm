@@ -9,7 +9,9 @@
 ;;;; ***********************************************************************
 
 (module-export
- CharacterCreatorAppState)
+ CharacterCreatorAppState
+ notify-name-selection-changed
+ set-current-faction)
 
 ;;; =====================================================================
 ;;; ABOUT
@@ -26,6 +28,9 @@
 (require "syntax-classes.scm")
 (require "data-names.scm")
 (require "model-namegen.scm")
+(require "view-skybox.scm")
+(require "view-name-menu.scm")
+(require "view-faction-palette.scm")
 (require "view-player-character.scm")
 (require "client-main.scm")
 
@@ -53,89 +58,15 @@
 (import-as SelectBox tonegod.gui.controls.lists.SelectBox)
 (import-as Serializer com.jme3.network.serializing.Serializer)
 (import-as SimpleApplication com.jme3.app.SimpleApplication)
-(import-as SkyFactory com.jme3.util.SkyFactory)
 (import-as TLabel tonegod.gui.controls.text.Label)
 (import-as Vector2f com.jme3.math.Vector2f)
 (import-as Vector4f com.jme3.math.Vector4f)
 (import-as Window tonegod.gui.controls.windows.Window)
 
 
-
 ;;; =====================================================================
 ;;; UI elements
 ;;; =====================================================================
-
-;;; CLASS NameMenu
-;;; ---------------------------------------------------------------------
-;;; a SelectBox subclass used to present name options for player
-;;; characters
-
-(defclass NameMenu (SelectBox)
-  (slots:
-   (app-state::CharacterCreatorAppState init-form: #!null getter: getAppState setter: setAppState))
-  (methods:
-   ((*init* state::CharacterCreatorAppState screen::Screen uid::String position::Vector2f size::Vector2f)
-    (invoke-special SelectBox (this) '*init* screen uid position size)
-    (set! app-state state))
-   ((onChange index::int value::Object)
-    (notify-name-selection-changed app-state index value))))
-
-;;; CLASS FactionButtonGroup
-;;; ---------------------------------------------------------------------
-;;; a RadioButtonGroup subclass used to present faction options to
-;;; players
-
-(defclass FactionButtonGroup (RadioButtonGroup)
-  (slots:
-   (app-state init-form: #!null getter: getAppState setter: setAppState))
-  (methods:
-   ((*init* screen::Screen uid::String)
-    (invoke-special RadioButtonGroup (this) '*init* screen uid))
-   ((onSelect index::int value::Button)
-    (let ((button-id (*:getUID value))
-          (state::CharacterCreatorAppState (get-app-state (this))))
-      (cond
-       ((equal? "CaretakerButton" button-id)(set-current-faction state 'caretakers))
-       ((equal? "RogueButton" button-id)(set-current-faction state 'rogues))
-       ((equal? "AbjurerButton" button-id)(set-current-faction state 'abjurers))
-       (else (format #t "~%Unknown faction selected")))))))
-
-;;; (get-app-state group::FactionButtonGroup)
-;;; ---------------------------------------------------------------------
-;;; returns _group_'s AppState object 
-
-(define (get-app-state group::FactionButtonGroup)
-  (*:getAppState group))
-
-;;; (set-app-state! group::FactionButtonGroup state::CharacterCreatorAppState)
-;;; ---------------------------------------------------------------------
-;;; assigns _state_ to _group_'s app-state slot
-
-(define (set-app-state! group::FactionButtonGroup state::CharacterCreatorAppState)
-  (*:setAppState group state))
-
-
-
-;;; =====================================================================
-;;; the skybox
-;;; =====================================================================
-
-;;; (make-sky app::SimpleApplication)
-;;; ---------------------------------------------------------------------
-;;; returns a newly-constructed Fabric skybox
-
-(define (make-sky app::SimpleApplication)
-  (let ((asset-manager::AssetManager (get-asset-manager)))
-    (SkyFactory:createSky asset-manager 
-                          (*:loadTexture asset-manager "Textures/tycholeft.png")
-                          (*:loadTexture asset-manager "Textures/tychoright.png")
-                          (*:loadTexture asset-manager "Textures/tychofront.png")
-                          (*:loadTexture asset-manager "Textures/tychoback.png")
-                          (*:loadTexture asset-manager "Textures/tychotop.png")
-                          (*:loadTexture asset-manager "Textures/tychobottom.png"))))
-
-
-
 
 ;;; =====================================================================
 ;;; the character nameplate
@@ -147,9 +78,9 @@
 ;;; taking into accoun the dimensions of the screen
 
 (define (compute-character-nameplate-origin screen::Screen)
-  (let ((weapons-palette-size (compute-weapons-palette-size screen))
-        (weapons-palette-origin (compute-weapons-palette-origin screen))
-        (nameplate-size (compute-character-nameplate-size screen)))
+  (let ((weapons-palette-size::Vector2f (compute-weapons-palette-size screen))
+        (weapons-palette-origin::Vector2f (compute-weapons-palette-origin screen))
+        (nameplate-size::Vector2f (compute-character-nameplate-size screen)))
     (Vector2f (+ 32 (*:getX weapons-palette-size))
               (- (+ (*:getY weapons-palette-origin)
                     (*:getY weapons-palette-size))
@@ -192,7 +123,7 @@
 ;;; taking into accoun the dimensions of the screen
 
 (define (compute-faction-nameplate-origin screen::Screen)
-  (let ((faction-palette-size (compute-faction-palette-size screen))
+  (let ((faction-palette-size::Vector2f (compute-faction-palette-size screen))
         (height (*:getHeight screen)))
     (Vector2f (+ 32 (*:getX faction-palette-size)) 8)))
 
@@ -219,154 +150,6 @@
         (Align BitmapFont:Align))
     (*:setTextAlign label Align:Center)
     label))
-
-
-
-;;; =====================================================================
-;;; the faction palette
-;;; =====================================================================
-
-;;; (compute-faction-palette-origin screen::Screen)
-;;; ---------------------------------------------------------------------
-;;; computes and returns a suitable origin for the faction palette,
-;;; taking into accoun the dimensions of the screen
-
-(define (compute-faction-palette-origin screen::Screen)
-  (Vector2f 10 10))
-
-
-;;; (compute-faction-palette-size screen::Screen)
-;;; ---------------------------------------------------------------------
-;;; computes and returns a suitable size for the faction palette,
-;;; taking into accoun the dimensions of the screen
-
-
-(define (compute-faction-palette-size screen::Screen)
-  (Vector2f 616 200))
-
-
-;;; (make-faction-palette screen::Screen)
-;;; ---------------------------------------------------------------------
-;;; returns a newly-constructed and -populated faction-palette window
-
-(define (make-faction-palette screen::Screen)
-  (Window screen "FactionPalette"
-          (compute-faction-palette-origin screen)
-          (compute-faction-palette-size screen)))
-
-
-;;; (compute-caretaker-button-origin screen::Screen)
-;;; ---------------------------------------------------------------------
-;;; computes and returns a suitable origin for the caretakers faction
-;;; button
-
-
-(define (compute-caretaker-button-origin screen::Screen)
-  (let* ((button-width 128)
-         (button-height 96)
-         (palette-size (compute-faction-palette-size screen))
-         (palette-width (*:getX palette-size))
-         (palette-height (*:getY palette-size))
-         (x (- (/ palette-width 6.0)
-               (/ button-width 2.0)))
-         (y (- (/ palette-height 2.0)
-               (/ button-height 2.0))))
-    (Vector2f x y)))
-
-
-;;; (compute-caretaker-button-size screen::Screen)
-;;; ---------------------------------------------------------------------
-;;; computes and returns a suitable size for the caretakers faction
-;;; button
-
-
-(define (compute-caretaker-button-size screen::Screen)
-  (Vector2f 128 96))
-
-
-;;; (make-caretaker-button screen::Screen)
-;;; ---------------------------------------------------------------------
-;;; returns a newly-constructed caretakers faction button
-
-(define (make-caretaker-button screen::Screen)
-  (RadioButton screen "CaretakerButton"
-               (compute-caretaker-button-origin screen)
-               (compute-caretaker-button-size screen)))
-
-
-;;; (compute-abjurer-button-origin screen::Screen)
-;;; ---------------------------------------------------------------------
-;;; computes and returns a suitable origin for the abjurers faction
-;;; button
-
-(define (compute-abjurer-button-origin screen::Screen)
-  (let* ((button-width 128)
-         (button-height 96)
-         (palette-size (compute-faction-palette-size screen))
-         (palette-width (*:getX palette-size))
-         (palette-height (*:getY palette-size))
-         (x (- (* 3 (/ palette-width 6.0))
-               (/ button-width 2.0)))
-         (y (- (/ palette-height 2.0)
-               (/ button-height 2.0))))
-    (Vector2f x y)))
-
-
-;;; (compute-abjurer-button-size screen::Screen)
-;;; ---------------------------------------------------------------------
-;;; computes and returns a suitable size for the abjurers faction
-;;; button
-
-(define (compute-abjurer-button-size screen::Screen)
-  (Vector2f 128 96))
-
-
-;;; (make-abjurer-button screen::Screen)
-;;; ---------------------------------------------------------------------
-;;; returns a newly-constructed abjurers faction button
-
-(define (make-abjurer-button screen::Screen)
-  (RadioButton screen "AbjurerButton"
-               (compute-abjurer-button-origin screen)
-               (compute-abjurer-button-size screen)))
-
-
-;;; (compute-rogue-button-origin screen::Screen)
-;;; ---------------------------------------------------------------------
-;;; computes and returns a suitable origin for the rogues faction
-;;; button
-
-(define (compute-rogue-button-origin screen::Screen)
-  (let* ((button-width 128)
-         (button-height 96)
-         (palette-size (compute-faction-palette-size screen))
-         (palette-width (*:getX palette-size))
-         (palette-height (*:getY palette-size))
-         (x (- (* 5 (/ palette-width 6.0))
-               (/ button-width 2.0)))
-         (y (- (/ palette-height 2.0)
-               (/ button-height 2.0))))
-    (Vector2f x y)))
-
-
-;;; (compute-rogue-button-size screen::Screen)
-;;; ---------------------------------------------------------------------
-;;; computes and returns a suitable size for the rogues faction
-;;; button
-
-(define (compute-rogue-button-size screen::Screen)
-  (Vector2f 128 96))
-
-
-;;; (make-rogue-button screen::Screen)
-;;; ---------------------------------------------------------------------
-;;; returns a newly-constructed rogues faction button
-
-(define (make-rogue-button screen::Screen)
-  (RadioButton screen "RogueButton"
-               (compute-rogue-button-origin screen)
-               (compute-rogue-button-size screen)))
-
 
 
 ;;; =====================================================================
@@ -421,7 +204,7 @@
 ;;; returns a newly-constructed and -populated name palette
 
 (define (make-name-palette app-state::CharacterCreatorAppState screen::Screen)
-  (let ((size (compute-name-palette-size screen)))
+  (let ((size::Vector2f (compute-name-palette-size screen)))
     (receive (lefts tops widths heights) (compute-name-menu-bounds size)
       (let* ((origin (compute-name-palette-origin screen))
              (palette (Window screen "NamePalette" origin size))
@@ -1066,7 +849,7 @@
 (defclass CharacterCreatorAppState (AbstractAppState)
   (slots:
    (current-character init-form: #f getter: getCurrentCharacter setter: setCurrentCharacter)
-   (character-name init-form: #f getter: getCharacterName setter: setCharacterName)
+   (character-name init-form: (blank-fabric-name) getter: getCharacterName setter: setCharacterName)
    (current-faction init-form: #f getter: getCurrentFaction setter: setCurrentFaction)
    (character-nameplate::TLabel init-form: #!null getter: getCharacterNameplate)
    (faction-nameplate::TLabel init-form: #!null getter: getFactionNameplate)
