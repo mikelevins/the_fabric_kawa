@@ -16,7 +16,7 @@
  make-caretaker-button
  make-faction-palette
  make-rogue-button
- set-app-state!)
+ set-faction-palette-app-state!)
 
 (require "appstate-character-creator.scm")
 (require "syntax-classes.scm")
@@ -63,11 +63,11 @@
 (define (get-app-state group::FactionButtonGroup)
   (*:getAppState group))
 
-;;; (set-app-state! group::FactionButtonGroup state::CharacterCreatorAppState)
+;;; (set-faction-palette-app-state! group::FactionButtonGroup state::CharacterCreatorAppState)
 ;;; ---------------------------------------------------------------------
 ;;; assigns _state_ to _group_'s app-state slot
 
-(define (set-app-state! group::FactionButtonGroup state::CharacterCreatorAppState)
+(define (set-faction-palette-app-state! group::FactionButtonGroup state::CharacterCreatorAppState)
   (*:setAppState group state))
 
 ;;; =====================================================================

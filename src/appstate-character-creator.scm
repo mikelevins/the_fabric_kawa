@@ -897,7 +897,7 @@
       ;; --------------------
       ;; init the faction buttons
       ;; --------------------
-      (set-app-state! faction-group (this))
+      (set-faction-palette-app-state! faction-group (this))
       ;; --------------------
       ;; add the sky to the scene
       ;; --------------------
