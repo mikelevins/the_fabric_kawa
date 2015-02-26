@@ -2,7 +2,11 @@
 
 /openal.dylib
 
+/src/libopenal64.so
+
 /src/liblwjgl.dylib
+
+/src/liblwjgl64.so
 
 /src/openal.dylib
 
