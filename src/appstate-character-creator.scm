@@ -115,7 +115,7 @@
     (*:attachChild root-node sky)))
 
 
-;;; (init-character-creator-model client::SimpleApplication)
+;;; (init-character-creator-model state::CharacterCreatorAppState client::SimpleApplication)
 ;;; ---------------------------------------------------------------------
 ;;; construct the character creator's skybox
 
@@ -131,6 +131,22 @@
           (*:addControl (as Node char-cube) rotator))
         (warn "init-character-creator-model: creating a starting character failed"))))
 
+;;; (init-character-nameplate state::CharacterCreatorAppState client::SimpleApplication)
+;;; ---------------------------------------------------------------------
+;;; construct the character nameplate
+
+(define (init-character-nameplate state::CharacterCreatorAppState client::SimpleApplication)
+  (let* ((align BitmapFont:Align)
+         (screen (Screen client))
+         (cnameplate::TLabel (make-character-nameplate screen)))
+    (*:setCharacterNameplate state cnameplate)
+    (*:setText cnameplate "")
+    (*:setTextAlign cnameplate align:Left)
+    (*:setFont cnameplate "Interface/Fonts/Laconic30.fnt")
+    (*:setFontSize cnameplate 30)
+    (*:setFontColor cnameplate ColorRGBA:Green)
+    (*:addElement screen cnameplate)))
+
 ;;; (init-character-creator app::CharacterCreatorAppState client::SimpleApplication)
 ;;; ---------------------------------------------------------------------
 ;;; construct the character creator's scene and UI
@@ -143,7 +159,6 @@
          (root-node (*:getRootNode (as SimpleApplication client)))
          (align BitmapFont:Align)
          (valign BitmapFont:VAlign)
-         (cnameplate::TLabel (make-character-nameplate screen))
          (fnameplate::TLabel (make-faction-nameplate screen))
          (faction-palette (make-faction-palette screen))
          (faction-group (FactionButtonGroup screen "FactionGroup"))
@@ -170,29 +185,14 @@
          (portals-augment-button (make-portals-augment-button screen))
          (turrets-augment-button (make-turrets-augment-button screen))
          (augments-group (AugmentsButtonGroup screen "AugmentsGroup")))
-    ;; --------------------
-    ;; init the faction buttons
-    ;; --------------------
+    ;; set initial faction state
     (set-faction-palette-app-state! faction-group state)
-    ;; --------------------
-    ;; --------------------
     ;; init the skybox
-    ;; --------------------
     (init-character-creator-sky client)
-    ;; --------------------
     ;; add the character model
-    ;; --------------------
     (init-character-creator-model state client)
-    ;; --------------------
     ;; add the character-nameplate
-    ;; --------------------
-    (*:setCharacterNameplate state cnameplate)
-    (*:setText cnameplate "")
-    (*:setTextAlign cnameplate align:Left)
-    (*:setFont cnameplate "Interface/Fonts/Laconic30.fnt")
-    (*:setFontSize cnameplate 30)
-    (*:setFontColor cnameplate ColorRGBA:Green)
-    (*:addElement screen cnameplate)
+    (init-character-nameplate state client)
     ;; --------------------
     ;; add the faction-nameplate
     ;; --------------------
