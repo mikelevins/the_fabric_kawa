@@ -9,7 +9,8 @@
 ;;;; ***********************************************************************
 
 (module-export
- make-sky)
+ make-sky-box
+ make-sky-sphere)
 
 (require "data-assets.scm")
 
@@ -25,11 +26,11 @@
 ;;; the skybox
 ;;; ---------------------------------------------------------------------
 
-;;; (make-sky app::SimpleApplication)
+;;; (make-sky-box app::SimpleApplication)
 ;;; ---------------------------------------------------------------------
 ;;; returns a newly-constructed Fabric skybox
 
-(define (make-sky app::SimpleApplication)
+(define (make-sky-box app::SimpleApplication)
   (let ((asset-manager::AssetManager (get-asset-manager)))
     (SkyFactory:createSky asset-manager 
                           (*:loadTexture asset-manager "Textures/tycholeft.png")
@@ -38,3 +39,13 @@
                           (*:loadTexture asset-manager "Textures/tychoback.png")
                           (*:loadTexture asset-manager "Textures/tychotop.png")
                           (*:loadTexture asset-manager "Textures/tychobottom.png"))))
+
+;;; (make-sky-sphere app::SimpleApplication)
+;;; ---------------------------------------------------------------------
+;;; returns a newly-constructed Fabric skysphere
+
+(define (make-sky-sphere app::SimpleApplication)
+  (let ((asset-manager::AssetManager (get-asset-manager)))
+    (SkyFactory:createSky asset-manager 
+                          (*:loadTexture asset-manager "Textures/tycho2k.jpg")
+                          #t)))

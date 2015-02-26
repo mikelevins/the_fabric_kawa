@@ -89,266 +89,286 @@
    (current-character init-form: #f getter: getCurrentCharacter setter: setCurrentCharacter)
    (character-name init-form: (blank-fabric-name) getter: getCharacterName setter: setCharacterName)
    (current-faction init-form: #f getter: getCurrentFaction setter: setCurrentFaction)
-   (character-nameplate::TLabel init-form: #!null getter: getCharacterNameplate)
-   (faction-nameplate::TLabel init-form: #!null getter: getFactionNameplate)
+   (character-nameplate::TLabel init-form: #!null getter: getCharacterNameplate setter: setCharacterNameplate)
+   (faction-nameplate::TLabel init-form: #!null getter: getFactionNameplate setter: setFactionNameplate)
    (app::SimpleApplication init-form: #!null getter: getApp setter: setApp)
    (state-manager::AppStateManager init-form: #!null getter: getStateManager setter: setStateManager))
   (methods:
    ((initialize mgr::AppStateManager client::SimpleApplication)
-    (*:setApp (this) client)
-    (set-current-fabric-name! (this) (blank-fabric-name))
-    (let* ((screen (Screen client))
-           (gui-node (*:getGuiNode client))
-           (root-node (*:getRootNode (as SimpleApplication app)))
-           (align BitmapFont:Align)
-           (valign BitmapFont:VAlign)
-           (sky (make-sky app))
-           (cnameplate::TLabel (make-character-nameplate screen))
-           (fnameplate::TLabel (make-faction-nameplate screen))
-           (faction-palette (make-faction-palette screen))
-           (faction-group (FactionButtonGroup screen "FactionGroup"))
-           (highlight-color (ColorRGBA 1.0 1.0 0.0 1.0))
-           (caretaker-button (make-caretaker-button screen))
-           (abjurer-button (make-abjurer-button screen))
-           (rogue-button (make-rogue-button screen))
-           (character (make-player-character))
-           (char-cube (get-property character 'cube: default: #f))
-           (name-palette::Window (make-name-palette (this) screen))
-           (armor-palette (make-armor-palette screen))
-           (armor-group (ArmorButtonGroup screen "ArmorGroup"))
-           (absorb-armor-button (make-absorb-armor-button screen))
-           (regen-armor-button (make-regen-armor-button screen))
-           (power-armor-button (make-power-armor-button screen))
-           (energy-armor-button (make-energy-armor-button screen))
-           (weapons-palette (make-weapons-palette screen))
-           (weapons-group (WeaponsButtonGroup screen "WeaponsGroup"))
-           (cannon-weapon-button (make-cannon-weapon-button screen))
-           (impulse-weapon-button (make-impulse-weapon-button screen))
-           (malware-weapon-button (make-malware-weapon-button screen))
-           (bots-weapon-button (make-bots-weapon-button screen))
-           (augments-palette (make-augment-palette screen))
-           (force-augment-button (make-force-augment-button screen))
-           (optics-augment-button (make-optics-augment-button screen))
-           (portals-augment-button (make-portals-augment-button screen))
-           (turrets-augment-button (make-turrets-augment-button screen))
-           (augments-group (AugmentsButtonGroup screen "AugmentsGroup")))
-      ;; --------------------
-      ;; init the faction buttons
-      ;; --------------------
-      (set-faction-palette-app-state! faction-group (this))
-      ;; --------------------
-      ;; add the sky to the scene
-      ;; --------------------
-      (*:attachChild root-node sky)
-      ;; --------------------
-      ;; add the character model
-      ;; --------------------
-      (if char-cube
-          (let ((rotator::CharacterRotator (make-character-rotator)))
-            (*:attachChild root-node (as Node char-cube))
-            (*:setLocalTranslation (as Node char-cube) 0.0 0.0 -4.0)
-            (*:setCurrentCharacter (this) character)
-            (*:addControl (as Node char-cube) rotator)))
-      ;; --------------------
-      ;; add the character-nameplate
-      ;; --------------------
-      (set! character-nameplate cnameplate)
-      (*:setText cnameplate "")
-      (*:setTextAlign cnameplate align:Left)
-      (*:setFont cnameplate "Interface/Fonts/Laconic30.fnt")
-      (*:setFontSize cnameplate 30)
-      (*:setFontColor cnameplate ColorRGBA:Green)
-      (*:addElement screen cnameplate)
-      ;; --------------------
-      ;; add the faction-nameplate
-      ;; --------------------
-      (set! faction-nameplate fnameplate)
-      (*:setText fnameplate "")
-      (*:setTextAlign fnameplate align:Left)
-      (*:setFont fnameplate "Interface/Fonts/Laconic30.fnt")
-      (*:setFontSize fnameplate 30)
-      (*:setFontColor fnameplate ColorRGBA:Green)
-      (*:addElement screen fnameplate)
-      ;; --------------------
-      ;; faction palette
-      ;; --------------------
-      (*:setWindowTitle faction-palette "Choose a Faction:")
-      ;; caretaker button
-      (*:setButtonIcon caretaker-button 128 128 "Interface/caretakers-icon128.png")
-      (*:setButtonPressedInfo caretaker-button "Interface/caretakers-icon-lit128.png"
-                              (ColorRGBA 0.0 1.0 0.0 1.0))
-      (*:setText caretaker-button "Caretakers")
-      (*:setTextAlign caretaker-button align:Center)
-      (*:setTextVAlign caretaker-button valign:Bottom)
-      (*:setFontSize caretaker-button 20)
-      (*:addButton faction-group caretaker-button)
-      ;; abjurer button
-      (*:setButtonIcon abjurer-button 128 128 "Interface/abjurers-icon128.png")
-      (*:setButtonPressedInfo abjurer-button "Interface/abjurers-icon-lit128.png"
-                              (ColorRGBA 1.0 0.0 0.0 1.0))
-      (*:setText abjurer-button "Abjurers")
-      (*:setTextAlign abjurer-button align:Center)
-      (*:setTextVAlign abjurer-button valign:Bottom)
-      (*:setFontSize abjurer-button 20)
-      (*:addButton faction-group abjurer-button)
-      ;; rogue button
-      (*:setButtonIcon rogue-button 128 128 "Interface/rogues-icon128.png")
-      (*:setButtonPressedInfo rogue-button "Interface/rogues-icon-lit128.png"
-                              (ColorRGBA 0.0 0.75 1.0 1.0))
-      (*:setText rogue-button "Rogues")
-      (*:setTextAlign rogue-button align:Center)
-      (*:setTextVAlign rogue-button valign:Bottom)
-      (*:setFontSize rogue-button 20)
-      (*:addButton faction-group rogue-button)
-      (*:addChild faction-palette caretaker-button)
-      (*:addChild faction-palette abjurer-button)
-      (*:addChild faction-palette rogue-button)
-      (*:addElement screen faction-palette)
-      ;; --------------------
-      ;; name palette
-      ;; --------------------
-      (*:setWindowTitle name-palette "Choose a Name:")
-      (*:addElement screen name-palette)
-      ;; --------------------
-      ;; armor palette
-      ;; --------------------
-      (*:setWindowTitle armor-palette "Choose Armor:")
-      ;; absorb armor button
-      (*:setButtonIcon absorb-armor-button 128 128 "Interface/absorb-armor-icon128.png")
-      (*:setButtonPressedInfo absorb-armor-button "Interface/absorb-armor-icon128.png"
-                              (ColorRGBA 1.0 1.0 0.0 1.0))
-      (*:setText absorb-armor-button "Absorb")
-      (*:setTextAlign absorb-armor-button align:Center)
-      (*:setTextVAlign absorb-armor-button valign:Bottom)
-      (*:setFontSize absorb-armor-button 20)
-      (*:addButton armor-group absorb-armor-button)
-      (*:addChild armor-palette absorb-armor-button)
-      ;; regen armor button
-      (*:setButtonIcon regen-armor-button 128 128 "Interface/regen-armor-icon128.png")
-      (*:setButtonPressedInfo regen-armor-button "Interface/regen-armor-icon128.png"
-                              (ColorRGBA 0.0 1.0 0.0 1.0))
-      (*:setText regen-armor-button "Regenerate")
-      (*:setTextAlign regen-armor-button align:Center)
-      (*:setTextVAlign regen-armor-button valign:Bottom)
-      (*:setFontSize regen-armor-button 20)
-      (*:addButton armor-group regen-armor-button)
-      (*:addChild armor-palette regen-armor-button)
-      ;; power armor button
-      (*:setButtonIcon power-armor-button 128 128 "Interface/power-armor-icon128.png")
-      (*:setButtonPressedInfo power-armor-button "Interface/power-armor-icon128.png"
-                              (ColorRGBA 1.0 0.5 0.0 1.0))
-      (*:setText power-armor-button "Power")
-      (*:setTextAlign power-armor-button align:Center)
-      (*:setTextVAlign power-armor-button valign:Bottom)
-      (*:setFontSize power-armor-button 20)
-      (*:addButton armor-group power-armor-button)
-      (*:addChild armor-palette power-armor-button)
-      ;; energy armor button
-      (*:setButtonIcon energy-armor-button 128 128 "Interface/energy-armor-icon128.png")
-      (*:setButtonPressedInfo energy-armor-button "Interface/energy-armor-icon128.png"
-                              (ColorRGBA 0.0 6.0 1.0 1.0))
-      (*:setText energy-armor-button "Energy")
-      (*:setTextAlign energy-armor-button align:Center)
-      (*:setTextVAlign energy-armor-button valign:Bottom)
-      (*:setFontSize energy-armor-button 20)
-      (*:addButton armor-group energy-armor-button)
-      (*:addChild armor-palette energy-armor-button)
-      ;; add palette to screen
-      (*:addElement screen armor-palette)
-      ;; --------------------
-      ;; weapons palette
-      ;; --------------------
-      (*:setWindowTitle weapons-palette "Choose Weapons:")
-      ;; cannon weapon button
-      (*:setButtonIcon cannon-weapon-button 128 128 "Interface/cannon-weapon-icon128.png")
-      (*:setButtonPressedInfo cannon-weapon-button "Interface/cannon-weapon-icon128.png"
-                              (ColorRGBA 1.0 1.0 0.0 1.0))
-      (*:setText cannon-weapon-button "Cannon")
-      (*:setTextAlign cannon-weapon-button align:Center)
-      (*:setTextVAlign cannon-weapon-button valign:Bottom)
-      (*:setFontSize cannon-weapon-button 20)
-      (*:addButton weapons-group cannon-weapon-button)
-      (*:addChild weapons-palette cannon-weapon-button)
-      ;; impulse weapon button
-      (*:setButtonIcon impulse-weapon-button 128 128 "Interface/impulse-weapon-icon128.png")
-      (*:setButtonPressedInfo impulse-weapon-button "Interface/impulse-weapon-icon128.png"
-                              (ColorRGBA 0.0 1.0 0.0 1.0))
-      (*:setText impulse-weapon-button "Impulse")
-      (*:setTextAlign impulse-weapon-button align:Center)
-      (*:setTextVAlign impulse-weapon-button valign:Bottom)
-      (*:setFontSize impulse-weapon-button 20)
-      (*:addButton weapons-group impulse-weapon-button)
-      (*:addChild weapons-palette impulse-weapon-button)
-      ;; malware weapon button
-      (*:setButtonIcon malware-weapon-button 128 128 "Interface/malware-weapon-icon128.png")
-      (*:setButtonPressedInfo malware-weapon-button "Interface/malware-weapon-icon128.png"
-                              (ColorRGBA 1.0 0.5 0.0 1.0))
-      (*:setText malware-weapon-button "Malware")
-      (*:setTextAlign malware-weapon-button align:Center)
-      (*:setTextVAlign malware-weapon-button valign:Bottom)
-      (*:setFontSize malware-weapon-button 20)
-      (*:addButton weapons-group malware-weapon-button)
-      (*:addChild weapons-palette malware-weapon-button)
-      ;; bots weapon button
-      (*:setButtonIcon bots-weapon-button 128 128 "Interface/bots-weapon-icon128.png")
-      (*:setButtonPressedInfo bots-weapon-button "Interface/bots-weapon-icon128.png"
-                              (ColorRGBA 0.0 6.0 1.0 1.0))
-      (*:setText bots-weapon-button "Bots")
-      (*:setTextAlign bots-weapon-button align:Center)
-      (*:setTextVAlign bots-weapon-button valign:Bottom)
-      (*:setFontSize bots-weapon-button 20)
-      (*:addButton weapons-group bots-weapon-button)
-      (*:addChild weapons-palette bots-weapon-button)
-      (*:addElement screen weapons-palette)
-      ;; --------------------
-      ;; augment palette
-      ;; --------------------
-      (*:setWindowTitle augments-palette "Choose Augments:")
-      ;; force augment button
-      (*:setButtonIcon force-augment-button 128 128 "Interface/force-augment-icon128.png")
-      (*:setButtonPressedInfo force-augment-button "Interface/force-augment-icon128.png"
-                              (ColorRGBA 1.0 1.0 0.0 1.0))
-      (*:setText force-augment-button "Force Fields")
-      (*:setTextAlign force-augment-button align:Center)
-      (*:setTextVAlign force-augment-button valign:Bottom)
-      (*:setFontSize force-augment-button 20)
-      (*:addButton augments-group force-augment-button)
-      (*:addChild augments-palette force-augment-button)
-      ;; optics augment button
-      (*:setButtonIcon optics-augment-button 128 128 "Interface/optics-augment-icon128.png")
-      (*:setButtonPressedInfo optics-augment-button "Interface/optics-augment-icon128.png"
-                              (ColorRGBA 0.0 1.0 0.0 1.0))
-      (*:setText optics-augment-button "Optics")
-      (*:setTextAlign optics-augment-button align:Center)
-      (*:setTextVAlign optics-augment-button valign:Bottom)
-      (*:setFontSize optics-augment-button 20)
-      (*:addButton augments-group optics-augment-button)
-      (*:addChild augments-palette optics-augment-button)
-      ;; portals augment button
-      (*:setButtonIcon portals-augment-button 128 128 "Interface/portals-augment-icon128.png")
-      (*:setButtonPressedInfo portals-augment-button "Interface/portals-augment-icon128.png"
-                              (ColorRGBA 1.0 0.5 0.0 1.0))
-      (*:setText portals-augment-button "Portals")
-      (*:setTextAlign portals-augment-button align:Center)
-      (*:setTextVAlign portals-augment-button valign:Bottom)
-      (*:setFontSize portals-augment-button 20)
-      (*:addButton augments-group portals-augment-button)
-      (*:addChild augments-palette portals-augment-button)
-      ;; turrets augment button
-      (*:setButtonIcon turrets-augment-button 128 128 "Interface/turrets-augment-icon128.png")
-      (*:setButtonPressedInfo turrets-augment-button "Interface/turrets-augment-icon128.png"
-                              (ColorRGBA 0.0 6.0 1.0 1.0))
-      (*:setText turrets-augment-button "Turrets")
-      (*:setTextAlign turrets-augment-button align:Center)
-      (*:setTextVAlign turrets-augment-button valign:Bottom)
-      (*:setFontSize turrets-augment-button 20)
-      (*:addButton augments-group turrets-augment-button)
-      (*:addChild augments-palette turrets-augment-button)
-      (*:addElement screen augments-palette)
-      ;; --------------------
-      ;; add the gui to the scene
-      ;; --------------------
-      (*:addControl gui-node screen)))))
+    (init-character-creator (this) mgr client))))
+
+
+;;; (init-character-creator-sky app::CharacterCreatorAppState client::SimpleApplication)
+;;; ---------------------------------------------------------------------
+;;; construct the character creator's skybox
+
+(define (init-character-creator-sky client::SimpleApplication)
+  (let* ((sky (make-sky-box client))
+         ;;(sky (make-sky-sphere client))
+         (root-node (*:getRootNode (as SimpleApplication client))))
+    ;; add the sky to the scene
+    ;; --------------------
+    (*:attachChild root-node sky)))
+
+;;; (init-character-creator app::CharacterCreatorAppState client::SimpleApplication)
+;;; ---------------------------------------------------------------------
+;;; construct the character creator's scene and UI
+
+(define (init-character-creator state::CharacterCreatorAppState mgr::AppStateManager client::SimpleApplication)
+  (*:setApp state client)
+  (set-current-fabric-name! state (blank-fabric-name))
+  (let* ((screen (Screen client))
+         (gui-node (*:getGuiNode client))
+         (root-node (*:getRootNode (as SimpleApplication client)))
+         (align BitmapFont:Align)
+         (valign BitmapFont:VAlign)
+         (cnameplate::TLabel (make-character-nameplate screen))
+         (fnameplate::TLabel (make-faction-nameplate screen))
+         (faction-palette (make-faction-palette screen))
+         (faction-group (FactionButtonGroup screen "FactionGroup"))
+         (highlight-color (ColorRGBA 1.0 1.0 0.0 1.0))
+         (caretaker-button (make-caretaker-button screen))
+         (abjurer-button (make-abjurer-button screen))
+         (rogue-button (make-rogue-button screen))
+         (character (make-player-character))
+         (char-cube (get-property character 'cube: default: #f))
+         (name-palette::Window (make-name-palette state screen))
+         (armor-palette (make-armor-palette screen))
+         (armor-group (ArmorButtonGroup screen "ArmorGroup"))
+         (absorb-armor-button (make-absorb-armor-button screen))
+         (regen-armor-button (make-regen-armor-button screen))
+         (power-armor-button (make-power-armor-button screen))
+         (energy-armor-button (make-energy-armor-button screen))
+         (weapons-palette (make-weapons-palette screen))
+         (weapons-group (WeaponsButtonGroup screen "WeaponsGroup"))
+         (cannon-weapon-button (make-cannon-weapon-button screen))
+         (impulse-weapon-button (make-impulse-weapon-button screen))
+         (malware-weapon-button (make-malware-weapon-button screen))
+         (bots-weapon-button (make-bots-weapon-button screen))
+         (augments-palette (make-augment-palette screen))
+         (force-augment-button (make-force-augment-button screen))
+         (optics-augment-button (make-optics-augment-button screen))
+         (portals-augment-button (make-portals-augment-button screen))
+         (turrets-augment-button (make-turrets-augment-button screen))
+         (augments-group (AugmentsButtonGroup screen "AugmentsGroup")))
+    ;; --------------------
+    ;; init the faction buttons
+    ;; --------------------
+    (set-faction-palette-app-state! faction-group state)
+    ;; --------------------
+    ;; --------------------
+    ;; init the skybox
+    ;; --------------------
+    (init-character-creator-sky client)
+    ;; --------------------
+    ;; add the character model
+    ;; --------------------
+    (if char-cube
+        (let ((rotator::CharacterRotator (make-character-rotator)))
+          (*:attachChild root-node (as Node char-cube))
+          (*:setLocalTranslation (as Node char-cube) 0.0 0.0 -4.0)
+          (*:setCurrentCharacter state character)
+          (*:addControl (as Node char-cube) rotator)))
+    ;; --------------------
+    ;; add the character-nameplate
+    ;; --------------------
+    (*:setCharacterNameplate state cnameplate)
+    (*:setText cnameplate "")
+    (*:setTextAlign cnameplate align:Left)
+    (*:setFont cnameplate "Interface/Fonts/Laconic30.fnt")
+    (*:setFontSize cnameplate 30)
+    (*:setFontColor cnameplate ColorRGBA:Green)
+    (*:addElement screen cnameplate)
+    ;; --------------------
+    ;; add the faction-nameplate
+    ;; --------------------
+    (*:setFactionNameplate state fnameplate)
+    (*:setText fnameplate "")
+    (*:setTextAlign fnameplate align:Left)
+    (*:setFont fnameplate "Interface/Fonts/Laconic30.fnt")
+    (*:setFontSize fnameplate 30)
+    (*:setFontColor fnameplate ColorRGBA:Green)
+    (*:addElement screen fnameplate)
+    ;; --------------------
+    ;; faction palette
+    ;; --------------------
+    (*:setWindowTitle faction-palette "Choose a Faction:")
+    ;; caretaker button
+    (*:setButtonIcon caretaker-button 128 128 "Interface/caretakers-icon128.png")
+    (*:setButtonPressedInfo caretaker-button "Interface/caretakers-icon-lit128.png"
+                            (ColorRGBA 0.0 1.0 0.0 1.0))
+    (*:setText caretaker-button "Caretakers")
+    (*:setTextAlign caretaker-button align:Center)
+    (*:setTextVAlign caretaker-button valign:Bottom)
+    (*:setFontSize caretaker-button 20)
+    (*:addButton faction-group caretaker-button)
+    ;; abjurer button
+    (*:setButtonIcon abjurer-button 128 128 "Interface/abjurers-icon128.png")
+    (*:setButtonPressedInfo abjurer-button "Interface/abjurers-icon-lit128.png"
+                            (ColorRGBA 1.0 0.0 0.0 1.0))
+    (*:setText abjurer-button "Abjurers")
+    (*:setTextAlign abjurer-button align:Center)
+    (*:setTextVAlign abjurer-button valign:Bottom)
+    (*:setFontSize abjurer-button 20)
+    (*:addButton faction-group abjurer-button)
+    ;; rogue button
+    (*:setButtonIcon rogue-button 128 128 "Interface/rogues-icon128.png")
+    (*:setButtonPressedInfo rogue-button "Interface/rogues-icon-lit128.png"
+                            (ColorRGBA 0.0 0.75 1.0 1.0))
+    (*:setText rogue-button "Rogues")
+    (*:setTextAlign rogue-button align:Center)
+    (*:setTextVAlign rogue-button valign:Bottom)
+    (*:setFontSize rogue-button 20)
+    (*:addButton faction-group rogue-button)
+    (*:addChild faction-palette caretaker-button)
+    (*:addChild faction-palette abjurer-button)
+    (*:addChild faction-palette rogue-button)
+    (*:addElement screen faction-palette)
+    ;; --------------------
+    ;; name palette
+    ;; --------------------
+    (*:setWindowTitle name-palette "Choose a Name:")
+    (*:addElement screen name-palette)
+    ;; --------------------
+    ;; armor palette
+    ;; --------------------
+    (*:setWindowTitle armor-palette "Choose Armor:")
+    ;; absorb armor button
+    (*:setButtonIcon absorb-armor-button 128 128 "Interface/absorb-armor-icon128.png")
+    (*:setButtonPressedInfo absorb-armor-button "Interface/absorb-armor-icon128.png"
+                            (ColorRGBA 1.0 1.0 0.0 1.0))
+    (*:setText absorb-armor-button "Absorb")
+    (*:setTextAlign absorb-armor-button align:Center)
+    (*:setTextVAlign absorb-armor-button valign:Bottom)
+    (*:setFontSize absorb-armor-button 20)
+    (*:addButton armor-group absorb-armor-button)
+    (*:addChild armor-palette absorb-armor-button)
+    ;; regen armor button
+    (*:setButtonIcon regen-armor-button 128 128 "Interface/regen-armor-icon128.png")
+    (*:setButtonPressedInfo regen-armor-button "Interface/regen-armor-icon128.png"
+                            (ColorRGBA 0.0 1.0 0.0 1.0))
+    (*:setText regen-armor-button "Regenerate")
+    (*:setTextAlign regen-armor-button align:Center)
+    (*:setTextVAlign regen-armor-button valign:Bottom)
+    (*:setFontSize regen-armor-button 20)
+    (*:addButton armor-group regen-armor-button)
+    (*:addChild armor-palette regen-armor-button)
+    ;; power armor button
+    (*:setButtonIcon power-armor-button 128 128 "Interface/power-armor-icon128.png")
+    (*:setButtonPressedInfo power-armor-button "Interface/power-armor-icon128.png"
+                            (ColorRGBA 1.0 0.5 0.0 1.0))
+    (*:setText power-armor-button "Power")
+    (*:setTextAlign power-armor-button align:Center)
+    (*:setTextVAlign power-armor-button valign:Bottom)
+    (*:setFontSize power-armor-button 20)
+    (*:addButton armor-group power-armor-button)
+    (*:addChild armor-palette power-armor-button)
+    ;; energy armor button
+    (*:setButtonIcon energy-armor-button 128 128 "Interface/energy-armor-icon128.png")
+    (*:setButtonPressedInfo energy-armor-button "Interface/energy-armor-icon128.png"
+                            (ColorRGBA 0.0 6.0 1.0 1.0))
+    (*:setText energy-armor-button "Energy")
+    (*:setTextAlign energy-armor-button align:Center)
+    (*:setTextVAlign energy-armor-button valign:Bottom)
+    (*:setFontSize energy-armor-button 20)
+    (*:addButton armor-group energy-armor-button)
+    (*:addChild armor-palette energy-armor-button)
+    ;; add palette to screen
+    (*:addElement screen armor-palette)
+    ;; --------------------
+    ;; weapons palette
+    ;; --------------------
+    (*:setWindowTitle weapons-palette "Choose Weapons:")
+    ;; cannon weapon button
+    (*:setButtonIcon cannon-weapon-button 128 128 "Interface/cannon-weapon-icon128.png")
+    (*:setButtonPressedInfo cannon-weapon-button "Interface/cannon-weapon-icon128.png"
+                            (ColorRGBA 1.0 1.0 0.0 1.0))
+    (*:setText cannon-weapon-button "Cannon")
+    (*:setTextAlign cannon-weapon-button align:Center)
+    (*:setTextVAlign cannon-weapon-button valign:Bottom)
+    (*:setFontSize cannon-weapon-button 20)
+    (*:addButton weapons-group cannon-weapon-button)
+    (*:addChild weapons-palette cannon-weapon-button)
+    ;; impulse weapon button
+    (*:setButtonIcon impulse-weapon-button 128 128 "Interface/impulse-weapon-icon128.png")
+    (*:setButtonPressedInfo impulse-weapon-button "Interface/impulse-weapon-icon128.png"
+                            (ColorRGBA 0.0 1.0 0.0 1.0))
+    (*:setText impulse-weapon-button "Impulse")
+    (*:setTextAlign impulse-weapon-button align:Center)
+    (*:setTextVAlign impulse-weapon-button valign:Bottom)
+    (*:setFontSize impulse-weapon-button 20)
+    (*:addButton weapons-group impulse-weapon-button)
+    (*:addChild weapons-palette impulse-weapon-button)
+    ;; malware weapon button
+    (*:setButtonIcon malware-weapon-button 128 128 "Interface/malware-weapon-icon128.png")
+    (*:setButtonPressedInfo malware-weapon-button "Interface/malware-weapon-icon128.png"
+                            (ColorRGBA 1.0 0.5 0.0 1.0))
+    (*:setText malware-weapon-button "Malware")
+    (*:setTextAlign malware-weapon-button align:Center)
+    (*:setTextVAlign malware-weapon-button valign:Bottom)
+    (*:setFontSize malware-weapon-button 20)
+    (*:addButton weapons-group malware-weapon-button)
+    (*:addChild weapons-palette malware-weapon-button)
+    ;; bots weapon button
+    (*:setButtonIcon bots-weapon-button 128 128 "Interface/bots-weapon-icon128.png")
+    (*:setButtonPressedInfo bots-weapon-button "Interface/bots-weapon-icon128.png"
+                            (ColorRGBA 0.0 6.0 1.0 1.0))
+    (*:setText bots-weapon-button "Bots")
+    (*:setTextAlign bots-weapon-button align:Center)
+    (*:setTextVAlign bots-weapon-button valign:Bottom)
+    (*:setFontSize bots-weapon-button 20)
+    (*:addButton weapons-group bots-weapon-button)
+    (*:addChild weapons-palette bots-weapon-button)
+    (*:addElement screen weapons-palette)
+    ;; --------------------
+    ;; augment palette
+    ;; --------------------
+    (*:setWindowTitle augments-palette "Choose Augments:")
+    ;; force augment button
+    (*:setButtonIcon force-augment-button 128 128 "Interface/force-augment-icon128.png")
+    (*:setButtonPressedInfo force-augment-button "Interface/force-augment-icon128.png"
+                            (ColorRGBA 1.0 1.0 0.0 1.0))
+    (*:setText force-augment-button "Force Fields")
+    (*:setTextAlign force-augment-button align:Center)
+    (*:setTextVAlign force-augment-button valign:Bottom)
+    (*:setFontSize force-augment-button 20)
+    (*:addButton augments-group force-augment-button)
+    (*:addChild augments-palette force-augment-button)
+    ;; optics augment button
+    (*:setButtonIcon optics-augment-button 128 128 "Interface/optics-augment-icon128.png")
+    (*:setButtonPressedInfo optics-augment-button "Interface/optics-augment-icon128.png"
+                            (ColorRGBA 0.0 1.0 0.0 1.0))
+    (*:setText optics-augment-button "Optics")
+    (*:setTextAlign optics-augment-button align:Center)
+    (*:setTextVAlign optics-augment-button valign:Bottom)
+    (*:setFontSize optics-augment-button 20)
+    (*:addButton augments-group optics-augment-button)
+    (*:addChild augments-palette optics-augment-button)
+    ;; portals augment button
+    (*:setButtonIcon portals-augment-button 128 128 "Interface/portals-augment-icon128.png")
+    (*:setButtonPressedInfo portals-augment-button "Interface/portals-augment-icon128.png"
+                            (ColorRGBA 1.0 0.5 0.0 1.0))
+    (*:setText portals-augment-button "Portals")
+    (*:setTextAlign portals-augment-button align:Center)
+    (*:setTextVAlign portals-augment-button valign:Bottom)
+    (*:setFontSize portals-augment-button 20)
+    (*:addButton augments-group portals-augment-button)
+    (*:addChild augments-palette portals-augment-button)
+    ;; turrets augment button
+    (*:setButtonIcon turrets-augment-button 128 128 "Interface/turrets-augment-icon128.png")
+    (*:setButtonPressedInfo turrets-augment-button "Interface/turrets-augment-icon128.png"
+                            (ColorRGBA 0.0 6.0 1.0 1.0))
+    (*:setText turrets-augment-button "Turrets")
+    (*:setTextAlign turrets-augment-button align:Center)
+    (*:setTextVAlign turrets-augment-button valign:Bottom)
+    (*:setFontSize turrets-augment-button 20)
+    (*:addButton augments-group turrets-augment-button)
+    (*:addChild augments-palette turrets-augment-button)
+    (*:addElement screen augments-palette)
+    ;; --------------------
+    ;; add the gui to the scene
+    ;; --------------------
+    (*:addControl gui-node screen)))
 
 
 ;;; (update-state-for-faction state::CharacterCreatorAppState faction)
