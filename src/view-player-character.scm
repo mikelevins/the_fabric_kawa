@@ -8,9 +8,12 @@
 ;;;;
 ;;;; ***********************************************************************
 
-(module-export abjurers-character-color caretakers-character-color
-               make-player-character rogues-character-color
-               set-player-character-cube-color!)
+(module-export
+ caretakers-character-color
+ make-player-character
+ rogues-character-color
+ set-player-character-cube-color!
+ abjurers-character-color)
 
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
