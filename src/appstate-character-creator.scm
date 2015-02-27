@@ -135,9 +135,8 @@
 ;;; ---------------------------------------------------------------------
 ;;; construct the character nameplate
 
-(define (init-character-nameplate state::CharacterCreatorAppState client::SimpleApplication)
+(define (init-character-nameplate state::CharacterCreatorAppState screen::Screen client::SimpleApplication)
   (let* ((align BitmapFont:Align)
-         (screen (Screen client))
          (cnameplate::TLabel (make-character-nameplate screen)))
     (*:setCharacterNameplate state cnameplate)
     (*:setText cnameplate "")
@@ -146,6 +145,23 @@
     (*:setFontSize cnameplate 30)
     (*:setFontColor cnameplate ColorRGBA:Green)
     (*:addElement screen cnameplate)))
+
+
+;;; (init-faction-nameplate state::CharacterCreatorAppState client::SimpleApplication)
+;;; ---------------------------------------------------------------------
+;;; construct the faction nameplate
+
+(define (init-faction-nameplate state::CharacterCreatorAppState screen::Screen  client::SimpleApplication)
+  (let* ((align BitmapFont:Align)
+         (nameplate::TLabel (make-faction-nameplate screen)))
+    (*:setFactionNameplate state nameplate)
+    (*:setText nameplate "")
+    (*:setTextAlign nameplate align:Left)
+    (*:setFont nameplate "Interface/Fonts/Laconic30.fnt")
+    (*:setFontSize nameplate 30)
+    (*:setFontColor nameplate ColorRGBA:Green)
+    (*:addElement screen nameplate)
+    nameplate))
 
 ;;; (init-character-creator app::CharacterCreatorAppState client::SimpleApplication)
 ;;; ---------------------------------------------------------------------
@@ -159,7 +175,6 @@
          (root-node (*:getRootNode (as SimpleApplication client)))
          (align BitmapFont:Align)
          (valign BitmapFont:VAlign)
-         (fnameplate::TLabel (make-faction-nameplate screen))
          (faction-palette (make-faction-palette screen))
          (faction-group (FactionButtonGroup screen "FactionGroup"))
          (highlight-color (ColorRGBA 1.0 1.0 0.0 1.0))
@@ -192,17 +207,11 @@
     ;; add the character model
     (init-character-creator-model state client)
     ;; add the character-nameplate
-    (init-character-nameplate state client)
+    (init-character-nameplate state screen client)
     ;; --------------------
     ;; add the faction-nameplate
     ;; --------------------
-    (*:setFactionNameplate state fnameplate)
-    (*:setText fnameplate "")
-    (*:setTextAlign fnameplate align:Left)
-    (*:setFont fnameplate "Interface/Fonts/Laconic30.fnt")
-    (*:setFontSize fnameplate 30)
-    (*:setFontColor fnameplate ColorRGBA:Green)
-    (*:addElement screen fnameplate)
+    (init-faction-nameplate state screen client)
     ;; --------------------
     ;; faction palette
     ;; --------------------
