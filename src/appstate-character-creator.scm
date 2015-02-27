@@ -79,7 +79,6 @@
 ;;; the AppState Class
 ;;; =====================================================================
 
-
 ;;; CLASS CharacterCreatorAppState
 ;;; ---------------------------------------------------------------------
 ;;; the AppState class that constructs and manages the character
@@ -109,7 +108,7 @@
 
 (define (init-character-creator-sky client::SimpleApplication)
   (let* ((sky (make-sky-box client))
-         ;;(sky (make-sky-sphere client))
+         ;;(sky (make-sky-sphere client)) ; if we want to try sphere maps instead
          (root-node (*:getRootNode (as SimpleApplication client))))
     ;; add the sky to the scene
     (*:attachChild root-node sky)))

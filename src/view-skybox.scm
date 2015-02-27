@@ -30,15 +30,26 @@
 ;;; ---------------------------------------------------------------------
 ;;; returns a newly-constructed Fabric skybox
 
+;; older, lower-quality images
+;; (define (make-sky-box app::SimpleApplication)
+;;   (let ((asset-manager::AssetManager (get-asset-manager)))
+;;     (SkyFactory:createSky asset-manager 
+;;                           (*:loadTexture asset-manager "Textures/tycholeft.png")
+;;                           (*:loadTexture asset-manager "Textures/tychoright.png")
+;;                           (*:loadTexture asset-manager "Textures/tychofront.png")
+;;                           (*:loadTexture asset-manager "Textures/tychoback.png")
+;;                           (*:loadTexture asset-manager "Textures/tychotop.png")
+;;                           (*:loadTexture asset-manager "Textures/tychobottom.png"))))
+
 (define (make-sky-box app::SimpleApplication)
   (let ((asset-manager::AssetManager (get-asset-manager)))
     (SkyFactory:createSky asset-manager 
-                          (*:loadTexture asset-manager "Textures/tycholeft.png")
-                          (*:loadTexture asset-manager "Textures/tychoright.png")
-                          (*:loadTexture asset-manager "Textures/tychofront.png")
-                          (*:loadTexture asset-manager "Textures/tychoback.png")
-                          (*:loadTexture asset-manager "Textures/tychotop.png")
-                          (*:loadTexture asset-manager "Textures/tychobottom.png"))))
+                          (*:loadTexture asset-manager "Textures/TychoSkymapII.t3_08192x04096_80_mx.jpg")
+                          (*:loadTexture asset-manager "Textures/TychoSkymapII.t3_08192x04096_80_px.jpg")
+                          (*:loadTexture asset-manager "Textures/TychoSkymapII.t3_08192x04096_80_pz.jpg")
+                          (*:loadTexture asset-manager "Textures/TychoSkymapII.t3_08192x04096_80_mz.jpg")
+                          (*:loadTexture asset-manager "Textures/TychoSkymapII.t3_08192x04096_80_py.jpg")
+                          (*:loadTexture asset-manager "Textures/TychoSkymapII.t3_08192x04096_80_my.jpg"))))
 
 ;;; (make-sky-sphere app::SimpleApplication)
 ;;; ---------------------------------------------------------------------
