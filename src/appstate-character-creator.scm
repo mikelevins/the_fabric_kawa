@@ -146,7 +146,7 @@
     (*:addElement screen cnameplate)))
 
 
-;;; (init-faction-nameplate state::CharacterCreatorAppState client::SimpleApplication)
+;;; (init-faction-nameplate state::CharacterCreatorAppState screen::Screen client::SimpleApplication)
 ;;; ---------------------------------------------------------------------
 ;;; construct the faction nameplate
 
@@ -162,58 +162,18 @@
     (*:addElement screen nameplate)
     nameplate))
 
-;;; (init-character-creator app::CharacterCreatorAppState client::SimpleApplication)
+;;; (init-faction-palette state::CharacterCreatorAppState screen::Screen client::SimpleApplication)
 ;;; ---------------------------------------------------------------------
-;;; construct the character creator's scene and UI
+;;; construct the faction palette
 
-(define (init-character-creator state::CharacterCreatorAppState mgr::AppStateManager client::SimpleApplication)
-  (*:setApp state client)
-  (set-current-fabric-name! state (blank-fabric-name))
-  (let* ((screen (Screen client))
-         (gui-node (*:getGuiNode client))
-         (root-node (*:getRootNode (as SimpleApplication client)))
-         (align BitmapFont:Align)
+(define (init-faction-palette state::CharacterCreatorAppState screen::Screen client::SimpleApplication)
+  (let* ((align BitmapFont:Align)
          (valign BitmapFont:VAlign)
-         (faction-palette (make-faction-palette screen))
          (faction-group (FactionButtonGroup screen "FactionGroup"))
-         (highlight-color (ColorRGBA 1.0 1.0 0.0 1.0))
+         (faction-palette (make-faction-palette screen))
          (caretaker-button (make-caretaker-button screen))
          (abjurer-button (make-abjurer-button screen))
-         (rogue-button (make-rogue-button screen))
-         (name-palette::Window (make-name-palette state screen))
-         (armor-palette (make-armor-palette screen))
-         (armor-group (ArmorButtonGroup screen "ArmorGroup"))
-         (absorb-armor-button (make-absorb-armor-button screen))
-         (regen-armor-button (make-regen-armor-button screen))
-         (power-armor-button (make-power-armor-button screen))
-         (energy-armor-button (make-energy-armor-button screen))
-         (weapons-palette (make-weapons-palette screen))
-         (weapons-group (WeaponsButtonGroup screen "WeaponsGroup"))
-         (cannon-weapon-button (make-cannon-weapon-button screen))
-         (impulse-weapon-button (make-impulse-weapon-button screen))
-         (malware-weapon-button (make-malware-weapon-button screen))
-         (bots-weapon-button (make-bots-weapon-button screen))
-         (augments-palette (make-augment-palette screen))
-         (force-augment-button (make-force-augment-button screen))
-         (optics-augment-button (make-optics-augment-button screen))
-         (portals-augment-button (make-portals-augment-button screen))
-         (turrets-augment-button (make-turrets-augment-button screen))
-         (augments-group (AugmentsButtonGroup screen "AugmentsGroup")))
-    ;; set initial faction state
-    (set-faction-palette-app-state! faction-group state)
-    ;; init the skybox
-    (init-character-creator-sky client)
-    ;; add the character model
-    (init-character-creator-model state client)
-    ;; add the character-nameplate
-    (init-character-nameplate state screen client)
-    ;; --------------------
-    ;; add the faction-nameplate
-    ;; --------------------
-    (init-faction-nameplate state screen client)
-    ;; --------------------
-    ;; faction palette
-    ;; --------------------
+         (rogue-button (make-rogue-button screen)))
     (*:setWindowTitle faction-palette "Choose a Faction:")
     ;; caretaker button
     (*:setButtonIcon caretaker-button 128 128 "Interface/caretakers-icon128.png")
@@ -246,6 +206,54 @@
     (*:addChild faction-palette abjurer-button)
     (*:addChild faction-palette rogue-button)
     (*:addElement screen faction-palette)
+    ;; set initial faction state
+    (set-faction-palette-app-state! faction-group state)
+    faction-palette))
+
+;;; (init-character-creator app::CharacterCreatorAppState client::SimpleApplication)
+;;; ---------------------------------------------------------------------
+;;; construct the character creator's scene and UI
+
+(define (init-character-creator state::CharacterCreatorAppState mgr::AppStateManager client::SimpleApplication)
+  (*:setApp state client)
+  (set-current-fabric-name! state (blank-fabric-name))
+  (let* ((screen (Screen client))
+         (gui-node (*:getGuiNode client))
+         (root-node (*:getRootNode (as SimpleApplication client)))
+         (align BitmapFont:Align)
+         (valign BitmapFont:VAlign)
+         (highlight-color (ColorRGBA 1.0 1.0 0.0 1.0))
+         (name-palette::Window (make-name-palette state screen))
+         (armor-palette (make-armor-palette screen))
+         (armor-group (ArmorButtonGroup screen "ArmorGroup"))
+         (absorb-armor-button (make-absorb-armor-button screen))
+         (regen-armor-button (make-regen-armor-button screen))
+         (power-armor-button (make-power-armor-button screen))
+         (energy-armor-button (make-energy-armor-button screen))
+         (weapons-palette (make-weapons-palette screen))
+         (weapons-group (WeaponsButtonGroup screen "WeaponsGroup"))
+         (cannon-weapon-button (make-cannon-weapon-button screen))
+         (impulse-weapon-button (make-impulse-weapon-button screen))
+         (malware-weapon-button (make-malware-weapon-button screen))
+         (bots-weapon-button (make-bots-weapon-button screen))
+         (augments-palette (make-augment-palette screen))
+         (force-augment-button (make-force-augment-button screen))
+         (optics-augment-button (make-optics-augment-button screen))
+         (portals-augment-button (make-portals-augment-button screen))
+         (turrets-augment-button (make-turrets-augment-button screen))
+         (augments-group (AugmentsButtonGroup screen "AugmentsGroup")))
+    ;; build the skybox
+    (init-character-creator-sky client)
+    ;; add the character model
+    (init-character-creator-model state client)
+    ;; add the character-nameplate
+    (init-character-nameplate state screen client)
+    ;; add the faction-nameplate
+    (init-faction-nameplate state screen client)
+    ;; --------------------
+    ;; faction palette
+    ;; --------------------
+    (init-faction-palette state screen client)
     ;; --------------------
     ;; name palette
     ;; --------------------
