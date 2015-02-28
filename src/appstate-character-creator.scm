@@ -326,6 +326,15 @@
     (*:addChild weapons-palette bots-weapon-button)
     (*:addElement screen weapons-palette)))
 
+;;; (init-name-palette state::CharacterCreatorAppState screen::Screen client::SimpleApplication)
+;;; ---------------------------------------------------------------------
+;;; construct the name palette
+
+(define (init-name-palette state::CharacterCreatorAppState screen::Screen client::SimpleApplication)
+  (let* ((name-palette::Window (make-name-palette state screen)))
+    (*:setWindowTitle name-palette "Choose a Name:")
+    (*:addElement screen name-palette)))
+
 ;;; (init-character-creator app::CharacterCreatorAppState client::SimpleApplication)
 ;;; ---------------------------------------------------------------------
 ;;; construct the character creator's scene and UI
@@ -339,7 +348,6 @@
          (align BitmapFont:Align)
          (valign BitmapFont:VAlign)
          (highlight-color (ColorRGBA 1.0 1.0 0.0 1.0))
-         (name-palette::Window (make-name-palette state screen))
          (augments-palette (make-augment-palette screen))
          (force-augment-button (make-force-augment-button screen))
          (optics-augment-button (make-optics-augment-button screen))
@@ -360,11 +368,8 @@
     (init-armor-palette state screen client)
     ;; weapons palette
     (init-weapons-palette state screen client)
-    ;; --------------------
     ;; name palette
-    ;; --------------------
-    (*:setWindowTitle name-palette "Choose a Name:")
-    (*:addElement screen name-palette)
+    (init-name-palette state screen client)
     ;; --------------------
     ;; augment palette
     ;; --------------------
