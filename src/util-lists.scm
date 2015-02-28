@@ -15,6 +15,7 @@
  every?
  every?
  get-key
+ interpose
  list-fill
  position-if
  put-key
@@ -81,6 +82,22 @@
           (if (apply test args)
               (loop (map cdr lists))
               #f)))))
+
+
+;;; (interpose cupola ls)
+;;; ---------------------------------------------------------------------
+;;; returns a new list in which _cupola_ has been inserted between
+;;; each pair of elements of _ls_
+
+(define (interpose cupola ls)
+  (if (or (null? ls)
+          (null? (cdr ls)))
+      ls
+      (cons (car ls)
+            (cons cupola
+                  (interpose cupola
+                             (cdr ls))))))
+
 
 ;;; (list-fill n thing)
 ;;; ---------------------------------------------------------------------

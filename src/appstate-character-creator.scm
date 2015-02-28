@@ -30,6 +30,7 @@
 
 (require 'list-lib)
 (require "util-java.scm")
+(require "util-lists.scm")
 (require "syntax-classes.scm")
 (require "data-names.scm")
 (require "model-namegen.scm")
@@ -91,6 +92,7 @@
    (current-faction init-form: #f getter: getCurrentFaction setter: setCurrentFaction)
    (character-nameplate::TLabel init-form: #!null getter: getCharacterNameplate setter: setCharacterNameplate)
    (faction-nameplate::TLabel init-form: #!null getter: getFactionNameplate setter: setFactionNameplate)
+   (name-palette::Window init-form: #!null getter: getNamePalette setter: setNamePalette)
    (app::SimpleApplication init-form: #!null getter: getApp setter: setApp)
    (state-manager::AppStateManager init-form: #!null getter: getStateManager setter: setStateManager))
   (methods:
@@ -211,7 +213,6 @@
     faction-palette))
 
 
-
 ;;; (init-armor-palette state::CharacterCreatorAppState screen::Screen client::SimpleApplication)
 ;;; ---------------------------------------------------------------------
 ;;; construct the armor palette
@@ -326,6 +327,7 @@
     (*:addChild weapons-palette bots-weapon-button)
     (*:addElement screen weapons-palette)))
 
+
 ;;; (init-name-palette state::CharacterCreatorAppState screen::Screen client::SimpleApplication)
 ;;; ---------------------------------------------------------------------
 ;;; construct the name palette
@@ -333,6 +335,7 @@
 (define (init-name-palette state::CharacterCreatorAppState screen::Screen client::SimpleApplication)
   (let* ((name-palette::Window (make-name-palette state screen)))
     (*:setWindowTitle name-palette "Choose a Name:")
+    (*:setNamePalette state name-palette)
     (*:addElement screen name-palette)))
 
 
@@ -398,7 +401,6 @@
 
 (define (init-character-creator state::CharacterCreatorAppState mgr::AppStateManager client::SimpleApplication)
   (*:setApp state client)
-  (set-current-fabric-name! state (blank-fabric-name))
   (let* ((screen (Screen client))
          (gui-node (*:getGuiNode client))
          (root-node (*:getRootNode (as SimpleApplication client)))
@@ -416,7 +418,8 @@
     (init-name-palette state screen client)
     (init-augments-palette state screen client)
     ;; add the gui to the scene
-    (*:addControl gui-node screen)))
+    (*:addControl gui-node screen))
+  (set-current-fabric-name! state (blank-fabric-name)))
 
 
 ;;; (update-state-for-faction state::CharacterCreatorAppState faction)
@@ -493,8 +496,16 @@
 ;;; ---------------------------------------------------------------------
 ;;; sets the FabricName that is currently selected in the name palette
 
-(define (set-current-fabric-name! app-state new-name)
-  #f)
+(define (set-current-fabric-name! app-state::CharacterCreatorAppState new-name)
+  (let ((name-palette (*:getNamePalette app-state)))
+    (if (not (jnull? name-palette))
+        (let* ((nameplate::TLabel (*:getCharacterNameplate app-state))
+               (name-list (name-palette-get-name name-palette))
+               (name-string (apply string-append
+                                   (interpose " "
+                                              (filter (lambda (nm)(not (equal? "" nm)))
+                                                      name-list)))))
+          (*:setText nameplate name-string)))))
 
 
 ;;; (notify-name-selection-changed app-state index value)

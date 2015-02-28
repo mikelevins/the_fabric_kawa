@@ -11,7 +11,8 @@
 (module-export
  compute-name-palette-origin
  compute-name-palette-size
- make-name-palette)
+ make-name-palette
+ name-palette-get-name)
 
 (require 'list-lib)
 (require "appstate-character-creator.scm")
@@ -24,6 +25,7 @@
 
 (import-as Screen tonegod.gui.core.Screen)
 (import-as Vector2f com.jme3.math.Vector2f)
+(import-as MenuItem tonegod.gui.controls.menuing.MenuItem)
 (import-as Window tonegod.gui.controls.windows.Window)
 
 ;;; =====================================================================
@@ -96,3 +98,35 @@
         (for-each %make-menu indexes)
         palette))))
 
+
+;;; (name-palette-get-name palette::Window)
+;;; ---------------------------------------------------------------------
+;;; returns the FabricName currently displayed in the name palette
+
+(define (name-palette-get-name palette::Window)
+  (let* ((dom0-menu::NameMenu (*:getChildElementById palette "Domain0Menu"))
+         (dom0-item::MenuItem (*:getSelectedListItem dom0-menu))
+         (dom0-value (*:getValue dom0-item))
+         (dom1-menu::NameMenu (*:getChildElementById palette "Domain1Menu"))
+         (dom1-item::MenuItem (*:getSelectedListItem dom1-menu))
+         (dom1-value (*:getValue dom1-item))
+         (dom2-menu::NameMenu (*:getChildElementById palette "Domain2Menu"))
+         (dom2-item::MenuItem (*:getSelectedListItem dom2-menu))
+         (dom2-value (*:getValue dom2-item))
+         (dom3-menu::NameMenu (*:getChildElementById palette "Domain3Menu"))
+         (dom3-item::MenuItem (*:getSelectedListItem dom3-menu))
+         (dom3-value (*:getValue dom3-item))
+         (dom4-menu::NameMenu (*:getChildElementById palette "Domain4Menu"))
+         (dom4-item::MenuItem (*:getSelectedListItem dom4-menu))
+         (dom4-value (*:getValue dom4-item))
+         (dom5-menu::NameMenu (*:getChildElementById palette "Domain5Menu"))
+         (dom5-item::MenuItem (*:getSelectedListItem dom5-menu))
+         (dom5-value (*:getValue dom5-item))
+         (dom6-menu::NameMenu (*:getChildElementById palette "Domain6Menu"))
+         (dom6-item::MenuItem (*:getSelectedListItem dom6-menu))
+         (dom6-value (*:getValue dom6-item))
+         (dom7-menu::NameMenu (*:getChildElementById palette "Domain7Menu"))
+         (dom7-item::MenuItem (*:getSelectedListItem dom7-menu))
+         (dom7-value (*:getValue dom7-item)))
+    (list dom0-value dom1-value dom2-value dom3-value
+          dom4-value dom5-value dom6-value dom7-value)))
