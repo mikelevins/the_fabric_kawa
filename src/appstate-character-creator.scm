@@ -131,7 +131,7 @@
     (if char-cube
         (let ((rotator::CharacterRotator (make-character-rotator)))
           (*:attachChild root-node (as Node char-cube))
-          (*:setLocalTranslation (as Node char-cube) 0.0 0.0 -4.0)
+          (*:setLocalTranslation (as Node char-cube) 0.0 0.0 -8.0)
           (*:setCurrentCharacter state character)
           (*:addControl (as Node char-cube) rotator))
         (warn "init-character-creator-model: creating a starting character failed"))))

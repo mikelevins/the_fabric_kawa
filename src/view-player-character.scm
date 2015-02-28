@@ -133,7 +133,7 @@
 ;;; returns the standard color used to tint Rogue characters
 
 (define (rogues-character-color)
-  (ColorRGBA 0.0 0.3 0.5 0.3))
+  (ColorRGBA 0.0 0.3 0.6 0.3))
 
 
 ;;; (abjurers-character-color)
@@ -143,6 +143,17 @@
 (define (abjurers-character-color)
   (ColorRGBA 0.4 0.0 0.0 0.3))
 
+
+;;; (character-glow-color)
+;;; ---------------------------------------------------------------------
+;;; returns the standard color used to make characters glow
+
+(define (character-glow-color)
+  (ColorRGBA 1.0 1.0 1.0 0.6))
+
+;;; (get-faction-color)
+;;; ---------------------------------------------------------------------
+;;; returns the color associated with a specified faction
 
 (define (get-faction-color faction)
   (case faction
@@ -154,13 +165,13 @@
 ;;; (set-player-character-cube-color! char-cube::Node character-color)
 ;;; ---------------------------------------------------------------------
 ;;; sets the tint of all component cubes in a character's avatar cube
-;;; to _character-color_
 
 (define (update-character-model! app-state::CharacterCreatorAppState)
   (let* ((faction (*:getCurrentFaction app-state))
          (faction-color (get-faction-color faction))
          (bright-color (brighten faction-color))
          (dark-color (darken faction-color))
+         (glow-color (character-glow-color))
          (character-name (*:getCharacterName app-state))
          (name-bits (fabric-name-bits character-name))
          (character (*:getCurrentCharacter app-state))
@@ -173,5 +184,5 @@
                  (mat::Material (*:getMaterial cube))
                  (flag (list-ref name-bits i)))
             (*:setColor mat "Color" (if flag bright-color dark-color))
-            (*:setColor mat "GlowColor" (if flag bright-color dark-color))
+            (*:setColor mat "GlowColor" (if flag glow-color dark-color))
             (loop (+ i 1)))))))
