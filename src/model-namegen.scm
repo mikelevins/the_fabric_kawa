@@ -13,10 +13,11 @@
  blank-fabric-name
  FabricName
  fabric-name-bit-patterns
+ fabric-name-bits
  fabric-name-bytes
  fabric-name-bytestrings
  fabric-name-strings
- gen-name
+ name-part->domain-index
  name-part->domain-and-index
  strings->fabric-name
  update-fabric-name)
@@ -31,6 +32,7 @@
 ;;; integer, a sequence of up to 8 text strings, bit strings, and
 ;;; hexadecimal byte strings.
 
+(require 'srfi-60)
 (require 'list-lib)
 (require "util-java.scm")
 (require "util-bytes.scm")
@@ -64,6 +66,15 @@
          (result-bytes (list-fill 8 0)))
     (append data-bytes
             (drop result-bytes data-count))))
+
+
+;;; (fabric-name-bits nm :: FabricName)
+;;; ---------------------------------------------------------------------
+;;; returns a list of bits corresponding to the integer value of the
+;;; Fabric name
+
+(define (fabric-name-bits nm::FabricName)
+  (integer->bits (*:getData nm)))
 
 
 ;;; (fabric-name-bytestrings nm)
@@ -129,15 +140,4 @@
          (new-strings (replace-element old-strings domain-index new-part)))
     (strings->fabric-name new-strings)))
 
-;;; (gen-name)
-;;; ---------------------------------------------------------------------
-;;; generates a random Fabric name
-
-(define (gen-name)
-  (let* ((bytes (gen-bytes (choose-any '(1 2 3 4))))
-         (zeros (list-fill (- 8 (length bytes)) 0))
-         (num (apply bytes->integer (shuffle (append bytes zeros)))))
-    (if (zero? num)
-        (gen-name)
-        (FabricName num))))
 

@@ -44,6 +44,7 @@
 (require "view-name-palette.scm")
 (require "view-character-nameplate.scm")
 (require "view-controls.scm")
+(require "view-colors.scm")
 (require "view-player-character.scm")
 (require "util-error.scm")
 (require "client-main.scm")
@@ -60,13 +61,16 @@
 (import-as ButtonAdapter tonegod.gui.controls.buttons.ButtonAdapter)
 (import-as ColorRGBA com.jme3.math.ColorRGBA)
 (import-as ComboBox tonegod.gui.controls.lists.ComboBox)
+(import-as Geometry com.jme3.scene.Geometry)
 (import-as Integer java.lang.Integer)
 (import-as Label tonegod.gui.controls.text.Label)
+(import-as Material com.jme3.material.Material)
 (import-as MouseButtonEvent com.jme3.input.event.MouseButtonEvent)
 (import-as Node com.jme3.scene.Node)
 (import-as Panel tonegod.gui.controls.windows.Panel)
 (import-as RadioButton tonegod.gui.controls.buttons.RadioButton)
 (import-as RadioButtonGroup tonegod.gui.controls.buttons.RadioButtonGroup)
+(import-as SafeArrayList com.jme3.util.SafeArrayList)
 (import-as Screen tonegod.gui.core.Screen)
 (import-as SelectBox tonegod.gui.controls.lists.SelectBox)
 (import-as Serializer com.jme3.network.serializing.Serializer)
@@ -428,22 +432,16 @@
 ;;; in response to any changes made by the user or the game
 
 (define (update-state-for-faction state::CharacterCreatorAppState faction)
-  (let* ((character-entity (*:getCurrentCharacter state)))
-    (if (member faction '(caretakers rogues abjurers))
-        (let ((char-cube (get-property character-entity 'cube: default: #f)))
-          (if char-cube
-              (case faction
-                ((caretakers)(let ((fnameplate::TLabel (*:getFactionNameplate state)))
-                               (set-player-character-cube-color! char-cube (caretakers-character-color))
-                               (*:setText fnameplate "Faction: Caretakers")))
-                ((rogues)(let ((fnameplate::TLabel (*:getFactionNameplate state)))
-                           (set-player-character-cube-color! char-cube (rogues-character-color))
-                           (*:setText fnameplate "Faction: Rogues")))
-                ((abjurers)(let ((fnameplate::TLabel (*:getFactionNameplate state)))
-                             (set-player-character-cube-color! char-cube (abjurers-character-color))
-                             (*:setText fnameplate "Faction: Abjurers"))))
-              (error "update-state-for-faction: missing character cube ")))
-        (error "set-current-faction: unrecognized faction: " faction))))
+  (let* ((fnameplate::TLabel (*:getFactionNameplate state))
+         (character-name (*:getCharacterName state))
+         (faction-name (case faction
+                         ((caretakers) "Faction: Caretakers")
+                         ((rogues) "Faction: Rogues")
+                         ((abjurers) "Faction: Abjurers")
+                         (else ""))))
+    (*:setText fnameplate faction-name)
+    (update-character-model! state)))
+
 
 
 ;;; (set-current-faction state::CharacterCreatorAppState faction)
@@ -497,16 +495,12 @@
 ;;; sets the FabricName that is currently selected in the name palette
 
 (define (set-current-fabric-name! app-state::CharacterCreatorAppState new-name)
-  (let ((name-palette (*:getNamePalette app-state)))
-    (if (not (jnull? name-palette))
-        (let* ((nameplate::TLabel (*:getCharacterNameplate app-state))
-               (name-list (name-palette-get-name name-palette))
-               (name-string (apply string-append
-                                   (interpose " "
-                                              (filter (lambda (nm)(not (equal? "" nm)))
-                                                      name-list)))))
-          (*:setText nameplate name-string)))))
-
+  (*:setCharacterName app-state new-name)
+  (let* ((name-strings (fabric-name-strings new-name))
+         (name-parts (filter (lambda (nm)(not (equal? "" nm))) name-strings))
+         (name-string (apply string-append (interpose " " name-parts)))
+         (nameplate::TLabel (*:getCharacterNameplate app-state)))
+    (*:setText nameplate name-string)))
 
 ;;; (notify-name-selection-changed app-state index value)
 ;;; ---------------------------------------------------------------------
@@ -517,4 +511,7 @@
   (receive (domain index)(name-part->domain-and-index value)
     (let* ((current-name (current-fabric-name app-state))
            (new-name (update-fabric-name current-name domain index)))
-      (set-current-fabric-name! app-state new-name))))
+      (set-current-fabric-name! app-state new-name)
+      (update-character-model! app-state))))
+
+

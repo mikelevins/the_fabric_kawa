@@ -53,7 +53,7 @@
 
 (define (compute-character-nameplate-size screen::Screen)
   (let ((width (*:getWidth screen)))
-    (Vector2f 280 40)))
+    (Vector2f 640 40)))
 
 
 ;;; (make-character-nameplate screen::Screen)

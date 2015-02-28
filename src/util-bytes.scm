@@ -9,11 +9,14 @@
 ;;;; ***********************************************************************
 
 (module-export
+ byte->bits
  bytes->integer
  bytes->strings
  gen-bytes
+ integer->bits
  integer->bytes)
 
+(require 'srfi-60)
 (require 'list-lib)
 (require "util-random.scm")
 
@@ -52,6 +55,7 @@
 ;;; ---------------------------------------------------------------------
 ;;; returns a sequence of bytes that corresponds to the value of the
 ;;; integer _num_
+;;; BUG: assumes num can never be more than 64 bits
 
 (define (integer->bytes num::gnu.math.IntNum)
   (let ((bytes num:words))
@@ -69,3 +73,13 @@
                (indexes (iota byte-count)))
           (map (lambda (i)(bytes i))
                indexes)))))
+
+(define (byte->bits b)
+  (let ((indexes (iota 8)))
+    (reverse (map (lambda (i)(logbit? i b))
+                  indexes))))
+
+(define (integer->bits num::gnu.math.IntNum)
+  (let* ((bytes (integer->bytes num))
+         (bitlists (map byte->bits bytes)))
+    (apply append bitlists)))

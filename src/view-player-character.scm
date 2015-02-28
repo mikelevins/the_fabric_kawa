@@ -9,11 +9,12 @@
 ;;;; ***********************************************************************
 
 (module-export
+ abjurers-character-color
  caretakers-character-color
+ default-character-color
  make-player-character
  rogues-character-color
- set-player-character-cube-color!
- abjurers-character-color)
+ update-character-model!)
 
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
@@ -26,9 +27,15 @@
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
+(require 'list-lib)
 (require "util-java.scm")
+(require "util-lists.scm")
 (require "model-entity.scm")
+(require "data-names.scm")
+(require "model-namegen.scm")
 (require "syntax-classes.scm")
+(require "view-colors.scm")
+(require "appstate-character-creator.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -57,7 +64,7 @@
 (define (make-component-cube x y z)
   (let* ((asset-manager (get-asset-manager))
          (mat (Material asset-manager "Common/MatDefs/Misc/Unshaded.j3md"))
-         (dim-color (ColorRGBA 0.25 0.25 0.25 0.125))
+         (dim-color (default-character-color))
          (new-box (Box 0.4 0.4 0.4))
          (new-geom::Geometry (Geometry (format #f "cube ~a,~a,~a" x y z) new-box))
          (bucket RenderQueue:Bucket))
@@ -109,6 +116,10 @@
     (entity 'player-character cube: cube)))
 
 
+(define (default-character-color)
+  (ColorRGBA 0.25 0.25 0.25 0.25))
+
+
 ;;; (caretakers-character-color)
 ;;; ---------------------------------------------------------------------
 ;;; returns the standard color used to tint Caretaker characters
@@ -133,18 +144,37 @@
   (ColorRGBA 0.4 0.0 0.0 0.3))
 
 
+(define (get-faction-color faction)
+  (case faction
+    ((caretakers)(caretakers-character-color))
+    ((rogues)(rogues-character-color))
+    ((abjurers)(abjurers-character-color))
+    (else (default-character-color))))
+
 ;;; (set-player-character-cube-color! char-cube::Node character-color)
 ;;; ---------------------------------------------------------------------
 ;;; sets the tint of all component cubes in a character's avatar cube
 ;;; to _character-color_
 
-(define (set-player-character-cube-color! char-cube::Node character-color)
-  (let* ((cubes::SafeArrayList (*:getChildren char-cube))
+(define (update-character-model! app-state::CharacterCreatorAppState)
+  (let* ((faction (*:getCurrentFaction app-state))
+         (faction-color (get-faction-color faction))
+         (bright-color (brighten faction-color))
+         (dark-color (darken faction-color))
+         (character-name (*:getCharacterName app-state))
+         (name-bits (fabric-name-bits character-name))
+         (character (*:getCurrentCharacter app-state))
+         (char-cube::Node (get-property character 'cube:))
+         (cubes::SafeArrayList (*:getChildren char-cube))
          (cube-count (*:size cubes)))
-    (let loop ((i 0))
-      (if (< i cube-count)
+    (let loop ((i 0)
+               (flags name-bits))
+      (if (and (< i cube-count)
+               (not (null? flags)))
           (let* ((cube::Geometry (*:get cubes i))
-                 (mat::Material (*:getMaterial cube)))
-            (*:setColor mat "Color" character-color)
-            (loop (+ i 1)))
+                 (mat::Material (*:getMaterial cube))
+                 (flag (car flags)))
+            (*:setColor mat "Color" (if flag bright-color dark-color))
+            (loop (+ i 1)
+                  (cdr flags)))
           char-cube))))
