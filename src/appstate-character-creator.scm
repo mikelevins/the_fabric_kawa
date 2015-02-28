@@ -335,44 +335,20 @@
     (*:setWindowTitle name-palette "Choose a Name:")
     (*:addElement screen name-palette)))
 
-;;; (init-character-creator app::CharacterCreatorAppState client::SimpleApplication)
-;;; ---------------------------------------------------------------------
-;;; construct the character creator's scene and UI
 
-(define (init-character-creator state::CharacterCreatorAppState mgr::AppStateManager client::SimpleApplication)
-  (*:setApp state client)
-  (set-current-fabric-name! state (blank-fabric-name))
-  (let* ((screen (Screen client))
-         (gui-node (*:getGuiNode client))
-         (root-node (*:getRootNode (as SimpleApplication client)))
-         (align BitmapFont:Align)
+;;; (init-augments-palette state::CharacterCreatorAppState screen::Screen client::SimpleApplication)
+;;; ---------------------------------------------------------------------
+;;; construct the augments palette
+
+(define (init-augments-palette state::CharacterCreatorAppState screen::Screen client::SimpleApplication)
+  (let* ((align BitmapFont:Align)
          (valign BitmapFont:VAlign)
-         (highlight-color (ColorRGBA 1.0 1.0 0.0 1.0))
          (augments-palette (make-augment-palette screen))
          (force-augment-button (make-force-augment-button screen))
          (optics-augment-button (make-optics-augment-button screen))
          (portals-augment-button (make-portals-augment-button screen))
          (turrets-augment-button (make-turrets-augment-button screen))
          (augments-group (AugmentsButtonGroup screen "AugmentsGroup")))
-    ;; build the skybox
-    (init-character-creator-sky client)
-    ;; add the character model
-    (init-character-creator-model state client)
-    ;; add the character-nameplate
-    (init-character-nameplate state screen client)
-    ;; add the faction-nameplate
-    (init-faction-nameplate state screen client)
-    ;; faction palette
-    (init-faction-palette state screen client)
-    ;; armor palette
-    (init-armor-palette state screen client)
-    ;; weapons palette
-    (init-weapons-palette state screen client)
-    ;; name palette
-    (init-name-palette state screen client)
-    ;; --------------------
-    ;; augment palette
-    ;; --------------------
     (*:setWindowTitle augments-palette "Choose Augments:")
     ;; force augment button
     (*:setButtonIcon force-augment-button 128 128 "Interface/force-augment-icon128.png")
@@ -414,10 +390,32 @@
     (*:setFontSize turrets-augment-button 20)
     (*:addButton augments-group turrets-augment-button)
     (*:addChild augments-palette turrets-augment-button)
-    (*:addElement screen augments-palette)
-    ;; --------------------
+    (*:addElement screen augments-palette)))
+
+;;; (init-character-creator app::CharacterCreatorAppState client::SimpleApplication)
+;;; ---------------------------------------------------------------------
+;;; construct the character creator's scene and UI
+
+(define (init-character-creator state::CharacterCreatorAppState mgr::AppStateManager client::SimpleApplication)
+  (*:setApp state client)
+  (set-current-fabric-name! state (blank-fabric-name))
+  (let* ((screen (Screen client))
+         (gui-node (*:getGuiNode client))
+         (root-node (*:getRootNode (as SimpleApplication client)))
+         (align BitmapFont:Align)
+         (valign BitmapFont:VAlign)
+         (highlight-color (ColorRGBA 1.0 1.0 0.0 1.0)))
+    ;; build the UI elements
+    (init-character-creator-sky client)
+    (init-character-creator-model state client)
+    (init-character-nameplate state screen client)
+    (init-faction-nameplate state screen client)
+    (init-faction-palette state screen client)
+    (init-armor-palette state screen client)
+    (init-weapons-palette state screen client)
+    (init-name-palette state screen client)
+    (init-augments-palette state screen client)
     ;; add the gui to the scene
-    ;; --------------------
     (*:addControl gui-node screen)))
 
 
