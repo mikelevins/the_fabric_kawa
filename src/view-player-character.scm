@@ -173,4 +173,5 @@
                  (mat::Material (*:getMaterial cube))
                  (flag (list-ref name-bits i)))
             (*:setColor mat "Color" (if flag bright-color dark-color))
+            (*:setColor mat "GlowColor" (if flag bright-color dark-color))
             (loop (+ i 1)))))))
