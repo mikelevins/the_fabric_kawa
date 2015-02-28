@@ -35,5 +35,5 @@
     (invoke-special SelectBox (this) '*init* screen uid position size)
     (set! app-state state))
    ((onChange index::int value::Object)
-    (notify-name-selection-changed app-state index value))))
+    (notify-name-selection-changed app-state (this) index value))))
 

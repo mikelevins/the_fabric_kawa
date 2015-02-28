@@ -502,16 +502,36 @@
          (nameplate::TLabel (*:getCharacterNameplate app-state)))
     (*:setText nameplate name-string)))
 
+
+;;; BUGFIX: non-unique elements zero in the domains meant
+;;; that selecting blank names didn't work; a blank name
+;;; was always being interpreted as being from domain 0
+;;; fixed by usinf the index of the menu  to figure out
+;;; which domain is meant
+(define (menu-id->domain-index menu-id)
+  (cond
+   ((equal? menu-id "Domain0Menu") 0)
+   ((equal? menu-id "Domain1Menu") 1)
+   ((equal? menu-id "Domain2Menu") 2)
+   ((equal? menu-id "Domain3Menu") 3)
+   ((equal? menu-id "Domain4Menu") 4)
+   ((equal? menu-id "Domain5Menu") 5)
+   ((equal? menu-id "Domain6Menu") 6)
+   ((equal? menu-id "Domain7Menu") 7)
+   (else -1)))
+
 ;;; (notify-name-selection-changed app-state index value)
 ;;; ---------------------------------------------------------------------
 ;;; handles a change to the currently-selected FabricName caused by
 ;;; a UI event
 
-(define (notify-name-selection-changed app-state index value)
-  (receive (domain index)(name-part->domain-and-index value)
-    (let* ((current-name (current-fabric-name app-state))
-           (new-name (update-fabric-name current-name domain index)))
-      (set-current-fabric-name! app-state new-name)
-      (update-character-model! app-state))))
+(define (notify-name-selection-changed app-state menu::NameMenu menu-index value)
+  (let* ((current-name (current-fabric-name app-state))
+         (menu-id (*:getUID menu))
+         (domain-index (menu-id->domain-index menu-id))
+         (new-name (update-fabric-name current-name domain-index menu-index)))
+    (set-current-fabric-name! app-state new-name)
+    (update-character-model! app-state)))
+
 
 

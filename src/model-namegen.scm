@@ -74,7 +74,10 @@
 ;;; Fabric name
 
 (define (fabric-name-bits nm::FabricName)
-  (integer->bits (*:getData nm)))
+  (let* ((bits (integer->bits (*:getData nm)))
+         (bit-count (length bits)))
+    (append bits
+            (list-fill (- 64 bit-count) #f))))
 
 
 ;;; (fabric-name-bytestrings nm)
