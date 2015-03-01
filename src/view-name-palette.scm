@@ -18,14 +18,15 @@
 (require "appstate-character-creator.scm")
 (require "data-names.scm")
 (require "view-name-menu.scm")
+(require "view-random-name-button.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
+(import-as MenuItem tonegod.gui.controls.menuing.MenuItem)
 (import-as Screen tonegod.gui.core.Screen)
 (import-as Vector2f com.jme3.math.Vector2f)
-(import-as MenuItem tonegod.gui.controls.menuing.MenuItem)
 (import-as Window tonegod.gui.controls.windows.Window)
 
 ;;; =====================================================================
@@ -74,7 +75,6 @@
                        (iota 8))))
     (values lefts tops widths heights)))
 
-
 ;;; (make-name-palette screen::Screen)
 ;;; ---------------------------------------------------------------------
 ;;; returns a newly-constructed and -populated name palette
@@ -85,6 +85,7 @@
       (let* ((origin (compute-name-palette-origin screen))
              (palette (Window screen "NamePalette" origin size))
              (indexes (iota (length lefts)))
+             (random-name-button (make-random-name-button palette screen))
              (%make-menu (lambda (i)
                            (let* ((dom (list-ref (name-domains) i))
                                   (dom-menu::NameMenu
@@ -96,6 +97,7 @@
                              (for-each %add-item dom)
                              (*:addChild palette dom-menu)))))
         (for-each %make-menu indexes)
+        (*:addChild palette random-name-button)
         palette))))
 
 
