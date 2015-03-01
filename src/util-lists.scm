@@ -9,6 +9,7 @@
 ;;;; ***********************************************************************
 
 (module-export
+ any-n
  array->list
  choose-any
  copy-list
@@ -38,6 +39,13 @@
 ;;; ---------------------------------------------------------------------
 
 (import-as Object java.lang.Object)
+
+;;; (any-n n ls)
+;;; ---------------------------------------------------------------------
+;;; returns a list of n aribtrary elements of ls 
+
+(define (any-n n ls)
+  (take (shuffle ls) n))
 
 ;;; (array->list arr::Object[])
 ;;; ---------------------------------------------------------------------

@@ -12,9 +12,12 @@
  compute-name-palette-origin
  compute-name-palette-size
  make-name-palette
- name-palette-get-name)
+ name-palette-get-name
+ pick-a-random-name)
 
 (require 'list-lib)
+(require "util-lists.scm")
+(require "util-random.scm")
 (require "appstate-character-creator.scm")
 (require "data-names.scm")
 (require "view-name-menu.scm")
@@ -26,6 +29,7 @@
 
 (import-as MenuItem tonegod.gui.controls.menuing.MenuItem)
 (import-as Screen tonegod.gui.core.Screen)
+(import-as SelectBox tonegod.gui.controls.lists.SelectBox)
 (import-as Vector2f com.jme3.math.Vector2f)
 (import-as Window tonegod.gui.controls.windows.Window)
 
@@ -100,6 +104,30 @@
         (*:addChild palette random-name-button)
         palette))))
 
+
+(define (pick-a-random-name palette::Window)
+  (let* ((dom0-menu::NameMenu (*:getChildElementById palette "Domain0Menu"))
+         (dom1-menu::NameMenu (*:getChildElementById palette "Domain1Menu"))
+         (dom2-menu::NameMenu (*:getChildElementById palette "Domain2Menu"))
+         (dom3-menu::NameMenu (*:getChildElementById palette "Domain3Menu"))
+         (dom4-menu::NameMenu (*:getChildElementById palette "Domain4Menu"))
+         (dom5-menu::NameMenu (*:getChildElementById palette "Domain5Menu"))
+         (dom6-menu::NameMenu (*:getChildElementById palette "Domain6Menu"))
+         (dom7-menu::NameMenu (*:getChildElementById palette "Domain7Menu"))
+         (all-menus (list dom0-menu dom1-menu dom2-menu dom3-menu
+                          dom4-menu dom5-menu dom6-menu dom7-menu))
+         (chosen-menus (any-n (random-integer (+ 1 (length all-menus))) all-menus)))
+    (for-each (lambda (menu::SelectBox)
+                (*:setSelectedIndex menu 0)
+                (let ((value (*:getSelectedListItem menu)))
+                  (*:onChange menu 0 value)))
+              all-menus)
+    (for-each (lambda (menu::SelectBox)
+                (let ((index (random-integer 64)))
+                  (*:setSelectedIndex menu index)
+                  (let ((value (*:getSelectedListItem menu)))
+                    (*:onChange menu index value))))
+              chosen-menus)))
 
 ;;; (name-palette-get-name palette::Window)
 ;;; ---------------------------------------------------------------------

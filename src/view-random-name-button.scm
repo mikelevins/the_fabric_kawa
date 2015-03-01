@@ -42,7 +42,7 @@
    ((onButtonMouseLeftDown evt::MouseButtonEvent toggled::boolean) #!void)
    ((onButtonMouseRightDown evt::MouseButtonEvent toggled::boolean) #!void)
    ((onButtonMouseLeftUp evt::MouseButtonEvent toggled::boolean)
-    (format #t "~% random name button pressed: ~S" evt))
+    (pick-a-random-name palette))
    ((onButtonMouseRightUp evt::MouseButtonEvent toggled::boolean) #!void)
    ((onButtonFocus evt::MouseMotionEvent) #!void)
    ((onButtonLostFocus evt::MouseMotionEvent) #!void)))
