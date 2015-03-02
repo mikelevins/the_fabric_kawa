@@ -148,7 +148,7 @@
   (make-parameter
    (list
     "" "Accepts" "Amuses" "Announces" "Apologises" "Appears" "Appreciates" "Arranges" "Attempts" "Avoids"
-    "Backs" "Bakes" "Bears" "Becomes" "Begets" "Begins" "Bleachs" "Blesses" "Blots" "Blows" "Bolts"
+    "Backs" "Bakes" "Bears" "Becomes" "Begets" "Begins" "Bleachs" "Blesses" "Blots" "Bolts"
     "Bombs" "Boxes" "Brakes" "Bursts" "Buzzes" "Calculates" "Casts" "Charges" "Chews" "Chokes" "Claims"
     "Clips" "Coils" "Communicates" "Competes" "Completes" "Concentrates" "Consists" "Contains" "Continues"
     "Costs" "Coughs" "Counts" "Covers" "Cracks" "Creeps" "Cries" "Curls" "Cycles" "Dams" "Decays" "Decides"
@@ -163,7 +163,7 @@
     "Pokes" "Polishes" "Prays" "Preaches" "Precedes" "Prepares" "Presses" "Pretends" "Promises" "Proves"
     "Pulls" "Punctures" "Punishes" "Queues" "Rains" "Raises" "Reaches" "Receives" "Records" "Rejoices"
     "Relies" "Remembers" "Reminds" "Removes" "Repeats" "Reports" "Retires" "Rides" "Rings" "Risks" "Ruins"
-    "Rules" "Scares" "Scatters" "Scolds" "Scratches" "Scrubs" "Seals" "Sees" "Settles" "Sews" "Shears"
+    "Rules" "Scares" "Scatters" "Scolds" "Scratches" "Scrubs" "Seals" "Sees" "Settles" "Sews" "Shears" "Shivers"
     "Shocks" "Shoots" "Shows" "Shrugs" "Sighs" "Sings" "Sits" "Slays" "Sleeps" "Slings" "Slows" "Snatches"
     "Sneaks" "Sneezes" "Sniffs" "Sows" "Spares" "Sparkles" "Speeds" "Spreads" "Squeals" "Stands" "Stares"
     "Staves" "Stays" "Steers" "Steps" "Straps" "Stretches" "Strews" "Strikes" "Strips" "Strives" "Strokes"

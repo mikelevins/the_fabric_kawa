@@ -65,9 +65,9 @@
   (let* ((width (*:getX size))
          (adjusted-width (- width 16))
          (segment-width (/ adjusted-width 8))
-         (adjusted-segment-width (- segment-width 32))
+         (adjusted-segment-width (- segment-width 24))
          (lefts (map (lambda (i)
-                       (+ 48
+                       (+ 28
                           (* i 24)
                           (* i adjusted-segment-width)))
                      (iota 8)))
@@ -75,7 +75,7 @@
                     (iota 8)))
          (widths (map (lambda (i) adjusted-segment-width)
                       (iota 8)))
-         (heights (map (lambda (i) 24)
+         (heights (map (lambda (i) 40)
                        (iota 8))))
     (values lefts tops widths heights)))
 

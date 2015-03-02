@@ -18,8 +18,12 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
+(import-as AssetManager com.jme3.asset.AssetManager)
+(import-as ColorRGBA com.jme3.math.ColorRGBA)
+(import-as Material com.jme3.material.Material)
 (import-as Screen tonegod.gui.core.Screen)
 (import-as SelectBox tonegod.gui.controls.lists.SelectBox)
+(import-as Texture com.jme3.texture.Texture)
 (import-as Vector2f com.jme3.math.Vector2f)
 
 ;;; CLASS NameMenu
@@ -33,7 +37,15 @@
   (methods:
    ((*init* state::CharacterCreatorAppState screen::Screen uid::String position::Vector2f size::Vector2f)
     (invoke-special SelectBox (this) '*init* screen uid position size)
-    (set! app-state state))
+    (let* ((asset-manager::AssetManager (get-asset-manager))
+           (img::Texture (*:loadTexture asset-manager "Textures/name_menu_text_field.png"))
+           (mat::Material (*:getElementMaterial (this)))
+           (name-color (ColorRGBA 0.0 0.7 0.2 1.0)))
+      (*:setTexture mat "ColorMap" img)
+      (*:setFont (this) "Interface/Fonts/Laconic24.fnt")
+      (*:setFontSize (this) 24)
+      (*:setFontColor (this) name-color)
+      (set! app-state state)))
    ((onChange index::int value::Object)
     (notify-name-selection-changed app-state (this) index value))))
 
