@@ -492,7 +492,8 @@
     (case armor
       ((absorb-armor)(begin (*:setCharacterArmor state (make-absorb-armor))
                             (*:attachChild node (*:getCharacterArmor state))))
-      ((regenerate-armor) 'not-yet-implemented)
+      ((regenerate-armor) (begin (*:setCharacterArmor state (make-regenerate-armor))
+                                 (*:attachChild node (*:getCharacterArmor state))))
       ((power-armor) 'not-yet-implemented)
       ((energy-armor) 'not-yet-implemented)
       ;; not a known type of armor; ignore it 
