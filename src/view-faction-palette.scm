@@ -18,6 +18,7 @@
  make-rogue-button
  set-faction-palette-app-state!)
 
+(require "util-java.scm")
 (require "appstate-character-creator.scm")
 (require "syntax-classes.scm")
 

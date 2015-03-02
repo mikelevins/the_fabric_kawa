@@ -2,9 +2,6 @@
 <project name="fabric" default="client">
 
   <path id="library.class.path">
-    <pathelement location="../the_fabric_libraries/clj-ds-0.0.4.jar"/>
-    <pathelement location="../the_fabric_libraries/geronimo-jta_1.1_spec-1.1.1.jar"/>
-    <pathelement location="../the_fabric_libraries/eventbus-3.0.0.jar"/>
     <pathelement location="../the_fabric_libraries/j-ogg-oggd-3.0.0.jar"/>
     <pathelement location="../the_fabric_libraries/j-ogg-vorbisd-3.0.0.jar"/>
     <pathelement location="../the_fabric_libraries/jME3-blender.jar"/>
@@ -20,10 +17,8 @@
     <pathelement location="../the_fabric_libraries/jME3-plugins-3.0.0.jar"/>
     <pathelement location="../the_fabric_libraries/jME3-terrain-3.0.0.jar"/>
     <pathelement location="../the_fabric_libraries/jbullet-3.0.0.jar"/>
-    <pathelement location="../the_fabric_libraries/je-5.0.34.jar"/>
     <pathelement location="../the_fabric_libraries/jinput-3.0.0.jar"/>
     <pathelement location="../the_fabric_libraries/lwjgl-3.0.0.jar"/>
-    <pathelement location="../the_fabric_libraries/neo4j-kernel-2.1.3.jar"/>
     <pathelement location="../the_fabric_libraries/nifty-3.0.0.jar"/>
     <pathelement location="../the_fabric_libraries/nifty-default-controls-3.0.0.jar"/>
     <pathelement location="../the_fabric_libraries/nifty-style-black-3.0.0.jar"/>
@@ -44,9 +39,6 @@
          includes="**/*.class"
          manifest="manifest-client.txt">
       <zipfileset src="../the_fabric_libraries/kawa-2.0.jar"/>
-      <zipfileset src="../the_fabric_libraries/clj-ds-0.0.4.jar"/>
-      <zipfileset src="../the_fabric_libraries/geronimo-jta_1.1_spec-1.1.1.jar"/>
-      <zipfileset src="../the_fabric_libraries/eventbus-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/j-ogg-oggd-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/j-ogg-vorbisd-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/jME3-blender.jar"/>
@@ -62,10 +54,8 @@
       <zipfileset src="../the_fabric_libraries/jME3-plugins-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/jME3-terrain-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/jbullet-3.0.0.jar"/>
-      <zipfileset src="../the_fabric_libraries/je-5.0.34.jar"/>
       <zipfileset src="../the_fabric_libraries/jinput-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/lwjgl-3.0.0.jar"/>
-      <zipfileset src="../the_fabric_libraries/neo4j-kernel-2.1.3.jar"/>
       <zipfileset src="../the_fabric_libraries/nifty-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/nifty-default-controls-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/nifty-style-black-3.0.0.jar"/>
@@ -83,9 +73,6 @@
          includes="**/*.class"
          manifest="manifest-server.txt">
       <zipfileset src="../the_fabric_libraries/kawa-2.0.jar"/>
-      <zipfileset src="../the_fabric_libraries/clj-ds-0.0.4.jar"/>
-      <zipfileset src="../the_fabric_libraries/geronimo-jta_1.1_spec-1.1.1.jar"/>
-      <zipfileset src="../the_fabric_libraries/eventbus-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/j-ogg-oggd-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/j-ogg-vorbisd-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/jME3-core-3.0.0.jar"/>
@@ -97,10 +84,8 @@
       <zipfileset src="../the_fabric_libraries/jME3-networking-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/jME3-plugins-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/jbullet-3.0.0.jar"/>
-      <zipfileset src="../the_fabric_libraries/je-5.0.34.jar"/>
       <zipfileset src="../the_fabric_libraries/jinput-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/lwjgl-3.0.0.jar"/>
-      <zipfileset src="../the_fabric_libraries/neo4j-kernel-2.1.3.jar"/>
       <zipfileset src="../the_fabric_libraries/stack-alloc-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/vecmath-3.0.0.jar"/>
     </jar>
@@ -113,9 +98,6 @@
          includes="**/*.class"
          manifest="manifest-server.txt">
       <zipfileset src="../the_fabric_libraries/kawa-2.0.jar"/>
-      <zipfileset src="../the_fabric_libraries/clj-ds-0.0.4.jar"/>
-      <zipfileset src="../the_fabric_libraries/geronimo-jta_1.1_spec-1.1.1.jar"/>
-      <zipfileset src="../the_fabric_libraries/eventbus-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/j-ogg-oggd-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/j-ogg-vorbisd-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/jME3-blender.jar"/>
@@ -128,10 +110,8 @@
       <zipfileset src="../the_fabric_libraries/jME3-networking-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/jME3-plugins-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/jbullet-3.0.0.jar"/>
-      <zipfileset src="../the_fabric_libraries/je-5.0.34.jar"/>
       <zipfileset src="../the_fabric_libraries/jinput-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/lwjgl-3.0.0.jar"/>
-      <zipfileset src="../the_fabric_libraries/neo4j-kernel-2.1.3.jar"/>
       <zipfileset src="../the_fabric_libraries/stack-alloc-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/vecmath-3.0.0.jar"/>
     </jar>
@@ -145,12 +125,12 @@
           dir="./src"
           fork="true">
       <classpath refid="library.class.path"/>
-      <arg line="-C 'util-java.scm' 'util-random.scm' 'util-general.scm' 'util-lists.scm' 'init-config.scm'
-                 'model-id.scm' 'model-frame.scm'
-                 'model-namegen-domains.scm' 'model-namegen.scm' 'model-kind.scm' 'model-entity.scm'
-                 'assets-general.scm' 'view-controls.scm'
-                 'view-colors.scm' 'view-shapes.scm' 'view-plasma.scm' 'view-name-cube.scm' 'view-player.scm' 
-                 'view-node.scm' 'net-messaging.scm' 'app-client.scm' 'Fabric.scm'"/>
+      <arg line="-C 'version.scm' 'util-error.scm' 'util-java.scm' 'model-id.scm'
+                 'util-sort.scm' 'util-functions.scm' 'util-lists.scm' 'model-klos.scm'
+                 'syntax-classes.scm' 'init-config-local.scm' 'util-random.scm' 'util-crypt.scm'
+                 'model-entity.scm' 'util-bytes.scm' 'data-names.scm' 'model-namegen.scm'
+                 'data-assets.scm' 'model-auth.scm' 'net-messaging.scm' 'appstate-login.scm'
+                 'appstate-character-creator.scm' 'client-main.scm' 'Fabric.scm'"/>
     </java>
   </target>
 

@@ -12,6 +12,7 @@
  make-sky-box
  make-sky-sphere)
 
+(require "util-java.scm")
 (require "data-assets.scm")
 
 ;;; ---------------------------------------------------------------------

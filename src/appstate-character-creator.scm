@@ -34,6 +34,7 @@
 (require "syntax-classes.scm")
 (require "data-names.scm")
 (require "model-namegen.scm")
+(require "model-entity.scm")
 (require "view-skybox.scm")
 (require "view-name-menu.scm")
 (require "view-armor-palette.scm")

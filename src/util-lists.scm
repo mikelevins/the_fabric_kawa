@@ -33,6 +33,7 @@
 (require 'list-lib)
 (require "util-random.scm")
 (require "util-sort.scm")
+(require "util-java.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports

@@ -37,7 +37,6 @@
 (require "util-java.scm")
 (require "util-bytes.scm")
 (require "syntax-classes.scm")
-(require "util-bytes.scm")
 (require "util-random.scm")
 (require "util-lists.scm")
 (require "data-names.scm")

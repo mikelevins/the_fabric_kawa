@@ -18,6 +18,7 @@
  make-power-armor-button
  make-regen-armor-button)
 
+(require "util-java.scm")
 (require "syntax-classes.scm")
 (require "view-weapons-palette.scm")
 (require "appstate-character-creator.scm")

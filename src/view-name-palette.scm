@@ -18,6 +18,7 @@
 (require 'list-lib)
 (require "util-lists.scm")
 (require "util-random.scm")
+(require "util-java.scm")
 (require "appstate-character-creator.scm")
 (require "data-names.scm")
 (require "view-name-menu.scm")

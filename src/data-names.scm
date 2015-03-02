@@ -265,13 +265,12 @@
     "Tobias" "Valentin" "Valerie" "Victoria" "Vijay" "Vinod" "Vladimir" "Walter" "Wendy" "Wilhelm"
     "William" "Winifred" "Winston" "Wolfgang" "Woody")))
 
-(define name-domains
-  (make-parameter
-   (list (domain0)
-         (domain1)
-         (domain2)
-         (domain3)
-         (domain4)
-         (domain5)
-         (domain6)
-         (domain7))))
+(define (name-domains)
+  (list (domain0)
+        (domain1)
+        (domain2)
+        (domain3)
+        (domain4)
+        (domain5)
+        (domain6)
+        (domain7)))

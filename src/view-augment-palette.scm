@@ -26,6 +26,7 @@
  make-portals-augment-button
  make-turrets-augment-button)
 
+(require "util-java.scm")
 (require "syntax-classes.scm")
 (require "view-faction-palette.scm")
 (require "appstate-character-creator.scm")

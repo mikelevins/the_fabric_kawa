@@ -35,6 +35,7 @@
 (require "model-namegen.scm")
 (require "syntax-classes.scm")
 (require "view-colors.scm")
+(require "data-assets.scm")
 (require "appstate-character-creator.scm")
 
 ;;; ---------------------------------------------------------------------

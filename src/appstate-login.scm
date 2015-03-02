@@ -21,7 +21,9 @@
 ;;; ---------------------------------------------------------------------
 
 (require "util-java.scm")
+(require "util-error.scm")
 (require "syntax-classes.scm")
+(require "init-config-local.scm")
 (require "net-messaging.scm")
 (require "client-main.scm")
 

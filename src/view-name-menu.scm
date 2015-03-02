@@ -11,7 +11,9 @@
 (module-export
  NameMenu)
 
+(require "util-java.scm")
 (require "appstate-character-creator.scm")
+(require "data-assets.scm")
 (require "syntax-classes.scm")
 
 ;;; ---------------------------------------------------------------------

@@ -12,6 +12,7 @@
  make-random-name-button
  RandomNameButton)
 
+(require "util-java.scm")
 (require "appstate-character-creator.scm")
 (require "syntax-classes.scm")
 (require "view-name-palette.scm")

@@ -27,6 +27,7 @@
  WeaponsButtonGroup)
 
 
+(require "util-java.scm")
 (require "syntax-classes.scm")
 (require "view-faction-palette.scm")
 (require "view-name-palette.scm")

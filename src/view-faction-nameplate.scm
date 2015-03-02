@@ -13,6 +13,7 @@
  compute-faction-nameplate-size
  make-faction-nameplate)
 
+(require "util-java.scm")
 (require "view-faction-palette.scm")
 (require "appstate-character-creator.scm")
 

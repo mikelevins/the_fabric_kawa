@@ -13,6 +13,7 @@
  compute-character-nameplate-size
  make-character-nameplate)
 
+(require "util-java.scm")
 (require "view-weapons-palette.scm")
 
 ;;; ---------------------------------------------------------------------
