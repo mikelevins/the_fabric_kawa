@@ -9,8 +9,8 @@
 ;;;; ***********************************************************************
 
 (module-export
- CharacterRotator
- make-character-rotator)
+ RotatorControl
+ make-rotator-control)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -26,11 +26,11 @@
 (import-as AbstractControl com.jme3.scene.control.AbstractControl)
 
 
-;;; CLASS CharacterRotator (AbstractControl)
+;;; CLASS RotatorControl (AbstractControl)
 ;;; ---------------------------------------------------------------------
 ;;; a control that slowly rotates a character that is under construction
 
-(defclass CharacterRotator (AbstractControl)
+(defclass RotatorControl (AbstractControl)
   (slots:
    (xrate type: float init-form: 0.0 getter: getXRate setter: setXRate)
    (yrate type: float init-form: 0.0 getter: getYRate setter: setYRate)
@@ -48,9 +48,8 @@
    ;; dummy update method to make Java happy
    ((controlRender renderManager viewPort) #!void)))
 
-;;; (make-character-creator-rotator)
+;;; (make-rotator-control rx ry rz)
 ;;; ---------------------------------------------------------------------
-;;; returns a control that slowly rotates the character cube that is
-;;; under construction
-(define (make-character-rotator)
-  (CharacterRotator 0.1 0.2 0.0))
+;;; returns a control that slowly rotates a node
+(define (make-rotator-control rx ry rz)
+  (RotatorControl rx ry rz))

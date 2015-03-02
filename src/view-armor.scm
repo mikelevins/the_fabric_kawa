@@ -10,6 +10,7 @@
 
 (module-export
  make-absorb-armor
+ make-power-armor
  make-regenerate-armor)
 
 ;;; ---------------------------------------------------------------------
@@ -20,6 +21,7 @@
 (require "syntax-classes.scm")
 (require "data-assets.scm")
 (require "appstate-character-creator.scm")
+(require "view-controls.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -29,6 +31,7 @@
 (import-as ColorRGBA com.jme3.math.ColorRGBA)
 (import-as Geometry com.jme3.scene.Geometry)
 (import-as Material com.jme3.material.Material)
+(import-as Node com.jme3.scene.Node)
 (import-as ParticleEmitter com.jme3.effect.ParticleEmitter)
 (import-as ParticleMesh com.jme3.effect.ParticleMesh)
 (import-as PrMaterial com.jme3.material.Material)
@@ -36,6 +39,7 @@
 (import-as RenderQueue com.jme3.renderer.queue.RenderQueue)
 (import-as RenderState com.jme3.material.RenderState)
 (import-as Sphere com.jme3.scene.shape.Sphere)
+(import-as Torus com.jme3.scene.shape.Torus)
 
 ;;; ---------------------------------------------------------------------
 ;;; absorb armor
@@ -87,3 +91,43 @@
     (*:setHighLife emitter 16)
     (*:setVelocityVariation (*:getParticleInfluencer emitter) 0.6)
     emitter))
+
+;;; ---------------------------------------------------------------------
+;;; power armor
+;;; ---------------------------------------------------------------------
+
+(define (make-power-armor)
+  (let* ((asset-manager (get-asset-manager))
+         (torus-mat::Material (Material asset-manager "Common/MatDefs/Misc/Unshaded.j3md"))
+         (color (ColorRGBA 1 0 0 0.2))
+         (glow-color (ColorRGBA 1 1 1 1))
+         (pivot (Node "CharacterArmor"))
+         (ring-pivot0 (Node "RingPivot0"))
+         (ring-pivot1 (Node "RingPivot1")))
+    (*:setColor torus-mat "Color" color)
+    (*:setColor torus-mat "GlowColor" glow-color)
+    (let* ((blendMode RenderState:BlendMode))
+      (*:setBlendMode (*:getAdditionalRenderState torus-mat) blendMode:Alpha))
+    (let* ((torus0::Torus (Torus 32 32 0.1 3.75))
+           (rotator0 (make-rotator-control 2 0 0))
+           (torus1::Torus (Torus 32 32 0.1 3.75))
+           (rotator1 (make-rotator-control -2 0 0))
+           (geom0::Geometry (Geometry "Ring0" torus0))
+           (geom1::Geometry (Geometry "Ring1" torus1))
+           (bucket RenderQueue:Bucket))
+      (*:setMaterial geom0 torus-mat)
+      (*:setMaterial geom1 torus-mat)
+      (*:setQueueBucket geom0 bucket:Transparent)
+      (*:setQueueBucket geom1 bucket:Transparent)
+      (*:setLocalTranslation geom0 0.0 0.0 0.0)
+      (*:setLocalTranslation geom1 0.0 0.0 0.0)
+      (*:setLocalTranslation pivot 0.0 0.0 0.0)
+      (*:setLocalTranslation ring-pivot0 0.0 0.0 0.0)
+      (*:setLocalTranslation ring-pivot1 0.0 0.0 0.0)
+      (*:attachChild ring-pivot0 geom0)
+      (*:addControl (as Node ring-pivot0) rotator0)
+      (*:attachChild ring-pivot1 geom1)
+      (*:addControl (as Node ring-pivot1) rotator1)
+      (*:attachChild pivot ring-pivot0)
+      (*:attachChild pivot ring-pivot1)
+      pivot)))

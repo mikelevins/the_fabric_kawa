@@ -147,7 +147,7 @@
          (cubes-pivot (*:getChild node "CubesPivot")))
     (*:setCurrentCharacter state character)
     (if node
-        (let ((rotator::CharacterRotator (make-character-rotator)))
+        (let ((rotator::RotatorControl (make-rotator-control 0.1 0.2 0.0)))
           (*:attachChild root-node (as Node node))
           (*:setLocalTranslation (as Node node)
                                  +character-x-position+
@@ -494,7 +494,8 @@
                             (*:attachChild node (*:getCharacterArmor state))))
       ((regenerate-armor) (begin (*:setCharacterArmor state (make-regenerate-armor))
                                  (*:attachChild node (*:getCharacterArmor state))))
-      ((power-armor) 'not-yet-implemented)
+      ((power-armor) (begin (*:setCharacterArmor state (make-power-armor))
+                            (*:attachChild node (*:getCharacterArmor state))))
       ((energy-armor) 'not-yet-implemented)
       ;; not a known type of armor; ignore it 
       (else 'do-nothing))))
