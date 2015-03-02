@@ -10,6 +10,7 @@
 
 (module-export
  make-absorb-armor
+ make-energy-armor
  make-power-armor
  make-regenerate-armor)
 
@@ -40,6 +41,8 @@
 (import-as RenderState com.jme3.material.RenderState)
 (import-as Sphere com.jme3.scene.shape.Sphere)
 (import-as Torus com.jme3.scene.shape.Torus)
+(import-as WireBox com.jme3.scene.debug.WireBox)
+(import-as WireSphere com.jme3.scene.debug.WireSphere)
 
 ;;; ---------------------------------------------------------------------
 ;;; absorb armor
@@ -48,9 +51,9 @@
 (define (make-absorb-armor)
   (let* ((asset-manager (get-asset-manager))
          (sphere-mat::Material (Material asset-manager "Common/MatDefs/Misc/Unshaded.j3md"))
-         (color (ColorRGBA 0.7 0.7 0.5 0.1)))
+         (color (ColorRGBA 1 1 0.8 0.1)))
     (*:setColor sphere-mat "Color" color)
-    (*:setColor sphere-mat "GlowColor" (ColorRGBA 1 1 0.8 0.1))
+    (*:setColor sphere-mat "GlowColor" (ColorRGBA 1 1 1 1))
     (let* ((blendMode RenderState:BlendMode))
       (*:setBlendMode (*:getAdditionalRenderState sphere-mat) blendMode:Alpha))
     (let* ((new-sphere::Sphere (Sphere 32 32 3.5))
@@ -131,3 +134,47 @@
       (*:attachChild pivot ring-pivot0)
       (*:attachChild pivot ring-pivot1)
       pivot)))
+
+
+;;; ---------------------------------------------------------------------
+;;; power armor
+;;; ---------------------------------------------------------------------
+
+(define (make-energy-armor)
+  (let* ((asset-manager (get-asset-manager))
+         (box-mat::Material (Material asset-manager "Common/MatDefs/Misc/Unshaded.j3md"))
+         (color (ColorRGBA 1 1 0 0.5))
+         (glow-color (ColorRGBA 1 1 1 1))
+         (pivot (Node "CharacterArmor"))
+         (box-pivot0 (Node "BoxPivot0"))
+         (box-pivot1 (Node "BoxPivot1")))
+    (*:setColor box-mat "Color" color)
+    (*:setColor box-mat "GlowColor" glow-color)
+    (let* ((blendMode RenderState:BlendMode))
+      (*:setBlendMode (*:getAdditionalRenderState box-mat) blendMode:Alpha))
+    (let* ((r 2.75)
+           (box0::WireBox (WireBox r r r))
+           (rotator0 (make-rotator-control 2 0 0))
+           (box1::WireBox (WireBox r r r))
+           (rotator1 (make-rotator-control -2 0 0))
+           (geom0::Geometry (Geometry "Box0" box0))
+           (geom1::Geometry (Geometry "Box1" box1))
+           (bucket RenderQueue:Bucket))
+      (*:setMaterial geom0 box-mat)
+      (*:setMaterial geom1 box-mat)
+      (*:setQueueBucket geom0 bucket:Transparent)
+      (*:setQueueBucket geom1 bucket:Transparent)
+      (*:setLocalTranslation geom0 0.0 0.0 0.0)
+      (*:setLocalTranslation geom1 0.0 0.0 0.0)
+      (*:setLocalTranslation pivot 0.0 0.0 0.0)
+      (*:setLocalTranslation box-pivot0 0.0 0.0 0.0)
+      (*:setLocalTranslation box-pivot1 0.0 0.0 0.0)
+      (*:attachChild box-pivot0 geom0)
+      (*:addControl (as Node box-pivot0) rotator0)
+      (*:attachChild box-pivot1 geom1)
+      (*:addControl (as Node box-pivot1) rotator1)
+      (*:attachChild pivot box-pivot0)
+      (*:attachChild pivot box-pivot1)
+      pivot)))
+
+

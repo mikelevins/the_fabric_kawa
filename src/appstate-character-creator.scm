@@ -496,9 +496,11 @@
                                  (*:attachChild node (*:getCharacterArmor state))))
       ((power-armor) (begin (*:setCharacterArmor state (make-power-armor))
                             (*:attachChild node (*:getCharacterArmor state))))
-      ((energy-armor) 'not-yet-implemented)
+      ((energy-armor) (begin (*:setCharacterArmor state (make-energy-armor))
+                             (*:attachChild node (*:getCharacterArmor state))))
       ;; not a known type of armor; ignore it 
       (else 'do-nothing))))
+
 
 
 ;;; (set-current-weapon state::CharacterCreatorAppState weapon)
