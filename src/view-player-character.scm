@@ -88,7 +88,7 @@
   (let ((i 0)
         (indexes '(-1.5 -0.5 0.5 1.5))
         (cubes '())
-        (cubes-pivot (Node "Cubes pivot")))
+        (cubes-pivot (Node "CubesPivot")))
     (for-each
      (lambda (x)
        (for-each
@@ -113,8 +113,10 @@
 ;;; a cube node suitable for use as its avatar
 
 (define (make-player-character)
-  (let* ((cube (make-player-character-cube)))
-    (entity 'player-character cube: cube)))
+  (let* ((character-node (Node "CharacterNode"))
+         (cube (make-player-character-cube)))
+    (*:attachChild character-node cube)
+    (entity 'player-character node: character-node)))
 
 
 (define (default-character-color)
@@ -163,9 +165,9 @@
     ((abjurers)(abjurers-character-color))
     (else (default-character-color))))
 
-;;; (set-player-character-cube-color! char-cube::Node character-color)
+;;; (update-character-model! app-state::CharacterCreatorAppState)
 ;;; ---------------------------------------------------------------------
-;;; sets the tint of all component cubes in a character's avatar cube
+;;; sets the colors of all component cubes in a character's avatar cube
 
 (define (update-character-model! app-state::CharacterCreatorAppState)
   (let* ((faction (*:getCurrentFaction app-state))
@@ -176,8 +178,9 @@
          (character-name (*:getCharacterName app-state))
          (name-bits (fabric-name-bits character-name))
          (character (*:getCurrentCharacter app-state))
-         (char-cube::Node (get-property character 'cube:))
-         (cubes::SafeArrayList (*:getChildren char-cube))
+         (node::Node (get-property character 'node:))
+         (pivot::Node (*:getChild node "CubesPivot"))
+         (cubes::SafeArrayList (*:getChildren pivot))
          (cube-count (*:size cubes)))
     (let loop ((i 0))
       (if (< i cube-count)

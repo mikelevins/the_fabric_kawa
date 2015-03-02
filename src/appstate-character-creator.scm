@@ -9,6 +9,9 @@
 ;;;; ***********************************************************************
 
 (module-export
+ +character-x-position+
+ +character-y-position+
+ +character-z-position+
  CharacterCreatorAppState
  current-fabric-name
  notify-name-selection-changed
@@ -17,6 +20,8 @@
  set-current-fabric-name!
  set-current-faction
  set-current-weapon)
+
+
 
 ;;; =====================================================================
 ;;; ABOUT
@@ -46,6 +51,7 @@
 (require "view-character-nameplate.scm")
 (require "view-controls.scm")
 (require "view-colors.scm")
+(require "view-armor.scm")
 (require "view-player-character.scm")
 (require "util-error.scm")
 (require "client-main.scm")
@@ -81,6 +87,15 @@
 (import-as Vector4f com.jme3.math.Vector4f)
 (import-as Window tonegod.gui.controls.windows.Window)
 
+;;; ---------------------------------------------------------------------
+;;; constants
+;;; ---------------------------------------------------------------------
+
+(define +character-x-position+ 0.0)
+(define +character-y-position+ 0.0)
+(define +character-z-position+ -8.0)
+
+
 ;;; =====================================================================
 ;;; the AppState Class
 ;;; =====================================================================
@@ -95,6 +110,7 @@
    (current-character init-form: #f getter: getCurrentCharacter setter: setCurrentCharacter)
    (character-name init-form: (blank-fabric-name) getter: getCharacterName setter: setCharacterName)
    (current-faction init-form: #f getter: getCurrentFaction setter: setCurrentFaction)
+   (character-armor init-form: #!null getter: getCharacterArmor setter: setCharacterArmor)
    (character-nameplate::TLabel init-form: #!null getter: getCharacterNameplate setter: setCharacterNameplate)
    (faction-nameplate::TLabel init-form: #!null getter: getFactionNameplate setter: setFactionNameplate)
    (name-palette::Window init-form: #!null getter: getNamePalette setter: setNamePalette)
@@ -103,7 +119,6 @@
   (methods:
    ((initialize mgr::AppStateManager client::SimpleApplication)
     (init-character-creator (this) mgr client))))
-
 
 ;;; =====================================================================
 ;;; Scene setup
@@ -128,13 +143,18 @@
 (define (init-character-creator-model state::CharacterCreatorAppState client::SimpleApplication)
   (let* ((root-node (*:getRootNode (as SimpleApplication client)))
          (character (make-player-character))
-         (char-cube (get-property character 'cube: default: #f)))
-    (if char-cube
+         (node::Node (get-property character 'node: default: #f))
+         (cubes-pivot (*:getChild node "CubesPivot")))
+    (*:setCurrentCharacter state character)
+    (if node
         (let ((rotator::CharacterRotator (make-character-rotator)))
-          (*:attachChild root-node (as Node char-cube))
-          (*:setLocalTranslation (as Node char-cube) 0.0 0.0 -8.0)
+          (*:attachChild root-node (as Node node))
+          (*:setLocalTranslation (as Node node)
+                                 +character-x-position+
+                                 +character-y-position+
+                                 +character-z-position+)
           (*:setCurrentCharacter state character)
-          (*:addControl (as Node char-cube) rotator))
+          (*:addControl (as Node node) rotator))
         (warn "init-character-creator-model: creating a starting character failed"))))
 
 ;;; (init-character-nameplate state::CharacterCreatorAppState client::SimpleApplication)
@@ -232,6 +252,7 @@
         (power-armor-button (make-power-armor-button screen))
         (energy-armor-button (make-energy-armor-button screen)))
     (*:setWindowTitle armor-palette "Choose Armor:")
+    (*:setAppState armor-group state)
     ;; absorb armor button
     (*:setButtonIcon absorb-armor-button 128 128 "Interface/absorb-armor-icon128.png")
     (*:setButtonPressedInfo absorb-armor-button "Interface/absorb-armor-icon128.png"
@@ -456,14 +477,26 @@
              (update-state-for-faction state faction))
       (error "set-current-faction: unrecognized faction: " faction)))
 
-
 ;;; (set-current-armor state::CharacterCreatorAppState armor)
 ;;; ---------------------------------------------------------------------
 ;;; updates the currently-selected player armor in the character
 ;;; creator in response to a user selection
 
 (define (set-current-armor state::CharacterCreatorAppState armor)
-  (format #t "~%chose armor: ~S" armor))
+  (let* ((current-armor (*:getCharacterArmor state))
+         (character (*:getCurrentCharacter state))
+         (node::Node (get-property character 'node:)))
+    (if (not (jnull? current-armor))
+        (begin (*:detachChild node current-armor)
+               (*:setCharacterArmor state #!null)))
+    (case armor
+      ((absorb-armor)(begin (*:setCharacterArmor state (make-absorb-armor))
+                            (*:attachChild node (*:getCharacterArmor state))))
+      ((regenerate-armor) 'not-yet-implemented)
+      ((power-armor) 'not-yet-implemented)
+      ((energy-armor) 'not-yet-implemented)
+      ;; not a known type of armor; ignore it 
+      (else 'do-nothing))))
 
 
 ;;; (set-current-weapon state::CharacterCreatorAppState weapon)
@@ -507,7 +540,7 @@
 ;;; BUGFIX: non-unique elements zero in the domains meant
 ;;; that selecting blank names didn't work; a blank name
 ;;; was always being interpreted as being from domain 0
-;;; fixed by usinf the index of the menu  to figure out
+;;; fixed by using the index of the menu  to figure out
 ;;; which domain is meant
 (define (menu-id->domain-index menu-id)
   (cond
@@ -533,6 +566,5 @@
          (new-name (update-fabric-name current-name domain-index menu-index)))
     (set-current-fabric-name! app-state new-name)
     (update-character-model! app-state)))
-
 
 

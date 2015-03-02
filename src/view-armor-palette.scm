@@ -54,7 +54,12 @@
           (state::CharacterCreatorAppState app-state))
       (cond
        ((equal? "AbsorbArmorButton" button-id)(set-current-armor state 'absorb-armor))
+       ((equal? "RegenArmorButton" button-id)(set-current-armor state 'regenerate-armor))
+       ((equal? "PowerArmorButton" button-id)(set-current-armor state 'power-armor))
+       ((equal? "EnergyArmorButton" button-id)(set-current-armor state 'energy-armor))
        (else (format #t "~%Unknown armor selected")))))))
+
+
 
 ;;; (compute-armor-palette-origin screen::Screen)
 ;;; ---------------------------------------------------------------------
