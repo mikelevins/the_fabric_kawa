@@ -71,7 +71,7 @@
 ;;; ---------------------------------------------------------------------
 
 (define (make-regenerate-armor)
-  (let* ((emitter (ParticleEmitter "Smoke" ParticleMesh:Type:Triangle 10))
+  (let* ((emitter (ParticleEmitter "Smoke" ParticleMesh:Type:Triangle 32))
          (mat (PrMaterial (get-asset-manager) "Common/MatDefs/Misc/Particle.j3md"))
          (start-color (ColorRGBA 0.3 0.8 0.3 0.3))
          (end-color (ColorRGBA 0.3 0.4 0.3 0.1))
