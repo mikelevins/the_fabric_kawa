@@ -52,6 +52,7 @@
 (require "view-controls.scm")
 (require "view-colors.scm")
 (require "view-armor.scm")
+(require "view-weapons.scm")
 (require "view-player-character.scm")
 (require "util-error.scm")
 (require "client-main.scm")
@@ -114,6 +115,7 @@
    (character-name init-form: (blank-fabric-name) getter: getCharacterName setter: setCharacterName)
    (current-faction init-form: #f getter: getCurrentFaction setter: setCurrentFaction)
    (character-armor init-form: #!null getter: getCharacterArmor setter: setCharacterArmor)
+   (character-weapon init-form: #!null getter: getCharacterWeapon setter: setCharacterWeapon)
    (character-nameplate::TLabel init-form: #!null getter: getCharacterNameplate setter: setCharacterNameplate)
    (faction-nameplate::TLabel init-form: #!null getter: getFactionNameplate setter: setFactionNameplate)
    (name-palette::Window init-form: #!null getter: getNamePalette setter: setNamePalette)
@@ -314,6 +316,7 @@
          (malware-weapon-button (make-malware-weapon-button screen))
          (bots-weapon-button (make-bots-weapon-button screen)))
     (*:setWindowTitle weapons-palette "Choose Weapons:")
+    (*:setAppState weapons-group state)
     ;; cannon weapon button
     (*:setButtonIcon cannon-weapon-button 128 128 "Interface/cannon-weapon-icon128.png")
     (*:setButtonPressedInfo cannon-weapon-button "Interface/cannon-weapon-icon128.png"
@@ -527,7 +530,23 @@
 ;;; creator in response to a user selection
 
 (define (set-current-weapon state::CharacterCreatorAppState weapon)
-  (format #t "~%chose weapon: ~S" weapon))
+  (let* ((current-weapon (*:getCharacterWeapon state))
+         (character (*:getCurrentCharacter state))
+         (node::Node (get-property character 'node:)))
+    (if (not (jnull? current-weapon))
+        (begin (*:detachChild node current-weapon)
+               (*:setCharacterWeapon state #!null)))
+    (case weapon
+      ((cannon-weapons)(begin (*:setCharacterWeapon state (make-cannon-weapons))
+                              (*:attachChild node (*:getCharacterWeapon state))))
+      ((impulse-weapons) (begin (*:setCharacterWeapon state (make-impulse-weapons))
+                                (*:attachChild node (*:getCharacterWeapon state))))
+      ((malware-weapons) (begin (*:setCharacterWeapon state (make-malware-weapons))
+                                (*:attachChild node (*:getCharacterWeapon state))))
+      ((bots-weapons) (begin (*:setCharacterWeapon state (make-bots-weapons))
+                             (*:attachChild node (*:getCharacterWeapon state))))
+      ;; not a known type of weapon; ignore it 
+      (else 'do-nothing))))
 
 
 ;;; (set-current-augment state::CharacterCreatorAppState augment)

@@ -63,7 +63,10 @@
     (let ((button-id (*:getUID value))
           (state::CharacterCreatorAppState app-state))
       (cond
-       ((equal? "CannonWeaponsButton" button-id)(set-current-weapon state 'cannon-weapons))
+       ((equal? "CannonWeaponButton" button-id)(set-current-weapon state 'cannon-weapons))
+       ((equal? "ImpulseWeaponButton" button-id)(set-current-weapon state 'impulse-weapons))
+       ((equal? "MalwareWeaponButton" button-id)(set-current-weapon state 'malware-weapons))
+       ((equal? "BotsWeaponButton" button-id)(set-current-weapon state 'bots-weapons))
        (else (format #t "~%Unknown weapon selected")))))))
 
 ;;; (compute-weapons-palette-origin screen::Screen)
