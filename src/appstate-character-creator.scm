@@ -64,10 +64,12 @@
 (import-as AppStateManager com.jme3.app.state.AppStateManager)
 (import-as AssetManager com.jme3.asset.AssetManager)
 (import-as BitmapFont com.jme3.font.BitmapFont)
+(import-as BloomFilter com.jme3.post.filters.BloomFilter)
 (import-as Button tonegod.gui.controls.buttons.Button)
 (import-as ButtonAdapter tonegod.gui.controls.buttons.ButtonAdapter)
 (import-as ColorRGBA com.jme3.math.ColorRGBA)
 (import-as ComboBox tonegod.gui.controls.lists.ComboBox)
+(import-as FilterPostProcessor com.jme3.post.FilterPostProcessor)
 (import-as Geometry com.jme3.scene.Geometry)
 (import-as Integer java.lang.Integer)
 (import-as Label tonegod.gui.controls.text.Label)
@@ -85,6 +87,7 @@
 (import-as TLabel tonegod.gui.controls.text.Label)
 (import-as Vector2f com.jme3.math.Vector2f)
 (import-as Vector4f com.jme3.math.Vector4f)
+(import-as ViewPort com.jme3.renderer.ViewPort)
 (import-as Window tonegod.gui.controls.windows.Window)
 
 ;;; ---------------------------------------------------------------------
@@ -128,7 +131,7 @@
 ;;; ---------------------------------------------------------------------
 ;;; construct the character creator's skybox
 
-(define (init-character-creator-sky client::SimpleApplication)
+(define (init-character-creator-sky client::FabricClient)
   (let* ((sky (make-sky-box client))
          ;;(sky (make-sky-sphere client)) ; if we want to try sphere maps instead
          (root-node (*:getRootNode (as SimpleApplication client))))
@@ -140,7 +143,7 @@
 ;;; ---------------------------------------------------------------------
 ;;; construct the character creator's skybox
 
-(define (init-character-creator-model state::CharacterCreatorAppState client::SimpleApplication)
+(define (init-character-creator-model state::CharacterCreatorAppState client::FabricClient)
   (let* ((root-node (*:getRootNode (as SimpleApplication client)))
          (character (make-player-character))
          (node::Node (get-property character 'node: default: #f))
@@ -421,7 +424,21 @@
     (*:addChild augments-palette turrets-augment-button)
     (*:addElement screen augments-palette)))
 
-;;; (init-character-creator app::CharacterCreatorAppState client::SimpleApplication)
+;;; (init-lighting state::CharacterCreatorAppState client::SimpleApplication)
+;;; ---------------------------------------------------------------------
+;;; set up the scene lighting
+
+(define (init-lighting state::CharacterCreatorAppState client::FabricClient)
+  (let* ((asset-manager::AssetManager (get-asset-manager))
+         (bloom (BloomFilter BloomFilter:GlowMode:Objects))
+         (filter-processor::FilterPostProcessor (FilterPostProcessor asset-manager))
+         (viewport::ViewPort (*:getViewPort client)))
+    (*:setDownSamplingFactor bloom 2.0)
+    (*:setBloomIntensity bloom 2.0)
+    (*:addFilter filter-processor bloom)
+    (*:addProcessor viewport filter-processor)))
+
+;;; (init-character-creator state::CharacterCreatorAppState client::SimpleApplication)
 ;;; ---------------------------------------------------------------------
 ;;; construct the character creator's scene and UI
 
@@ -431,8 +448,9 @@
          (gui-node (*:getGuiNode client))
          (root-node (*:getRootNode (as SimpleApplication client)))
          (align BitmapFont:Align)
-         (valign BitmapFont:VAlign)
-         (highlight-color (ColorRGBA 1.0 1.0 0.0 1.0)))
+         (valign BitmapFont:VAlign))
+    ;; setup the lighting
+    (init-lighting state client)
     ;; build the UI elements
     (init-character-creator-sky client)
     (init-character-creator-model state client)

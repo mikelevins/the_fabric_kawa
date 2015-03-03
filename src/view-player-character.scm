@@ -9,11 +9,8 @@
 ;;;; ***********************************************************************
 
 (module-export
- abjurers-character-color
- caretakers-character-color
  default-character-color
  make-player-character
- rogues-character-color
  update-character-model!)
 
 ;;; ---------------------------------------------------------------------
@@ -66,6 +63,7 @@
   (let* ((asset-manager (get-asset-manager))
          (mat (Material asset-manager "Common/MatDefs/Misc/Unshaded.j3md"))
          (dim-color (default-character-color))
+         (glow-color (default-glow-color))
          (new-box (Box 0.4 0.4 0.4))
          (new-geom::Geometry (Geometry (format #f "cube ~a,~a,~a" x y z) new-box))
          (bucket RenderQueue:Bucket))
@@ -73,6 +71,7 @@
       (*:setBlendMode (*:getAdditionalRenderState mat) blendMode:Alpha))
     (*:setMaterial new-geom mat)
     (*:setColor mat "Color" dim-color)
+    (*:setColor mat "GlowColor" glow-color)
     (*:setQueueBucket new-geom bucket:Transparent)
     (*:setLocalTranslation new-geom x y z)
     new-geom))
@@ -122,37 +121,8 @@
 (define (default-character-color)
   (ColorRGBA 0.25 0.25 0.25 0.25))
 
-
-;;; (caretakers-character-color)
-;;; ---------------------------------------------------------------------
-;;; returns the standard color used to tint Caretaker characters
-
-(define (caretakers-character-color)
-  (ColorRGBA 0.0 0.4 0.0 0.3))
-
-
-;;; (rogues-character-color)
-;;; ---------------------------------------------------------------------
-;;; returns the standard color used to tint Rogue characters
-
-(define (rogues-character-color)
-  (ColorRGBA 0.0 0.3 0.6 0.3))
-
-
-;;; (abjurers-character-color)
-;;; ---------------------------------------------------------------------
-;;; returns the standard color used to tint Abjurer characters
-
-(define (abjurers-character-color)
-  (ColorRGBA 0.4 0.0 0.0 0.3))
-
-
-;;; (character-glow-color)
-;;; ---------------------------------------------------------------------
-;;; returns the standard color used to make characters glow
-
-(define (character-glow-color)
-  (ColorRGBA 1.0 1.0 1.0 0.6))
+(define (default-glow-color)
+  (ColorRGBA 1 1 1 0.5))
 
 ;;; (get-faction-color)
 ;;; ---------------------------------------------------------------------
@@ -160,9 +130,20 @@
 
 (define (get-faction-color faction)
   (case faction
-    ((caretakers)(caretakers-character-color))
-    ((rogues)(rogues-character-color))
-    ((abjurers)(abjurers-character-color))
+    ((caretakers)(ColorRGBA 0.2 0.6 0.2 0.3))
+    ((rogues)(ColorRGBA 0.0 0.3 0.6 0.3))
+    ((abjurers)(ColorRGBA 0.6 0.0 0.0 0.2))
+    (else (default-character-color))))
+
+;;; (get-faction-glow-color)
+;;; ---------------------------------------------------------------------
+;;; returns the color associated with a specified faction
+
+(define (get-faction-glow-color faction)
+  (case faction
+    ((caretakers)(ColorRGBA 0.7 0.9 0.7 0.6))
+    ((rogues)(ColorRGBA 0.5 0.7 0.9 0.75))
+    ((abjurers)(ColorRGBA 0.9 0.3 0.3 0.5))
     (else (default-character-color))))
 
 ;;; (update-character-model! app-state::CharacterCreatorAppState)
@@ -174,7 +155,7 @@
          (faction-color (get-faction-color faction))
          (bright-color (brighten faction-color))
          (dark-color (darken faction-color))
-         (glow-color (character-glow-color))
+         (glow-color (get-faction-glow-color faction))
          (character-name (*:getCharacterName app-state))
          (name-bits (fabric-name-bits character-name))
          (character (*:getCurrentCharacter app-state))
