@@ -89,7 +89,7 @@
     "" "Abnormally" "Absentmindedly" "Actively" "Advanced" "Adventurous" "Affectionate" "Agitated"
     "Agonizing" "Agreeable" "Alienated" "Altruistic" "Always" "Amazingly" "Anchored" "Arctic" "Around"
     "Artistic" "Athletic" "Authentic" "Bare" "Barely" "Bashfully" "Bewilderingly" "Bewitched"
-    "Boastfully" "Bogus" "Brazen" "Brutally" "Carefully" "Charmingly" "Cheap" "Cheerful" "Clumsily"
+    "Bizarre" "Boastfully" "Bogus" "Brazen" "Brutally" "Carefully" "Charmingly" "Cheap" "Cheerful" "Clumsily"
     "Clumsy" "Colorless" "Colossal" "Commonly" "Completely" "Concerned" "Confused" "Corny" "Crazily"
     "Customarily" "Dangerously" "Dapper" "Darkly" "Decently" "Defiant" "Definitive" "Delectable"
     "Descriptive" "Discrete" "Disfigured" "Docilely" "Droopy" "Efficiently" "Elderly" "Embellished"
@@ -101,7 +101,7 @@
     "Imperturbable" "Impolite" "Impressionable" "Incorrectly" "Infinite" "Informal" "Innocently"
     "Insubstantial" "Intelligently" "Intensely" "Internally" "Invariably" "Invisibly" "Inwardly"
     "Irritably" "Jittery" "Joyfully" "Jumbo" "Justly" "Knowledgeably" "Kosher" "Last" "Lazily"
-    "Leading" "Left" "Legitimate" "Limping" "Limply" "Lonely" "Long" "Longingly" "Lopsided" "Loud"
+    "Leading" "Left" "Legitimate" "Limply" "Lonely" "Long" "Longingly" "Lopsided" "Loud"
     "Lovely" "Lovingly" "Luminous" "Mealy" "Meaningfully" "Medical" "Medium" "Miserable" "Monstrous"
     "Naturally" "Neighboring" "Nightly" "Nonstop" "Normal" "Notable" "Noteworthy" "Nowadays" "Obediently"
     "Obligingly" "Oblong" "Obnoxiously" "Offbeat" "Old" "Only" "Orderly" "Outgoing" "Overjoyed" "Overseas"
@@ -148,7 +148,7 @@
   (make-parameter
    (list
     "" "Accepts" "Amuses" "Announces" "Apologises" "Appears" "Appreciates" "Arranges" "Attempts" "Avoids"
-    "Backs" "Bakes" "Bears" "Becomes" "Begets" "Begins" "Bleachs" "Blesses" "Blots" "Bolts"
+    "Backs" "Bakes" "Bears" "Becomes" "Begets" "Begins" "Bleaches" "Blesses" "Blots" "Bolts"
     "Bombs" "Boxes" "Brakes" "Bursts" "Buzzes" "Calculates" "Casts" "Charges" "Chews" "Chokes" "Claims"
     "Clips" "Coils" "Communicates" "Competes" "Completes" "Concentrates" "Consists" "Contains" "Continues"
     "Costs" "Coughs" "Counts" "Covers" "Cracks" "Creeps" "Cries" "Curls" "Cycles" "Dams" "Decays" "Decides"
