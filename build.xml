@@ -125,12 +125,31 @@
           dir="./src"
           fork="true">
       <classpath refid="library.class.path"/>
-      <arg line="-C 'version.scm' 'util-error.scm' 'util-java.scm' 'model-id.scm'
-                 'util-sort.scm' 'util-functions.scm' 'util-lists.scm' 'model-klos.scm'
-                 'syntax-classes.scm' 'init-config-local.scm' 'util-random.scm' 'util-crypt.scm'
-                 'model-entity.scm' 'util-bytes.scm' 'data-names.scm' 'model-namegen.scm'
-                 'data-assets.scm' 'model-auth.scm' 'net-messaging.scm' 'appstate-login.scm'
-                 'appstate-character-creator.scm' 'client-main.scm' 'Fabric.scm'"/>
+      <arg line="-C
+                 'Fabric.scm'
+                 'appstate-character-creator.scm'
+                 'appstate-login.scm'
+                 'client-main.scm'
+                 'data-assets.scm'
+                 'data-names.scm'
+                 'init-config-local.scm'
+                 'model-auth.scm'
+                 'model-entity.scm'
+                 'model-id.scm'
+                 'model-klos.scm'
+                 'model-namegen.scm'
+                 'net-messaging.scm'
+                 'syntax-classes.scm'
+                 'util-bytes.scm'
+                 'util-crypt.scm'
+                 'util-error.scm'
+                 'util-functions.scm'
+                 'util-java.scm'
+                 'util-lists.scm'
+                 'util-random.scm'
+                 'util-sort.scm'
+                 'version.scm'
+                 "/>
     </java>
   </target>
 
