@@ -38,6 +38,7 @@
 (require "util-lists.scm")
 (require "syntax-classes.scm")
 (require "data-names.scm")
+(require "data-assets.scm")
 (require "model-namegen.scm")
 (require "model-entity.scm")
 (require "view-skybox.scm")
@@ -52,6 +53,7 @@
 (require "view-controls.scm")
 (require "view-colors.scm")
 (require "view-armor.scm")
+(require "view-augments.scm")
 (require "view-weapons.scm")
 (require "view-player-character.scm")
 (require "util-error.scm")
@@ -115,6 +117,7 @@
    (character-name init-form: (blank-fabric-name) getter: getCharacterName setter: setCharacterName)
    (current-faction init-form: #f getter: getCurrentFaction setter: setCurrentFaction)
    (character-armor init-form: #!null getter: getCharacterArmor setter: setCharacterArmor)
+   (character-augment init-form: #!null getter: getCharacterAugment setter: setCharacterAugment)
    (character-weapon init-form: #!null getter: getCharacterWeapon setter: setCharacterWeapon)
    (character-nameplate::TLabel init-form: #!null getter: getCharacterNameplate setter: setCharacterNameplate)
    (faction-nameplate::TLabel init-form: #!null getter: getFactionNameplate setter: setFactionNameplate)
@@ -385,6 +388,7 @@
          (turrets-augment-button (make-turrets-augment-button screen))
          (augments-group (AugmentsButtonGroup screen "AugmentsGroup")))
     (*:setWindowTitle augments-palette "Choose Augments:")
+    (*:setAppState augments-group state)
     ;; force augment button
     (*:setButtonIcon force-augment-button 128 128 "Interface/force-augment-icon128.png")
     (*:setButtonPressedInfo force-augment-button "Interface/force-augment-icon128.png"
@@ -555,7 +559,23 @@
 ;;; creator in response to a user selection
 
 (define (set-current-augment state::CharacterCreatorAppState augment)
-  (format #t "~%chose augment: ~S" augment))
+  (let* ((current-augment (*:getCharacterAugment state))
+         (character (*:getCurrentCharacter state))
+         (node::Node (get-property character 'node:)))
+    (if (not (jnull? current-augment))
+        (begin (*:detachChild node current-augment)
+               (*:setCharacterAugment state #!null)))
+    (case augment
+      ((force-augment)(begin (*:setCharacterAugment state (make-force-augment))
+                              (*:attachChild node (*:getCharacterAugment state))))
+      ((optics-augment) (begin (*:setCharacterAugment state (make-optics-augment))
+                                (*:attachChild node (*:getCharacterAugment state))))
+      ((portals-augment) (begin (*:setCharacterAugment state (make-portals-augment))
+                                 (*:attachChild node (*:getCharacterAugment state))))
+      ((turrets-augment) (begin (*:setCharacterAugment state (make-turrets-augment))
+                                 (*:attachChild node (*:getCharacterAugment state))))
+      ;; not a known type of augment; ignore it 
+      (else 'do-nothing))))
 
 ;;; (current-fabric-name app-state::CharacterCreatorAppState)
 ;;; ---------------------------------------------------------------------

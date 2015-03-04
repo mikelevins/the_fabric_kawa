@@ -61,7 +61,10 @@
     (let ((button-id (*:getUID value))
           (state::CharacterCreatorAppState app-state))
       (cond
-       ((equal? "AbsorbAugmentsButton" button-id)(set-current-augment state 'force-augment))
+       ((equal? "ForceAugmentButton" button-id)(set-current-augment state 'force-augment))
+       ((equal? "OpticsAugmentButton" button-id)(set-current-augment state 'optics-augment))
+       ((equal? "PortalsAugmentButton" button-id)(set-current-augment state 'portals-augment))
+       ((equal? "TurretsAugmentButton" button-id)(set-current-augment state 'turrets-augment))
        (else (format #t "~%Unknown augment selected")))))))
 
 ;;; (compute-augment-palette-origin screen::Screen)
