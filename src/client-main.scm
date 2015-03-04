@@ -143,7 +143,7 @@
     (*:setDisplayFps client #f) ; #t to show FPS
     (*:setShowSettings client #t) ; #t to show settings dialog
     (*:setDisplayStatView client #f) ; #t to show stats
-    (*:setPauseOnLostFocus client #t)
+    (*:setPauseOnLostFocus client #f)
     client))
 
 ;;; ---------------------------------------------------------------------
