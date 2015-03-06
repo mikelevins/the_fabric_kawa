@@ -10,7 +10,8 @@
 
 (module-export
  FabricClient
- make-client)
+ make-client
+ enqueue-mode-update)
 
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
@@ -34,6 +35,7 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
+(import-as AbstractAppState com.jme3.app.state.AbstractAppState)
 (import-as ActionListener com.jme3.input.controls.ActionListener)
 (import-as AnalogListener com.jme3.input.controls.AnalogListener)
 (import-as AppSettings com.jme3.system.AppSettings)
@@ -53,10 +55,30 @@
 (import-as TLabel tonegod.gui.controls.text.Label)
 (import-as VideoRecorderAppState com.jme3.app.state.VideoRecorderAppState)
 
-
 ;;; ---------------------------------------------------------------------
 ;;; FabricClient - the client application class
 ;;; ---------------------------------------------------------------------
+
+(define +mode-names+
+  '(login pick-character create-character play))
+
+(define (mode-name->class mode)
+  (case mode
+    ((#f) #!null)
+    ((login)(error "mode-name->class: login mode is not yet implemented" ))
+    ((pick-character)(error "mode-name->class: pick-character mode is not yet implemented" ))
+    ((create-character) CharacterCreatorAppState)
+    ((play)(error "mode-name->class: play mode is not yet implemented" ))
+    (else #!null)))
+
+(define (mode-name->app-state mode)
+  (case mode
+    ((#f) #!null)
+    ((login)(error "mode-name->app-state: login mode is not yet implemented" ))
+    ((pick-character)(error "mode-name->app-state: pick-character mode is not yet implemented" ))
+    ((create-character)(CharacterCreatorAppState))
+    ((play)(error "mode-name->app-state: play mode is not yet implemented" ))
+    (else #!null)))
 
 ;;; CLASS FabricClient
 ;;; ---------------------------------------------------------------------
@@ -68,7 +90,8 @@
 (defclass FabricClient (SimpleApplication AnalogListener ActionListener)
   (slots:
    (app-settings init-form: (AppSettings #t) getter: getAppSettings)
-   (presentation-server init-form: #!null getter: getPresentationServer setter: setPresentationServer)
+   (mode-name init-form: 'create-character getter: getModeName setter: setModeName)
+   (mode-state init-form: #!null getter: getModeState setter: setModeState)
    (network-client::com.jme3.network.Client
     init-form: #!null getter: getNetworkClient setter: setNetworkClient))
   (methods:
@@ -86,19 +109,6 @@
    ;; init the app
    ((simpleInitApp)(init-client (this)))))
 
-;;; (init-appstate app::FabricClient)
-;;; ---------------------------------------------------------------------
-;;; initializes and activates the client's starting AppState.
-;;; during testing, this function may set up any AppState as the
-;;; initial one; in production, the initial state is always
-;;; the Login AppState.
-
-(define (init-appstate app::FabricClient)
-  (let ((state-manager::AppStateManager (*:getStateManager app))
-        (char-state (CharacterCreatorAppState)))
-    (*:initialize char-state state-manager app)
-    (*:attach state-manager char-state)))
-
 ;;; ---------------------------------------------------------------------
 ;;; client init
 ;;; ---------------------------------------------------------------------
@@ -109,8 +119,6 @@
 ;;; camera, and event handlers
 
 (define (init-client app::FabricClient)
-  ;; set up the initial AppState
-  (init-appstate app)
   ;; don't seize the mouse from the player
   (Mouse:setGrabbed #f)
   ;; disable the fly-by camera
@@ -122,13 +130,43 @@
 ;;; construct the client app
 ;;; ---------------------------------------------------------------------
 
-;;; (make-client #!optional (center #f))
+;;; modifies the game mode; must be called within the scene graph's
+;;; thread; for interactive updates, use enqueue-mode-update
+(define (set-game-mode! client::FabricClient mode-name)
+  (let ((new-mode-class (mode-name->class mode-name))
+        (current-mode-name (*:getModeName client))
+        (current-mode-state (*:getModeState client))
+        (state-manager (*:getStateManager client)))
+    (if (jnull? new-mode-class)
+        ;; null new mode; clear the game state
+        (begin (if (not (jnull? current-mode-state))
+                   (*:detach state-manager current-mode-state))
+               (*:setModeName client #f)
+               (*:setModeState client #!null))
+        ;; new mode; clear any old state, then
+        ;; initialize and attach the new state
+        (let ((new-mode-state (mode-name->app-state mode-name)))
+          (if (jnull? new-mode-state)
+              ;; something went wrong with creating the new state
+              (error "Creating the game mode failed" mode-name)
+              ;; new mode state created; initialize and attach it
+              (begin (if (not (jnull? current-mode-state))
+                         (*:detach state-manager current-mode-state))
+                     (*:initialize new-mode-state state-manager client)
+                     (*:attach state-manager new-mode-state)
+                     (*:setModeName client mode-name)
+                     (*:setModeState client new-mode-state)))))))
+
+(define (enqueue-mode-update client::FabricClient mode-name)
+  (*:enqueue client (runnable (lambda ()(set-game-mode! client mode-name)))))
+
+;;; (make-client #!optional (start-mode 'create-character))
 ;;; ---------------------------------------------------------------------
 ;;; returns a newly-created and -configured instance of the
 ;;; client application. The game can be started by calling
 ;;; the new client application's start method.
 
-(define (make-client #!optional (center #f))
+(define (make-client)
   (let* ((client::FabricClient (FabricClient))
 	 (settings::AppSettings (*:getAppSettings client)))
     (Serializer:registerClass ChatMessage)
@@ -146,9 +184,4 @@
     (*:setPauseOnLostFocus client #f)
     client))
 
-;;; ---------------------------------------------------------------------
-;;; testing code
-;;; ---------------------------------------------------------------------
-;;; (define $client (make-client))
-;;; (*:start $client)
 

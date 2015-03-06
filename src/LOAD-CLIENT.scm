@@ -33,5 +33,9 @@
 ;;; ---------------------------------------------------------------------
 ;;; evaluate these expressions to create and run the Fabric client
 
-;;; (define $client (make-client))
+;;; (define $client::FabricClient (make-client))
 ;;; (*:start $client)
+;;; switch to the character creator
+;;; (enqueue-mode-update $client 'create-character)
+
+
