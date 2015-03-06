@@ -14,7 +14,6 @@
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
 ;;; ---------------------------------------------------------------------
-;;; 
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -24,6 +23,7 @@
 (require "util-error.scm")
 (require "syntax-classes.scm")
 (require "init-config-local.scm")
+(require "net-connect.scm")
 (require "net-messaging.scm")
 (require "client-main.scm")
 
@@ -51,22 +51,6 @@
 ;;; ---------------------------------------------------------------------
 ;;; the LoginAppState class
 ;;; ---------------------------------------------------------------------
-
-;;; (connect-to-server)
-;;; ---------------------------------------------------------------------
-;;; TODO: make this function available to other AppStates
-;;; attempts to open a network connection from the Fabric client to
-;;; the server in order to pass messages
-
-(define (connect-to-server)
-  (try-catch
-   (let ((new-connection (Network:connectToServer (server-name)(server-version)(server-host)
-                                                  (server-port)(server-port))))
-     (*:start new-connection)
-     new-connection)
-   (ex ConnectException (begin (warn "failed to connect to Fabric server.")
-                               (warn "~A" (*:toString ex))
-                               #!null))))
 
 ;;; CLASS FabricLoginBox
 ;;; ---------------------------------------------------------------------
