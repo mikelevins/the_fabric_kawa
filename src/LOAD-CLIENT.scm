@@ -27,6 +27,7 @@
 (require "data-assets.scm")
 (require "net-messaging.scm")
 (require "client-main.scm")
+(require "syntax-time.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; loading
