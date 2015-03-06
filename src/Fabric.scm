@@ -7,5 +7,6 @@
 
 (define $client (make-client))
 (invoke $client 'start)
+(enqueue-mode-update $client 'create-character)
 
 
