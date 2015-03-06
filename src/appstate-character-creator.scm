@@ -120,31 +120,40 @@
    (character-augment init-form: #!null getter: getCharacterAugment setter: setCharacterAugment)
    (character-weapon init-form: #!null getter: getCharacterWeapon setter: setCharacterWeapon)
    (character-nameplate::TLabel init-form: #!null getter: getCharacterNameplate setter: setCharacterNameplate)
+   (sky::Spatial init-form: #!null getter: getSky setter: setSky)
    (faction-nameplate::TLabel init-form: #!null getter: getFactionNameplate setter: setFactionNameplate)
+   (faction-palette::Window init-form: #!null getter: getFactionPalette setter: setFactionPalette)
+   (armor-palette::Window init-form: #!null getter: getArmorPalette setter: setArmorPalette)
+   (weapons-palette::Window init-form: #!null getter: getWeaponsPalette setter: setWeaponsPalette)
+   (augments-palette::Window init-form: #!null getter: getAugmentsPalette setter: setAugmentsPalette)
    (name-palette::Window init-form: #!null getter: getNamePalette setter: setNamePalette)
-   (app::SimpleApplication init-form: #!null getter: getApp setter: setApp)
+   (app::FabricClient init-form: #!null getter: getApp setter: setApp)
    (state-manager::AppStateManager init-form: #!null getter: getStateManager setter: setStateManager))
   (methods:
-   ((initialize mgr::AppStateManager client::SimpleApplication)
-    (init-character-creator (this) mgr client))))
+   ((initialize mgr::AppStateManager client::FabricClient)
+    (init-character-creator (this) mgr client))
+   ((cleanup)
+    (cleanup-character-creator (this) app))))
 
 ;;; =====================================================================
 ;;; Scene setup
 ;;; =====================================================================
 
-;;; (init-character-creator-sky client::SimpleApplication)
+;;; (init-character-creator-sky client::FabricClient)
 ;;; ---------------------------------------------------------------------
 ;;; construct the character creator's skybox
 
-(define (init-character-creator-sky client::FabricClient)
+(define (init-character-creator-sky state::CharacterCreatorAppState client::FabricClient)
   (let* ((sky (make-sky-box client))
          ;;(sky (make-sky-sphere client)) ; if we want to try sphere maps instead
          (root-node (*:getRootNode (as SimpleApplication client))))
+    ;; remember the sky
+    (*:setSky state sky)
     ;; add the sky to the scene
     (*:attachChild root-node sky)))
 
 
-;;; (init-character-creator-model state::CharacterCreatorAppState client::SimpleApplication)
+;;; (init-character-creator-model state::CharacterCreatorAppState client::FabricClient)
 ;;; ---------------------------------------------------------------------
 ;;; construct the character creator's skybox
 
@@ -161,16 +170,16 @@
                                  +character-x-position+
                                  +character-y-position+
                                  +character-z-position+)
-          (*:setCurrentCharacter state character)
           (*:addControl (as Node node) rotator))
         (warn "init-character-creator-model: creating a starting character failed"))))
 
-;;; (init-character-nameplate state::CharacterCreatorAppState client::SimpleApplication)
+;;; (init-character-nameplate state::CharacterCreatorAppState client::FabricClient)
 ;;; ---------------------------------------------------------------------
 ;;; construct the character nameplate
 
-(define (init-character-nameplate state::CharacterCreatorAppState screen::Screen client::SimpleApplication)
-  (let* ((align BitmapFont:Align)
+(define (init-character-nameplate state::CharacterCreatorAppState client::FabricClient)
+  (let* ((screen::Screen (*:getScreen client))
+         (align BitmapFont:Align)
          (cnameplate::TLabel (make-character-nameplate screen)))
     (*:setCharacterNameplate state cnameplate)
     (*:setText cnameplate "")
@@ -181,12 +190,13 @@
     (*:addElement screen cnameplate)))
 
 
-;;; (init-faction-nameplate state::CharacterCreatorAppState screen::Screen client::SimpleApplication)
+;;; (init-faction-nameplate state::CharacterCreatorAppState client::FabricClient)
 ;;; ---------------------------------------------------------------------
 ;;; construct the faction nameplate
 
-(define (init-faction-nameplate state::CharacterCreatorAppState screen::Screen  client::SimpleApplication)
-  (let* ((align BitmapFont:Align)
+(define (init-faction-nameplate state::CharacterCreatorAppState client::FabricClient)
+  (let* ((screen::Screen (*:getScreen client))
+         (align BitmapFont:Align)
          (nameplate::TLabel (make-faction-nameplate screen)))
     (*:setFactionNameplate state nameplate)
     (*:setText nameplate "")
@@ -197,18 +207,20 @@
     (*:addElement screen nameplate)
     nameplate))
 
-;;; (init-faction-palette state::CharacterCreatorAppState screen::Screen client::SimpleApplication)
+;;; (init-faction-palette state::CharacterCreatorAppState client::FabricClient)
 ;;; ---------------------------------------------------------------------
 ;;; construct the faction palette
 
-(define (init-faction-palette state::CharacterCreatorAppState screen::Screen client::SimpleApplication)
-  (let* ((align BitmapFont:Align)
+(define (init-faction-palette state::CharacterCreatorAppState client::FabricClient)
+  (let* ((screen::Screen (*:getScreen client))
+         (align BitmapFont:Align)
          (valign BitmapFont:VAlign)
          (faction-group (FactionButtonGroup screen "FactionGroup"))
          (faction-palette (make-faction-palette screen))
          (caretaker-button (make-caretaker-button screen))
          (abjurer-button (make-abjurer-button screen))
          (rogue-button (make-rogue-button screen)))
+    (*:setFactionPalette state faction-palette)
     (*:setWindowTitle faction-palette "Choose a Faction:")
     ;; caretaker button
     (*:setButtonIcon caretaker-button 128 128 "Interface/caretakers-icon128.png")
@@ -246,19 +258,21 @@
     faction-palette))
 
 
-;;; (init-armor-palette state::CharacterCreatorAppState screen::Screen client::SimpleApplication)
+;;; (init-armor-palette state::CharacterCreatorAppState client::FabricClient)
 ;;; ---------------------------------------------------------------------
 ;;; construct the armor palette
 
-(define (init-armor-palette state::CharacterCreatorAppState screen::Screen client::SimpleApplication)
-  (let ((align BitmapFont:Align)
-        (valign BitmapFont:VAlign)
-        (armor-group (ArmorButtonGroup screen "ArmorGroup"))
-        (armor-palette (make-armor-palette screen))
-        (absorb-armor-button (make-absorb-armor-button screen))
-        (regen-armor-button (make-regen-armor-button screen))
-        (power-armor-button (make-power-armor-button screen))
-        (energy-armor-button (make-energy-armor-button screen)))
+(define (init-armor-palette state::CharacterCreatorAppState client::FabricClient)
+  (let* ((screen::Screen (*:getScreen client))
+         (align BitmapFont:Align)
+         (valign BitmapFont:VAlign)
+         (armor-group (ArmorButtonGroup screen "ArmorGroup"))
+         (armor-palette (make-armor-palette screen))
+         (absorb-armor-button (make-absorb-armor-button screen))
+         (regen-armor-button (make-regen-armor-button screen))
+         (power-armor-button (make-power-armor-button screen))
+         (energy-armor-button (make-energy-armor-button screen)))
+    (*:setArmorPalette state armor-palette)
     (*:setWindowTitle armor-palette "Choose Armor:")
     (*:setAppState armor-group state)
     ;; absorb armor button
@@ -305,12 +319,13 @@
     (*:addElement screen armor-palette)))
 
 
-;;; (init-weapons-palette state::CharacterCreatorAppState screen::Screen client::SimpleApplication)
+;;; (init-weapons-palette state::CharacterCreatorAppState client::FabricClient)
 ;;; ---------------------------------------------------------------------
 ;;; construct the weapons palette
 
-(define (init-weapons-palette state::CharacterCreatorAppState screen::Screen client::SimpleApplication)
-  (let* ((align BitmapFont:Align)
+(define (init-weapons-palette state::CharacterCreatorAppState client::FabricClient)
+  (let* ((screen::Screen (*:getScreen client))
+         (align BitmapFont:Align)
          (valign BitmapFont:VAlign)
          (weapons-palette (make-weapons-palette screen))
          (weapons-group (WeaponsButtonGroup screen "WeaponsGroup"))
@@ -318,6 +333,7 @@
          (impulse-weapon-button (make-impulse-weapon-button screen))
          (malware-weapon-button (make-malware-weapon-button screen))
          (bots-weapon-button (make-bots-weapon-button screen)))
+    (*:setWeaponsPalette state weapons-palette)
     (*:setWindowTitle weapons-palette "Choose Weapons:")
     (*:setAppState weapons-group state)
     ;; cannon weapon button
@@ -363,23 +379,25 @@
     (*:addElement screen weapons-palette)))
 
 
-;;; (init-name-palette state::CharacterCreatorAppState screen::Screen client::SimpleApplication)
+;;; (init-name-palette state::CharacterCreatorAppState client::FabricClient)
 ;;; ---------------------------------------------------------------------
 ;;; construct the name palette
 
-(define (init-name-palette state::CharacterCreatorAppState screen::Screen client::SimpleApplication)
-  (let* ((name-palette::Window (make-name-palette state screen)))
+(define (init-name-palette state::CharacterCreatorAppState client::FabricClient)
+  (let* ((screen::Screen (*:getScreen client))
+         (name-palette::Window (make-name-palette state screen)))
     (*:setWindowTitle name-palette "Choose a Name:")
     (*:setNamePalette state name-palette)
     (*:addElement screen name-palette)))
 
 
-;;; (init-augments-palette state::CharacterCreatorAppState screen::Screen client::SimpleApplication)
+;;; (init-augments-palette state::CharacterCreatorAppState client::FabricClient)
 ;;; ---------------------------------------------------------------------
 ;;; construct the augments palette
 
-(define (init-augments-palette state::CharacterCreatorAppState screen::Screen client::SimpleApplication)
-  (let* ((align BitmapFont:Align)
+(define (init-augments-palette state::CharacterCreatorAppState client::FabricClient)
+  (let* ((screen::Screen (*:getScreen client))
+         (align BitmapFont:Align)
          (valign BitmapFont:VAlign)
          (augments-palette (make-augment-palette screen))
          (force-augment-button (make-force-augment-button screen))
@@ -387,6 +405,7 @@
          (portals-augment-button (make-portals-augment-button screen))
          (turrets-augment-button (make-turrets-augment-button screen))
          (augments-group (AugmentsButtonGroup screen "AugmentsGroup")))
+    (*:setAugmentsPalette state augments-palette)
     (*:setWindowTitle augments-palette "Choose Augments:")
     (*:setAppState augments-group state)
     ;; force augment button
@@ -431,7 +450,7 @@
     (*:addChild augments-palette turrets-augment-button)
     (*:addElement screen augments-palette)))
 
-;;; (init-lighting state::CharacterCreatorAppState client::SimpleApplication)
+;;; (init-lighting state::CharacterCreatorAppState client::FabricClient)
 ;;; ---------------------------------------------------------------------
 ;;; set up the scene lighting
 
@@ -445,32 +464,103 @@
     (*:addFilter filter-processor bloom)
     (*:addProcessor viewport filter-processor)))
 
-;;; (init-character-creator state::CharacterCreatorAppState client::SimpleApplication)
+;;; (init-character-creator state::CharacterCreatorAppState client::FabricClient)
 ;;; ---------------------------------------------------------------------
 ;;; construct the character creator's scene and UI
 
-(define (init-character-creator state::CharacterCreatorAppState mgr::AppStateManager client::SimpleApplication)
+(define (init-character-creator state::CharacterCreatorAppState mgr::AppStateManager client::FabricClient)
   (*:setApp state client)
-  (let* ((screen (Screen client))
+  (let* ((screen::Screen (*:getScreen client))
          (gui-node (*:getGuiNode client))
          (root-node (*:getRootNode (as SimpleApplication client)))
          (align BitmapFont:Align)
          (valign BitmapFont:VAlign))
-    ;; setup the lighting
+    ;; set up lighting
     (init-lighting state client)
-    ;; build the UI elements
-    (init-character-creator-sky client)
+    ;; init the UI elements
+    (init-character-creator-sky state client)
     (init-character-creator-model state client)
-    (init-character-nameplate state screen client)
-    (init-faction-nameplate state screen client)
-    (init-faction-palette state screen client)
-    (init-armor-palette state screen client)
-    (init-weapons-palette state screen client)
-    (init-name-palette state screen client)
-    (init-augments-palette state screen client)
+    (init-character-nameplate state client)
+    (init-faction-nameplate state client)
+    (init-faction-palette state client)
+    (init-armor-palette state client)
+    (init-weapons-palette state client)
+    (init-name-palette state client)
+    (init-augments-palette state client)
     ;; add the gui to the scene
     (*:addControl gui-node screen))
   (set-current-fabric-name! state (blank-fabric-name)))
+
+(define (cleanup-character-creator-sky state::CharacterCreatorAppState client::FabricClient)
+  (let ((sky (*:getSky state))
+        (root-node (*:getRootNode client)))
+    (*:detachChild root-node sky)))
+
+(define (cleanup-character-creator-model state::CharacterCreatorAppState client::FabricClient)
+  (let* ((root-node (*:getRootNode (as SimpleApplication client)))
+         (character (*:getCurrentCharacter state))
+         (node::Node (get-property character 'node: default: #f)))
+    (if (and node (not (jnull? node)))
+        (*:detachChild root-node node))))
+
+(define (cleanup-character-nameplate state::CharacterCreatorAppState client::FabricClient)
+  (let* ((screen::Screen (*:getScreen client))
+         (cnameplate::TLabel (*:getCharacterNameplate state)))
+    (if (and cnameplate (not (jnull? cnameplate)))
+        (*:removeElement screen cnameplate))))
+
+(define (cleanup-faction-nameplate state::CharacterCreatorAppState client::FabricClient)
+  (let* ((screen::Screen (*:getScreen client))
+         (nameplate::TLabel (*:getFactionNameplate state)))
+    (if (and nameplate (not (jnull? nameplate)))
+        (*:removeElement screen nameplate))))
+
+(define (cleanup-faction-palette state::CharacterCreatorAppState client::FabricClient)
+  (let ((screen::Screen (*:getScreen client))
+        (faction-palette (*:getFactionPalette state)))
+    (if (and faction-palette (not (jnull? faction-palette)))
+        (*:removeElement screen faction-palette))))
+
+(define (cleanup-armor-palette state::CharacterCreatorAppState client::FabricClient)
+  (let ((screen::Screen (*:getScreen client))
+        (armor-palette (*:getArmorPalette state)))
+    (if (and armor-palette (not (jnull? armor-palette)))
+        (*:removeElement screen armor-palette))))
+
+(define (cleanup-weapons-palette state::CharacterCreatorAppState client::FabricClient)
+  (let ((screen::Screen (*:getScreen client))
+        (weapons-palette (*:getArmorPalette state)))
+    (if (and weapons-palette (not (jnull? weapons-palette)))
+        (*:removeElement screen weapons-palette))))
+
+(define (cleanup-name-palette state::CharacterCreatorAppState client::FabricClient)
+  (let ((screen::Screen (*:getScreen client))
+        (name-palette (*:getNamePalette state)))
+    (if (and name-palette (not (jnull? name-palette)))
+        (*:removeElement screen name-palette))))
+
+(define (cleanup-augments-palette state::CharacterCreatorAppState client::FabricClient)
+  (let ((screen::Screen (*:getScreen client))
+        (augments-palette (*:getAugmentsPalette state)))
+    (if (and augments-palette (not (jnull? augments-palette)))
+        (*:removeElement screen augments-palette))))
+
+(define (cleanup-character-creator state::CharacterCreatorAppState client::FabricClient)
+  (let* ((screen::Screen (*:getScreen client))
+         (gui-node (*:getGuiNode client))
+         (root-node (*:getRootNode (as SimpleApplication client))))
+    ;; remove the UI elements
+    (cleanup-character-creator-sky state client)
+    (cleanup-character-creator-model state client)
+    (cleanup-character-nameplate state client)
+    (cleanup-faction-nameplate state client)
+    (cleanup-faction-palette state client)
+    (cleanup-armor-palette state client)
+    (cleanup-weapons-palette state client)
+    (cleanup-name-palette state client)
+    (cleanup-augments-palette state client)
+    ;; add the gui to the scene
+    (*:removeControl gui-node screen)))
 
 
 ;;; (update-state-for-faction state::CharacterCreatorAppState faction)

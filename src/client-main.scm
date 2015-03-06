@@ -90,8 +90,9 @@
 (defclass FabricClient (SimpleApplication AnalogListener ActionListener)
   (slots:
    (app-settings init-form: (AppSettings #t) getter: getAppSettings)
-   (mode-name init-form: 'create-character getter: getModeName setter: setModeName)
+   (mode-name init-form: #f getter: getModeName setter: setModeName)
    (mode-state init-form: #!null getter: getModeState setter: setModeState)
+   (screen init-form: #!null)
    (network-client::com.jme3.network.Client
     init-form: #!null getter: getNetworkClient setter: setNetworkClient))
   (methods:
@@ -103,6 +104,9 @@
    ((getGuiNode) guiNode)
    ((getGuiFont) guiFont)
    ((getKeyInput) keyInput)
+   ((getScreen)(begin (if (jnull? screen)
+                          (set! screen (Screen (this))))
+                      screen))
    ;; stubs for now; fix up in AppState
    ((onAnalog name value tpf) #f) 
    ((onAction name key-pressed? tpf) #f)
@@ -132,30 +136,66 @@
 
 ;;; modifies the game mode; must be called within the scene graph's
 ;;; thread; for interactive updates, use enqueue-mode-update
+
+;; (define (set-game-mode! client::FabricClient mode-name)
+;;   (let ((new-mode-class (mode-name->class mode-name))
+;;         (current-mode-name (*:getModeName client))
+;;         (current-mode-state (*:getModeState client))
+;;         (state-manager (*:getStateManager client)))
+;;     (if (jnull? new-mode-class)
+;;         ;; null new mode; clear the game state
+;;         (begin (if (not (jnull? current-mode-state))
+;;                    (*:detach state-manager current-mode-state))
+;;                (*:setModeName client #f)
+;;                (*:setModeState client #!null))
+;;         ;; new mode; clear any old state, then
+;;         ;; initialize and attach the new state
+;;         (let ((new-mode-state (mode-name->app-state mode-name)))
+;;           (if (jnull? new-mode-state)
+;;               ;; something went wrong with creating the new state
+;;               (error "Creating the game mode failed" mode-name)
+;;               ;; new mode state created; initialize and attach it
+;;               (begin (if (not (jnull? current-mode-state))
+;;                          (*:detach state-manager current-mode-state))
+;;                      (*:initialize new-mode-state state-manager client)
+;;                      (*:attach state-manager new-mode-state)
+;;                      (*:setModeName client mode-name)
+;;                      (*:setModeState client new-mode-state)))))))
+
+(define (mode-changed? client::FabricClient mode-name)
+  (not (equal? mode-name
+               (*:getModeName client))))
+
+(define (clear-game-state! client::FabricClient)
+  ;; detach the current game state
+  (let ((current-state (*:getModeState client))
+        (mgr (*:getStateManager client)))
+    (*:detach mgr current-state)
+    (*:setModeName client #f)
+    (*:setModeState client #!null)))
+
+(define (update-game-mode! client::FabricClient mode-name)
+  (*:setModeName client mode-name))
+
+(define (update-game-state! client::FabricClient)
+  (let* ((mode (*:getModeName client))
+         (new-state (mode-name->app-state mode))
+         (mgr::AppStateManager (*:getStateManager client)))
+    (if (not (jnull? new-state))
+        (begin (*:setModeState client #!null)
+               (*:initialize new-state mgr client)
+               (*:attach mgr new-state)))))
+
 (define (set-game-mode! client::FabricClient mode-name)
-  (let ((new-mode-class (mode-name->class mode-name))
-        (current-mode-name (*:getModeName client))
-        (current-mode-state (*:getModeState client))
-        (state-manager (*:getStateManager client)))
-    (if (jnull? new-mode-class)
-        ;; null new mode; clear the game state
-        (begin (if (not (jnull? current-mode-state))
-                   (*:detach state-manager current-mode-state))
-               (*:setModeName client #f)
-               (*:setModeState client #!null))
-        ;; new mode; clear any old state, then
-        ;; initialize and attach the new state
-        (let ((new-mode-state (mode-name->app-state mode-name)))
-          (if (jnull? new-mode-state)
-              ;; something went wrong with creating the new state
-              (error "Creating the game mode failed" mode-name)
-              ;; new mode state created; initialize and attach it
-              (begin (if (not (jnull? current-mode-state))
-                         (*:detach state-manager current-mode-state))
-                     (*:initialize new-mode-state state-manager client)
-                     (*:attach state-manager new-mode-state)
-                     (*:setModeName client mode-name)
-                     (*:setModeState client new-mode-state)))))))
+  (if (mode-changed? client mode-name)
+      (begin (clear-game-state! client)
+             ;; enqueue the next update so it doesn't happen while the
+             ;; cleanup is happening from the previous state being
+             ;; detached
+             (*:enqueue client
+                        (runnable (lambda ()
+                                    (update-game-mode! client mode-name)
+                                    (update-game-state! client)))))))
 
 (define (enqueue-mode-update client::FabricClient mode-name)
   (*:enqueue client (runnable (lambda ()(set-game-mode! client mode-name)))))
