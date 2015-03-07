@@ -20,7 +20,7 @@
  compute-portals-augment-button-size
  compute-turrets-augment-button-origin
  compute-turrets-augment-button-size
- make-augment-palette
+ make-augments-palette
  make-force-augment-button
  make-optics-augment-button
  make-portals-augment-button
@@ -93,12 +93,12 @@
               (*:getY faction-palette-size))))
 
 
-;;; (make-augment-palette screen::Screen)
+;;; (make-augments-palette screen::Screen)
 ;;; ---------------------------------------------------------------------
 ;;; returns a newly-contructed augment palette
 
-(define (make-augment-palette screen::Screen)
-  (Window screen "AugmentPalette"
+(define (make-augments-palette screen::Screen)
+  (Window screen "AugmentsPalette"
           (compute-augment-palette-origin screen)
           (compute-augment-palette-size screen)))
 

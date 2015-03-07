@@ -65,7 +65,7 @@
    (initialized init-form: #f getter: getInitialized setter: setInitialized)
    (enabled init-form: #f getter: getEnabled setter: setEnabled)
    ;; character data
-   (character init-form: #f getter: getCharacter setter: setCharacter)
+   (character init-form: (make-player-character) getter: getCharacter setter: setCharacter)
    ;; scene elements
    (sky::Spatial init-form: #!null getter: getSky setter: setSky)
    ;; UI
@@ -93,9 +93,25 @@
   (let ((client::FabricClient (*:getApplication mgr)))
     (if (not (*:getInitialized state))
         (*:initialize state mgr client))
-    (let* ((screen::Screen (*:getScreen client))
+    (let* ((root-node (*:getRootNode client))
+           (screen::Screen (*:getScreen client))
            (gui-node::Node (*:getGuiNode client))
-           )
+           (sky::Spatial (make-sky-box client))
+           (character-nameplate::TLabel (make-character-nameplate screen))
+           (faction-nameplate::TLabel (make-faction-nameplate screen))
+
+           (faction-palette::Window (make-faction-palette screen))
+           (armor-palette::Window (make-armor-palette screen))
+           (weapons-palette::Window (make-weapons-palette screen))
+           (augments-palette::Window (make-augments-palette screen))
+           (name-palette::Window (make-name-palette state screen)))
+      (*:setSky state sky)
+      (*:attachChild root-node sky)
+      (*:setCharacterNameplate state character-nameplate)
+      (*:addElement screen character-nameplate)
+      (*:setFactionNameplate state faction-nameplate)
+      (*:addElement screen faction-nameplate)
+
       (*:addControl gui-node screen))))
 
 (define (cleanup-creator-state state::CharacterCreatorAppState)

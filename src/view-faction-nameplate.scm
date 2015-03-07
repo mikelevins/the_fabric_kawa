@@ -22,6 +22,7 @@
 ;;; ---------------------------------------------------------------------
 
 (import-as BitmapFont com.jme3.font.BitmapFont)
+(import-as ColorRGBA com.jme3.math.ColorRGBA)
 (import-as Screen tonegod.gui.core.Screen)
 (import-as TLabel tonegod.gui.controls.text.Label)
 (import-as Vector2f com.jme3.math.Vector2f)
@@ -62,6 +63,10 @@
                        (compute-faction-nameplate-origin screen)
                        (compute-faction-nameplate-size screen)))
         (Align BitmapFont:Align))
-    (*:setTextAlign label Align:Center)
+    (*:setText label "")
+    (*:setTextAlign label Align:Left)
+    (*:setFont label "Interface/Fonts/Laconic30.fnt")
+    (*:setFontSize label 30)
+    (*:setFontColor label ColorRGBA:Green)
     label))
 

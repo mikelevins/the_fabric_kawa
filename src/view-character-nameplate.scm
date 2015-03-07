@@ -22,6 +22,7 @@
 
 (import-as BitmapFont com.jme3.font.BitmapFont)
 (import-as Button tonegod.gui.controls.buttons.Button)
+(import-as ColorRGBA com.jme3.math.ColorRGBA)
 (import-as RadioButtonGroup tonegod.gui.controls.buttons.RadioButtonGroup)
 (import-as Screen tonegod.gui.core.Screen)
 (import-as TLabel tonegod.gui.controls.text.Label)
@@ -67,7 +68,11 @@
                        (compute-character-nameplate-origin screen)
                        (compute-character-nameplate-size screen)))
         (Align BitmapFont:Align))
-    (*:setTextAlign label Align:Center)
+    (*:setText label "")
+    (*:setTextAlign label Align:Left)
+    (*:setFont label "Interface/Fonts/Laconic30.fnt")
+    (*:setFontSize label 30)
+    (*:setFontColor label ColorRGBA:Green)
     label))
 
 

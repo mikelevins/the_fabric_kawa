@@ -105,19 +105,6 @@
               cubes)
     cubes-pivot))
 
-
-;;; (make-player-character)
-;;; ---------------------------------------------------------------------
-;;; returns a newly-constructed player-character entity that contains
-;;; a cube node suitable for use as its avatar
-
-(define (make-player-character)
-  (let* ((character-node (Node "CharacterNode"))
-         (cube (make-player-character-cube)))
-    (*:attachChild character-node cube)
-    (entity 'player-character node: character-node)))
-
-
 (define (default-character-color)
   (ColorRGBA 0.25 0.25 0.25 0.25))
 
