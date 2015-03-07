@@ -48,41 +48,33 @@
 (import-as Vector4f com.jme3.math.Vector4f)
 (import-as Window tonegod.gui.controls.windows.Window)
 
-
-;;; =====================================================================
-;;; the AppState Class
-;;; =====================================================================
+;;; ---------------------------------------------------------------------
+;;; the CharacterCreatorAppState class
+;;; ---------------------------------------------------------------------
 
 ;;; CLASS CharacterCreatorAppState
 ;;; ---------------------------------------------------------------------
-;;; the AppState class that constructs and manages the character
-;;; creator scene in the Fabric client
+;;; an AppState class that constructs and managers the Login scene in
+;;; the Fabric client
 
 (defclass CharacterCreatorAppState (AbstractAppState)
   (slots:
-   ;; state data
+   ;; AppState common
    (app::SimpleApplication init-form: #!null getter: getApp setter: setApp)
    (state-manager::AppStateManager init-form: #!null getter: getStateManager setter: setStateManager)
    (initialized init-form: #f getter: getInitialized setter: setInitialized)
    (enabled init-form: #f getter: getEnabled setter: setEnabled)
-   ;; HUD elements
-   (sky::Spatial init-form: #!null getter: getSky setter: setSky)
-   (faction-nameplate::TLabel init-form: #!null getter: getFactionNameplate setter: setFactionNameplate)
-   (character-nameplate::TLabel init-form: #!null getter: getCharacterNameplate setter: setCharacterNameplate)
-   ;; creator palettes
-   (faction-palette::Window init-form: #!null getter: getFactionPalette setter: setFactionPalette)
-   (name-palette::Window init-form: #!null getter: getNamePalette setter: setNamePalette)
-   (weapons-palette::Window init-form: #!null getter: getWeaponsPalette setter: setWeaponsPalette)
-   (armor-palette::Window init-form: #!null getter: getArmorPalette setter: setArmorPalette)
-   (augments-palette::Window init-form: #!null getter: getAugmentsPalette setter: setAugmentsPalette)
    ;; character data
    (character init-form: #f getter: getCharacter setter: setCharacter)
-   (character-name init-form: (blank-fabric-name) getter: getCharacterName setter: setCharacterName)
-   (character-faction init-form: #f getter: getCharacterFaction setter: setCharacterFaction)
-   (character-weapon init-form: #!null getter: getCharacterWeapon setter: setCharacterWeapon)
-   (character-armor init-form: #!null getter: getCharacterArmor setter: setCharacterArmor)
-   (character-augment init-form: #!null getter: getCharacterAugment setter: setCharacterAugment))
-  ;;
+   ;; scene elements
+   (sky::Spatial init-form: #!null getter: getSky setter: setSky)
+   ;; UI
+   (character-nameplate::TLabel init-form: #!null getter: getCharacterNameplate setter: setCharacterNameplate)
+   (faction-nameplate::TLabel init-form: #!null getter: getFactionNameplate setter: setFactionNameplate)
+   (armor-palette::Window init-form: #!null getter: getArmorPalette setter: setArmorPalette)
+   (weapons-palette::Window init-form: #!null getter: getWeaponsPalette setter: setWeaponsPalette)
+   (augments-palette::Window init-form: #!null getter: getAugmentsPalette setter: setAugmentsPalette)
+   (name-palette::Window init-form: #!null getter: getNamePalette setter: setNamePalette))
   (methods:
    ((initialize mgr::AppStateManager client::FabricClient)
     (invoke-special AbstractAppState (this) 'initialize mgr client)
@@ -92,26 +84,19 @@
    ((isInitialized) initialized)
    ((stateAttached mgr::AppStateManager)(handle-state-attached (this) mgr))))
 
-;;; init-creator-state
-;;; ---------------------------------------------------------------------
-
 (define (init-creator-state state::CharacterCreatorAppState mgr::AppStateManager client::FabricClient)
   (*:setApp state client)
   (*:setStateManager state mgr)
   (*:setInitialized state #t))
 
-;;; handle-state-attached
-;;; ---------------------------------------------------------------------
-
 (define (handle-state-attached state::CharacterCreatorAppState mgr::AppStateManager)
-  (let* ((client::FabricClient (*:getApplication mgr))
-         (screen::Screen (*:getScreen client))
-         (gui-node::Node (*:getGuiNode client)))
-    ;;(*:setCharacter state (make-player-character))
-    #f))
-
-;;; cleanup-creator-state
-;;; ---------------------------------------------------------------------
+  (let ((client::FabricClient (*:getApplication mgr)))
+    (if (not (*:getInitialized state))
+        (*:initialize state mgr client))
+    (let* ((screen::Screen (*:getScreen client))
+           (gui-node::Node (*:getGuiNode client))
+           )
+      (*:addControl gui-node screen))))
 
 (define (cleanup-creator-state state::CharacterCreatorAppState)
   (let* ((client::FabricClient (*:getApp state))
