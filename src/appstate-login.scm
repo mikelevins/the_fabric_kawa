@@ -25,6 +25,7 @@
 (require "init-config-local.scm")
 (require "net-connect.scm")
 (require "net-messaging.scm")
+(require "view-login.scm")
 (require "client-main.scm")
 
 ;;; ---------------------------------------------------------------------
@@ -38,9 +39,8 @@
 (import-as ConnectException java.net.ConnectException)
 (import-as DefaultClient com.jme3.network.base.DefaultClient)
 (import-as Label tonegod.gui.controls.text.Label)
-(import-as LoginBox tonegod.gui.controls.windows.LoginBox)
-(import-as MouseButtonEvent com.jme3.input.event.MouseButtonEvent)
 (import-as Network com.jme3.network.Network)
+(import-as Node com.jme3.scene.Node)
 (import-as Screen tonegod.gui.core.Screen)
 (import-as Serializer com.jme3.network.serializing.Serializer)
 (import-as SimpleApplication com.jme3.app.SimpleApplication)
@@ -52,25 +52,6 @@
 ;;; the LoginAppState class
 ;;; ---------------------------------------------------------------------
 
-;;; CLASS FabricLoginBox
-;;; ---------------------------------------------------------------------
-;;; a LoginBox subclass that presents a form that enables players to
-;;; log in to the remote Fabric server in order to play
-
-(defclass FabricLoginBox (LoginBox)
-  (methods:
-   ((*init* screen::Screen uid::String position::Vector2f size::Vector2f)
-    (invoke-special LoginBox (this) '*init* screen uid position size))
-   ((onButtonLoginPressed evt::MouseButtonEvent toggle::boolean)
-    (let ((server-connection (connect-to-server)))
-      (if (jnull? server-connection)
-          (warn "Connection to server failed")
-          (let ((client::FabricClient app))
-            (warn "Connection to server succeeded")
-            (*:setNetworkClient client server-connection)))))
-   ((onButtonCancelPressed evt::MouseButtonEvent toggle::boolean)
-    (*:stop app))))
-
 ;;; CLASS LoginAppState
 ;;; ---------------------------------------------------------------------
 ;;; an AppState class that constructs and managers the Login scene in
@@ -80,13 +61,38 @@
   (slots:
    (app::SimpleApplication init-form: #!null getter: getApp setter: setApp)
    (state-manager::AppStateManager init-form: #!null getter: getStateManager setter: setStateManager)
+   (initialized init-form: #f getter: getInitialized setter: setInitialized)
+   (enabled init-form: #f getter: getEnabled setter: setEnabled)
    (login-box::FabricLoginBox init-form: #!null getter: getLoginBox setter: setLoginBox))
   (methods:
-   ((initialize mgr::AppStateManager client::SimpleApplication)
-    (*:setApp (this) client)
-    (let* ((screen (Screen client))
-           (gui-node (*:getGuiNode client))
-           (win (FabricLoginBox screen "login" (Vector2f 700 300)(Vector2f 700 300))))
-      (*:setLoginBox (this) win)
-      (*:addElement screen win)
-      (*:addControl gui-node screen)))))
+   ((initialize mgr::AppStateManager client::FabricClient)
+    (invoke-special AbstractAppState (this) 'initialize mgr client)
+    (init-login-state (this) mgr client))
+   ((cleanup)(cleanup-login-state (this)))
+   ((isEnabled) enabled)
+   ((isInitialized) initialized)
+   ((stateAttached mgr::AppStateManager)(handle-state-attached (this) mgr))))
+
+(define (init-login-state state::LoginAppState mgr::AppStateManager client::FabricClient)
+  (*:setApp state client)
+  (*:setStateManager state mgr)
+  (*:setInitialized state #t))
+
+(define (handle-state-attached state::LoginAppState mgr::AppStateManager)
+  (let* ((client::FabricClient (*:getApplication mgr))
+         (screen::Screen (*:getScreen client))
+         (gui-node::Node (*:getGuiNode client))
+         (win::Window (FabricLoginBox screen "login" (Vector2f 700 300)(Vector2f 700 300))))
+    (*:setLoginBox state win)
+    (*:addElement screen win)
+    (*:addControl gui-node screen)))
+
+(define (cleanup-login-state state::LoginAppState)
+  (let* ((client::FabricClient (*:getApp state))
+         (screen::Screen (*:getScreen client))
+         (gui-node::Node (*:getGuiNode client))
+         (win::Window (*:getLoginBox state)))
+    (*:removeElement screen win)
+    (*:removeControl gui-node screen)))
+
+

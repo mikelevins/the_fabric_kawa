@@ -38,5 +38,6 @@
 ;;; (*:start $client)
 ;;; switch to the character creator
 ;;; (enqueue-mode-update $client 'create-character)
+;;; (enqueue-mode-update $client 'login)
 
 

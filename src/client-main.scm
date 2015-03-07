@@ -56,29 +56,8 @@
 (import-as VideoRecorderAppState com.jme3.app.state.VideoRecorderAppState)
 
 ;;; ---------------------------------------------------------------------
-;;; FabricClient - the client application class
+;;; the client application class
 ;;; ---------------------------------------------------------------------
-
-(define +mode-names+
-  '(login pick-character create-character play))
-
-(define (mode-name->class mode)
-  (case mode
-    ((#f) #!null)
-    ((login)(error "mode-name->class: login mode is not yet implemented" ))
-    ((pick-character)(error "mode-name->class: pick-character mode is not yet implemented" ))
-    ((create-character) CharacterCreatorAppState)
-    ((play)(error "mode-name->class: play mode is not yet implemented" ))
-    (else #!null)))
-
-(define (mode-name->app-state mode)
-  (case mode
-    ((#f) #!null)
-    ((login)(error "mode-name->app-state: login mode is not yet implemented" ))
-    ((pick-character)(error "mode-name->app-state: pick-character mode is not yet implemented" ))
-    ((create-character)(CharacterCreatorAppState))
-    ((play)(error "mode-name->app-state: play mode is not yet implemented" ))
-    (else #!null)))
 
 ;;; CLASS FabricClient
 ;;; ---------------------------------------------------------------------
@@ -104,8 +83,7 @@
    ((getGuiNode) guiNode)
    ((getGuiFont) guiFont)
    ((getKeyInput) keyInput)
-   ((getScreen)(begin (if (jnull? screen)
-                          (set! screen (Screen (this))))
+   ((getScreen)(begin (if (jnull? screen)(set! screen (Screen (this))))
                       screen))
    ;; stubs for now; fix up in AppState
    ((onAnalog name value tpf) #f) 
@@ -117,50 +95,28 @@
 ;;; client init
 ;;; ---------------------------------------------------------------------
 
-;;; (init-client app::FabricClient)
-;;; ---------------------------------------------------------------------
-;;; initializes the client, includng setting up the initial AppState,
-;;; camera, and event handlers
-
-(define (init-client app::FabricClient)
-  ;; don't seize the mouse from the player
-  (Mouse:setGrabbed #f)
+(define (init-client client::FabricClient)
   ;; disable the fly-by camera
-  (*:setEnabled (*:getFlyByCamera app) #f)
+  (*:setEnabled (*:getFlyByCamera client) #f)
   ;; return void to make Java happy
   #!void)
 
 ;;; ---------------------------------------------------------------------
 ;;; construct the client app
 ;;; ---------------------------------------------------------------------
+;;; to change game modes, call enqueue-mode-update
+;;; it enqueues a lambda onto the rendering thread that when
+;;; called, detaches and cleans up the old game state,
+;;; then attaches and initializes the new one
 
-;;; modifies the game mode; must be called within the scene graph's
-;;; thread; for interactive updates, use enqueue-mode-update
-
-;; (define (set-game-mode! client::FabricClient mode-name)
-;;   (let ((new-mode-class (mode-name->class mode-name))
-;;         (current-mode-name (*:getModeName client))
-;;         (current-mode-state (*:getModeState client))
-;;         (state-manager (*:getStateManager client)))
-;;     (if (jnull? new-mode-class)
-;;         ;; null new mode; clear the game state
-;;         (begin (if (not (jnull? current-mode-state))
-;;                    (*:detach state-manager current-mode-state))
-;;                (*:setModeName client #f)
-;;                (*:setModeState client #!null))
-;;         ;; new mode; clear any old state, then
-;;         ;; initialize and attach the new state
-;;         (let ((new-mode-state (mode-name->app-state mode-name)))
-;;           (if (jnull? new-mode-state)
-;;               ;; something went wrong with creating the new state
-;;               (error "Creating the game mode failed" mode-name)
-;;               ;; new mode state created; initialize and attach it
-;;               (begin (if (not (jnull? current-mode-state))
-;;                          (*:detach state-manager current-mode-state))
-;;                      (*:initialize new-mode-state state-manager client)
-;;                      (*:attach state-manager new-mode-state)
-;;                      (*:setModeName client mode-name)
-;;                      (*:setModeState client new-mode-state)))))))
+(define (mode-name->app-state mode)
+  (case mode
+    ((#f) #!null)
+    ((login)(LoginAppState))
+    ((pick-character)(error "mode-name->app-state: pick-character mode is not yet implemented" ))
+    ((create-character)(CharacterCreatorAppState))
+    ((play)(error "mode-name->app-state: play mode is not yet implemented" ))
+    (else #!null)))
 
 (define (mode-changed? client::FabricClient mode-name)
   (not (equal? mode-name
@@ -183,7 +139,6 @@
          (mgr::AppStateManager (*:getStateManager client)))
     (if (not (jnull? new-state))
         (begin (*:setModeState client #!null)
-               (*:initialize new-state mgr client)
                (*:attach mgr new-state)))))
 
 (define (set-game-mode! client::FabricClient mode-name)
@@ -222,6 +177,8 @@
     (*:setShowSettings client #t) ; #t to show settings dialog
     (*:setDisplayStatView client #f) ; #t to show stats
     (*:setPauseOnLostFocus client #f)
+    ;; don't seize the mouse from the player
+    (Mouse:setGrabbed #f)
     client))
 
 
