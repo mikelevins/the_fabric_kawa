@@ -2,14 +2,14 @@
 ;;;;
 ;;;; Name:          gamestate-login.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
-;;;; Purpose:       log in to the Fabric
+;;;; Purpose:       Choose a character to play
 ;;;; Author:        mikel evins
 ;;;; Copyright:     2015 by mikel evins
 ;;;;
 ;;;; ***********************************************************************
 
 (module-export
- LoginGameState)
+ PickCharacterGameState)
 
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
@@ -32,27 +32,27 @@
 (import-as AppStateManager com.jme3.app.state.AppStateManager)
 
 ;;; ---------------------------------------------------------------------
-;;; the LoginGameState class
+;;; the PickCharacterGameState class
 ;;; ---------------------------------------------------------------------
 
-;;; CLASS LoginGameState
+;;; CLASS PickCharacterGameState
 ;;; ---------------------------------------------------------------------
 
-(defclass LoginGameState (FabricGameState)
+(defclass PickCharacterGameState (FabricGameState)
   (slots:)
   (methods:
    ((cleanup)
-    (format #t "~%cleanup called for LoginGameState..."))
+    (format #t "~%cleanup called for PickCharacterGameState..."))
    ((isEnabled) #t)
    ((isInitialized) initialized)
    ((prepareToAttach mgr::AppStateManager client::FabricClient)
-    (format #t "~%Preparing to attach LoginGameState..."))
+    (format #t "~%Preparing to attach PickCharacterGameState..."))
    ((stateAttached mgr::AppStateManager)
-    (format #t "~%LoginGameState attached..."))
+    (format #t "~%PickCharacterGameState attached..."))
    ((stateDetached mgr::AppStateManager)
-    (format #t "~%LoginGameState detached..."))
+    (format #t "~%PickCharacterGameState detached..."))
    ((cleanupDetached mgr::AppStateManager client::FabricClient)
-    (format #t "~%Cleaning up after detaching LoginGameState..."))))
+    (format #t "~%Cleaning up after detaching PickCharacterGameState..."))))
 
 
 

@@ -40,6 +40,9 @@
 (require "util-error.scm")
 (require "syntax-classes.scm")
 (require "gamestate-login.scm")
+(require "gamestate-createchar.scm")
+(require "gamestate-pickchar.scm")
+(require "gamestate-play.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -55,18 +58,18 @@
   (LoginGameState))
 
 (define (%construct-createchar-appstate)
-  (error "CreateCharAppState net yet implemented"))
+  (CreateCharacterGameState))
 
 (define (%construct-pickchar-appstate)
-  (error "PickCharAppState not yet implemented"))
+  (PickCharacterGameState))
 
 (define (%construct-play-appstate)
-  (error "PlayAppState not yet implemented"))
+  (PlayGameState))
 
 (define *appstate-constructors*
   `((login . ,%construct-login-appstate)
     (create-character . ,%construct-createchar-appstate)
-    (pick-character ,%construct-pickchar-appstate)
+    (pick-character . ,%construct-pickchar-appstate)
     (play . ,%construct-play-appstate)))
 
 (define (get-appstate-constructor state-name)

@@ -22,6 +22,7 @@
 (require "util-crypt.scm")
 (require "model-namegen.scm")
 (require "data-assets.scm")
+(require "model-statepool.scm")
 (require "client-main.scm")
 (require "syntax-time.scm")
 
@@ -33,3 +34,6 @@
 ;;; (define $client::FabricClient (make-client))
 ;;; (*:start $client)
 ;;; (set-client-state! $client 'login)
+;;; (set-client-state! $client 'create-character)
+;;; (set-client-state! $client 'pick-character)
+;;; (set-client-state! $client 'play)

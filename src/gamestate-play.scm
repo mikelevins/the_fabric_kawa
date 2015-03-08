@@ -9,7 +9,7 @@
 ;;;; ***********************************************************************
 
 (module-export
- LoginGameState)
+ PlayGameState)
 
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
@@ -32,27 +32,27 @@
 (import-as AppStateManager com.jme3.app.state.AppStateManager)
 
 ;;; ---------------------------------------------------------------------
-;;; the LoginGameState class
+;;; the PlayGameState class
 ;;; ---------------------------------------------------------------------
 
-;;; CLASS LoginGameState
+;;; CLASS PlayGameState
 ;;; ---------------------------------------------------------------------
 
-(defclass LoginGameState (FabricGameState)
+(defclass PlayGameState (FabricGameState)
   (slots:)
   (methods:
    ((cleanup)
-    (format #t "~%cleanup called for LoginGameState..."))
+    (format #t "~%cleanup called for PlayGameState..."))
    ((isEnabled) #t)
    ((isInitialized) initialized)
    ((prepareToAttach mgr::AppStateManager client::FabricClient)
-    (format #t "~%Preparing to attach LoginGameState..."))
+    (format #t "~%Preparing to attach PlayGameState..."))
    ((stateAttached mgr::AppStateManager)
-    (format #t "~%LoginGameState attached..."))
+    (format #t "~%PlayGameState attached..."))
    ((stateDetached mgr::AppStateManager)
-    (format #t "~%LoginGameState detached..."))
+    (format #t "~%PlayGameState detached..."))
    ((cleanupDetached mgr::AppStateManager client::FabricClient)
-    (format #t "~%Cleaning up after detaching LoginGameState..."))))
+    (format #t "~%Cleaning up after detaching PlayGameState..."))))
 
 
 

@@ -1,15 +1,15 @@
 ;;;; ***********************************************************************
 ;;;;
-;;;; Name:          gamestate-login.scm
+;;;; Name:          gamestate-createchar.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
-;;;; Purpose:       log in to the Fabric
+;;;; Purpose:       Create a new character
 ;;;; Author:        mikel evins
 ;;;; Copyright:     2015 by mikel evins
 ;;;;
 ;;;; ***********************************************************************
 
 (module-export
- LoginGameState)
+ CreateCharacterGameState)
 
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
@@ -32,27 +32,27 @@
 (import-as AppStateManager com.jme3.app.state.AppStateManager)
 
 ;;; ---------------------------------------------------------------------
-;;; the LoginGameState class
+;;; the CreateCharacterGameState class
 ;;; ---------------------------------------------------------------------
 
-;;; CLASS LoginGameState
+;;; CLASS CreateCharacterGameState
 ;;; ---------------------------------------------------------------------
 
-(defclass LoginGameState (FabricGameState)
+(defclass CreateCharacterGameState (FabricGameState)
   (slots:)
   (methods:
    ((cleanup)
-    (format #t "~%cleanup called for LoginGameState..."))
+    (format #t "~%cleanup called for CreateCharacterGameState..."))
    ((isEnabled) #t)
    ((isInitialized) initialized)
    ((prepareToAttach mgr::AppStateManager client::FabricClient)
-    (format #t "~%Preparing to attach LoginGameState..."))
+    (format #t "~%Preparing to attach CreateCharacterGameState..."))
    ((stateAttached mgr::AppStateManager)
-    (format #t "~%LoginGameState attached..."))
+    (format #t "~%CreateCharacterGameState attached..."))
    ((stateDetached mgr::AppStateManager)
-    (format #t "~%LoginGameState detached..."))
+    (format #t "~%CreateCharacterGameState detached..."))
    ((cleanupDetached mgr::AppStateManager client::FabricClient)
-    (format #t "~%Cleaning up after detaching LoginGameState..."))))
+    (format #t "~%Cleaning up after detaching CreateCharacterGameState..."))))
 
 
 

@@ -89,7 +89,7 @@
 ;;; ---------------------------------------------------------------------
 
 (define (%client-state-different? client::FabricClient new-state)
-  (let ((current-state::FabricGameState (*:getGameState client)))
+  (let ((current-state (*:getGameState client)))
     (or (and (jnull? current-state)
              (not (jnull? new-state)))
         (and (not (jnull? current-state))
@@ -104,7 +104,7 @@
 ;;; %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 (define (%detach-and-cleanup-current-state client::FabricClient)
-  (let ((current-state::FabricGameState (*:getGameState client))
+  (let ((current-state (*:getGameState client))
         (mgr (*:getStateManager client)))
     (unless (jnull? current-state)
       (*:detach mgr current-state)
