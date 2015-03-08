@@ -120,8 +120,16 @@
                    (runnable (lambda ()
                                (*:addElement screen loginbox)
                                (*:addControl gui-node screen)))))))
+   ;; the state has been detached
    ((stateDetached mgr::AppStateManager)
-    (format #t "~%LoginGameState detached..."))
+    (when (*:getInitialized (this))
+      (let* ((client::FabricClient (*:getApp (this)))
+             (screen::Screen (*:getScreen client))
+             (gui-node::Node (*:getGuiNode client)))
+        (*:enqueue client
+                   (runnable (lambda ()
+                               (*:removeElement screen loginbox)
+                               (*:removeControl gui-node screen)))))))
    ((cleanupDetached mgr::AppStateManager client::FabricClient)
     (format #t "~%Cleaning up after detaching LoginGameState..."))))
 
