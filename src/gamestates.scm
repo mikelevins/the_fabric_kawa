@@ -1,10 +1,10 @@
 ;;;; ***********************************************************************
 ;;;;
-;;;; Name:          appstate-gamestate.scm
+;;;; Name:          gamestates.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
-;;;; Purpose:       common superclass of all Fabric game states
+;;;; Purpose:       Fabric game states
 ;;;; Author:        mikel evins
-;;;; Copyright:     2014 by mikel evins
+;;;; Copyright:     2015 by mikel evins
 ;;;;
 ;;;; ***********************************************************************
 

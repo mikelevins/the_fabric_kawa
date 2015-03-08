@@ -19,7 +19,6 @@
 (require "util-java.scm")
 (require "util-error.scm")
 (require "syntax-classes.scm")
-(require "view-player-character.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -52,6 +51,7 @@
 (define (make-player-character)
   (let* ((character (PlayerCharacter))
          (node (*:getNode character))
-         (cube (make-player-character-cube)))
-    (*:attachChild node cube)
+         ;;(cube (make-player-character-cube))
+         )
+    ;;(*:attachChild node cube)
     character))

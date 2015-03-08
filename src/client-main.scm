@@ -28,7 +28,7 @@
 (require "util-java.scm")
 (require "syntax-classes.scm")
 (require "model-statepool.scm")
-(require "appstate-gamestate.scm")
+(require "gamestates.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -156,7 +156,7 @@
     client))
 
 (define (set-client-state! client::FabricClient state-name)
-  (let ((new-state (get-appstate state-name)))
+  (let ((new-state (get-appstate client state-name)))
     (when new-state
       (enqueue-client-state-update client new-state))))
 

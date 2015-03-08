@@ -39,7 +39,7 @@
 (require "util-java.scm")
 (require "util-error.scm")
 (require "syntax-classes.scm")
-(require "appstate-gamestate.scm")
+(require "gamestates.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -51,17 +51,25 @@
 
 (define *appstate-pool* '())
 
-(define (%construct-login-appstate)
-  (LoginGameState))
+(define (%construct-login-appstate client)
+  (let ((state (LoginGameState)))
+    (*:setApp state client)
+    state))
 
-(define (%construct-createchar-appstate)
-  (CreateCharacterGameState))
+(define (%construct-createchar-appstate client)
+  (let ((state (CreateCharacterGameState)))
+    (*:setApp state client)
+    state))
 
-(define (%construct-pickchar-appstate)
-  (PickCharacterGameState))
+(define (%construct-pickchar-appstate client)
+  (let ((state (PickCharacterGameState)))
+    (*:setApp state client)
+    state))
 
-(define (%construct-play-appstate)
-  (PlayGameState))
+(define (%construct-play-appstate client)
+  (let ((state (PlayGameState)))
+    (*:setApp state client)
+    state))
 
 (define *appstate-constructors*
   `((login . ,%construct-login-appstate)
@@ -90,27 +98,27 @@
           (cdr entry)
           #f))))
 
-(define (%construct-appstate state-name)
+(define (%construct-appstate client state-name)
   (let ((%construct (get-appstate-constructor state-name)))
     (if %construct
-        (%construct)
+        (%construct client)
         (error "Constructor for AppState not found" state-name))))
 
-(define (%add-appstate-entry! state-name)
+(define (%add-appstate-entry! client state-name)
   (when (validate-state-name state-name)
     (let ((entry (%find-appstate-entry state-name)))
       (if entry
           (error "AppState already exists!" state-name)
-          (let ((state (%construct-appstate state-name)))
+          (let ((state (%construct-appstate client state-name)))
             (set! *appstate-pool*
                   (cons (cons state-name state)
                         *appstate-pool*))
             state-name)))))
 
-(define (get-appstate state-name)
+(define (get-appstate client state-name)
   (let ((state (%lookup-appstate state-name)))
     (or state
-        (begin (%add-appstate-entry! state-name)
+        (begin (%add-appstate-entry! client state-name)
                (let ((state (%lookup-appstate state-name)))
                  (or state
                      (error "Error constructing AppState" state-name)))))))

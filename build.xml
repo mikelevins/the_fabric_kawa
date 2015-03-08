@@ -126,29 +126,28 @@
           fork="true">
       <classpath refid="library.class.path"/>
       <arg line="-C
-                 'Fabric.scm'
-                 'appstate-character-creator.scm'
-                 'appstate-login.scm'
-                 'client-main.scm'
-                 'data-assets.scm'
-                 'data-names.scm'
-                 'init-config-local.scm'
-                 'model-auth.scm'
-                 'model-entity.scm'
-                 'model-id.scm'
-                 'model-klos.scm'
-                 'model-namegen.scm'
-                 'net-messaging.scm'
-                 'syntax-classes.scm'
-                 'util-bytes.scm'
-                 'util-crypt.scm'
-                 'util-error.scm'
-                 'util-functions.scm'
-                 'util-java.scm'
-                 'util-lists.scm'
-                 'util-random.scm'
-                 'util-sort.scm'
-                 'version.scm'
+                 Fabric.scm
+                 appstate-gamestate.scm
+                 client-main.scm
+                 data-assets.scm
+                 data-names.scm
+                 init-config-local.scm
+                 model-character.scm
+                 model-id.scm
+                 model-namegen.scm
+                 model-statepool.scm
+                 syntax-classes.scm
+                 syntax-time.scm
+                 util-bytes.scm
+                 util-crypt.scm
+                 util-error.scm
+                 util-functions.scm
+                 util-java.scm
+                 util-lists.scm
+                 util-random.scm
+                 util-sort.scm
+                 version.scm
+                 view-skybox.scm
                  "/>
     </java>
   </target>
