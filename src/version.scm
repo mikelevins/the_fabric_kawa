@@ -13,6 +13,6 @@
 ;;; fabric-version
 ;;; ---------------------------------------------------------------------
 ;;; the version of the Fabric project as a whole
-(define fabric-version (make-parameter "0.1.1d224"))
+(define fabric-version (make-parameter "0.1.1d235"))
 
 
