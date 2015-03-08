@@ -51,11 +51,14 @@
 (import-as ColorRGBA com.jme3.math.ColorRGBA)
 (import-as Material com.jme3.material.Material)
 (import-as Node com.jme3.scene.Node)
+(import-as PI com.jme3.math.FastMath:PI)
+(import-as Quaternion com.jme3.math.Quaternion)
 (import-as Screen tonegod.gui.core.Screen)
 (import-as SkyFactory com.jme3.util.SkyFactory)
 (import-as Sphere com.jme3.scene.shape.Sphere)
 (import-as Label tonegod.gui.controls.text.Label)
 (import-as Vector2f com.jme3.math.Vector2f)
+(import-as Vector3f com.jme3.math.Vector3f)
 
 
 ;;; =====================================================================
@@ -253,7 +256,7 @@
              (TextureMode Sphere:TextureMode)
              (Projected TextureMode:Projected))
         (set! celestial-body (Sphere 128 128 2048.0))
-        (set! body-rotator (RotateControl 0.0 0.0 0.0125))
+        (set! body-rotator (RotateControl 0.0 0.0125 0.0))
         (set! body-pivot (com.jme3.scene.Geometry "Center" celestial-body))
         (set! sky
               (SkyFactory:createSky
@@ -278,10 +281,14 @@
              (cam::Camera (*:getCamera client)))
         (*:enqueue client
                    (runnable (lambda ()
-                               (let ((root (*:getRootNode (*:getApp (this)))))
+                               (let ((root (*:getRootNode (*:getApp (this))))
+                                     (rotation (Quaternion))
+                                     (pitch-axis (Vector3f 1 0 0)))
+                                 (*:fromAngleAxis rotation (/ PI 4) pitch-axis)
                                  (*:attachChild root sky)
                                  (*:attachChild root body-pivot)
                                  (*:setFrustumFar cam 20000)
+                                 (*:setLocalRotation body-pivot rotation)
                                  (*:setLocalTranslation body-pivot 0 0 -12000))))))))
    ;; the state has been detached
    ((stateDetached mgr::AppStateManager)
