@@ -177,6 +177,8 @@
 ;;; =====================================================================
 ;;; CLASS PickCharacterGameState
 ;;; =====================================================================
+;;; TODO: make a node picker so the player can choose which accessible node
+;;; to enter the game at
 
 (defclass PickCharacterGameState (FabricGameState)
   (slots:
@@ -223,6 +225,9 @@
 ;;; for the moment, until I make a real solution for picking nodes
 ;;; from the character picker, we'll just choose a random Fabric node
 ;;; when the state is attached and display the texture for that
+;;;
+;;; TODO: destroy the central celestial object when detaching
+;;; so that we can reattach with a different one
 
 (defclass PlayGameState (FabricGameState)
   (slots:
