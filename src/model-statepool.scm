@@ -39,6 +39,7 @@
 (require "util-java.scm")
 (require "util-error.scm")
 (require "syntax-classes.scm")
+(require "gamestate-login.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -51,7 +52,7 @@
 (define *appstate-pool* '())
 
 (define (%construct-login-appstate)
-  (error "LoginAppState not yet implemented"))
+  (LoginGameState))
 
 (define (%construct-createchar-appstate)
   (error "CreateCharAppState net yet implemented"))

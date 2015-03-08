@@ -10,7 +10,8 @@
 
 (module-export
  FabricClient
- make-client)
+ make-client
+ set-client-state!)
 
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
@@ -27,7 +28,7 @@
 (require "util-java.scm")
 (require "syntax-classes.scm")
 (require "model-statepool.scm")
-(require "appstate-game.scm")
+(require "appstate-gamestate.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -87,8 +88,8 @@
 ;;; change client states
 ;;; ---------------------------------------------------------------------
 
-(define (%client-state-different? client::FabricClient new-state::GameState)
-  (let ((current-state::GameState (*:getGameState client)))
+(define (%client-state-different? client::FabricClient new-state)
+  (let ((current-state::FabricGameState (*:getGameState client)))
     (or (and (jnull? current-state)
              (not (jnull? new-state)))
         (and (not (jnull? current-state))
@@ -103,18 +104,20 @@
 ;;; %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 (define (%detach-and-cleanup-current-state client::FabricClient)
-  (let ((current-state::GameState (*:getGameState client))
+  (let ((current-state::FabricGameState (*:getGameState client))
         (mgr (*:getStateManager client)))
     (unless (jnull? current-state)
       (*:detach mgr current-state)
+      (*:setGameState client #!null)
       (*:cleanupDetached current-state mgr client))))
 
-(define (%attach-and-activate-new-state client::FabricClient new-state::GameState)
+(define (%attach-and-activate-new-state client::FabricClient new-state)
   (let ((mgr (*:getStateManager client)))
     (*:prepareToAttach new-state mgr client)
+    (*:setGameState client new-state)
     (*:attach mgr new-state)))
 
-(define (%update-client-state client::FabricClient new-state::GameState)
+(define (%update-client-state client::FabricClient new-state)
   (when (%client-state-different? client new-state)
     (%detach-and-cleanup-current-state client)
     (%attach-and-activate-new-state client new-state)))
@@ -122,7 +125,7 @@
 ;;; %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ;;; ---------------------------------------------------------------------
 
-(define (enqueue-client-state-update client new-state)
+(define (enqueue-client-state-update client::FabricClient new-state)
   (*:enqueue client
              (runnable (lambda ()
                          (%update-client-state client new-state)))))

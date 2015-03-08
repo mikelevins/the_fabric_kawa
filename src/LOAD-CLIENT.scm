@@ -32,6 +32,4 @@
 
 ;;; (define $client::FabricClient (make-client))
 ;;; (*:start $client)
-;;; (set-client-state! 'login)
-
-
+;;; (set-client-state! $client 'login)

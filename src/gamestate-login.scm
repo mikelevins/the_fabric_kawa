@@ -1,24 +1,19 @@
 ;;;; ***********************************************************************
 ;;;;
-;;;; Name:          appstate-game.scm
+;;;; Name:          gamestate-login.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
-;;;; Purpose:       common superclass of all Fbric game states
+;;;; Purpose:       log in to the Fabric
 ;;;; Author:        mikel evins
-;;;; Copyright:     2014 by mikel evins
+;;;; Copyright:     2015 by mikel evins
 ;;;;
 ;;;; ***********************************************************************
 
 (module-export
- GameState)
+ LoginGameState)
 
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
 ;;; ---------------------------------------------------------------------
-
-;;; a GameState is an AppState that represents one of the Fabric
-;;; client's major modes: login, create a character, pick a character,
-;;; or play. GameState defines a small set of common slots and methods
-;;; that all Fabric GameStates must implement
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -27,40 +22,37 @@
 (require "util-java.scm")
 (require "util-error.scm")
 (require "syntax-classes.scm")
+(require "appstate-gamestate.scm")
 (require "client-main.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
-(import-as AbstractAppState com.jme3.app.state.AbstractAppState)
 (import-as AppStateManager com.jme3.app.state.AppStateManager)
 
 ;;; ---------------------------------------------------------------------
-;;; the GameState class
+;;; the LoginGameState class
 ;;; ---------------------------------------------------------------------
 
-;;; CLASS GameState
+;;; CLASS LoginGameState
 ;;; ---------------------------------------------------------------------
 
-(defclass GameState (AbstractAppState)
-  (slots:
-   (app init-form: #!null getter: getApp setter: setApp)
-   (initialized init-form: #F getter: getInitialized setter: setInitialized))
+(defclass LoginGameState (FabricGameState)
+  (slots:)
   (methods:
    ((cleanup)
-    (error "cleanup must be implemented in subclasses of GameState"))
-   ((isEnabled)
-    (error "isEnabled must be implemented in subclasses of GameState"))
+    (format #t "cleanup called for LoginGameState..."))
+   ((isEnabled) #t)
    ((isInitialized) initialized)
    ((prepareToAttach mgr::AppStateManager client::FabricClient)
-    (error "prepareToAttach must be implemented in subclasses of GameState"))
+    (format #t "Preparing to attach LoginGameState..."))
    ((stateAttached mgr::AppStateManager)
-    (error "stateAttached must be implemented in subclasses of GameState"))
+    (format #t "LoginGameState attached..."))
    ((stateDetached mgr::AppStateManager)
-    (error "stateDetached must be implemented in subclasses of GameState"))
+    (format #t "LoginGameState detached..."))
    ((cleanupDetached mgr::AppStateManager client::FabricClient)
-    (error "cleanupDetached must be implemented in subclasses of GameState"))))
+    (format #t "Cleaning up after detaching LoginGameState..."))))
 
 
 
