@@ -24,11 +24,19 @@
 (require "util-java.scm")
 (require "util-random.scm")
 
+;;; ---------------------------------------------------------------------
+;;; Java imports
+;;; ---------------------------------------------------------------------
+
 (import-as Base64 java.util.Base64)
 (import-as PBEKeySpec javax.crypto.spec.PBEKeySpec)
 (import-as Random java.security.SecureRandom)
 (import-as SecretKeyFactory javax.crypto.SecretKeyFactory)
 (import-as String java.lang.String)
+
+;;; ---------------------------------------------------------------------
+;;; crypto utilities
+;;; ---------------------------------------------------------------------
 
 ;;; (compute-random-salt)
 ;;; ---------------------------------------------------------------------

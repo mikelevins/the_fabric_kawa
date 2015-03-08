@@ -54,13 +54,13 @@
     (error "isEnabled must be implemented in subclasses of GameState"))
    ((isInitialized) initialized)
    ((prepareToAttach mgr::AppStateManager client::FabricClient)
-    (error "stateAttached must be implemented in subclasses of GameState"))
+    (error "prepareToAttach must be implemented in subclasses of GameState"))
    ((stateAttached mgr::AppStateManager)
     (error "stateAttached must be implemented in subclasses of GameState"))
    ((stateDetached mgr::AppStateManager)
     (error "stateDetached must be implemented in subclasses of GameState"))
    ((cleanupDetached mgr::AppStateManager client::FabricClient)
-    (error "stateDetached must be implemented in subclasses of GameState"))))
+    (error "cleanupDetached must be implemented in subclasses of GameState"))))
 
 
 

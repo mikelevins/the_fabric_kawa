@@ -33,25 +33,12 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
-(import-as AbstractAppState com.jme3.app.state.AbstractAppState)
 (import-as ActionListener com.jme3.input.controls.ActionListener)
 (import-as AnalogListener com.jme3.input.controls.AnalogListener)
 (import-as AppSettings com.jme3.system.AppSettings)
-(import-as AppStateManager com.jme3.app.state.AppStateManager)
-(import-as BitmapFont com.jme3.font.BitmapFont)
-(import-as Client com.jme3.network.Client)
-(import-as EffectEvent tonegod.gui.effects.Effect:EffectEvent)
-(import-as MessageListener com.jme3.network.MessageListener)
 (import-as Mouse org.lwjgl.input.Mouse)
-(import-as Node com.jme3.scene.Node)
-(import-as PI com.jme3.math.FastMath:PI)
 (import-as Screen tonegod.gui.core.Screen)
-(import-as Serializer com.jme3.network.serializing.Serializer)
 (import-as SimpleApplication com.jme3.app.SimpleApplication)
-(import-as String java.lang.String)
-(import-as TextField tonegod.gui.controls.text.TextField)
-(import-as TLabel tonegod.gui.controls.text.Label)
-(import-as VideoRecorderAppState com.jme3.app.state.VideoRecorderAppState)
 
 ;;; ---------------------------------------------------------------------
 ;;; the client application class
@@ -134,7 +121,6 @@
 
 ;;; %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ;;; ---------------------------------------------------------------------
-
 
 (define (enqueue-client-state-update client new-state)
   (*:enqueue client

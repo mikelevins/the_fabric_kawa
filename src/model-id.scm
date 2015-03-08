@@ -12,7 +12,6 @@
  id->string
  id=?
  makeid
- next-session-id
  string->id)
 
 ;;; ---------------------------------------------------------------------
@@ -64,13 +63,3 @@
 
 (define (string->id uustr)
   (UUID:fromString uustr))
-
-;;; ---------------------------------------------------------------------
-;;; per-session identifiers
-;;; ---------------------------------------------------------------------
-
-(define %session-id (make-parameter 0))
-
-(define (next-session-id)
-  (%session-id (+ 1 (%session-id)))
-  (%session-id))

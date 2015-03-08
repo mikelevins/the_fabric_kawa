@@ -16,11 +16,7 @@
  fabric-name-bits
  fabric-name-bytes
  fabric-name-bytestrings
- fabric-name-strings
- name-part->domain-index
- name-part->domain-and-index
- strings->fabric-name
- update-fabric-name)
+ fabric-name-strings)
 
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
@@ -41,9 +37,9 @@
 (require "util-lists.scm")
 (require "data-names.scm")
 
-
-(import-as String java.lang.String)
-
+;;; ---------------------------------------------------------------------
+;;; Java imports
+;;; ---------------------------------------------------------------------
 
 ;;; CLASS FabricName
 ;;; ---------------------------------------------------------------------
@@ -52,7 +48,6 @@
 (defclass FabricName ()
   (slots: (data type: gnu.math.IntNum getter: getData setter: setData))
   (methods: ((*init* num)(set! data num))))
-
 
 ;;; (fabric-name-bytes nm :: FabricName)
 ;;; ---------------------------------------------------------------------
@@ -65,7 +60,6 @@
          (result-bytes (list-fill 8 0)))
     (append data-bytes
             (drop result-bytes data-count))))
-
 
 ;;; (fabric-name-bits nm :: FabricName)
 ;;; ---------------------------------------------------------------------
@@ -96,7 +90,6 @@
   (map (lambda (b)(format #f "~8,'0b" b))
        (fabric-name-bytes nm)))
 
-
 ;;; (fabric-name-strings nm :: FabricName)
 ;;; ---------------------------------------------------------------------
 ;;; returns the text version of the Fabric name as a list of strings,
@@ -109,37 +102,7 @@
                      (name-domains))))
     parts))
 
-(define (name-part->domain-index domain part)
-  (position-if (lambda (it)(equal? part it))
-               domain))
-
-(define (name-part->domain-and-index part)
-  (let* ((domains (name-domains))
-         (domain-count (length domains)))
-    (let loop ((i 0))
-      (if (< i domain-count)
-          (let* ((domain (list-ref domains i))
-                 (pos (name-part->domain-index domain part)))
-            (if pos
-                (values i pos)
-                (loop (+ 1 i))))
-          (values #f #f)))))
-
 (define (blank-fabric-name)
   (FabricName 0))
-
-(define (strings->fabric-name strings)
-  (let* ((bytes (map (lambda (domain part)(name-part->domain-index domain part))
-                     (name-domains)
-                     strings))
-         (data (apply bytes->integer bytes)))
-    (FabricName data)))
-
-(define (update-fabric-name current-name::FabricName domain-index part-index)
-  (let* ((old-strings (fabric-name-strings current-name))
-         (part-domain (list-ref (name-domains) domain-index))
-         (new-part (list-ref part-domain part-index))
-         (new-strings (replace-element old-strings domain-index new-part)))
-    (strings->fabric-name new-strings)))
 
 
