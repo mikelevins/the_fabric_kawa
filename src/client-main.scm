@@ -27,7 +27,7 @@
 (require "util-java.scm")
 (require "syntax-classes.scm")
 (require "model-statepool.scm")
-
+(require "appstate-game.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -67,6 +67,7 @@
 (defclass FabricClient (SimpleApplication AnalogListener ActionListener)
   (slots:
    (app-settings init-form: (AppSettings #t) getter: getAppSettings)
+   (game-state init-form: #!null getter: getGameState setter: setGameState)
    (screen init-form: #!null))
   (methods:
    ((getCameraDirection) (*:getDirection cam))
@@ -96,6 +97,51 @@
   #!void)
 
 ;;; ---------------------------------------------------------------------
+;;; change client states
+;;; ---------------------------------------------------------------------
+
+(define (%client-state-different? client::FabricClient new-state::GameState)
+  (let ((current-state::GameState (*:getGameState client)))
+    (or (and (jnull? current-state)
+             (not (jnull? new-state)))
+        (and (not (jnull? current-state))
+             (jnull? new-state))
+        (not (eq? current-state new-state)))))
+
+;;; IMPORTANT
+;;; ---------------------------------------------------------------------
+;;; these functions are private and are not thread-safe; do not call
+;;; them directly; rely on enqueue-client-state-update
+;;; ---------------------------------------------------------------------
+;;; %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+(define (%detach-and-cleanup-current-state client::FabricClient)
+  (let ((current-state::GameState (*:getGameState client))
+        (mgr (*:getStateManager client)))
+    (unless (jnull? current-state)
+      (*:detach mgr current-state)
+      (*:cleanupDetached current-state mgr client))))
+
+(define (%attach-and-activate-new-state client::FabricClient new-state::GameState)
+  (let ((mgr (*:getStateManager client)))
+    (*:prepareToAttach new-state mgr client)
+    (*:attach mgr new-state)))
+
+(define (%update-client-state client::FabricClient new-state::GameState)
+  (when (%client-state-different? client new-state)
+    (%detach-and-cleanup-current-state client)
+    (%attach-and-activate-new-state client new-state)))
+
+;;; %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;;; ---------------------------------------------------------------------
+
+
+(define (enqueue-client-state-update client new-state)
+  (*:enqueue client
+             (runnable (lambda ()
+                         (%update-client-state client new-state)))))
+
+;;; ---------------------------------------------------------------------
 ;;; construct the client app
 ;;; ---------------------------------------------------------------------
 
@@ -120,4 +166,8 @@
     (Mouse:setGrabbed #f)
     client))
 
+(define (set-client-state! client::FabricClient state-name)
+  (let ((new-state (get-appstate state-name)))
+    (when new-state
+      (enqueue-client-state-update client new-state))))
 
