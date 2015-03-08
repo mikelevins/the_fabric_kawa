@@ -54,6 +54,8 @@
 (define (%construct-login-appstate)
   (error "LoginAppState not yet implemented"))
 
+
+
 (define (%construct-createchar-appstate)
   (error "CreateCharAppState net yet implemented"))
 
