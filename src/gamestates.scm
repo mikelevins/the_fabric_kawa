@@ -33,6 +33,7 @@
 (require "syntax-classes.scm")
 (require "view-loginbox.scm")
 (require "client-main.scm")
+(require "view-pickcharacter.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -139,20 +140,42 @@
 ;;; =====================================================================
 
 (defclass PickCharacterGameState (FabricGameState)
-  (slots:)
+  (slots:
+   (picker init-form: #!null getter: getCharacterPicker setter: setCharacterPicker))
   (methods:
-   ((cleanup)
-    (format #t "~%cleanup called for PickCharacterGameState..."))
+   ((cleanup) #!void)
    ((isEnabled) #t)
    ((isInitialized) initialized)
+   ;; prepare to attach the state
    ((prepareToAttach mgr::AppStateManager client::FabricClient)
-    (format #t "~%Preparing to attach PickCharacterGameState..."))
+    (unless (*:getInitialized (this))
+      (let* ((client::FabricClient (*:getApp (this)))
+             (screen::Screen (*:getScreen client))
+             (gui-node::Node (*:getGuiNode client)))
+        (set! picker (make-character-picker screen))
+        (*:setInitialized (this) #t))))
+   ;; the state has been attached
    ((stateAttached mgr::AppStateManager)
-    (format #t "~%PickCharacterGameState attached..."))
+    (when (*:getInitialized (this))
+      (let* ((client::FabricClient (*:getApp (this)))
+             (screen::Screen (*:getScreen client))
+             (gui-node::Node (*:getGuiNode client)))
+        (*:enqueue client
+                   (runnable (lambda ()
+                               (*:addElement screen picker)
+                               (*:addControl gui-node screen)))))))
+   ;; the state has been detached
    ((stateDetached mgr::AppStateManager)
-    (format #t "~%PickCharacterGameState detached..."))
+    (when (*:getInitialized (this))
+      (let* ((client::FabricClient (*:getApp (this)))
+             (screen::Screen (*:getScreen client))
+             (gui-node::Node (*:getGuiNode client)))
+        (*:enqueue client
+                   (runnable (lambda ()
+                               (*:removeElement screen picker)
+                               (*:removeControl gui-node screen)))))))
    ((cleanupDetached mgr::AppStateManager client::FabricClient)
-    (format #t "~%Cleaning up after detaching PickCharacterGameState..."))))
+    (format #t "~%Cleaning up after detaching LoginGameState..."))))
 
 
 ;;; =====================================================================
