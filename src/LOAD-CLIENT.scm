@@ -18,14 +18,10 @@
 (require "util-error.scm")
 (require "util-java.scm")
 (require "model-id.scm")
-(require "model-klos.scm")
 (require "init-config-local.scm")
-;;(require "init-config.scm")
 (require "util-crypt.scm")
-(require "model-entity.scm")
 (require "model-namegen.scm")
 (require "data-assets.scm")
-(require "net-messaging.scm")
 (require "client-main.scm")
 (require "syntax-time.scm")
 
@@ -36,8 +32,5 @@
 
 ;;; (define $client::FabricClient (make-client))
 ;;; (*:start $client)
-;;; switch to the character creator
-;;; (enqueue-mode-update $client 'create-character)
-;;; (enqueue-mode-update $client 'login)
 
 

@@ -10,8 +10,7 @@
 
 (module-export
  FabricClient
- make-client
- enqueue-mode-update)
+ make-client)
 
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
@@ -27,9 +26,8 @@
 (require "util-error.scm")
 (require "util-java.scm")
 (require "syntax-classes.scm")
-(require "net-messaging.scm")
-(require "appstate-login.scm")
-(require "appstate-character-creator.scm")
+(require "model-statepool.scm")
+
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -69,11 +67,7 @@
 (defclass FabricClient (SimpleApplication AnalogListener ActionListener)
   (slots:
    (app-settings init-form: (AppSettings #t) getter: getAppSettings)
-   (mode-name init-form: #f getter: getModeName setter: setModeName)
-   (mode-state init-form: #!null getter: getModeState setter: setModeState)
-   (screen init-form: #!null)
-   (network-client::com.jme3.network.Client
-    init-form: #!null getter: getNetworkClient setter: setNetworkClient))
+   (screen init-form: #!null))
   (methods:
    ((getCameraDirection) (*:getDirection cam))
    ((getAudioRenderer) audioRenderer)
@@ -104,56 +98,6 @@
 ;;; ---------------------------------------------------------------------
 ;;; construct the client app
 ;;; ---------------------------------------------------------------------
-;;; to change game modes, call enqueue-mode-update
-;;; it enqueues a lambda onto the rendering thread that when
-;;; called, detaches and cleans up the old game state,
-;;; then attaches and initializes the new one
-
-(define (mode-name->app-state mode)
-  (case mode
-    ((#f) #!null)
-    ((login)(LoginAppState))
-    ((pick-character)(error "mode-name->app-state: pick-character mode is not yet implemented" ))
-    ((create-character)(CharacterCreatorAppState))
-    ((play)(error "mode-name->app-state: play mode is not yet implemented" ))
-    (else #!null)))
-
-(define (mode-changed? client::FabricClient mode-name)
-  (not (equal? mode-name
-               (*:getModeName client))))
-
-(define (clear-game-state! client::FabricClient)
-  ;; detach the current game state
-  (let ((current-state (*:getModeState client))
-        (mgr (*:getStateManager client)))
-    (*:detach mgr current-state)
-    (*:setModeName client #f)
-    (*:setModeState client #!null)))
-
-(define (update-game-mode! client::FabricClient mode-name)
-  (*:setModeName client mode-name))
-
-(define (update-game-state! client::FabricClient)
-  (let* ((mode (*:getModeName client))
-         (new-state (mode-name->app-state mode))
-         (mgr::AppStateManager (*:getStateManager client)))
-    (if (not (jnull? new-state))
-        (begin (*:setModeState client #!null)
-               (*:attach mgr new-state)))))
-
-(define (set-game-mode! client::FabricClient mode-name)
-  (if (mode-changed? client mode-name)
-      (begin (clear-game-state! client)
-             ;; enqueue the next update so it doesn't happen while the
-             ;; cleanup is happening from the previous state being
-             ;; detached
-             (*:enqueue client
-                        (runnable (lambda ()
-                                    (update-game-mode! client mode-name)
-                                    (update-game-state! client)))))))
-
-(define (enqueue-mode-update client::FabricClient mode-name)
-  (*:enqueue client (runnable (lambda ()(set-game-mode! client mode-name)))))
 
 ;;; (make-client #!optional (start-mode 'create-character))
 ;;; ---------------------------------------------------------------------
@@ -164,11 +108,6 @@
 (define (make-client)
   (let* ((client::FabricClient (FabricClient))
 	 (settings::AppSettings (*:getAppSettings client)))
-    (Serializer:registerClass ChatMessage)
-    (Serializer:registerClass RequestLoginMessage)
-    (Serializer:registerClass ResponseLoginMessage )
-    (Serializer:registerClass RequestCreateAccountMessage)
-    (Serializer:registerClass ResponseCreateAccountMessage)
     (*:setResolution settings 1920 1200)
     (*:setTitle settings "The Fabric")
     (*:setSettingsDialogImage settings "Interface/icon.jpg")
