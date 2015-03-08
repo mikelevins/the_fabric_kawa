@@ -109,11 +109,11 @@
     (unless (jnull? current-state)
       (*:detach mgr current-state)
       (*:setGameState client #!null)
-      (*:cleanupDetached current-state mgr client))))
+      (*:cleanupDetached (as FabricGameState current-state) mgr client))))
 
 (define (%attach-and-activate-new-state client::FabricClient new-state)
   (let ((mgr (*:getStateManager client)))
-    (*:prepareToAttach new-state mgr client)
+    (*:prepareToAttach (as FabricGameState new-state) mgr client)
     (*:setGameState client new-state)
     (*:attach mgr new-state)))
 

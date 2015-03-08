@@ -39,10 +39,7 @@
 (require "util-java.scm")
 (require "util-error.scm")
 (require "syntax-classes.scm")
-(require "gamestate-login.scm")
-(require "gamestate-createchar.scm")
-(require "gamestate-pickchar.scm")
-(require "gamestate-play.scm")
+(require "appstate-gamestate.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports

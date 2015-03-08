@@ -9,7 +9,11 @@
 ;;;; ***********************************************************************
 
 (module-export
- FabricGameState)
+ CreateCharacterGameState
+ FabricGameState
+ LoginGameState
+ PickCharacterGameState
+ PlayGameState)
 
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
@@ -36,12 +40,10 @@
 (import-as AbstractAppState com.jme3.app.state.AbstractAppState)
 (import-as AppStateManager com.jme3.app.state.AppStateManager)
 
-;;; ---------------------------------------------------------------------
-;;; the FabricGameState class
-;;; ---------------------------------------------------------------------
 
+;;; =====================================================================
 ;;; CLASS FabricGameState
-;;; ---------------------------------------------------------------------
+;;; =====================================================================
 
 (defclass FabricGameState (AbstractAppState)
   (slots:
@@ -63,5 +65,85 @@
     (error "cleanupDetached must be implemented in subclasses of FabricGameState"))))
 
 
+;;; =====================================================================
+;;; CLASS CreateCharacterGameState
+;;; =====================================================================
+
+(defclass CreateCharacterGameState (FabricGameState)
+  (slots:)
+  (methods:
+   ((cleanup)
+    (format #t "~%cleanup called for CreateCharacterGameState..."))
+   ((isEnabled) #t)
+   ((isInitialized) initialized)
+   ((prepareToAttach mgr::AppStateManager client::FabricClient)
+    (format #t "~%Preparing to attach CreateCharacterGameState..."))
+   ((stateAttached mgr::AppStateManager)
+    (format #t "~%CreateCharacterGameState attached..."))
+   ((stateDetached mgr::AppStateManager)
+    (format #t "~%CreateCharacterGameState detached..."))
+   ((cleanupDetached mgr::AppStateManager client::FabricClient)
+    (format #t "~%Cleaning up after detaching CreateCharacterGameState..."))))
 
 
+;;; =====================================================================
+;;; CLASS LoginGameState
+;;; =====================================================================
+
+(defclass LoginGameState (FabricGameState)
+  (slots:)
+  (methods:
+   ((cleanup)
+    (format #t "~%cleanup called for LoginGameState..."))
+   ((isEnabled) #t)
+   ((isInitialized) initialized)
+   ((prepareToAttach mgr::AppStateManager client::FabricClient)
+    (format #t "~%Preparing to attach LoginGameState..."))
+   ((stateAttached mgr::AppStateManager)
+    (format #t "~%LoginGameState attached..."))
+   ((stateDetached mgr::AppStateManager)
+    (format #t "~%LoginGameState detached..."))
+   ((cleanupDetached mgr::AppStateManager client::FabricClient)
+    (format #t "~%Cleaning up after detaching LoginGameState..."))))
+
+
+;;; =====================================================================
+;;; CLASS PickCharacterGameState
+;;; =====================================================================
+
+(defclass PickCharacterGameState (FabricGameState)
+  (slots:)
+  (methods:
+   ((cleanup)
+    (format #t "~%cleanup called for PickCharacterGameState..."))
+   ((isEnabled) #t)
+   ((isInitialized) initialized)
+   ((prepareToAttach mgr::AppStateManager client::FabricClient)
+    (format #t "~%Preparing to attach PickCharacterGameState..."))
+   ((stateAttached mgr::AppStateManager)
+    (format #t "~%PickCharacterGameState attached..."))
+   ((stateDetached mgr::AppStateManager)
+    (format #t "~%PickCharacterGameState detached..."))
+   ((cleanupDetached mgr::AppStateManager client::FabricClient)
+    (format #t "~%Cleaning up after detaching PickCharacterGameState..."))))
+
+
+;;; =====================================================================
+;;; CLASS PlayGameState
+;;; =====================================================================
+
+(defclass PlayGameState (FabricGameState)
+  (slots:)
+  (methods:
+   ((cleanup)
+    (format #t "~%cleanup called for PlayGameState..."))
+   ((isEnabled) #t)
+   ((isInitialized) initialized)
+   ((prepareToAttach mgr::AppStateManager client::FabricClient)
+    (format #t "~%Preparing to attach PlayGameState..."))
+   ((stateAttached mgr::AppStateManager)
+    (format #t "~%PlayGameState attached..."))
+   ((stateDetached mgr::AppStateManager)
+    (format #t "~%PlayGameState detached..."))
+   ((cleanupDetached mgr::AppStateManager client::FabricClient)
+    (format #t "~%Cleaning up after detaching PlayGameState..."))))
