@@ -31,6 +31,7 @@
 (require "util-java.scm")
 (require "util-error.scm")
 (require "syntax-classes.scm")
+(require "view-loginbox.scm")
 (require "client-main.scm")
 
 ;;; ---------------------------------------------------------------------
@@ -39,6 +40,9 @@
 
 (import-as AbstractAppState com.jme3.app.state.AbstractAppState)
 (import-as AppStateManager com.jme3.app.state.AppStateManager)
+(import-as Node com.jme3.scene.Node)
+(import-as Screen tonegod.gui.core.Screen)
+(import-as Vector2f com.jme3.math.Vector2f)
 
 
 ;;; =====================================================================
@@ -91,16 +95,31 @@
 ;;; =====================================================================
 
 (defclass LoginGameState (FabricGameState)
-  (slots:)
+  (slots:
+   (loginbox init-form: #!null getter: getLoginBox setter: setLoginBox))
   (methods:
    ((cleanup)
     (format #t "~%cleanup called for LoginGameState..."))
    ((isEnabled) #t)
    ((isInitialized) initialized)
+   ;; prepare to attach the state
    ((prepareToAttach mgr::AppStateManager client::FabricClient)
-    (format #t "~%Preparing to attach LoginGameState..."))
+    (unless (*:getInitialized (this))
+      (let* ((client::FabricClient (*:getApp (this)))
+             (screen::Screen (*:getScreen client))
+             (gui-node::Node (*:getGuiNode client)))
+        (set! loginbox (FabricLoginBox screen "LoginBox" (Vector2f 700 300)(Vector2f 700 300)))
+        (*:setInitialized (this) #t))))
+   ;; the state has been attached
    ((stateAttached mgr::AppStateManager)
-    (format #t "~%LoginGameState attached..."))
+    (when (*:getInitialized (this))
+      (let* ((client::FabricClient (*:getApp (this)))
+             (screen::Screen (*:getScreen client))
+             (gui-node::Node (*:getGuiNode client)))
+        (*:enqueue client
+                   (runnable (lambda ()
+                               (*:addElement screen loginbox)
+                               (*:addControl gui-node screen)))))))
    ((stateDetached mgr::AppStateManager)
     (format #t "~%LoginGameState detached..."))
    ((cleanupDetached mgr::AppStateManager client::FabricClient)
