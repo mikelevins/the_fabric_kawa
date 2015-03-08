@@ -36,6 +36,7 @@
 ;;; ---------------------------------------------------------------------
 
 (import-as Button tonegod.gui.controls.buttons.Button)
+(import-as ColorRGBA com.jme3.math.ColorRGBA)
 (import-as RadioButton tonegod.gui.controls.buttons.RadioButton)
 (import-as RadioButtonGroup tonegod.gui.controls.buttons.RadioButtonGroup)
 (import-as Screen tonegod.gui.core.Screen)
@@ -98,9 +99,59 @@
 ;;; returns a newly-contructed augment palette
 
 (define (make-augments-palette screen::Screen)
-  (Window screen "AugmentsPalette"
-          (compute-augment-palette-origin screen)
-          (compute-augment-palette-size screen)))
+  (let ((augments-palette (Window screen "AugmentsPalette"
+                                  (compute-augment-palette-origin screen)
+                                  (compute-augment-palette-size screen)))
+        (align BitmapFont:Align)
+        (valign BitmapFont:VAlign)
+        (force-augment-button (make-force-augment-button screen))
+        (optics-augment-button (make-optics-augment-button screen))
+        (portals-augment-button (make-portals-augment-button screen))
+        (turrets-augment-button (make-turrets-augment-button screen))
+        (augments-group (AugmentsButtonGroup screen "AugmentsGroup")))
+    (*:setWindowTitle augments-palette "Choose Augments:")
+    (*:setAppState augments-group state)
+    ;; force augment button
+    (*:setButtonIcon force-augment-button 128 128 "Interface/force-augment-icon128.png")
+    (*:setButtonPressedInfo force-augment-button "Interface/force-augment-icon128.png"
+                            (ColorRGBA 1.0 1.0 0.0 1.0))
+    (*:setText force-augment-button "Force Fields")
+    (*:setTextAlign force-augment-button align:Center)
+    (*:setTextVAlign force-augment-button valign:Bottom)
+    (*:setFontSize force-augment-button 20)
+    (*:addButton augments-group force-augment-button)
+    (*:addChild augments-palette force-augment-button)
+    ;; optics augment button
+    (*:setButtonIcon optics-augment-button 128 128 "Interface/optics-augment-icon128.png")
+    (*:setButtonPressedInfo optics-augment-button "Interface/optics-augment-icon128.png"
+                            (ColorRGBA 0.0 1.0 0.0 1.0))
+    (*:setText optics-augment-button "Optics")
+    (*:setTextAlign optics-augment-button align:Center)
+    (*:setTextVAlign optics-augment-button valign:Bottom)
+    (*:setFontSize optics-augment-button 20)
+    (*:addButton augments-group optics-augment-button)
+    (*:addChild augments-palette optics-augment-button)
+    ;; portals augment button
+    (*:setButtonIcon portals-augment-button 128 128 "Interface/portals-augment-icon128.png")
+    (*:setButtonPressedInfo portals-augment-button "Interface/portals-augment-icon128.png"
+                            (ColorRGBA 1.0 0.5 0.0 1.0))
+    (*:setText portals-augment-button "Portals")
+    (*:setTextAlign portals-augment-button align:Center)
+    (*:setTextVAlign portals-augment-button valign:Bottom)
+    (*:setFontSize portals-augment-button 20)
+    (*:addButton augments-group portals-augment-button)
+    (*:addChild augments-palette portals-augment-button)
+    ;; turrets augment button
+    (*:setButtonIcon turrets-augment-button 128 128 "Interface/turrets-augment-icon128.png")
+    (*:setButtonPressedInfo turrets-augment-button "Interface/turrets-augment-icon128.png"
+                            (ColorRGBA 0.0 6.0 1.0 1.0))
+    (*:setText turrets-augment-button "Turrets")
+    (*:setTextAlign turrets-augment-button align:Center)
+    (*:setTextVAlign turrets-augment-button valign:Bottom)
+    (*:setFontSize turrets-augment-button 20)
+    (*:addButton augments-group turrets-augment-button)
+    (*:addChild augments-palette turrets-augment-button)
+    augments-palette))
 
 
 ;;; (compute-force-augment-button-origin screen::Screen)

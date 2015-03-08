@@ -10,7 +10,7 @@
 
 (module-export
  default-character-color
- make-player-character
+ make-player-character-cube
  update-character-model!)
 
 ;;; ---------------------------------------------------------------------

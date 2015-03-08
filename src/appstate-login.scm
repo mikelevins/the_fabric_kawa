@@ -68,10 +68,11 @@
    ((initialize mgr::AppStateManager client::FabricClient)
     (invoke-special AbstractAppState (this) 'initialize mgr client)
     (init-login-state (this) mgr client))
-   ((cleanup)(cleanup-login-state (this)))
+   ((cleanup) #!void)
    ((isEnabled) enabled)
    ((isInitialized) initialized)
-   ((stateAttached mgr::AppStateManager)(handle-state-attached (this) mgr))))
+   ((stateAttached mgr::AppStateManager)(handle-state-attached (this) mgr))
+   ((stateDetached mgr::AppStateManager)(handle-state-detached (this) mgr))))
 
 (define (init-login-state state::LoginAppState mgr::AppStateManager client::FabricClient)
   (*:setApp state client)
@@ -84,17 +85,25 @@
         (*:initialize state mgr client))
     (let* ((screen::Screen (*:getScreen client))
            (gui-node::Node (*:getGuiNode client))
-           (win::Window (FabricLoginBox screen "login" (Vector2f 700 300)(Vector2f 700 300))))
-      (*:setLoginBox state win)
-      (*:addElement screen win)
-      (*:addControl gui-node screen))))
+           (win::Window (FabricLoginBox screen
+                                        (format #f "login~d" (next-session-id))
+                                        (Vector2f 700 300)(Vector2f 700 300))))
+      (*:enqueue client
+                 (runnable (lambda ()
+                             (*:setLoginBox state win)
+                             (*:addElement screen win)
+                             (*:addControl gui-node screen)))))))
 
-(define (cleanup-login-state state::LoginAppState)
+
+(define (handle-state-detached state::LoginAppState mgr::AppStateManager)
   (let* ((client::FabricClient (*:getApp state))
          (screen::Screen (*:getScreen client))
          (gui-node::Node (*:getGuiNode client))
          (win::Window (*:getLoginBox state)))
-    (*:removeElement screen win)
-    (*:removeControl gui-node screen)))
+    (*:enqueue client
+               (runnable (lambda ()
+                           (*:removeElement screen win)
+                           (*:removeControl gui-node screen))))))
+
 
 

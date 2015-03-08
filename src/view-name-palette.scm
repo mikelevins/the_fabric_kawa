@@ -28,6 +28,7 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
+(import-as ColorRGBA com.jme3.math.ColorRGBA)
 (import-as MenuItem tonegod.gui.controls.menuing.MenuItem)
 (import-as Screen tonegod.gui.core.Screen)
 (import-as SelectBox tonegod.gui.controls.lists.SelectBox)
@@ -88,9 +89,9 @@
   (let ((size::Vector2f (compute-name-palette-size screen)))
     (receive (lefts tops widths heights) (compute-name-menu-bounds size)
       (let* ((origin (compute-name-palette-origin screen))
-             (palette (Window screen "NamePalette" origin size))
+             (name-palette (Window screen "NamePalette" origin size))
              (indexes (iota (length lefts)))
-             (random-name-button (make-random-name-button palette screen))
+             (random-name-button (make-random-name-button name-palette screen))
              (%make-menu (lambda (i)
                            (let* ((dom (list-ref (name-domains) i))
                                   (dom-menu::NameMenu
@@ -100,10 +101,11 @@
                                              (Vector2f (list-ref widths i)(list-ref heights i))))
                                   (%add-item (lambda (nm)(*:addListItem dom-menu nm nm))))
                              (for-each %add-item dom)
-                             (*:addChild palette dom-menu)))))
+                             (*:addChild name-palette dom-menu)))))
         (for-each %make-menu indexes)
-        (*:addChild palette random-name-button)
-        palette))))
+        (*:addChild name-palette random-name-button)
+        (*:setWindowTitle name-palette "Choose a Name:")
+        name-palette))))
 
 
 (define (pick-a-random-name palette::Window)

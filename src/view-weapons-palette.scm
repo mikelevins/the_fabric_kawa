@@ -38,6 +38,7 @@
 ;;; ---------------------------------------------------------------------
 
 (import-as Button tonegod.gui.controls.buttons.Button)
+(import-as ColorRGBA com.jme3.math.ColorRGBA)
 (import-as RadioButton tonegod.gui.controls.buttons.RadioButton)
 (import-as RadioButtonGroup tonegod.gui.controls.buttons.RadioButtonGroup)
 (import-as Screen tonegod.gui.core.Screen)
@@ -104,9 +105,59 @@
 ;;; returns a newly-contructed weapons palette
 
 (define (make-weapons-palette screen::Screen)
-  (Window screen "WeaponsPalette"
-          (compute-weapons-palette-origin screen)
-          (compute-weapons-palette-size screen)))
+  (let ((weapons-palette (Window screen "WeaponsPalette"
+                                 (compute-weapons-palette-origin screen)
+                                 (compute-weapons-palette-size screen)))
+        (align BitmapFont:Align)
+        (valign BitmapFont:VAlign)
+        (weapons-group (WeaponsButtonGroup screen "WeaponsGroup"))
+        (cannon-weapon-button (make-cannon-weapon-button screen))
+        (impulse-weapon-button (make-impulse-weapon-button screen))
+        (malware-weapon-button (make-malware-weapon-button screen))
+        (bots-weapon-button (make-bots-weapon-button screen)))
+    (*:setWindowTitle weapons-palette "Choose Weapons:")
+    (*:setAppState weapons-group state)
+    ;; cannon weapon button
+    (*:setButtonIcon cannon-weapon-button 128 128 "Interface/cannon-weapon-icon128.png")
+    (*:setButtonPressedInfo cannon-weapon-button "Interface/cannon-weapon-icon128.png"
+                            (ColorRGBA 1.0 1.0 0.0 1.0))
+    (*:setText cannon-weapon-button "Cannon")
+    (*:setTextAlign cannon-weapon-button align:Center)
+    (*:setTextVAlign cannon-weapon-button valign:Bottom)
+    (*:setFontSize cannon-weapon-button 20)
+    (*:addButton weapons-group cannon-weapon-button)
+    (*:addChild weapons-palette cannon-weapon-button)
+    ;; impulse weapon button
+    (*:setButtonIcon impulse-weapon-button 128 128 "Interface/impulse-weapon-icon128.png")
+    (*:setButtonPressedInfo impulse-weapon-button "Interface/impulse-weapon-icon128.png"
+                            (ColorRGBA 0.0 1.0 0.0 1.0))
+    (*:setText impulse-weapon-button "Impulse")
+    (*:setTextAlign impulse-weapon-button align:Center)
+    (*:setTextVAlign impulse-weapon-button valign:Bottom)
+    (*:setFontSize impulse-weapon-button 20)
+    (*:addButton weapons-group impulse-weapon-button)
+    (*:addChild weapons-palette impulse-weapon-button)
+    ;; malware weapon button
+    (*:setButtonIcon malware-weapon-button 128 128 "Interface/malware-weapon-icon128.png")
+    (*:setButtonPressedInfo malware-weapon-button "Interface/malware-weapon-icon128.png"
+                            (ColorRGBA 1.0 0.5 0.0 1.0))
+    (*:setText malware-weapon-button "Malware")
+    (*:setTextAlign malware-weapon-button align:Center)
+    (*:setTextVAlign malware-weapon-button valign:Bottom)
+    (*:setFontSize malware-weapon-button 20)
+    (*:addButton weapons-group malware-weapon-button)
+    (*:addChild weapons-palette malware-weapon-button)
+    ;; bots weapon button
+    (*:setButtonIcon bots-weapon-button 128 128 "Interface/bots-weapon-icon128.png")
+    (*:setButtonPressedInfo bots-weapon-button "Interface/bots-weapon-icon128.png"
+                            (ColorRGBA 0.0 6.0 1.0 1.0))
+    (*:setText bots-weapon-button "Bots")
+    (*:setTextAlign bots-weapon-button align:Center)
+    (*:setTextVAlign bots-weapon-button valign:Bottom)
+    (*:setFontSize bots-weapon-button 20)
+    (*:addButton weapons-group bots-weapon-button)
+    (*:addChild weapons-palette bots-weapon-button)
+    weapons-palette))
 
 
 ;;; (compute-cannon-weapon-button-origin screen::Screen)

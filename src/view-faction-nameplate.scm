@@ -46,7 +46,7 @@
 ;;; (compute-faction-nameplate-size screen::Screen)
 ;;; ---------------------------------------------------------------------
 ;;; computes and returns a suitable size for the faction nameplate,
-;;; taking into accoun the dimensions of the screen
+;;; taking into account the dimensions of the screen
 
 (define (compute-faction-nameplate-size screen::Screen)
   (let ((width (*:getWidth screen)))

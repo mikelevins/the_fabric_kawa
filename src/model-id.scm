@@ -12,6 +12,7 @@
  id->string
  id=?
  makeid
+ next-session-id
  string->id)
 
 ;;; ---------------------------------------------------------------------
@@ -31,7 +32,7 @@
 (import-as UUID java.util.UUID)
 
 ;;; ---------------------------------------------------------------------
-;;; identifiers
+;;; unique identifiers
 ;;; ---------------------------------------------------------------------
 
 ;;; (id=? id1 id2)
@@ -64,3 +65,12 @@
 (define (string->id uustr)
   (UUID:fromString uustr))
 
+;;; ---------------------------------------------------------------------
+;;; per-session identifiers
+;;; ---------------------------------------------------------------------
+
+(define %session-id (make-parameter 0))
+
+(define (next-session-id)
+  (%session-id (+ 1 (%session-id)))
+  (%session-id))

@@ -26,7 +26,9 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
+(import-as BitmapFont com.jme3.font.BitmapFont)
 (import-as Button tonegod.gui.controls.buttons.Button)
+(import-as ColorRGBA com.jme3.math.ColorRGBA)
 (import-as RadioButton tonegod.gui.controls.buttons.RadioButton)
 (import-as RadioButtonGroup tonegod.gui.controls.buttons.RadioButtonGroup)
 (import-as Screen tonegod.gui.core.Screen)
@@ -99,9 +101,47 @@
 ;;; returns a newly-constructed and -populated faction-palette window
 
 (define (make-faction-palette screen::Screen)
-  (Window screen "FactionPalette"
-          (compute-faction-palette-origin screen)
-          (compute-faction-palette-size screen)))
+  (let* ((align BitmapFont:Align)
+         (valign BitmapFont:VAlign)
+         (faction-group (FactionButtonGroup screen "FactionGroup"))
+         (faction-palette (make-faction-palette screen))
+         (caretaker-button (make-caretaker-button screen))
+         (abjurer-button (make-abjurer-button screen))
+         (rogue-button (make-rogue-button screen))
+         (palette (Window screen "FactionPalette"
+                          (compute-faction-palette-origin screen)
+                          (compute-faction-palette-size screen))))
+    ;; caretaker button
+    (*:setButtonIcon caretaker-button 128 128 "Interface/caretakers-icon128.png")
+    (*:setButtonPressedInfo caretaker-button "Interface/caretakers-icon-lit128.png"
+                            (ColorRGBA 0.0 1.0 0.0 1.0))
+    (*:setText caretaker-button "Caretakers")
+    (*:setTextAlign caretaker-button align:Center)
+    (*:setTextVAlign caretaker-button valign:Bottom)
+    (*:setFontSize caretaker-button 20)
+    (*:addButton faction-group caretaker-button)
+    ;; abjurer button
+    (*:setButtonIcon abjurer-button 128 128 "Interface/abjurers-icon128.png")
+    (*:setButtonPressedInfo abjurer-button "Interface/abjurers-icon-lit128.png"
+                            (ColorRGBA 1.0 0.0 0.0 1.0))
+    (*:setText abjurer-button "Abjurers")
+    (*:setTextAlign abjurer-button align:Center)
+    (*:setTextVAlign abjurer-button valign:Bottom)
+    (*:setFontSize abjurer-button 20)
+    (*:addButton faction-group abjurer-button)
+    ;; rogue button
+    (*:setButtonIcon rogue-button 128 128 "Interface/rogues-icon128.png")
+    (*:setButtonPressedInfo rogue-button "Interface/rogues-icon-lit128.png"
+                            (ColorRGBA 0.0 0.75 1.0 1.0))
+    (*:setText rogue-button "Rogues")
+    (*:setTextAlign rogue-button align:Center)
+    (*:setTextVAlign rogue-button valign:Bottom)
+    (*:setFontSize rogue-button 20)
+    (*:addButton faction-group rogue-button)
+    (*:addChild palette caretaker-button)
+    (*:addChild palette abjurer-button)
+    (*:addChild palette rogue-button)    
+    palette))
 
 
 ;;; (compute-caretaker-button-origin screen::Screen)

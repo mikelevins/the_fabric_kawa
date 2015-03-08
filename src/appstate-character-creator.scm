@@ -59,32 +59,22 @@
 
 (defclass CharacterCreatorAppState (AbstractAppState)
   (slots:
-   ;; AppState common
    (app::SimpleApplication init-form: #!null getter: getApp setter: setApp)
    (state-manager::AppStateManager init-form: #!null getter: getStateManager setter: setStateManager)
    (initialized init-form: #f getter: getInitialized setter: setInitialized)
    (enabled init-form: #f getter: getEnabled setter: setEnabled)
-   ;; character data
-   (character init-form: (make-player-character) getter: getCharacter setter: setCharacter)
-   ;; scene elements
-   (sky::Spatial init-form: #!null getter: getSky setter: setSky)
-   ;; UI
-   (character-nameplate::TLabel init-form: #!null getter: getCharacterNameplate setter: setCharacterNameplate)
-   (faction-nameplate::TLabel init-form: #!null getter: getFactionNameplate setter: setFactionNameplate)
-   (armor-palette::Window init-form: #!null getter: getArmorPalette setter: setArmorPalette)
-   (weapons-palette::Window init-form: #!null getter: getWeaponsPalette setter: setWeaponsPalette)
-   (augments-palette::Window init-form: #!null getter: getAugmentsPalette setter: setAugmentsPalette)
-   (name-palette::Window init-form: #!null getter: getNamePalette setter: setNamePalette))
+   (login-box::FabricLoginBox init-form: #!null getter: getLoginBox setter: setLoginBox))
   (methods:
    ((initialize mgr::AppStateManager client::FabricClient)
     (invoke-special AbstractAppState (this) 'initialize mgr client)
-    (init-creator-state (this) mgr client))
-   ((cleanup)(cleanup-creator-state (this)))
+    (init-login-state (this) mgr client))
+   ((cleanup) #!void)
    ((isEnabled) enabled)
    ((isInitialized) initialized)
-   ((stateAttached mgr::AppStateManager)(handle-state-attached (this) mgr))))
+   ((stateAttached mgr::AppStateManager)(handle-state-attached (this) mgr))
+   ((stateDetached mgr::AppStateManager)(handle-state-detached (this) mgr))))
 
-(define (init-creator-state state::CharacterCreatorAppState mgr::AppStateManager client::FabricClient)
+(define (init-login-state state::CharacterCreatorAppState mgr::AppStateManager client::FabricClient)
   (*:setApp state client)
   (*:setStateManager state mgr)
   (*:setInitialized state #t))
@@ -93,32 +83,27 @@
   (let ((client::FabricClient (*:getApplication mgr)))
     (if (not (*:getInitialized state))
         (*:initialize state mgr client))
-    (let* ((root-node (*:getRootNode client))
-           (screen::Screen (*:getScreen client))
+    (let* ((screen::Screen (*:getScreen client))
            (gui-node::Node (*:getGuiNode client))
-           (sky::Spatial (make-sky-box client))
-           (character-nameplate::TLabel (make-character-nameplate screen))
-           (faction-nameplate::TLabel (make-faction-nameplate screen))
+           (win::Window (FabricLoginBox screen
+                                        (format #f "create~d" (next-session-id))
+                                        (Vector2f 700 300)(Vector2f 700 300))))
+      (*:enqueue client
+                 (runnable (lambda ()
+                             (*:setWindowTitle win "Create a Character:")
+                             (*:setLoginBox state win)
+                             (*:addElement screen win)
+                             (*:addControl gui-node screen)))))))
 
-           (faction-palette::Window (make-faction-palette screen))
-           (armor-palette::Window (make-armor-palette screen))
-           (weapons-palette::Window (make-weapons-palette screen))
-           (augments-palette::Window (make-augments-palette screen))
-           (name-palette::Window (make-name-palette state screen)))
-      (*:setSky state sky)
-      (*:attachChild root-node sky)
-      (*:setCharacterNameplate state character-nameplate)
-      (*:addElement screen character-nameplate)
-      (*:setFactionNameplate state faction-nameplate)
-      (*:addElement screen faction-nameplate)
-
-      (*:addControl gui-node screen))))
-
-(define (cleanup-creator-state state::CharacterCreatorAppState)
+(define (handle-state-detached state::CharacterCreatorAppState mgr::AppStateManager)
   (let* ((client::FabricClient (*:getApp state))
          (screen::Screen (*:getScreen client))
          (gui-node::Node (*:getGuiNode client))
-         )
-    (*:removeControl gui-node screen)))
+         (win::Window (*:getLoginBox state)))
+    (*:enqueue client
+               (runnable (lambda ()
+                           (*:removeElement screen win)
+                           (*:removeControl gui-node screen))))))
+
 
 

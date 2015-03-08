@@ -28,6 +28,7 @@
 ;;; ---------------------------------------------------------------------
 
 (import-as Button tonegod.gui.controls.buttons.Button)
+(import-as ColorRGBA com.jme3.math.ColorRGBA)
 (import-as RadioButton tonegod.gui.controls.buttons.RadioButton)
 (import-as RadioButtonGroup tonegod.gui.controls.buttons.RadioButtonGroup)
 (import-as Screen tonegod.gui.core.Screen)
@@ -90,9 +91,59 @@
 ;;; returns a newly-contructed armor palette
 
 (define (make-armor-palette screen::Screen)
-  (Window screen "ArmorPalette"
-          (compute-armor-palette-origin screen)
-          (compute-armor-palette-size screen)))
+  (let ((armor-palette (Window screen "ArmorPalette"
+                               (compute-armor-palette-origin screen)
+                               (compute-armor-palette-size screen)))
+        (align BitmapFont:Align)
+        (valign BitmapFont:VAlign)
+        (armor-group (ArmorButtonGroup screen "ArmorGroup"))
+        (absorb-armor-button (make-absorb-armor-button screen))
+        (regen-armor-button (make-regen-armor-button screen))
+        (power-armor-button (make-power-armor-button screen))
+        (energy-armor-button (make-energy-armor-button screen)))
+    (*:setWindowTitle armor-palette "Choose Armor:")
+    (*:setAppState armor-group state)
+    ;; absorb armor button
+    (*:setButtonIcon absorb-armor-button 128 128 "Interface/absorb-armor-icon128.png")
+    (*:setButtonPressedInfo absorb-armor-button "Interface/absorb-armor-icon128.png"
+                            (ColorRGBA 1.0 1.0 0.0 1.0))
+    (*:setText absorb-armor-button "Absorb")
+    (*:setTextAlign absorb-armor-button align:Center)
+    (*:setTextVAlign absorb-armor-button valign:Bottom)
+    (*:setFontSize absorb-armor-button 20)
+    (*:addButton armor-group absorb-armor-button)
+    (*:addChild armor-palette absorb-armor-button)
+    ;; regen armor button
+    (*:setButtonIcon regen-armor-button 128 128 "Interface/regen-armor-icon128.png")
+    (*:setButtonPressedInfo regen-armor-button "Interface/regen-armor-icon128.png"
+                            (ColorRGBA 0.0 1.0 0.0 1.0))
+    (*:setText regen-armor-button "Regenerate")
+    (*:setTextAlign regen-armor-button align:Center)
+    (*:setTextVAlign regen-armor-button valign:Bottom)
+    (*:setFontSize regen-armor-button 20)
+    (*:addButton armor-group regen-armor-button)
+    (*:addChild armor-palette regen-armor-button)
+    ;; power armor button
+    (*:setButtonIcon power-armor-button 128 128 "Interface/power-armor-icon128.png")
+    (*:setButtonPressedInfo power-armor-button "Interface/power-armor-icon128.png"
+                            (ColorRGBA 1.0 0.5 0.0 1.0))
+    (*:setText power-armor-button "Power")
+    (*:setTextAlign power-armor-button align:Center)
+    (*:setTextVAlign power-armor-button valign:Bottom)
+    (*:setFontSize power-armor-button 20)
+    (*:addButton armor-group power-armor-button)
+    (*:addChild armor-palette power-armor-button)
+    ;; energy armor button
+    (*:setButtonIcon energy-armor-button 128 128 "Interface/energy-armor-icon128.png")
+    (*:setButtonPressedInfo energy-armor-button "Interface/energy-armor-icon128.png"
+                            (ColorRGBA 0.0 6.0 1.0 1.0))
+    (*:setText energy-armor-button "Energy")
+    (*:setTextAlign energy-armor-button align:Center)
+    (*:setTextVAlign energy-armor-button valign:Bottom)
+    (*:setFontSize energy-armor-button 20)
+    (*:addButton armor-group energy-armor-button)
+    (*:addChild armor-palette energy-armor-button)
+    armor-palette))
 
 ;;; (compute-absorb-armor-button-origin screen::Screen)
 ;;; ---------------------------------------------------------------------
