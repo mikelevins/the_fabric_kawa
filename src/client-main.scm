@@ -56,7 +56,8 @@
   (slots:
    (app-settings init-form: (AppSettings #t) getter: getAppSettings)
    (game-state init-form: #!null getter: getGameState setter: setGameState)
-   (screen init-form: #!null))
+   (screen init-form: #!null)
+   (fabric-node init-form: #f getter: getFabricNode setter: setFabricNode)) 
   (methods:
    ((getCameraDirection) (*:getDirection cam))
    ((getAudioRenderer) audioRenderer)
