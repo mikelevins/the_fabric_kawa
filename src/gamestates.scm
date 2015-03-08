@@ -284,7 +284,7 @@
                                (let ((root (*:getRootNode (*:getApp (this))))
                                      (rotation (Quaternion))
                                      (pitch-axis (Vector3f 1 0 0)))
-                                 (*:fromAngleAxis rotation (/ PI 4) pitch-axis)
+                                 (*:fromAngleAxis rotation (/ PI -4) pitch-axis)
                                  (*:attachChild root sky)
                                  (*:attachChild root body-pivot)
                                  (*:setFrustumFar cam 20000)
