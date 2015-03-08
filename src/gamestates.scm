@@ -30,21 +30,30 @@
 
 (require "util-java.scm")
 (require "util-error.scm")
+(require "util-lists.scm")
 (require "syntax-classes.scm")
 (require "view-loginbox.scm")
+(require "data-nodes.scm")
 (require "client-main.scm")
 (require "view-pickcharacter.scm")
+(require "view-rotatecontrol.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
+(import-as AssetManager com.jme3.asset.AssetManager)
 (import-as AbstractAppState com.jme3.app.state.AbstractAppState)
 (import-as AppStateManager com.jme3.app.state.AppStateManager)
 (import-as BitmapFont com.jme3.font.BitmapFont)
+(import-as Camera com.jme3.renderer.Camera)
+(import-as CameraNode com.jme3.scene.CameraNode)
 (import-as ColorRGBA com.jme3.math.ColorRGBA)
+(import-as Material com.jme3.material.Material)
 (import-as Node com.jme3.scene.Node)
 (import-as Screen tonegod.gui.core.Screen)
+(import-as SkyFactory com.jme3.util.SkyFactory)
+(import-as Sphere com.jme3.scene.shape.Sphere)
 (import-as Label tonegod.gui.controls.text.Label)
 (import-as Vector2f com.jme3.math.Vector2f)
 
@@ -211,19 +220,74 @@
 ;;; =====================================================================
 ;;; CLASS PlayGameState
 ;;; =====================================================================
+;;; for the moment, until I make a real solution for picking nodes
+;;; from the character picker, we'll just choose a random Fabric node
+;;; when the state is attached and display the texture for that
 
 (defclass PlayGameState (FabricGameState)
-  (slots:)
+  (slots:
+   (celestial-body init-form: #!null getter: getCelestialBody setter: setCelestialBody)
+   (body-rotator init-form: #!null getter: getBodyRotator setter: setBodyRotator)
+   (body-pivot init-form: #!null getter: getBodyPivot setter: setBodyPivot)
+   (sky init-form: #!null getter: getSky setter: setSky))
   (methods:
-   ((cleanup)
-    (format #t "~%cleanup called for PlayGameState..."))
+   ((cleanup) #!void)
    ((isEnabled) #t)
    ((isInitialized) initialized)
+   ;; prepare to attach the state
    ((prepareToAttach mgr::AppStateManager client::FabricClient)
-    (format #t "~%Preparing to attach PlayGameState..."))
+    (unless (*:getInitialized (this))
+      (let* ((client::FabricClient (*:getApp (this)))
+             (screen::Screen (*:getScreen client))
+             (gui-node::Node (*:getGuiNode client))
+             (asset-manager::AssetManager (get-asset-manager))
+             (body-mat (Material asset-manager "Common/MatDefs/Misc/Unshaded.j3md"))
+             (body-texture (let* ((entry (choose-any +fabric-nodes+))
+                                  (texname (get-key (cdr entry) 'body-texture:)))
+                             (*:loadTexture asset-manager (string-append "Textures/" texname))))
+             (TextureMode Sphere:TextureMode)
+             (Projected TextureMode:Projected))
+        (set! celestial-body (Sphere 128 128 2048.0))
+        (set! body-rotator (RotateControl 0.0 0.0 0.0125))
+        (set! body-pivot (com.jme3.scene.Geometry "Center" celestial-body))
+        (set! sky
+              (SkyFactory:createSky
+               asset-manager
+               (*:loadTexture asset-manager "Textures/TychoSkymapII.t3_08192x04096_80_mx.jpg")
+               (*:loadTexture asset-manager "Textures/TychoSkymapII.t3_08192x04096_80_px.jpg")
+               (*:loadTexture asset-manager "Textures/TychoSkymapII.t3_08192x04096_80_mz.jpg")
+               (*:loadTexture asset-manager "Textures/TychoSkymapII.t3_08192x04096_80_pz.jpg")
+               (*:loadTexture asset-manager "Textures/TychoSkymapII.t3_08192x04096_80_py.jpg")
+               (*:loadTexture asset-manager "Textures/TychoSkymapII.t3_08192x04096_80_my.jpg")))
+        (*:setTextureMode celestial-body Projected)
+        (*:setTexture body-mat "ColorMap" body-texture)
+        (*:setMaterial body-pivot body-mat)
+        (*:addControl body-pivot body-rotator)
+        (*:setInitialized (this) #t))))
+   ;; the state has been attached
    ((stateAttached mgr::AppStateManager)
-    (format #t "~%PlayGameState attached..."))
+    (when (*:getInitialized (this))
+      (let* ((client::FabricClient (*:getApp (this)))
+             (screen::Screen (*:getScreen client))
+             (gui-node::Node (*:getGuiNode client))
+             (cam::Camera (*:getCamera client)))
+        (*:enqueue client
+                   (runnable (lambda ()
+                               (let ((root (*:getRootNode (*:getApp (this)))))
+                                 (*:attachChild root sky)
+                                 (*:attachChild root body-pivot)
+                                 (*:setFrustumFar cam 20000)
+                                 (*:setLocalTranslation body-pivot 0 0 -12000))))))))
+   ;; the state has been detached
    ((stateDetached mgr::AppStateManager)
-    (format #t "~%PlayGameState detached..."))
+    (when (*:getInitialized (this))
+      (let* ((client::FabricClient (*:getApp (this)))
+             (screen::Screen (*:getScreen client))
+             (gui-node::Node (*:getGuiNode client)))
+        (*:enqueue client
+                   (runnable (lambda ()
+                               (let ((root (*:getRootNode (*:getApp (this)))))
+                                 (*:detachChild root sky)
+                                 (*:detachChild root body-pivot))))))))
    ((cleanupDetached mgr::AppStateManager client::FabricClient)
-    (format #t "~%Cleaning up after detaching PlayGameState..."))))
+    (format #t "~%Cleaning up after detaching LoginGameState..."))))

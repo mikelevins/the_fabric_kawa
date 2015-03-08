@@ -59,6 +59,7 @@
    (screen init-form: #!null)
    (fabric-node init-form: #f getter: getFabricNode setter: setFabricNode)) 
   (methods:
+   ((getCamera) cam)
    ((getCameraDirection) (*:getDirection cam))
    ((getAudioRenderer) audioRenderer)
    ((getViewport) viewPort)
