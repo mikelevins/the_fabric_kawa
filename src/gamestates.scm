@@ -13,7 +13,8 @@
  FabricGameState
  LoginGameState
  PickCharacterGameState
- PlayGameState)
+ PlayGameState
+ TransitGameState)
 
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
@@ -335,3 +336,60 @@
                                (*:setInitialized state #f))))))))
 
 
+;;; =====================================================================
+;;; CLASS TransitGameState
+;;; =====================================================================
+;;; A GameState used to display transit from one Fabric node to another
+
+(defclass TransitGameState (FabricGameState)
+  (slots:
+   (status-label init-form: #!null getter: getStatusLabel setter: setFactionNameplate))
+  (methods:
+   ((cleanup) #!void)
+   ((isEnabled) #t)
+   ((isInitialized) initialized)
+   ;; prepare to attach the state
+   ((prepareToAttach mgr::AppStateManager client::FabricClient)
+    (%prepare-to-attach-transit-gamestate (this) client))
+   ;; the state has been attached
+   ((stateAttached mgr::AppStateManager)
+    (%did-attach-transit-gamestate (this) mgr))
+   ;; the state has been detached
+   ((stateDetached mgr::AppStateManager)
+    (%did-detach-transit-gamestate (this) mgr))
+   ;; cleanup after the state is detached
+   ((cleanupDetached mgr::AppStateManager client::FabricClient) #!void)))
+
+(define (%prepare-to-attach-transit-gamestate state::TransitGameState client::FabricClient)
+  (unless (*:getInitialized state)
+    (let* ((screen::Screen (*:getScreen client))
+           (gui-node::Node (*:getGuiNode client))
+           (Align BitmapFont:Align)
+           (label::Label (Label screen "FactionNameplate" (Vector2f 600 40)(Vector2f 1200 40))))
+      (*:setFactionNameplate state label)
+      (*:setText label "In transit...")
+      (*:setTextAlign label Align:Left)
+      (*:setFont label "Interface/Fonts/Laconic30.fnt")
+      (*:setFontSize label 30)
+      (*:setFontColor label ColorRGBA:Green)
+      (*:setInitialized state #t))))
+
+(define (%did-attach-transit-gamestate state::TransitGameState mgr::AppStateManager)
+  (when (*:getInitialized state)
+    (let* ((client::FabricClient (*:getApp state))
+           (screen::Screen (*:getScreen client))
+           (gui-node::Node (*:getGuiNode client)))
+      (*:enqueue client
+                 (runnable (lambda ()
+                             (*:addElement screen (*:getStatusLabel state))
+                             (*:addControl gui-node screen)))))))
+
+(define (%did-detach-transit-gamestate state::TransitGameState mgr::AppStateManager)
+  (when (*:getInitialized state)
+    (let* ((client::FabricClient (*:getApp state))
+           (screen::Screen (*:getScreen client))
+           (gui-node::Node (*:getGuiNode client)))
+      (*:enqueue client
+                 (runnable (lambda ()
+                             (*:removeElement screen (*:getStatusLabel state))
+                             (*:removeControl gui-node screen)))))))

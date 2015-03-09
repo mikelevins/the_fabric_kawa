@@ -38,3 +38,4 @@
 ;;; (set-client-state! $client 'create-character)
 ;;; (set-client-state! $client 'pick-character)
 ;;; (set-client-state! $client 'play)
+;;; (set-client-state! $client 'transit)
