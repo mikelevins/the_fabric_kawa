@@ -211,6 +211,39 @@
 ;;; TODO: make a node picker so the player can choose which accessible node
 ;;; to enter the game at
 
+(define (%prepare-to-attach-pick-character-gamestate state::PickCharacterGameState client::FabricClient)
+  (unless (*:getInitialized state)
+    (let* ((client::FabricClient (*:getApp state))
+           (screen::Screen (*:getScreen client))
+           (gui-node::Node (*:getGuiNode client)))
+      (*:setCharacterPicker state (make-character-picker screen))
+      (*:setInitialized state #t))))
+
+(define (%did-attach-pick-character-gamestate state::PickCharacterGameState mgr::AppStateManager)
+  (when (*:getInitialized state)
+    (let* ((client::FabricClient (*:getApp state))
+           (screen::Screen (*:getScreen client))
+           (gui-node::Node (*:getGuiNode client)))
+      (*:enqueue client
+                 (runnable (lambda ()
+                             (*:addElement screen (*:getCharacterPicker state))
+                             (*:addControl gui-node screen)))))))
+
+(define (%did-detach-pick-character-gamestate state::PickCharacterGameState mgr::AppStateManager)
+  (when (*:getInitialized state)
+    (let* ((client::FabricClient (*:getApp state))
+           (screen::Screen (*:getScreen client))
+           (gui-node::Node (*:getGuiNode client)))
+      (*:enqueue client
+                 (runnable (lambda ()
+                             (*:removeElement screen (*:getCharacterPicker state))
+                             (*:removeControl gui-node screen)))))))
+
+
+;;; CLASS PickCharacterGameState
+;;; ---------------------------------------------------------------------
+;;; a GameState that offers a UI for choosing a character to play
+
 (defclass PickCharacterGameState (FabricGameState)
   (slots:
    (picker init-form: #!null getter: getCharacterPicker setter: setCharacterPicker))
@@ -220,32 +253,13 @@
    ((isInitialized) initialized)
    ;; prepare to attach the state
    ((prepareToAttach mgr::AppStateManager client::FabricClient)
-    (unless (*:getInitialized (this))
-      (let* ((client::FabricClient (*:getApp (this)))
-             (screen::Screen (*:getScreen client))
-             (gui-node::Node (*:getGuiNode client)))
-        (set! picker (make-character-picker screen))
-        (*:setInitialized (this) #t))))
+    (%prepare-to-attach-pick-character-gamestate (this) client))
    ;; the state has been attached
    ((stateAttached mgr::AppStateManager)
-    (when (*:getInitialized (this))
-      (let* ((client::FabricClient (*:getApp (this)))
-             (screen::Screen (*:getScreen client))
-             (gui-node::Node (*:getGuiNode client)))
-        (*:enqueue client
-                   (runnable (lambda ()
-                               (*:addElement screen picker)
-                               (*:addControl gui-node screen)))))))
+    (%did-attach-pick-character-gamestate (this) mgr))
    ;; the state has been detached
    ((stateDetached mgr::AppStateManager)
-    (when (*:getInitialized (this))
-      (let* ((client::FabricClient (*:getApp (this)))
-             (screen::Screen (*:getScreen client))
-             (gui-node::Node (*:getGuiNode client)))
-        (*:enqueue client
-                   (runnable (lambda ()
-                               (*:removeElement screen picker)
-                               (*:removeControl gui-node screen)))))))
+    (%did-detach-pick-character-gamestate (this) mgr))
    ((cleanupDetached mgr::AppStateManager client::FabricClient)
     (format #t "~%Cleaning up after detaching LoginGameState..."))))
 
