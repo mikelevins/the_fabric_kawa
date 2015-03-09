@@ -91,6 +91,44 @@
 ;;; CLASS CreateCharacterGameState
 ;;; =====================================================================
 
+(define (%prepare-to-attach-create-character-gamestate state::CreateCharacterGameState client::FabricClient)
+  (unless (*:getInitialized state)
+    (let* ((screen::Screen (*:getScreen client))
+           (gui-node::Node (*:getGuiNode client))
+           (Align BitmapFont:Align)
+           (label::Label (Label screen "FactionNameplate" (Vector2f 600 40)(Vector2f 1200 40))))
+      (*:setFactionNameplate state label)
+      (*:setText label "Faction: ")
+      (*:setTextAlign label Align:Left)
+      (*:setFont label "Interface/Fonts/Laconic30.fnt")
+      (*:setFontSize label 30)
+      (*:setFontColor label ColorRGBA:Green)
+      (*:setInitialized state #t))))
+
+(define (%did-attach-create-character-gamestate state::CreateCharacterGameState mgr::AppStateManager)
+  (when (*:getInitialized state)
+    (let* ((client::FabricClient (*:getApp state))
+           (screen::Screen (*:getScreen client))
+           (gui-node::Node (*:getGuiNode client)))
+      (*:enqueue client
+                 (runnable (lambda ()
+                             (*:addElement screen (*:getFactionNameplate state))
+                             (*:addControl gui-node screen)))))))
+
+(define (%did-detach-create-character-gamestate state::CreateCharacterGameState mgr::AppStateManager)
+  (when (*:getInitialized state)
+    (let* ((client::FabricClient (*:getApp state))
+           (screen::Screen (*:getScreen client))
+           (gui-node::Node (*:getGuiNode client)))
+      (*:enqueue client
+                 (runnable (lambda ()
+                             (*:removeElement screen (*:getFactionNameplate state))
+                             (*:removeControl gui-node screen)))))))
+
+;;; CLASS CreateCharacterGameState
+;;; ---------------------------------------------------------------------
+;;; a GameState that offers a UI for constructing a new Fabric character
+
 (defclass CreateCharacterGameState (FabricGameState)
   (slots:
    (faction-nameplate init-form: #!null getter: getFactionNameplate setter: setFactionNameplate))
@@ -100,40 +138,15 @@
    ((isInitialized) initialized)
    ;; prepare to attach the state
    ((prepareToAttach mgr::AppStateManager client::FabricClient)
-    (unless (*:getInitialized (this))
-      (let* ((client::FabricClient (*:getApp (this)))
-             (screen::Screen (*:getScreen client))
-             (gui-node::Node (*:getGuiNode client))
-             (Align BitmapFont:Align))
-        (set! faction-nameplate (Label screen "FactionNameplate" (Vector2f 600 40)(Vector2f 1200 40)))
-        (*:setText (as Label faction-nameplate) "Faction: ")
-        (*:setTextAlign (as Label faction-nameplate) Align:Left)
-        (*:setFont (as Label faction-nameplate) "Interface/Fonts/Laconic30.fnt")
-        (*:setFontSize (as Label faction-nameplate) 30)
-        (*:setFontColor (as Label faction-nameplate) ColorRGBA:Green)
-        (*:setInitialized (this) #t))))
+    (%prepare-to-attach-create-character-gamestate (this) client))
    ;; the state has been attached
    ((stateAttached mgr::AppStateManager)
-    (when (*:getInitialized (this))
-      (let* ((client::FabricClient (*:getApp (this)))
-             (screen::Screen (*:getScreen client))
-             (gui-node::Node (*:getGuiNode client)))
-        (*:enqueue client
-                   (runnable (lambda ()
-                               (*:addElement screen faction-nameplate)
-                               (*:addControl gui-node screen)))))))
+    (%did-attach-create-character-gamestate (this) mgr))
    ;; the state has been detached
    ((stateDetached mgr::AppStateManager)
-    (when (*:getInitialized (this))
-      (let* ((client::FabricClient (*:getApp (this)))
-             (screen::Screen (*:getScreen client))
-             (gui-node::Node (*:getGuiNode client)))
-        (*:enqueue client
-                   (runnable (lambda ()
-                               (*:removeElement screen faction-nameplate)
-                               (*:removeControl gui-node screen)))))))
-   ((cleanupDetached mgr::AppStateManager client::FabricClient)
-    (format #t "~%Cleaning up after detaching LoginGameState..."))))
+    (%did-detach-create-character-gamestate (this) mgr))
+   ;; cleanup after the state is detached
+   ((cleanupDetached mgr::AppStateManager client::FabricClient) #!void)))
 
 
 ;;; =====================================================================
