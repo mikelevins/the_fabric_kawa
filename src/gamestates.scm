@@ -153,6 +153,39 @@
 ;;; CLASS LoginGameState
 ;;; =====================================================================
 
+(define (%prepare-to-attach-login-gamestate state::LoginGameState client::FabricClient)
+  (unless (*:getInitialized state)
+    (let* ((client::FabricClient (*:getApp state))
+           (screen::Screen (*:getScreen client))
+           (gui-node::Node (*:getGuiNode client)))
+      (*:setLoginBox state (FabricLoginBox screen "LoginBox" (Vector2f 700 300)(Vector2f 700 300)))
+      (*:setInitialized state #t))))
+
+(define (%did-attach-login-gamestate state::LoginGameState mgr::AppStateManager)
+  (when (*:getInitialized state)
+    (let* ((client::FabricClient (*:getApp state))
+           (screen::Screen (*:getScreen client))
+           (gui-node::Node (*:getGuiNode client)))
+      (*:enqueue client
+                 (runnable (lambda ()
+                             (*:addElement screen (*:getLoginBox state))
+                             (*:addControl gui-node screen)))))))
+
+(define (%did-detach-login-gamestate state::LoginGameState mgr::AppStateManager)
+  (when (*:getInitialized state)
+    (let* ((client::FabricClient (*:getApp state))
+           (screen::Screen (*:getScreen client))
+           (gui-node::Node (*:getGuiNode client)))
+      (*:enqueue client
+                 (runnable (lambda ()
+                             (*:removeElement screen (*:getLoginBox state))
+                             (*:removeControl gui-node screen)))))))
+
+
+;;; CLASS LoginGameState
+;;; ---------------------------------------------------------------------
+;;; a GameState that offers a UI for logging in to the game
+
 (defclass LoginGameState (FabricGameState)
   (slots:
    (loginbox init-form: #!null getter: getLoginBox setter: setLoginBox))
@@ -162,34 +195,14 @@
    ((isInitialized) initialized)
    ;; prepare to attach the state
    ((prepareToAttach mgr::AppStateManager client::FabricClient)
-    (unless (*:getInitialized (this))
-      (let* ((client::FabricClient (*:getApp (this)))
-             (screen::Screen (*:getScreen client))
-             (gui-node::Node (*:getGuiNode client)))
-        (set! loginbox (FabricLoginBox screen "LoginBox" (Vector2f 700 300)(Vector2f 700 300)))
-        (*:setInitialized (this) #t))))
+    (%prepare-to-attach-login-gamestate (this) client))
    ;; the state has been attached
    ((stateAttached mgr::AppStateManager)
-    (when (*:getInitialized (this))
-      (let* ((client::FabricClient (*:getApp (this)))
-             (screen::Screen (*:getScreen client))
-             (gui-node::Node (*:getGuiNode client)))
-        (*:enqueue client
-                   (runnable (lambda ()
-                               (*:addElement screen loginbox)
-                               (*:addControl gui-node screen)))))))
+    (%did-attach-login-gamestate (this) mgr))
    ;; the state has been detached
    ((stateDetached mgr::AppStateManager)
-    (when (*:getInitialized (this))
-      (let* ((client::FabricClient (*:getApp (this)))
-             (screen::Screen (*:getScreen client))
-             (gui-node::Node (*:getGuiNode client)))
-        (*:enqueue client
-                   (runnable (lambda ()
-                               (*:removeElement screen loginbox)
-                               (*:removeControl gui-node screen)))))))
-   ((cleanupDetached mgr::AppStateManager client::FabricClient)
-    (format #t "~%Cleaning up after detaching LoginGameState..."))))
+    (%did-detach-login-gamestate (this) mgr))
+   ((cleanupDetached mgr::AppStateManager client::FabricClient) #!void)))
 
 
 ;;; =====================================================================
