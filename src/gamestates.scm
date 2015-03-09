@@ -256,7 +256,7 @@
              (TextureMode Sphere:TextureMode)
              (Projected TextureMode:Projected))
         (set! celestial-body (Sphere 128 128 2048.0))
-        (set! body-rotator (RotateControl 0.0 0.0125 0.0))
+        (set! body-rotator (RotateControl 0.0 -0.0125 0.0))
         (set! body-pivot (com.jme3.scene.Geometry "Center" celestial-body))
         (set! sky
               (SkyFactory:createSky
@@ -284,13 +284,13 @@
                                (let ((root (*:getRootNode (*:getApp (this))))
                                      (rotation (Quaternion))
                                      (pitch-axis (Vector3f 1 0 0)))
-                                 (*:fromAngleAxis rotation (/ PI -4) pitch-axis)
+                                 (*:fromAngleAxis rotation (/ PI 1) pitch-axis)
                                  (*:attachChild root sky)
                                  (*:attachChild root body-pivot)
                                  (*:setFrustumFar cam 20000)
                                  (*:setLocalRotation body-pivot rotation)
                                  (*:setLocalTranslation body-pivot 0 0 -12000))))))))
-   ;; the state has been detached
+   ;; the state has been detached; dispose of the celestial body
    ((stateDetached mgr::AppStateManager)
     (when (*:getInitialized (this))
       (let* ((client::FabricClient (*:getApp (this)))
@@ -300,6 +300,13 @@
                    (runnable (lambda ()
                                (let ((root (*:getRootNode (*:getApp (this)))))
                                  (*:detachChild root sky)
-                                 (*:detachChild root body-pivot))))))))
-   ((cleanupDetached mgr::AppStateManager client::FabricClient)
-    (format #t "~%Cleaning up after detaching LoginGameState..."))))
+                                 (*:detachChild root body-pivot)
+                                 (*:removeControl body-pivot body-rotator)
+                                 (set! sky #!null)
+                                 (set! body-pivot #!null)
+                                 (set! body-rotator #!null)
+                                 (set! celestial-body #!null)
+                                 (*:setInitialized (this) #f))))))))
+   ((cleanupDetached mgr::AppStateManager client::FabricClient) #!void)))
+
+
