@@ -33,5 +33,7 @@
 ;;; ---------------------------------------------------------------------
 
 (define (make-character-picker screen::Screen)
-  (Window screen "CharacterPicker"
-          (Vector2f 32 32)(Vector2f 256 800)))
+  (let ((win (Window screen "CharacterPicker"
+                     (Vector2f 32 32)(Vector2f 256 800))))
+    (*:setWindowTitle win "Choose a character:")
+    win))
