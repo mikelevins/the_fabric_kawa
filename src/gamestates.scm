@@ -39,6 +39,7 @@
 (require "view-rotatecontrol.scm")
 (require "view-skybox.scm")
 (require "view-celestial-body.scm")
+(require "view-node-nameplate.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -278,16 +279,6 @@
    ((stateDetached mgr::AppStateManager)
     (%did-detach-play-gamestate (this) mgr))
    ((cleanupDetached mgr::AppStateManager client::FabricClient) #!void)))
-
-(define (make-node-nameplate screen nodename)
-  (let* ((nameplate (Label screen "NodeNameplate" (Vector2f 32 32)(Vector2f 800 40)))
-         (Align BitmapFont:Align))
-    (*:setText nameplate nodename)
-    (*:setTextAlign nameplate Align:Left)
-    (*:setFont nameplate "Interface/Fonts/Laconic30.fnt")
-    (*:setFontSize nameplate 30)
-    (*:setFontColor nameplate ColorRGBA:Green)
-    nameplate))
 
 (define (%prepare-to-attach-play-gamestate state::PlayGameState client::FabricClient)
   (unless (*:getInitialized state)
