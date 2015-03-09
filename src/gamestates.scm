@@ -22,7 +22,7 @@
 ;;; a FabricGameState is an AppState that represents one of the Fabric
 ;;; client's major modes: login, create a character, pick a character,
 ;;; or play. FabricGameState defines a small set of common slots and methods
-;;; that all Fabric FabricGameStates must implement
+;;; that all Fabric GameStates must implement
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
