@@ -158,8 +158,10 @@
   (unless (*:getInitialized state)
     (let* ((client::FabricClient (*:getApp state))
            (screen::Screen (*:getScreen client))
-           (gui-node::Node (*:getGuiNode client)))
-      (*:setLoginBox state (FabricLoginBox screen "LoginBox" (Vector2f 700 300)(Vector2f 700 300)))
+           (gui-node::Node (*:getGuiNode client))
+           (box::FabricLoginBox (FabricLoginBox screen "LoginBox" (Vector2f 700 300)(Vector2f 700 300))))
+      (*:setWindowTitle box "Log in to the Fabric")
+      (*:setLoginBox state box)
       (*:setInitialized state #t))))
 
 (define (%did-attach-login-gamestate state::LoginGameState mgr::AppStateManager)
