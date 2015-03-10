@@ -92,7 +92,8 @@
 
 (defclass CreateCharacterGameState (FabricGameState)
   (slots:
-   (faction-nameplate init-form: #!null getter: getFactionNameplate setter: setFactionNameplate))
+   (faction-nameplate init-form: #!null getter: getFactionNameplate setter: setFactionNameplate)
+   (faction-picker init-form: #!null getter: getFactionPicker setter: setFactionPicker))
   (methods:
    ((cleanup) #!void)
    ((isEnabled) #t)
@@ -115,6 +116,7 @@
            (gui-node::Node (*:getGuiNode client))
            (Align BitmapFont:Align)
            (label::Label (Label screen "FactionNameplate" (Vector2f 600 40)(Vector2f 1200 40))))
+      (*:setFactionNameplate state label)
       (*:setFactionNameplate state label)
       (*:setText label "Faction: ")
       (*:setTextAlign label Align:Left)
