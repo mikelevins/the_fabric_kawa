@@ -37,6 +37,7 @@
 (require "data-nodes.scm")
 (require "client-main.scm")
 (require "view-pickcharacter.scm")
+(require "view-pickfaction.scm")
 (require "view-rotatecontrol.scm")
 (require "view-skybox.scm")
 (require "view-celestial-body.scm")
@@ -60,6 +61,7 @@
 (import-as Label tonegod.gui.controls.text.Label)
 (import-as Vector2f com.jme3.math.Vector2f)
 (import-as Vector3f com.jme3.math.Vector3f)
+(import-as Window tonegod.gui.controls.windows.Window)
 
 
 ;;; =====================================================================
@@ -93,6 +95,7 @@
 (defclass CreateCharacterGameState (FabricGameState)
   (slots:
    (faction-nameplate init-form: #!null getter: getFactionNameplate setter: setFactionNameplate)
+   (character-nameplate init-form: #!null getter: getCharacterNameplate setter: setCharacterNameplate)
    (faction-picker init-form: #!null getter: getFactionPicker setter: setFactionPicker))
   (methods:
    ((cleanup) #!void)
@@ -115,14 +118,22 @@
     (let* ((screen::Screen (*:getScreen client))
            (gui-node::Node (*:getGuiNode client))
            (Align BitmapFont:Align)
-           (label::Label (Label screen "FactionNameplate" (Vector2f 600 40)(Vector2f 1200 40))))
-      (*:setFactionNameplate state label)
-      (*:setFactionNameplate state label)
-      (*:setText label "Faction: ")
-      (*:setTextAlign label Align:Left)
-      (*:setFont label "Interface/Fonts/Laconic30.fnt")
-      (*:setFontSize label 30)
-      (*:setFontColor label ColorRGBA:Green)
+           (faction-nameplate::Label (Label screen "FactionNameplate" (Vector2f 600 32)(Vector2f 1200 40)))
+           (character-nameplate::Label (Label screen "CharacterNameplate" (Vector2f 600 960)(Vector2f 1200 40)))
+           (picker::Window (make-faction-picker screen)))
+      (*:setFactionPicker state picker)
+      (*:setFactionNameplate state faction-nameplate)
+      (*:setText faction-nameplate "Faction: ")
+      (*:setTextAlign faction-nameplate Align:Left)
+      (*:setFont faction-nameplate "Interface/Fonts/Laconic30.fnt")
+      (*:setFontSize faction-nameplate 30)
+      (*:setFontColor faction-nameplate ColorRGBA:Green)
+      (*:setCharacterNameplate state character-nameplate)
+      (*:setText character-nameplate "<character name>")
+      (*:setTextAlign character-nameplate Align:Left)
+      (*:setFont character-nameplate "Interface/Fonts/Laconic24.fnt")
+      (*:setFontSize character-nameplate 24)
+      (*:setFontColor character-nameplate ColorRGBA:Green)
       (*:setInitialized state #t))))
 
 (define (%did-attach-create-character-gamestate state::CreateCharacterGameState mgr::AppStateManager)
@@ -133,6 +144,8 @@
       (*:enqueue client
                  (runnable (lambda ()
                              (*:addElement screen (*:getFactionNameplate state))
+                             (*:addElement screen (*:getCharacterNameplate state))
+                             (*:addElement screen (*:getFactionPicker state))
                              (*:addControl gui-node screen)))))))
 
 (define (%did-detach-create-character-gamestate state::CreateCharacterGameState mgr::AppStateManager)
@@ -143,6 +156,8 @@
       (*:enqueue client
                  (runnable (lambda ()
                              (*:removeElement screen (*:getFactionNameplate state))
+                             (*:removeElement screen (*:getCharacterNameplate state))
+                             (*:removeElement screen (*:getFactionPicker state))
                              (*:removeControl gui-node screen)))))))
 
 
