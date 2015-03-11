@@ -1,6 +1,6 @@
 ;;;; ***********************************************************************
 ;;;;
-;;;; Name:          view-pickname.scm
+;;;; Name:          view-acceptchar.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
 ;;;; Purpose:       the name picker 
 ;;;; Author:        mikel evins
@@ -9,7 +9,7 @@
 ;;;; ***********************************************************************
 
 (module-export
- make-name-picker)
+ make-character-acceptor)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -29,14 +29,16 @@
 (import-as Window tonegod.gui.controls.windows.Window)
 
 
-;;; make-name-picker
+;;; make-character-acceptor
 ;;; ---------------------------------------------------------------------
 
-(define (make-name-picker screen::Screen)
-  (let* ((screen-height (*:getHeight screen))
-         (picker-top (- screen-height 190))
-         (win (Window screen "NamePicker"
-                      (Vector2f 16 picker-top)
-                      (Vector2f 1408 160))))
-    (*:setWindowTitle win "Choose a name:")
+(define (make-character-acceptor screen::Screen)
+  (let* ((screen-width (*:getWidth screen))
+         (screen-height (*:getHeight screen))
+         (acceptor-left (- screen-width 416))
+         (acceptor-top (- screen-height 190))
+         (win (Window screen "CharacterAcceptor"
+                      (Vector2f acceptor-left acceptor-top)
+                      (Vector2f 384 160))))
+    (*:setWindowTitle win "Accept your character:")
     win))

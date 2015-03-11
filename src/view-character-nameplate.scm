@@ -37,6 +37,6 @@
     (*:setText character-nameplate "Character: ")
     (*:setTextAlign character-nameplate Align:Left)
     (*:setFont character-nameplate "Interface/Fonts/Laconic30.fnt")
-    (*:setFontSize character-nameplate 24)
+    (*:setFontSize character-nameplate 30)
     (*:setFontColor character-nameplate ColorRGBA:Green)
     character-nameplate))
