@@ -44,6 +44,7 @@
 (require "view-celestial-body.scm")
 (require "view-node-nameplate.scm")
 (require "view-faction-nameplate.scm")
+(require "view-character-nameplate.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -122,18 +123,13 @@
            (gui-node::Node (*:getGuiNode client))
            (Align BitmapFont:Align)
            (faction-nameplate::Label (make-faction-nameplate screen))
-           (character-nameplate::Label (Label screen "CharacterNameplate" (Vector2f 600 960)(Vector2f 1200 40)))
+           (character-nameplate::Label (make-character-nameplate screen))
            (faction-picker::Window (make-faction-picker screen))
            (weapon-picker::Window (make-weapon-picker screen)))
       (*:setFactionPicker state faction-picker)
       (*:setWeaponPicker state weapon-picker)
       (*:setFactionNameplate state faction-nameplate)
       (*:setCharacterNameplate state character-nameplate)
-      (*:setText character-nameplate "<character name>")
-      (*:setTextAlign character-nameplate Align:Left)
-      (*:setFont character-nameplate "Interface/Fonts/Laconic24.fnt")
-      (*:setFontSize character-nameplate 24)
-      (*:setFontColor character-nameplate ColorRGBA:Green)
       (*:setInitialized state #t))))
 
 (define (%did-attach-create-character-gamestate state::CreateCharacterGameState mgr::AppStateManager)
