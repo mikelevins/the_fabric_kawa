@@ -40,6 +40,7 @@
 (require "view-pickaugment.scm")
 (require "view-pickcharacter.scm")
 (require "view-pickfaction.scm")
+(require "view-pickname.scm")
 (require "view-pickweapon.scm")
 (require "view-rotatecontrol.scm")
 (require "view-skybox.scm")
@@ -104,7 +105,8 @@
    (faction-picker init-form: #!null getter: getFactionPicker setter: setFactionPicker)
    (weapon-picker init-form: #!null getter: getWeaponPicker setter: setWeaponPicker)
    (armor-picker init-form: #!null getter: getArmorPicker setter: setArmorPicker)
-   (augment-picker init-form: #!null getter: getAugmentPicker setter: setAugmentPicker))
+   (augment-picker init-form: #!null getter: getAugmentPicker setter: setAugmentPicker)
+   (name-picker init-form: #!null getter: getNamePicker setter: setNamePicker))
   (methods:
    ((cleanup) #!void)
    ((isEnabled) #t)
@@ -131,11 +133,13 @@
            (faction-picker::Window (make-faction-picker screen))
            (weapon-picker::Window (make-weapon-picker screen))
            (armor-picker::Window (make-armor-picker screen))
-           (augment-picker::Window (make-augment-picker screen)))
+           (augment-picker::Window (make-augment-picker screen))
+           (name-picker::Window (make-name-picker screen)))
       (*:setFactionPicker state faction-picker)
       (*:setWeaponPicker state weapon-picker)
       (*:setArmorPicker state armor-picker)
       (*:setAugmentPicker state augment-picker)
+      (*:setNamePicker state name-picker)
       (*:setFactionNameplate state faction-nameplate)
       (*:setCharacterNameplate state character-nameplate)
       (*:setInitialized state #t))))
@@ -153,6 +157,7 @@
                              (*:addElement screen (*:getWeaponPicker state))
                              (*:addElement screen (*:getArmorPicker state))
                              (*:addElement screen (*:getAugmentPicker state))
+                             (*:addElement screen (*:getNamePicker state))
                              (*:addControl gui-node screen)))))))
 
 (define (%did-detach-create-character-gamestate state::CreateCharacterGameState mgr::AppStateManager)
@@ -168,6 +173,7 @@
                              (*:removeElement screen (*:getWeaponPicker state))
                              (*:removeElement screen (*:getArmorPicker state))
                              (*:removeElement screen (*:getAugmentPicker state))
+                             (*:removeElement screen (*:getNamePicker state))
                              (*:removeControl gui-node screen)))))))
 
 

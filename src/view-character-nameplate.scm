@@ -32,7 +32,7 @@
 ;;; ---------------------------------------------------------------------
 
 (define (make-character-nameplate screen::Screen)
-  (let ((character-nameplate (Label screen "CharacterNameplate" (Vector2f 600 960)(Vector2f 1200 40)))
+  (let ((character-nameplate (Label screen "CharacterNameplate" (Vector2f 32 960)(Vector2f 1200 40)))
         (Align BitmapFont:Align))
     (*:setText character-nameplate "Character: ")
     (*:setTextAlign character-nameplate Align:Left)
