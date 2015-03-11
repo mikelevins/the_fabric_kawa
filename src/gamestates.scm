@@ -49,6 +49,7 @@
 (require "view-node-nameplate.scm")
 (require "view-faction-nameplate.scm")
 (require "view-character-nameplate.scm")
+(require "view-actionbar.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -66,6 +67,7 @@
 (import-as SkyFactory com.jme3.util.SkyFactory)
 (import-as Spatial com.jme3.scene.Spatial)
 (import-as Label tonegod.gui.controls.text.Label)
+(import-as Panel tonegod.gui.controls.windows.Panel)
 (import-as Vector2f com.jme3.math.Vector2f)
 (import-as Vector3f com.jme3.math.Vector3f)
 (import-as Window tonegod.gui.controls.windows.Window)
@@ -304,7 +306,8 @@
   (slots:
    (celestial-body init-form: #!null getter: getCelestialBody setter: setCelestialBody)
    (sky init-form: #!null getter: getSky setter: setSky)
-   (node-nameplate init-form: #!null getter: getNodeNameplate setter: setNodeNameplate))
+   (node-nameplate init-form: #!null getter: getNodeNameplate setter: setNodeNameplate)
+   (action-bar init-form: #!null getter: getActionBar setter: setActionBar))
   (methods:
    ((cleanup) #!void)
    ((isEnabled) #t)
@@ -331,9 +334,11 @@
            (body (make-celestial-body texname))
            (sky::Spatial (make-sky-box))
            (nameplate::Label (make-node-nameplate screen nodename))
+           (action-bar::Panel (make-action-bar screen))
            (camera (*:getCamera client))
            (Align BitmapFont:Align))
       (*:setNodeNameplate state nameplate)
+      (*:setActionBar state action-bar)
       (*:setCelestialBody state body)
       (*:setFrustumFar camera 40000)
       (*:setLocation camera (Vector3f 0.0 0.0 18000))
@@ -350,6 +355,7 @@
                              (let* ((client::FabricClient (*:getApp state))
                                     (root::Node (*:getRootNode client)))
                                (*:addElement screen (*:getNodeNameplate state))
+                               (*:addElement screen (*:getActionBar state))
                                (*:attachChild root (*:getSky state))
                                (*:attachChild root (*:getCelestialBody state))
                                (*:addControl gui-node screen))))))))
@@ -366,6 +372,7 @@
                                     (sky::Spatial (*:getSky state))
                                     (body::Geometry (*:getCelestialBody state)))
                                (*:removeElement screen (*:getNodeNameplate state))
+                               (*:removeElement screen (*:getActionBar state))
                                (*:setNodeNameplate state #!null)
                                (*:detachChild root sky)
                                (*:detachChild root body)
