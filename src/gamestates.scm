@@ -38,6 +38,7 @@
 (require "client-main.scm")
 (require "view-pickcharacter.scm")
 (require "view-pickfaction.scm")
+(require "view-pickweapon.scm")
 (require "view-rotatecontrol.scm")
 (require "view-skybox.scm")
 (require "view-celestial-body.scm")
@@ -96,7 +97,8 @@
   (slots:
    (faction-nameplate init-form: #!null getter: getFactionNameplate setter: setFactionNameplate)
    (character-nameplate init-form: #!null getter: getCharacterNameplate setter: setCharacterNameplate)
-   (faction-picker init-form: #!null getter: getFactionPicker setter: setFactionPicker))
+   (faction-picker init-form: #!null getter: getFactionPicker setter: setFactionPicker)
+   (weapon-picker init-form: #!null getter: getWeaponPicker setter: setWeaponPicker))
   (methods:
    ((cleanup) #!void)
    ((isEnabled) #t)
@@ -120,8 +122,10 @@
            (Align BitmapFont:Align)
            (faction-nameplate::Label (Label screen "FactionNameplate" (Vector2f 600 32)(Vector2f 1200 40)))
            (character-nameplate::Label (Label screen "CharacterNameplate" (Vector2f 600 960)(Vector2f 1200 40)))
-           (picker::Window (make-faction-picker screen)))
-      (*:setFactionPicker state picker)
+           (faction-picker::Window (make-faction-picker screen))
+           (weapon-picker::Window (make-weapon-picker screen)))
+      (*:setFactionPicker state faction-picker)
+      (*:setWeaponPicker state weapon-picker)
       (*:setFactionNameplate state faction-nameplate)
       (*:setText faction-nameplate "Faction: ")
       (*:setTextAlign faction-nameplate Align:Left)
@@ -146,6 +150,7 @@
                              (*:addElement screen (*:getFactionNameplate state))
                              (*:addElement screen (*:getCharacterNameplate state))
                              (*:addElement screen (*:getFactionPicker state))
+                             (*:addElement screen (*:getWeaponPicker state))
                              (*:addControl gui-node screen)))))))
 
 (define (%did-detach-create-character-gamestate state::CreateCharacterGameState mgr::AppStateManager)
@@ -158,6 +163,7 @@
                              (*:removeElement screen (*:getFactionNameplate state))
                              (*:removeElement screen (*:getCharacterNameplate state))
                              (*:removeElement screen (*:getFactionPicker state))
+                             (*:removeElement screen (*:getWeaponPicker state))
                              (*:removeControl gui-node screen)))))))
 
 
