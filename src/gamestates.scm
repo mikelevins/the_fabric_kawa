@@ -181,7 +181,7 @@
                              (*:removeElement screen (*:getArmorPicker state))
                              (*:removeElement screen (*:getAugmentPicker state))
                              (*:removeElement screen (*:getNamePicker state))
-                             (*:addElement screen (*:getCharacterAcceptor state))
+                             (*:removeElement screen (*:getCharacterAcceptor state))
                              (*:removeControl gui-node screen)))))))
 
 
