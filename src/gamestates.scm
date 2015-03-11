@@ -43,6 +43,7 @@
 (require "view-skybox.scm")
 (require "view-celestial-body.scm")
 (require "view-node-nameplate.scm")
+(require "view-faction-nameplate.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -120,18 +121,13 @@
     (let* ((screen::Screen (*:getScreen client))
            (gui-node::Node (*:getGuiNode client))
            (Align BitmapFont:Align)
-           (faction-nameplate::Label (Label screen "FactionNameplate" (Vector2f 600 32)(Vector2f 1200 40)))
+           (faction-nameplate::Label (make-faction-nameplate screen))
            (character-nameplate::Label (Label screen "CharacterNameplate" (Vector2f 600 960)(Vector2f 1200 40)))
            (faction-picker::Window (make-faction-picker screen))
            (weapon-picker::Window (make-weapon-picker screen)))
       (*:setFactionPicker state faction-picker)
       (*:setWeaponPicker state weapon-picker)
       (*:setFactionNameplate state faction-nameplate)
-      (*:setText faction-nameplate "Faction: ")
-      (*:setTextAlign faction-nameplate Align:Left)
-      (*:setFont faction-nameplate "Interface/Fonts/Laconic30.fnt")
-      (*:setFontSize faction-nameplate 30)
-      (*:setFontColor faction-nameplate ColorRGBA:Green)
       (*:setCharacterNameplate state character-nameplate)
       (*:setText character-nameplate "<character name>")
       (*:setTextAlign character-nameplate Align:Left)
