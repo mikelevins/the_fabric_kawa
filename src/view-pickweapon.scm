@@ -19,6 +19,9 @@
 (require "util-error.scm")
 (require "syntax-classes.scm")
 (require "client-main.scm")
+(require "view-pickfaction.scm")
+(require "gamestates-createchar.scm")
+(require "model-rect.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -33,7 +36,9 @@
 ;;; ---------------------------------------------------------------------
 
 (define (make-weapon-picker screen::Screen)
-  (let ((win (Window screen "WeaponPicker"
-                     (Vector2f 16 176)(Vector2f 144 512))))
+  (let* ((rect (compute-weapon-picker-rect screen))
+         (win (Window screen "WeaponPicker"
+                      (Vector2f (get-left rect)(get-top rect))
+                      (Vector2f (get-width rect)(get-height rect)))))
     (*:setWindowTitle win "Choose a weapon:")
     win))

@@ -9,6 +9,9 @@
 ;;;; ***********************************************************************
 
 (module-export
+ compute-armor-picker-rect
+ compute-faction-picker-rect
+ compute-weapon-picker-rect
  did-attach-create-character-gamestate
  did-detach-create-character-gamestate
  prepare-to-attach-create-character-gamestate)
@@ -22,6 +25,7 @@
 (require "util-lists.scm")
 (require "syntax-classes.scm")
 (require "view-loginbox.scm")
+(require "model-rect.scm")
 (require "gamestates.scm")
 (require "client-main.scm")
 (require "view-character-nameplate.scm")
@@ -50,6 +54,35 @@
 ;;; ---------------------------------------------------------------------
 ;;; CreateCharacterGameState functions
 ;;; ---------------------------------------------------------------------
+
+(define (compute-faction-picker-rect screen::Screen)
+  (make-rectangle 16 16 512 144))
+
+(define (compute-weapon-picker-rect screen::Screen)
+  (let* ((faction-picker-rect (compute-faction-picker-rect screen))
+         (weapon-picker-left (get-left faction-picker-rect))
+         (weapon-picker-top (+ (get-top faction-picker-rect)
+                               (get-height faction-picker-rect)
+                               16))
+         (weapon-picker-width 256)
+         (weapon-picker-height 512))
+    (make-rectangle weapon-picker-left
+                    weapon-picker-top
+                    weapon-picker-width
+                    weapon-picker-height)))
+
+
+(define (compute-armor-picker-rect screen::Screen)
+  (let* ((weapon-picker-rect (compute-weapon-picker-rect screen))
+         (screen-width (*:getWidth screen))
+         (armor-picker-width (get-width weapon-picker-rect))
+         (armor-picker-height (get-height weapon-picker-rect))
+         (armor-picker-left (- screen-width armor-picker-width 16))
+         (armor-picker-top (get-top weapon-picker-rect)))
+    (make-rectangle armor-picker-left
+                    armor-picker-top
+                    armor-picker-width
+                    armor-picker-height)))
 
 
 (define (prepare-to-attach-create-character-gamestate state::CreateCharacterGameState client::FabricClient)
