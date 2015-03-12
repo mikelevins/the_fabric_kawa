@@ -35,21 +35,15 @@
 (require "syntax-classes.scm")
 (require "view-loginbox.scm")
 (require "data-nodes.scm")
+(require "gamestates-login.scm")
+(require "gamestates-createchar.scm")
 (require "client-main.scm")
-(require "view-acceptchar.scm")
-(require "view-pickarmor.scm")
-(require "view-pickaugment.scm")
-(require "view-pickcharacter.scm")
-(require "view-pickfaction.scm")
-(require "view-pickname.scm")
-(require "view-pickweapon.scm")
 (require "view-rotatecontrol.scm")
 (require "view-skybox.scm")
 (require "view-celestial-body.scm")
 (require "view-node-nameplate.scm")
-(require "view-faction-nameplate.scm")
-(require "view-character-nameplate.scm")
 (require "view-actionbar.scm")
+(require "view-pickcharacter.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -117,72 +111,15 @@
    ((isInitialized) initialized)
    ;; prepare to attach the state
    ((prepareToAttach mgr::AppStateManager client::FabricClient)
-    (%prepare-to-attach-create-character-gamestate (this) client))
+    (prepare-to-attach-create-character-gamestate (this) client))
    ;; the state has been attached
    ((stateAttached mgr::AppStateManager)
-    (%did-attach-create-character-gamestate (this) mgr))
+    (did-attach-create-character-gamestate (this) mgr))
    ;; the state has been detached
    ((stateDetached mgr::AppStateManager)
-    (%did-detach-create-character-gamestate (this) mgr))
+    (did-detach-create-character-gamestate (this) mgr))
    ;; cleanup after the state is detached
    ((cleanupDetached mgr::AppStateManager client::FabricClient) #!void)))
-
-(define (%prepare-to-attach-create-character-gamestate state::CreateCharacterGameState client::FabricClient)
-  (unless (*:getInitialized state)
-    (let* ((screen::Screen (*:getScreen client))
-           (gui-node::Node (*:getGuiNode client))
-           (Align BitmapFont:Align)
-           (faction-nameplate::Label (make-faction-nameplate screen))
-           (character-nameplate::Label (make-character-nameplate screen))
-           (faction-picker::Window (make-faction-picker screen))
-           (weapon-picker::Window (make-weapon-picker screen))
-           (armor-picker::Window (make-armor-picker screen))
-           (augment-picker::Window (make-augment-picker screen))
-           (name-picker::Window (make-name-picker screen))
-           (character-acceptor::Window (make-character-acceptor screen)))
-      (*:setFactionPicker state faction-picker)
-      (*:setWeaponPicker state weapon-picker)
-      (*:setArmorPicker state armor-picker)
-      (*:setAugmentPicker state augment-picker)
-      (*:setNamePicker state name-picker)
-      (*:setCharacterAcceptor state character-acceptor)
-      (*:setFactionNameplate state faction-nameplate)
-      (*:setCharacterNameplate state character-nameplate)
-      (*:setInitialized state #t))))
-
-(define (%did-attach-create-character-gamestate state::CreateCharacterGameState mgr::AppStateManager)
-  (when (*:getInitialized state)
-    (let* ((client::FabricClient (*:getApp state))
-           (screen::Screen (*:getScreen client))
-           (gui-node::Node (*:getGuiNode client)))
-      (*:enqueue client
-                 (runnable (lambda ()
-                             (*:addElement screen (*:getFactionNameplate state))
-                             (*:addElement screen (*:getCharacterNameplate state))
-                             (*:addElement screen (*:getFactionPicker state))
-                             (*:addElement screen (*:getWeaponPicker state))
-                             (*:addElement screen (*:getArmorPicker state))
-                             (*:addElement screen (*:getAugmentPicker state))
-                             (*:addElement screen (*:getNamePicker state))
-                             (*:addElement screen (*:getCharacterAcceptor state))
-                             (*:addControl gui-node screen)))))))
-
-(define (%did-detach-create-character-gamestate state::CreateCharacterGameState mgr::AppStateManager)
-  (when (*:getInitialized state)
-    (let* ((client::FabricClient (*:getApp state))
-           (screen::Screen (*:getScreen client))
-           (gui-node::Node (*:getGuiNode client)))
-      (*:enqueue client
-                 (runnable (lambda ()
-                             (*:removeElement screen (*:getFactionNameplate state))
-                             (*:removeElement screen (*:getCharacterNameplate state))
-                             (*:removeElement screen (*:getFactionPicker state))
-                             (*:removeElement screen (*:getWeaponPicker state))
-                             (*:removeElement screen (*:getArmorPicker state))
-                             (*:removeElement screen (*:getAugmentPicker state))
-                             (*:removeElement screen (*:getNamePicker state))
-                             (*:removeElement screen (*:getCharacterAcceptor state))
-                             (*:removeControl gui-node screen)))))))
 
 
 ;;; =====================================================================
@@ -198,45 +135,14 @@
    ((isInitialized) initialized)
    ;; prepare to attach the state
    ((prepareToAttach mgr::AppStateManager client::FabricClient)
-    (%prepare-to-attach-login-gamestate (this) client))
+    (prepare-to-attach-login-gamestate (this) client))
    ;; the state has been attached
    ((stateAttached mgr::AppStateManager)
-    (%did-attach-login-gamestate (this) mgr))
+    (did-attach-login-gamestate (this) mgr))
    ;; the state has been detached
    ((stateDetached mgr::AppStateManager)
-    (%did-detach-login-gamestate (this) mgr))
+    (did-detach-login-gamestate (this) mgr))
    ((cleanupDetached mgr::AppStateManager client::FabricClient) #!void)))
-
-(define (%prepare-to-attach-login-gamestate state::LoginGameState client::FabricClient)
-  (unless (*:getInitialized state)
-    (let* ((client::FabricClient (*:getApp state))
-           (screen::Screen (*:getScreen client))
-           (gui-node::Node (*:getGuiNode client))
-           (box::FabricLoginBox (FabricLoginBox screen "LoginBox" (Vector2f 700 300)(Vector2f 700 300))))
-      (*:setWindowTitle box "Log in to the Fabric")
-      (*:setLoginBox state box)
-      (*:setInitialized state #t))))
-
-(define (%did-attach-login-gamestate state::LoginGameState mgr::AppStateManager)
-  (when (*:getInitialized state)
-    (let* ((client::FabricClient (*:getApp state))
-           (screen::Screen (*:getScreen client))
-           (gui-node::Node (*:getGuiNode client)))
-      (*:enqueue client
-                 (runnable (lambda ()
-                             (*:addElement screen (*:getLoginBox state))
-                             (*:addControl gui-node screen)))))))
-
-(define (%did-detach-login-gamestate state::LoginGameState mgr::AppStateManager)
-  (when (*:getInitialized state)
-    (let* ((client::FabricClient (*:getApp state))
-           (screen::Screen (*:getScreen client))
-           (gui-node::Node (*:getGuiNode client)))
-      (*:enqueue client
-                 (runnable (lambda ()
-                             (*:removeElement screen (*:getLoginBox state))
-                             (*:removeControl gui-node screen)))))))
-
 
 ;;; =====================================================================
 ;;; CLASS PickCharacterGameState
@@ -260,8 +166,7 @@
    ;; the state has been detached
    ((stateDetached mgr::AppStateManager)
     (%did-detach-pick-character-gamestate (this) mgr))
-   ((cleanupDetached mgr::AppStateManager client::FabricClient)
-    (format #t "~%Cleaning up after detaching LoginGameState..."))))
+   ((cleanupDetached mgr::AppStateManager client::FabricClient) #!void)))
 
 (define (%prepare-to-attach-pick-character-gamestate state::PickCharacterGameState client::FabricClient)
   (unless (*:getInitialized state)

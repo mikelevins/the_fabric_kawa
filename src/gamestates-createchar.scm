@@ -1,0 +1,110 @@
+;;;; ***********************************************************************
+;;;;
+;;;; Name:          gamestates-createchar.scm
+;;;; Project:       The Fabric: a far-future MMORPG
+;;;; Purpose:       supporting functions for CreateCharacterGameState
+;;;; Author:        mikel evins
+;;;; Copyright:     2015 by mikel evins
+;;;;
+;;;; ***********************************************************************
+
+(module-export
+ did-attach-create-character-gamestate
+ did-detach-create-character-gamestate
+ prepare-to-attach-create-character-gamestate)
+
+;;; ---------------------------------------------------------------------
+;;; required modules
+;;; ---------------------------------------------------------------------
+
+(require "util-java.scm")
+(require "util-error.scm")
+(require "util-lists.scm")
+(require "syntax-classes.scm")
+(require "view-loginbox.scm")
+(require "gamestates.scm")
+(require "client-main.scm")
+(require "view-character-nameplate.scm")
+(require "view-faction-nameplate.scm")
+(require "view-acceptchar.scm")
+(require "view-pickarmor.scm")
+(require "view-pickaugment.scm")
+(require "view-pickfaction.scm")
+(require "view-pickname.scm")
+(require "view-pickweapon.scm")
+
+
+;;; ---------------------------------------------------------------------
+;;; Java imports
+;;; ---------------------------------------------------------------------
+
+(import-as AppStateManager com.jme3.app.state.AppStateManager)
+(import-as BitmapFont com.jme3.font.BitmapFont)
+(import-as Label tonegod.gui.controls.text.Label)
+(import-as Node com.jme3.scene.Node)
+(import-as Screen tonegod.gui.core.Screen)
+(import-as Vector2f com.jme3.math.Vector2f)
+(import-as Window tonegod.gui.controls.windows.Window)
+
+
+;;; ---------------------------------------------------------------------
+;;; CreateCharacterGameState functions
+;;; ---------------------------------------------------------------------
+
+
+(define (prepare-to-attach-create-character-gamestate state::CreateCharacterGameState client::FabricClient)
+  (unless (*:getInitialized state)
+    (let* ((screen::Screen (*:getScreen client))
+           (gui-node::Node (*:getGuiNode client))
+           (Align BitmapFont:Align)
+           (faction-nameplate::Label (make-faction-nameplate screen))
+           (character-nameplate::Label (make-character-nameplate screen))
+           (faction-picker::Window (make-faction-picker screen))
+           (weapon-picker::Window (make-weapon-picker screen))
+           (armor-picker::Window (make-armor-picker screen))
+           (augment-picker::Window (make-augment-picker screen))
+           (name-picker::Window (make-name-picker screen))
+           (character-acceptor::Window (make-character-acceptor screen)))
+      (*:setFactionPicker state faction-picker)
+      (*:setWeaponPicker state weapon-picker)
+      (*:setArmorPicker state armor-picker)
+      (*:setAugmentPicker state augment-picker)
+      (*:setNamePicker state name-picker)
+      (*:setCharacterAcceptor state character-acceptor)
+      (*:setFactionNameplate state faction-nameplate)
+      (*:setCharacterNameplate state character-nameplate)
+      (*:setInitialized state #t))))
+
+(define (did-attach-create-character-gamestate state::CreateCharacterGameState mgr::AppStateManager)
+  (when (*:getInitialized state)
+    (let* ((client::FabricClient (*:getApp state))
+           (screen::Screen (*:getScreen client))
+           (gui-node::Node (*:getGuiNode client)))
+      (*:enqueue client
+                 (runnable (lambda ()
+                             (*:addElement screen (*:getFactionNameplate state))
+                             (*:addElement screen (*:getCharacterNameplate state))
+                             (*:addElement screen (*:getFactionPicker state))
+                             (*:addElement screen (*:getWeaponPicker state))
+                             (*:addElement screen (*:getArmorPicker state))
+                             (*:addElement screen (*:getAugmentPicker state))
+                             (*:addElement screen (*:getNamePicker state))
+                             (*:addElement screen (*:getCharacterAcceptor state))
+                             (*:addControl gui-node screen)))))))
+
+(define (did-detach-create-character-gamestate state::CreateCharacterGameState mgr::AppStateManager)
+  (when (*:getInitialized state)
+    (let* ((client::FabricClient (*:getApp state))
+           (screen::Screen (*:getScreen client))
+           (gui-node::Node (*:getGuiNode client)))
+      (*:enqueue client
+                 (runnable (lambda ()
+                             (*:removeElement screen (*:getFactionNameplate state))
+                             (*:removeElement screen (*:getCharacterNameplate state))
+                             (*:removeElement screen (*:getFactionPicker state))
+                             (*:removeElement screen (*:getWeaponPicker state))
+                             (*:removeElement screen (*:getArmorPicker state))
+                             (*:removeElement screen (*:getAugmentPicker state))
+                             (*:removeElement screen (*:getNamePicker state))
+                             (*:removeElement screen (*:getCharacterAcceptor state))
+                             (*:removeControl gui-node screen)))))))
