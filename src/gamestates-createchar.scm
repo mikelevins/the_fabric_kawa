@@ -10,6 +10,7 @@
 
 (module-export
  compute-armor-picker-rect
+ compute-augment-picker-rect
  compute-faction-picker-rect
  compute-weapon-picker-rect
  did-attach-create-character-gamestate
@@ -55,6 +56,8 @@
 ;;; CreateCharacterGameState functions
 ;;; ---------------------------------------------------------------------
 
+;;; layout computations
+
 (define (compute-faction-picker-rect screen::Screen)
   (make-rectangle 16 16 512 144))
 
@@ -84,6 +87,20 @@
                     armor-picker-width
                     armor-picker-height)))
 
+(define (compute-augment-picker-rect screen::Screen)
+  (let* ((faction-picker-rect (compute-faction-picker-rect screen))
+         (screen-width (*:getWidth screen))
+         (augment-picker-width (get-width faction-picker-rect))
+         (augment-picker-height (get-height faction-picker-rect))
+         (augment-picker-left (- screen-width augment-picker-width 16))
+         (augment-picker-top (get-top faction-picker-rect)))
+    (make-rectangle augment-picker-left
+                    augment-picker-top
+                    augment-picker-width
+                    augment-picker-height)))
+
+
+;;; attach and detach
 
 (define (prepare-to-attach-create-character-gamestate state::CreateCharacterGameState client::FabricClient)
   (unless (*:getInitialized state)

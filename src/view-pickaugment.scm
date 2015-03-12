@@ -19,6 +19,8 @@
 (require "util-error.scm")
 (require "syntax-classes.scm")
 (require "client-main.scm")
+(require "gamestates-createchar.scm")
+(require "model-rect.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -33,10 +35,9 @@
 ;;; ---------------------------------------------------------------------
 
 (define (make-augment-picker screen::Screen)
-  (let* ((screen-width (*:getWidth screen))
-         (picker-left (- screen-width 528))
+  (let* ((rect (compute-augment-picker-rect screen))
          (win (Window screen "AugmentPicker"
-                      (Vector2f picker-left 16)
-                      (Vector2f 512 144))))
+                      (Vector2f (get-left rect)(get-top rect))
+                      (Vector2f (get-width rect)(get-height rect)))))
     (*:setWindowTitle win "Choose an augment:")
     win))
