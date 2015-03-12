@@ -34,16 +34,11 @@
 (require "util-lists.scm")
 (require "syntax-classes.scm")
 (require "view-loginbox.scm")
-(require "data-nodes.scm")
 (require "gamestates-login.scm")
 (require "gamestates-createchar.scm")
+(require "gamestates-pickchar.scm")
+(require "gamestates-play.scm")
 (require "client-main.scm")
-(require "view-rotatecontrol.scm")
-(require "view-skybox.scm")
-(require "view-celestial-body.scm")
-(require "view-node-nameplate.scm")
-(require "view-actionbar.scm")
-(require "view-pickcharacter.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -159,42 +154,14 @@
    ((isInitialized) initialized)
    ;; prepare to attach the state
    ((prepareToAttach mgr::AppStateManager client::FabricClient)
-    (%prepare-to-attach-pick-character-gamestate (this) client))
+    (prepare-to-attach-pick-character-gamestate (this) client))
    ;; the state has been attached
    ((stateAttached mgr::AppStateManager)
-    (%did-attach-pick-character-gamestate (this) mgr))
+    (did-attach-pick-character-gamestate (this) mgr))
    ;; the state has been detached
    ((stateDetached mgr::AppStateManager)
-    (%did-detach-pick-character-gamestate (this) mgr))
+    (did-detach-pick-character-gamestate (this) mgr))
    ((cleanupDetached mgr::AppStateManager client::FabricClient) #!void)))
-
-(define (%prepare-to-attach-pick-character-gamestate state::PickCharacterGameState client::FabricClient)
-  (unless (*:getInitialized state)
-    (let* ((client::FabricClient (*:getApp state))
-           (screen::Screen (*:getScreen client))
-           (gui-node::Node (*:getGuiNode client)))
-      (*:setCharacterPicker state (make-character-picker screen))
-      (*:setInitialized state #t))))
-
-(define (%did-attach-pick-character-gamestate state::PickCharacterGameState mgr::AppStateManager)
-  (when (*:getInitialized state)
-    (let* ((client::FabricClient (*:getApp state))
-           (screen::Screen (*:getScreen client))
-           (gui-node::Node (*:getGuiNode client)))
-      (*:enqueue client
-                 (runnable (lambda ()
-                             (*:addElement screen (*:getCharacterPicker state))
-                             (*:addControl gui-node screen)))))))
-
-(define (%did-detach-pick-character-gamestate state::PickCharacterGameState mgr::AppStateManager)
-  (when (*:getInitialized state)
-    (let* ((client::FabricClient (*:getApp state))
-           (screen::Screen (*:getScreen client))
-           (gui-node::Node (*:getGuiNode client)))
-      (*:enqueue client
-                 (runnable (lambda ()
-                             (*:removeElement screen (*:getCharacterPicker state))
-                             (*:removeControl gui-node screen)))))))
 
 
 ;;; =====================================================================
@@ -219,72 +186,14 @@
    ((isInitialized) initialized)
    ;; prepare to attach the state
    ((prepareToAttach mgr::AppStateManager client::FabricClient)
-    (%prepare-to-attach-play-gamestate (this) client))
+    (prepare-to-attach-play-gamestate (this) client))
    ;; the state has been attached
    ((stateAttached mgr::AppStateManager)
-    (%did-attach-play-gamestate (this) mgr))
+    (did-attach-play-gamestate (this) mgr))
    ;; the state has been detached; dispose of the celestial body
    ((stateDetached mgr::AppStateManager)
-    (%did-detach-play-gamestate (this) mgr))
+    (did-detach-play-gamestate (this) mgr))
    ((cleanupDetached mgr::AppStateManager client::FabricClient) #!void)))
-
-(define (%prepare-to-attach-play-gamestate state::PlayGameState client::FabricClient)
-  (unless (*:getInitialized state)
-    (let* ((client::FabricClient (*:getApp state))
-           (screen::Screen (*:getScreen client))
-           (gui-node::Node (*:getGuiNode client))
-           (fabric-node (choose-any +fabric-nodes+))
-           (nodename (car fabric-node))
-           (texname::String (get-key (cdr fabric-node) 'body-texture:))
-           (body (make-celestial-body texname))
-           (sky::Spatial (make-sky-box))
-           (nameplate::Label (make-node-nameplate screen nodename))
-           (action-bar::Panel (make-action-bar screen))
-           (camera (*:getCamera client))
-           (Align BitmapFont:Align))
-      (*:setNodeNameplate state nameplate)
-      (*:setActionBar state action-bar)
-      (*:setCelestialBody state body)
-      (*:setFrustumFar camera 40000)
-      (*:setLocation camera (Vector3f 0.0 0.0 18000))
-      (*:setSky state sky)
-      (*:setInitialized state #t))))
-
-(define (%did-attach-play-gamestate state::PlayGameState mgr::AppStateManager)
-  (when (*:getInitialized state)
-    (let* ((client::FabricClient (*:getApp state))
-           (screen::Screen (*:getScreen client))
-           (gui-node::Node (*:getGuiNode client)))
-      (*:enqueue client
-                 (runnable (lambda ()
-                             (let* ((client::FabricClient (*:getApp state))
-                                    (root::Node (*:getRootNode client)))
-                               (*:addElement screen (*:getNodeNameplate state))
-                               (*:addElement screen (*:getActionBar state))
-                               (*:attachChild root (*:getSky state))
-                               (*:attachChild root (*:getCelestialBody state))
-                               (*:addControl gui-node screen))))))))
-
-(define (%did-detach-play-gamestate state::PlayGameState mgr::AppStateManager)
-  (when (*:getInitialized state)
-    (let* ((client::FabricClient (*:getApp state))
-           (screen::Screen (*:getScreen client))
-           (gui-node::Node (*:getGuiNode client)))
-      (*:enqueue client
-                 (runnable (lambda ()
-                             (let* ((client::FabricClient (*:getApp state))
-                                    (root::Node (*:getRootNode client))
-                                    (sky::Spatial (*:getSky state))
-                                    (body::Geometry (*:getCelestialBody state)))
-                               (*:removeElement screen (*:getNodeNameplate state))
-                               (*:removeElement screen (*:getActionBar state))
-                               (*:setNodeNameplate state #!null)
-                               (*:detachChild root sky)
-                               (*:detachChild root body)
-                               (*:setSky state #!null)
-                               (*:setCelestialBody state #!null)
-                               (*:removeControl gui-node screen)
-                               (*:setInitialized state #f))))))))
 
 
 ;;; =====================================================================
