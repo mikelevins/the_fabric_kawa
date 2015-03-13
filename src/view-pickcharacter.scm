@@ -19,6 +19,8 @@
 (require "util-error.scm")
 (require "syntax-classes.scm")
 (require "client-main.scm")
+(require "gamestates-pickchar.scm")
+(require "model-rect.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -33,7 +35,9 @@
 ;;; ---------------------------------------------------------------------
 
 (define (make-character-picker screen::Screen)
-  (let ((win (Window screen "CharacterPicker"
-                     (Vector2f 32 32)(Vector2f 256 800))))
+  (let* ((rect (compute-character-picker-rect screen))
+         (win (Window screen "CharacterPicker"
+                      (Vector2f (get-left rect)(get-top rect))
+                      (Vector2f (get-width rect)(get-height rect)))))
     (*:setWindowTitle win "Choose a character:")
     win))

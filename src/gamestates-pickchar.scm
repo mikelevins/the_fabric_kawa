@@ -9,6 +9,7 @@
 ;;;; ***********************************************************************
 
 (module-export
+ compute-character-picker-rect
  did-attach-pick-character-gamestate
  did-detach-pick-character-gamestate
  prepare-to-attach-pick-character-gamestate)
@@ -25,6 +26,7 @@
 (require "gamestates.scm")
 (require "client-main.scm")
 (require "view-pickcharacter.scm")
+(require "model-rect.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -39,6 +41,17 @@
 ;;; ---------------------------------------------------------------------
 ;;; PickCharacterGameState functions
 ;;; ---------------------------------------------------------------------
+
+(define (compute-character-picker-rect screen::Screen)
+  (let* ((screen-height (*:getHeight screen))
+         (picker-left 16)
+         (picker-top 16)
+         (picker-width 512)
+         (picker-height (- screen-height (* 2 16))))
+    (make-rectangle picker-left
+                    picker-top
+                    picker-width
+                    picker-height)))
 
 (define (prepare-to-attach-pick-character-gamestate state::PickCharacterGameState client::FabricClient)
   (unless (*:getInitialized state)
