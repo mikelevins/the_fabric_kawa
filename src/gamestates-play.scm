@@ -9,6 +9,7 @@
 ;;;; ***********************************************************************
 
 (module-export
+ compute-node-nameplate-rect
  did-attach-play-gamestate
  did-detach-play-gamestate
  prepare-to-attach-play-gamestate)
@@ -29,7 +30,7 @@
 (require "view-skybox.scm")
 (require "view-node-nameplate.scm")
 (require "view-actionbar.scm")
-
+(require "model-rect.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -50,6 +51,17 @@
 ;;; ---------------------------------------------------------------------
 ;;; PlayGameState functions
 ;;; ---------------------------------------------------------------------
+
+(define (compute-node-nameplate-rect screen::Screen)
+  (let* ((screen-width (*:getWidth screen))
+         (nameplate-width 512)
+         (nameplate-left (- screen-width nameplate-width 16))
+         (nameplate-top 16)
+         (nameplate-height 40))
+    (make-rectangle nameplate-left
+                    nameplate-top
+                    nameplate-width
+                    nameplate-height)))
 
 (define (prepare-to-attach-play-gamestate state::PlayGameState client::FabricClient)
   (unless (*:getInitialized state)

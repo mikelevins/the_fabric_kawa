@@ -19,6 +19,7 @@
 (require "util-error.scm")
 (require "syntax-classes.scm")
 (require "client-main.scm")
+(require "model-rect.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -32,13 +33,21 @@
 ;;; make-action-bar
 ;;; ---------------------------------------------------------------------
 
-(define (make-action-bar screen::Screen)
+(define (compute-action-bar-rect screen::Screen)
   (let* ((screen-height (*:getHeight screen))
          (screen-width (*:getWidth screen))
-         (bar-left 384)
-         (bar-top (- screen-height 112))
-         (bar-width (- screen-width (* 2 384)))
+         (bar-width (* 64 12))
+         (bar-height (+ 64 (* 2 16)))
+         (bar-left (/ (- screen-width bar-width) 2))
+         (bar-top (- screen-height bar-height 16)))
+    (make-rectangle bar-left
+                    bar-top
+                    bar-width
+                    bar-height)))
+
+(define (make-action-bar screen::Screen)
+  (let* ((rect (compute-action-bar-rect screen))
          (win (Panel screen "ActionBar"
-                     (Vector2f bar-left bar-top)
-                     (Vector2f bar-width 96))))
+                     (Vector2f (get-left rect) (get-top rect))
+                     (Vector2f (get-width rect) (get-height rect)))))
     win))
