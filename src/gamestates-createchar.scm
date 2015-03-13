@@ -12,6 +12,7 @@
  compute-armor-picker-rect
  compute-augment-picker-rect
  compute-faction-picker-rect
+ compute-name-picker-rect
  compute-weapon-picker-rect
  did-attach-create-character-gamestate
  did-detach-create-character-gamestate
@@ -98,6 +99,20 @@
                     augment-picker-top
                     augment-picker-width
                     augment-picker-height)))
+
+
+(define (compute-name-picker-rect screen::Screen)
+  (let* ((screen-width (*:getWidth screen))
+         (screen-height (*:getHeight screen))
+         (picker-width (* 3/4 screen-width))
+         (picker-height 160)
+         (picker-top (- screen-height
+                        (+ picker-height 16)))
+         (picker-left 16))
+    (make-rectangle picker-left
+                    picker-top
+                    picker-width
+                    picker-height)))
 
 
 ;;; attach and detach

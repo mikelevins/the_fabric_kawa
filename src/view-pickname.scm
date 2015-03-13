@@ -19,6 +19,8 @@
 (require "util-error.scm")
 (require "syntax-classes.scm")
 (require "client-main.scm")
+(require "gamestates-createchar.scm")
+(require "model-rect.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -33,10 +35,9 @@
 ;;; ---------------------------------------------------------------------
 
 (define (make-name-picker screen::Screen)
-  (let* ((screen-height (*:getHeight screen))
-         (picker-top (- screen-height 190))
+  (let* ((rect (compute-name-picker-rect screen))
          (win (Window screen "NamePicker"
-                      (Vector2f 16 picker-top)
-                      (Vector2f 1408 160))))
+                      (Vector2f (get-left rect) (get-top rect))
+                      (Vector2f (get-width rect) (get-height rect)))))
     (*:setWindowTitle win "Choose a name:")
     win))

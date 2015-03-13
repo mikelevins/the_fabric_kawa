@@ -19,6 +19,8 @@
 (require "util-error.scm")
 (require "syntax-classes.scm")
 (require "client-main.scm")
+(require "gamestates-createchar.scm")
+(require "model-rect.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -33,12 +35,16 @@
 ;;; ---------------------------------------------------------------------
 
 (define (make-character-acceptor screen::Screen)
-  (let* ((screen-width (*:getWidth screen))
-         (screen-height (*:getHeight screen))
-         (acceptor-left (- screen-width 416))
-         (acceptor-top (- screen-height 190))
+  (let* ((name-picker-rect (compute-name-picker-rect screen))
+         (screen-width (*:getWidth screen))
+         (acceptor-left (+ (get-left name-picker-rect)
+                           (get-width name-picker-rect)
+                           16))
+         (acceptor-width (- screen-width acceptor-left 16))
+         (acceptor-top (get-top name-picker-rect))
+         (acceptor-height (get-height name-picker-rect))
          (win (Window screen "CharacterAcceptor"
                       (Vector2f acceptor-left acceptor-top)
-                      (Vector2f 384 160))))
+                      (Vector2f acceptor-width acceptor-height))))
     (*:setWindowTitle win "Accept your character:")
     win))
