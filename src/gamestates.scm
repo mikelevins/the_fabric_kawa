@@ -95,6 +95,7 @@
   (slots:
    (faction-nameplate init-form: #!null getter: getFactionNameplate setter: setFactionNameplate)
    (character-nameplate init-form: #!null getter: getCharacterNameplate setter: setCharacterNameplate)
+   (sky init-form: #!null getter: getSky setter: setSky)
    (faction-picker init-form: #!null getter: getFactionPicker setter: setFactionPicker)
    (weapon-picker init-form: #!null getter: getWeaponPicker setter: setWeaponPicker)
    (armor-picker init-form: #!null getter: getArmorPicker setter: setArmorPicker)
