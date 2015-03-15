@@ -27,6 +27,7 @@
 (require "client-main.scm")
 (require "view-pickcharacter.scm")
 (require "model-rect.scm")
+(require "view-skybox.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -35,6 +36,7 @@
 (import-as AppStateManager com.jme3.app.state.AppStateManager)
 (import-as Node com.jme3.scene.Node)
 (import-as Screen tonegod.gui.core.Screen)
+(import-as Spatial com.jme3.scene.Spatial)
 (import-as Vector2f com.jme3.math.Vector2f)
 
 
@@ -57,8 +59,10 @@
   (unless (*:getInitialized state)
     (let* ((client::FabricClient (*:getApp state))
            (screen::Screen (*:getScreen client))
+           (sky::Spatial (make-sky-box))
            (gui-node::Node (*:getGuiNode client)))
       (*:setCharacterPicker state (make-character-picker screen))
+      (*:setSky state sky)
       (*:setInitialized state #t))))
 
 (define (did-attach-pick-character-gamestate state::PickCharacterGameState mgr::AppStateManager)
@@ -68,8 +72,11 @@
            (gui-node::Node (*:getGuiNode client)))
       (*:enqueue client
                  (runnable (lambda ()
-                             (*:addElement screen (*:getCharacterPicker state))
-                             (*:addControl gui-node screen)))))))
+                             (let ((client::FabricClient (*:getApp state))
+                                   (root::Node (*:getRootNode client)))
+                               (*:attachChild root (*:getSky state))
+                               (*:addElement screen (*:getCharacterPicker state))
+                               (*:addControl gui-node screen))))))))
 
 (define (did-detach-pick-character-gamestate state::PickCharacterGameState mgr::AppStateManager)
   (when (*:getInitialized state)
@@ -78,5 +85,11 @@
            (gui-node::Node (*:getGuiNode client)))
       (*:enqueue client
                  (runnable (lambda ()
-                             (*:removeElement screen (*:getCharacterPicker state))
-                             (*:removeControl gui-node screen)))))))
+                             (let ((client::FabricClient (*:getApp state))
+                                   (root::Node (*:getRootNode client))
+                                   (sky::Spatial (*:getSky state)))
+                               (*:detachChild root sky)
+                               (*:setSky state #!null)
+                               (*:removeElement screen (*:getCharacterPicker state))
+                               (*:removeControl gui-node screen)
+                               (*:setInitialized state #f))))))))
