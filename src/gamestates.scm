@@ -125,6 +125,7 @@
 
 (defclass LoginGameState (FabricGameState)
   (slots:
+   (sky init-form: #!null getter: getSky setter: setSky)
    (loginbox init-form: #!null getter: getLoginBox setter: setLoginBox))
   (methods:
    ((cleanup) #!void)
@@ -149,6 +150,7 @@
 
 (defclass PickCharacterGameState (FabricGameState)
   (slots:
+   (sky init-form: #!null getter: getSky setter: setSky)
    (picker init-form: #!null getter: getCharacterPicker setter: setCharacterPicker))
   (methods:
    ((cleanup) #!void)
@@ -205,6 +207,7 @@
 
 (defclass TransitGameState (FabricGameState)
   (slots:
+   (sky init-form: #!null getter: getSky setter: setSky)
    (status-label init-form: #!null getter: getStatusLabel setter: setFactionNameplate))
   (methods:
    ((cleanup) #!void)
