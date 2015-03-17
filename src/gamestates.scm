@@ -183,7 +183,8 @@
    (celestial-body init-form: #!null getter: getCelestialBody setter: setCelestialBody)
    (sky init-form: #!null getter: getSky setter: setSky)
    (node-nameplate init-form: #!null getter: getNodeNameplate setter: setNodeNameplate)
-   (action-bar init-form: #!null getter: getActionBar setter: setActionBar))
+   (action-bar init-form: #!null getter: getActionBar setter: setActionBar)
+   (chatbox init-form: #!null getter: getChatbox setter: setChatbox))
   (methods:
    ((cleanup) #!void)
    ((isEnabled) #t)
