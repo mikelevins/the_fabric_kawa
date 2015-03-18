@@ -19,24 +19,80 @@
 (require "util-error.scm")
 (require "syntax-classes.scm")
 (require "client-main.scm")
+(require "gamestates.scm")
 (require "gamestates-createchar.scm")
 (require "model-rect.scm")
+(require "view-faction-button-group.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
+(import-as BitmapFont com.jme3.font.BitmapFont)
+(import-as ColorRGBA com.jme3.math.ColorRGBA)
+(import-as RadioButton tonegod.gui.controls.buttons.RadioButton)
 (import-as Screen tonegod.gui.core.Screen)
 (import-as Vector2f com.jme3.math.Vector2f)
 (import-as Window tonegod.gui.controls.windows.Window)
 
+
+;;; (compute-caretaker-button-origin screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; computes and returns a suitable origin for the caretakers faction
+;;; button
+
+(define (compute-caretaker-button-origin screen::Screen)
+  (let* ((button-width 128)
+         (button-height 96)
+         (rect (compute-faction-picker-rect screen))
+         (palette-width (get-width rect))
+         (palette-height (get-height rect))
+         (x (- (/ palette-width 6.0)
+               (/ button-width 2.0)))
+         (y (- (/ palette-height 2.0)
+               (/ button-height 2.0))))
+    (Vector2f x y)))
+
+
+;;; (compute-caretaker-button-size screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; computes and returns a suitable size for the caretakers faction
+;;; button
+
+(define (compute-caretaker-button-size screen::Screen)
+  (Vector2f 128 96))
+
+;;; (make-caretaker-button screen::Screen)
+;;; ---------------------------------------------------------------------
+;;; returns a newly-constructed caretakers faction button
+
+(define (make-caretaker-button screen::Screen)
+  (RadioButton screen "CaretakerButton"
+               (compute-caretaker-button-origin screen)
+               (compute-caretaker-button-size screen)))
+
 ;;; make-character-picker
 ;;; ---------------------------------------------------------------------
 
-(define (make-faction-picker screen::Screen)
-  (let* ((rect (compute-faction-picker-rect screen))
+(define (make-faction-picker state::FabricGameState screen::Screen)
+  (let* ((align BitmapFont:Align)
+         (valign BitmapFont:VAlign)
+         (rect (compute-faction-picker-rect screen))
          (win (Window screen "FactionPicker"
                       (Vector2f (get-left rect) (get-top rect))
-                      (Vector2f (get-width rect) (get-height rect)))))
+                      (Vector2f (get-width rect) (get-height rect))))
+         (faction-group (FactionButtonGroup screen "FactionGroup"))
+         (caretaker-button (make-caretaker-button screen)))
     (*:setWindowTitle win "Choose a faction:")
+    (*:setAppState faction-group state)
+    ;; caretaker button
+    (*:setButtonIcon caretaker-button 128 128 "Interface/caretakers-icon128.png")
+    (*:setButtonPressedInfo caretaker-button "Interface/caretakers-icon128.png"
+                            (ColorRGBA 0.0 1.0 0.0 1.0))
+    (*:setText caretaker-button "Caretakers")
+    (*:setTextAlign caretaker-button align:Center)
+    (*:setTextVAlign caretaker-button valign:Bottom)
+    (*:setFontSize caretaker-button 20)
+    (*:addButton faction-group caretaker-button)
+    (*:addChild win caretaker-button)
     win))

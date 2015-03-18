@@ -93,6 +93,7 @@
 
 (defclass CreateCharacterGameState (FabricGameState)
   (slots:
+   (faction init-form: #f getter: getFaction setter: setFaction)
    (faction-nameplate init-form: #!null getter: getFactionNameplate setter: setFactionNameplate)
    (character-nameplate init-form: #!null getter: getCharacterNameplate setter: setCharacterNameplate)
    (sky init-form: #!null getter: getSky setter: setSky)

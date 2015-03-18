@@ -62,7 +62,7 @@
 ;;; layout computations
 
 (define (compute-faction-picker-rect screen::Screen)
-  (make-rectangle 16 16 512 144))
+  (make-rectangle 16 16 512 192))
 
 (define (compute-weapon-picker-rect screen::Screen)
   (let* ((faction-picker-rect (compute-faction-picker-rect screen))
@@ -127,7 +127,7 @@
            (faction-nameplate::Label (make-faction-nameplate screen))
            (sky::Spatial (make-sky-box))
            (character-nameplate::Label (make-character-nameplate screen))
-           (faction-picker::Window (make-faction-picker screen))
+           (faction-picker::Window (make-faction-picker state screen))
            (weapon-picker::Window (make-weapon-picker screen))
            (armor-picker::Window (make-armor-picker screen))
            (augment-picker::Window (make-augment-picker screen))
