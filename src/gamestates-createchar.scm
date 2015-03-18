@@ -129,7 +129,7 @@
            (character-nameplate::Label (make-character-nameplate screen))
            (faction-picker::Window (make-faction-picker state screen))
            (weapon-picker::Window (make-weapon-picker state screen))
-           (armor-picker::Window (make-armor-picker screen))
+           (armor-picker::Window (make-armor-picker state screen))
            (augment-picker::Window (make-augment-picker screen))
            (name-picker::Window (make-name-picker screen))
            (character-acceptor::Window (make-character-acceptor screen)))
