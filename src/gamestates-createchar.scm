@@ -62,7 +62,7 @@
 ;;; layout computations
 
 (define (compute-faction-picker-rect screen::Screen)
-  (make-rectangle 16 16 512 192))
+  (make-rectangle 16 16 512 200))
 
 (define (compute-weapon-picker-rect screen::Screen)
   (let* ((faction-picker-rect (compute-faction-picker-rect screen))

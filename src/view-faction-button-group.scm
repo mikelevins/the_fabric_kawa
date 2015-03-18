@@ -30,6 +30,6 @@
           (state::CreateCharacterGameState (*:getAppState (this))))
       (cond
        ((equal? "CaretakerButton" button-id)(*:setFaction state 'caretakers))
-       ((equal? "RogueButton" button-id)(*:setFaction state 'rogues))
-       ((equal? "AbjurerButton" button-id)(*:setFaction state 'abjurers))
+       ((equal? "RoguesButton" button-id)(*:setFaction state 'rogues))
+       ((equal? "AbjurersButton" button-id)(*:setFaction state 'abjurers))
        (else (format #t "~%Unknown faction selected")))))))
