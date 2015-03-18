@@ -71,7 +71,7 @@
                                (get-height faction-picker-rect)
                                16))
          (weapon-picker-width 256)
-         (weapon-picker-height 512))
+         (weapon-picker-height 768))
     (make-rectangle weapon-picker-left
                     weapon-picker-top
                     weapon-picker-width
@@ -83,7 +83,7 @@
          (screen-width (*:getWidth screen))
          (armor-picker-width (get-width weapon-picker-rect))
          (armor-picker-height (get-height weapon-picker-rect))
-         (armor-picker-left (- screen-width armor-picker-width 16))
+         (armor-picker-left (- screen-width (+ armor-picker-width 16)))
          (armor-picker-top (get-top weapon-picker-rect)))
     (make-rectangle armor-picker-left
                     armor-picker-top
@@ -128,7 +128,7 @@
            (sky::Spatial (make-sky-box))
            (character-nameplate::Label (make-character-nameplate screen))
            (faction-picker::Window (make-faction-picker state screen))
-           (weapon-picker::Window (make-weapon-picker screen))
+           (weapon-picker::Window (make-weapon-picker state screen))
            (armor-picker::Window (make-armor-picker screen))
            (augment-picker::Window (make-augment-picker screen))
            (name-picker::Window (make-name-picker screen))

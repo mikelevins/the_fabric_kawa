@@ -94,6 +94,9 @@
 (defclass CreateCharacterGameState (FabricGameState)
   (slots:
    (faction init-form: #f getter: getFaction setter: setFaction)
+   (weapon init-form: #f getter: getWeapon setter: setWeapon)
+   (armor init-form: #f getter: getArmor setter: setArmor)
+   (augment init-form: #f getter: getAugment setter: setAugment)
    (faction-nameplate init-form: #!null getter: getFactionNameplate setter: setFactionNameplate)
    (character-nameplate init-form: #!null getter: getCharacterNameplate setter: setCharacterNameplate)
    (sky init-form: #!null getter: getSky setter: setSky)

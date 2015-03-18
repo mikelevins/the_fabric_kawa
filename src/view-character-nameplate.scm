@@ -38,7 +38,9 @@
   (let* ((weapon-picker-rect (compute-weapon-picker-rect screen))
          (name-picker-rect (compute-name-picker-rect screen))
          (Align BitmapFont:Align)
-         (nameplate-left (get-left weapon-picker-rect))
+         (nameplate-left (+ (get-left weapon-picker-rect)
+                            (get-width weapon-picker-rect)
+                            16))
          (nameplate-top (- (get-top name-picker-rect)
                            (+ 40 16)))
          (character-nameplate (Label screen "CharacterNameplate"
