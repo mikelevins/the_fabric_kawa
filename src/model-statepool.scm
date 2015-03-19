@@ -76,12 +76,18 @@
     (*:setApp state client)
     state))
 
+(define (%construct-workshop-appstate client)
+  (let ((state (WorkshopGameState)))
+    (*:setApp state client)
+    state))
+
 (define *appstate-constructors*
   `((login . ,%construct-login-appstate)
     (create-character . ,%construct-createchar-appstate)
     (pick-character . ,%construct-pickchar-appstate)
     (play . ,%construct-play-appstate)
-    (transit . ,%construct-transit-appstate)))
+    (transit . ,%construct-transit-appstate)
+    (workshop . ,%construct-workshop-appstate)))
 
 (define (get-appstate-constructor state-name)
   (let ((entry (assq state-name *appstate-constructors*)))

@@ -39,3 +39,4 @@
 ;;; (set-client-state! $client 'pick-character)
 ;;; (set-client-state! $client 'play)
 ;;; (set-client-state! $client 'transit)
+;;; (set-client-state! $client 'workshop)

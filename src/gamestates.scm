@@ -14,7 +14,8 @@
  LoginGameState
  PickCharacterGameState
  PlayGameState
- TransitGameState)
+ TransitGameState
+ WorkshopGameState)
 
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
@@ -39,6 +40,7 @@
 (require "gamestates-pickchar.scm")
 (require "gamestates-play.scm")
 (require "gamestates-transit.scm")
+(require "gamestates-workshop.scm")
 (require "client-main.scm")
 
 ;;; ---------------------------------------------------------------------
@@ -227,6 +229,31 @@
    ;; the state has been detached
    ((stateDetached mgr::AppStateManager)
     (did-detach-transit-gamestate (this) mgr))
+   ;; cleanup after the state is detached
+   ((cleanupDetached mgr::AppStateManager client::FabricClient) #!void)))
+
+
+;;; =====================================================================
+;;; CLASS WorkshopGameState
+;;; =====================================================================
+;;; A GameState used to test and display game elements
+
+(defclass WorkshopGameState (FabricGameState)
+  (slots:
+   (sky init-form: #!null getter: getSky setter: setSky))
+  (methods:
+   ((cleanup) #!void)
+   ((isEnabled) #t)
+   ((isInitialized) initialized)
+   ;; prepare to attach the state
+   ((prepareToAttach mgr::AppStateManager client::FabricClient)
+    (prepare-to-attach-workshop-gamestate (this) client))
+   ;; the state has been attached
+   ((stateAttached mgr::AppStateManager)
+    (did-attach-workshop-gamestate (this) mgr))
+   ;; the state has been detached
+   ((stateDetached mgr::AppStateManager)
+    (did-detach-workshop-gamestate (this) mgr))
    ;; cleanup after the state is detached
    ((cleanupDetached mgr::AppStateManager client::FabricClient) #!void)))
 
