@@ -62,16 +62,16 @@
 ;;; layout computations
 
 (define (compute-faction-picker-rect screen::Screen)
-  (make-rectangle 16 16 512 200))
+  (make-rectangle 8 8 512 200))
 
 (define (compute-weapon-picker-rect screen::Screen)
   (let* ((faction-picker-rect (compute-faction-picker-rect screen))
          (weapon-picker-left (get-left faction-picker-rect))
          (weapon-picker-top (+ (get-top faction-picker-rect)
                                (get-height faction-picker-rect)
-                               16))
+                               8))
          (weapon-picker-width 256)
-         (weapon-picker-height 768))
+         (weapon-picker-height 748))
     (make-rectangle weapon-picker-left
                     weapon-picker-top
                     weapon-picker-width
@@ -83,7 +83,7 @@
          (screen-width (*:getWidth screen))
          (armor-picker-width (get-width weapon-picker-rect))
          (armor-picker-height (get-height weapon-picker-rect))
-         (armor-picker-left (- screen-width (+ armor-picker-width 16)))
+         (armor-picker-left (- screen-width (+ armor-picker-width 8)))
          (armor-picker-top (get-top weapon-picker-rect)))
     (make-rectangle armor-picker-left
                     armor-picker-top
@@ -95,7 +95,7 @@
          (screen-width (*:getWidth screen))
          (augment-picker-width (* 4/3 (get-width faction-picker-rect)))
          (augment-picker-height (get-height faction-picker-rect))
-         (augment-picker-left (- screen-width augment-picker-width 16))
+         (augment-picker-left (- screen-width augment-picker-width 8))
          (augment-picker-top (get-top faction-picker-rect)))
     (make-rectangle augment-picker-left
                     augment-picker-top
@@ -107,10 +107,10 @@
   (let* ((screen-width (*:getWidth screen))
          (screen-height (*:getHeight screen))
          (picker-width (* 3/4 screen-width))
-         (picker-height 160)
+         (picker-height 220)
          (picker-top (- screen-height
-                        (+ picker-height 16)))
-         (picker-left 16))
+                        (+ picker-height 8)))
+         (picker-left 8))
     (make-rectangle picker-left
                     picker-top
                     picker-width

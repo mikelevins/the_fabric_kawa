@@ -9,6 +9,14 @@
 ;;;; ***********************************************************************
 
 (module-export
+ domain0
+ domain1
+ domain2
+ domain3
+ domain4
+ domain5
+ domain6
+ domain7
  domain-indexes
  name-domains)
 
