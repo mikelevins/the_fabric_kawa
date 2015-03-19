@@ -39,8 +39,8 @@
          (screen-width (*:getWidth screen))
          (acceptor-left (+ (get-left name-picker-rect)
                            (get-width name-picker-rect)
-                           16))
-         (acceptor-width (- screen-width acceptor-left 16))
+                           8))
+         (acceptor-width (- screen-width acceptor-left 8))
          (acceptor-top (get-top name-picker-rect))
          (acceptor-height (get-height name-picker-rect))
          (win (Window screen "CharacterAcceptor"

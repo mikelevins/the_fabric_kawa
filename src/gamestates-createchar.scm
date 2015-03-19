@@ -104,9 +104,10 @@
 
 
 (define (compute-name-picker-rect screen::Screen)
-  (let* ((screen-width (*:getWidth screen))
+  (let* ((weapon-picker-rect (compute-weapon-picker-rect screen))
+         (screen-width (*:getWidth screen))
          (screen-height (*:getHeight screen))
-         (picker-width (* 3/4 screen-width))
+         (picker-width (- screen-width (+ 24 (get-width weapon-picker-rect))))
          (picker-height 220)
          (picker-top (- screen-height
                         (+ picker-height 8)))
