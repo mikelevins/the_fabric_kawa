@@ -43,15 +43,15 @@
 ;;; button
 
 (define (compute-cannon-button-origin screen::Screen)
-  (let* ((button-width 128)
+  (let* ((button-width 96)
          (button-height 96)
          (rect (compute-weapon-picker-rect screen))
          (palette-width (get-width rect))
          (palette-height (get-height rect))
          (x (- (/ palette-width 2.0)
                (/ button-width 2.0)))
-         (y (- (* 1 (/ palette-height 8.0))
-               (/ button-height 2.0))))
+         (y (+ 16 (- (* 1 (/ palette-height 9.0))
+                    (/ button-height 2.0)))))
     (Vector2f x y)))
 
 ;;; (compute-cannon-button-size screen::Screen)
@@ -60,7 +60,7 @@
 ;;; button
 
 (define (compute-cannon-button-size screen::Screen)
-  (Vector2f 128 96))
+  (Vector2f 96 96))
 
 ;;; (make-cannon-button screen::Screen)
 ;;; ---------------------------------------------------------------------
@@ -78,15 +78,15 @@
 ;;; button
 
 (define (compute-impulse-button-origin screen::Screen)
-  (let* ((button-width 128)
+  (let* ((button-width 96)
          (button-height 96)
          (rect (compute-weapon-picker-rect screen))
          (palette-width (get-width rect))
          (palette-height (get-height rect))
          (x (- (/ palette-width 2.0)
                (/ button-width 2.0)))
-         (y (- (* 3 (/ palette-height 8.0))
-               (/ button-height 2.0))))
+         (y (+ 16 (- (* 3 (/ palette-height 9.0))
+                    (/ button-height 2.0)))))
     (Vector2f x y)))
 
 ;;; (compute-impulse-button-size screen::Screen)
@@ -95,7 +95,7 @@
 ;;; button
 
 (define (compute-impulse-button-size screen::Screen)
-  (Vector2f 128 96))
+  (Vector2f 96 96))
 
 ;;; (make-impulse-button screen::Screen)
 ;;; ---------------------------------------------------------------------
@@ -113,15 +113,15 @@
 ;;; button
 
 (define (compute-malware-button-origin screen::Screen)
-  (let* ((button-width 128)
+  (let* ((button-width 96)
          (button-height 96)
          (rect (compute-weapon-picker-rect screen))
          (palette-width (get-width rect))
          (palette-height (get-height rect))
          (x (- (/ palette-width 2.0)
                (/ button-width 2.0)))
-         (y (- (* 5 (/ palette-height 8.0))
-               (/ button-height 2.0))))
+         (y (+ 16 (- (* 5 (/ palette-height 9.0))
+                    (/ button-height 2.0)))))
     (Vector2f x y)))
 
 ;;; (compute-malware-button-size screen::Screen)
@@ -130,7 +130,7 @@
 ;;; button
 
 (define (compute-malware-button-size screen::Screen)
-  (Vector2f 128 96))
+  (Vector2f 96 96))
 
 ;;; (make-malware-button screen::Screen)
 ;;; ---------------------------------------------------------------------
@@ -148,15 +148,15 @@
 ;;; button
 
 (define (compute-bots-button-origin screen::Screen)
-  (let* ((button-width 128)
+  (let* ((button-width 96)
          (button-height 96)
          (rect (compute-weapon-picker-rect screen))
          (palette-width (get-width rect))
          (palette-height (get-height rect))
          (x (- (/ palette-width 2.0)
                (/ button-width 2.0)))
-         (y (- (* 7 (/ palette-height 8.0))
-               (/ button-height 2.0))))
+         (y (+ 16 (- (* 7 (/ palette-height 9.0))
+                    (/ button-height 2.0)))))
     (Vector2f x y)))
 
 ;;; (compute-bots-button-size screen::Screen)
@@ -165,7 +165,7 @@
 ;;; button
 
 (define (compute-bots-button-size screen::Screen)
-  (Vector2f 128 96))
+  (Vector2f 96 96))
 
 ;;; (make-bots-button screen::Screen)
 ;;; ---------------------------------------------------------------------
@@ -194,8 +194,8 @@
     (*:setWindowTitle win "Choose a weapon:")
     (*:setAppState weapons-group state)
     ;; cannon button
-    (*:setButtonIcon cannon-button 128 128 "Interface/cannon-weapon-icon128.png")
-    (*:setButtonPressedInfo cannon-button "Interface/cannon-weapon-icon128.png"
+    (*:setButtonIcon cannon-button 96 96 "Interface/cannon-weapon-icon96.png")
+    (*:setButtonPressedInfo cannon-button "Interface/cannon-weapon-icon96.png"
                             (ColorRGBA 0.0 1.0 0.0 1.0))
     (*:setText cannon-button "Cannon")
     (*:setTextAlign cannon-button align:Center)
@@ -204,8 +204,8 @@
     (*:addButton weapons-group cannon-button)
     (*:addChild win cannon-button)
     ;; impulse button
-    (*:setButtonIcon impulse-button 128 128 "Interface/impulse-weapon-icon128.png")
-    (*:setButtonPressedInfo impulse-button "Interface/impulse-weapon-icon128.png"
+    (*:setButtonIcon impulse-button 96 96 "Interface/impulse-weapon-icon96.png")
+    (*:setButtonPressedInfo impulse-button "Interface/impulse-weapon-icon96.png"
                             (ColorRGBA 0.0 1.0 0.0 1.0))
     (*:setText impulse-button "Impulse")
     (*:setTextAlign impulse-button align:Center)
@@ -214,8 +214,8 @@
     (*:addButton weapons-group impulse-button)
     (*:addChild win impulse-button)
     ;; malware button
-    (*:setButtonIcon malware-button 128 128 "Interface/malware-weapon-icon128.png")
-    (*:setButtonPressedInfo malware-button "Interface/malware-weapon-icon128.png"
+    (*:setButtonIcon malware-button 96 96 "Interface/malware-weapon-icon96.png")
+    (*:setButtonPressedInfo malware-button "Interface/malware-weapon-icon96.png"
                             (ColorRGBA 0.0 1.0 0.0 1.0))
     (*:setText malware-button "Malware")
     (*:setTextAlign malware-button align:Center)
@@ -224,8 +224,8 @@
     (*:addButton weapons-group malware-button)
     (*:addChild win malware-button)
     ;; bots button
-    (*:setButtonIcon bots-button 128 128 "Interface/bots-weapon-icon128.png")
-    (*:setButtonPressedInfo bots-button "Interface/bots-weapon-icon128.png"
+    (*:setButtonIcon bots-button 96 96 "Interface/bots-weapon-icon96.png")
+    (*:setButtonPressedInfo bots-button "Interface/bots-weapon-icon96.png"
                             (ColorRGBA 0.0 1.0 0.0 1.0))
     (*:setText bots-button "Bots")
     (*:setTextAlign bots-button align:Center)

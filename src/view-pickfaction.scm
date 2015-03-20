@@ -42,7 +42,7 @@
 ;;; button
 
 (define (compute-caretaker-button-origin screen::Screen)
-  (let* ((button-width 128)
+  (let* ((button-width 96)
          (button-height 96)
          (rect (compute-faction-picker-rect screen))
          (palette-width (get-width rect))
@@ -59,7 +59,7 @@
 ;;; button
 
 (define (compute-caretaker-button-size screen::Screen)
-  (Vector2f 128 96))
+  (Vector2f 96 96))
 
 ;;; (make-caretaker-button screen::Screen)
 ;;; ---------------------------------------------------------------------
@@ -77,7 +77,7 @@
 ;;; button
 
 (define (compute-abjurers-button-origin screen::Screen)
-  (let* ((button-width 128)
+  (let* ((button-width 96)
          (button-height 96)
          (rect (compute-faction-picker-rect screen))
          (palette-width (get-width rect))
@@ -94,7 +94,7 @@
 ;;; button
 
 (define (compute-abjurers-button-size screen::Screen)
-  (Vector2f 128 96))
+  (Vector2f 96 96))
 
 ;;; (make-abjurers-button screen::Screen)
 ;;; ---------------------------------------------------------------------
@@ -112,7 +112,7 @@
 ;;; button
 
 (define (compute-rogues-button-origin screen::Screen)
-  (let* ((button-width 128)
+  (let* ((button-width 96)
          (button-height 96)
          (rect (compute-faction-picker-rect screen))
          (palette-width (get-width rect))
@@ -129,7 +129,7 @@
 ;;; button
 
 (define (compute-rogues-button-size screen::Screen)
-  (Vector2f 128 96))
+  (Vector2f 96 96))
 
 ;;; (make-rogues-button screen::Screen)
 ;;; ---------------------------------------------------------------------
@@ -157,8 +157,8 @@
     (*:setWindowTitle win "Choose a faction:")
     (*:setAppState faction-group state)
     ;; caretaker button
-    (*:setButtonIcon caretaker-button 128 128 "Interface/caretakers-icon128.png")
-    (*:setButtonPressedInfo caretaker-button "Interface/caretakers-icon128.png"
+    (*:setButtonIcon caretaker-button 96 96 "Interface/caretakers-icon96.png")
+    (*:setButtonPressedInfo caretaker-button "Interface/caretakers-icon96.png"
                             (ColorRGBA 0.0 1.0 0.0 1.0))
     (*:setText caretaker-button "Caretakers")
     (*:setTextAlign caretaker-button align:Center)
@@ -167,8 +167,8 @@
     (*:addButton faction-group caretaker-button)
     (*:addChild win caretaker-button)
     ;; abjurers button
-    (*:setButtonIcon abjurers-button 128 128 "Interface/abjurers-icon128.png")
-    (*:setButtonPressedInfo abjurers-button "Interface/abjurers-icon128.png"
+    (*:setButtonIcon abjurers-button 96 96 "Interface/abjurers-icon96.png")
+    (*:setButtonPressedInfo abjurers-button "Interface/abjurers-icon96.png"
                             (ColorRGBA 0.0 1.0 0.0 1.0))
     (*:setText abjurers-button "Abjurers")
     (*:setTextAlign abjurers-button align:Center)
@@ -177,8 +177,8 @@
     (*:addButton faction-group abjurers-button)
     (*:addChild win abjurers-button)
     ;; rogues button
-    (*:setButtonIcon rogues-button 128 128 "Interface/rogues-icon128.png")
-    (*:setButtonPressedInfo rogues-button "Interface/rogues-icon128.png"
+    (*:setButtonIcon rogues-button 96 96 "Interface/rogues-icon96.png")
+    (*:setButtonPressedInfo rogues-button "Interface/rogues-icon96.png"
                             (ColorRGBA 0.0 1.0 0.0 1.0))
     (*:setText rogues-button "Rogues")
     (*:setTextAlign rogues-button align:Center)

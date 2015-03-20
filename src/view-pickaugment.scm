@@ -42,7 +42,7 @@
 ;;; button
 
 (define (compute-force-button-origin screen::Screen)
-  (let* ((button-width 128)
+  (let* ((button-width 96)
          (button-height 96)
          (rect (compute-augment-picker-rect screen))
          (palette-width (get-width rect))
@@ -59,7 +59,7 @@
 ;;; button
 
 (define (compute-force-button-size screen::Screen)
-  (Vector2f 128 96))
+  (Vector2f 96 96))
 
 ;;; (make-force-button screen::Screen)
 ;;; ---------------------------------------------------------------------
@@ -77,7 +77,7 @@
 ;;; button
 
 (define (compute-optics-button-origin screen::Screen)
-  (let* ((button-width 128)
+  (let* ((button-width 96)
          (button-height 96)
          (rect (compute-augment-picker-rect screen))
          (palette-width (get-width rect))
@@ -94,7 +94,7 @@
 ;;; button
 
 (define (compute-optics-button-size screen::Screen)
-  (Vector2f 128 96))
+  (Vector2f 96 96))
 
 ;;; (make-optics-button screen::Screen)
 ;;; ---------------------------------------------------------------------
@@ -112,7 +112,7 @@
 ;;; button
 
 (define (compute-portals-button-origin screen::Screen)
-  (let* ((button-width 128)
+  (let* ((button-width 96)
          (button-height 96)
          (rect (compute-augment-picker-rect screen))
          (palette-width (get-width rect))
@@ -129,7 +129,7 @@
 ;;; button
 
 (define (compute-portals-button-size screen::Screen)
-  (Vector2f 128 96))
+  (Vector2f 96 96))
 
 ;;; (make-portals-button screen::Screen)
 ;;; ---------------------------------------------------------------------
@@ -147,7 +147,7 @@
 ;;; button
 
 (define (compute-turrets-button-origin screen::Screen)
-  (let* ((button-width 128)
+  (let* ((button-width 96)
          (button-height 96)
          (rect (compute-augment-picker-rect screen))
          (palette-width (get-width rect))
@@ -164,7 +164,7 @@
 ;;; button
 
 (define (compute-turrets-button-size screen::Screen)
-  (Vector2f 128 96))
+  (Vector2f 96 96))
 
 ;;; (make-turrets-button screen::Screen)
 ;;; ---------------------------------------------------------------------
@@ -193,8 +193,8 @@
     (*:setWindowTitle win "Choose an augment:")
     (*:setAppState augments-group state)
     ;; force button
-    (*:setButtonIcon force-button 128 128 "Interface/force-augment-icon128.png")
-    (*:setButtonPressedInfo force-button "Interface/force-augment-icon128.png"
+    (*:setButtonIcon force-button 96 96 "Interface/force-augment-icon96.png")
+    (*:setButtonPressedInfo force-button "Interface/force-augment-icon96.png"
                             (ColorRGBA 0.0 1.0 0.0 1.0))
     (*:setText force-button "Force")
     (*:setTextAlign force-button align:Center)
@@ -203,8 +203,8 @@
     (*:addButton augments-group force-button)
     (*:addChild win force-button)
     ;; optics button
-    (*:setButtonIcon optics-button 128 128 "Interface/optics-augment-icon128.png")
-    (*:setButtonPressedInfo optics-button "Interface/optics-augment-icon128.png"
+    (*:setButtonIcon optics-button 96 96 "Interface/optics-augment-icon96.png")
+    (*:setButtonPressedInfo optics-button "Interface/optics-augment-icon96.png"
                             (ColorRGBA 0.0 1.0 0.0 1.0))
     (*:setText optics-button "Optics")
     (*:setTextAlign optics-button align:Center)
@@ -213,8 +213,8 @@
     (*:addButton augments-group optics-button)
     (*:addChild win optics-button)
     ;; portals button
-    (*:setButtonIcon portals-button 128 128 "Interface/portals-augment-icon128.png")
-    (*:setButtonPressedInfo portals-button "Interface/portals-augment-icon128.png"
+    (*:setButtonIcon portals-button 96 96 "Interface/portals-augment-icon96.png")
+    (*:setButtonPressedInfo portals-button "Interface/portals-augment-icon96.png"
                             (ColorRGBA 0.0 1.0 0.0 1.0))
     (*:setText portals-button "Portals")
     (*:setTextAlign portals-button align:Center)
@@ -223,8 +223,8 @@
     (*:addButton augments-group portals-button)
     (*:addChild win portals-button)
     ;; turrets button
-    (*:setButtonIcon turrets-button 128 128 "Interface/turrets-augment-icon128.png")
-    (*:setButtonPressedInfo turrets-button "Interface/turrets-augment-icon128.png"
+    (*:setButtonIcon turrets-button 96 96 "Interface/turrets-augment-icon96.png")
+    (*:setButtonPressedInfo turrets-button "Interface/turrets-augment-icon96.png"
                             (ColorRGBA 0.0 1.0 0.0 1.0))
     (*:setText turrets-button "Turrets")
     (*:setTextAlign turrets-button align:Center)

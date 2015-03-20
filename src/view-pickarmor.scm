@@ -43,15 +43,15 @@
 ;;; button
 
 (define (compute-absorb-button-origin screen::Screen)
-  (let* ((button-width 128)
+  (let* ((button-width 96)
          (button-height 96)
          (rect (compute-weapon-picker-rect screen))
          (palette-width (get-width rect))
          (palette-height (get-height rect))
          (x (- (/ palette-width 2.0)
                (/ button-width 2.0)))
-         (y (- (* 1 (/ palette-height 8.0))
-               (/ button-height 2.0))))
+         (y (+ 16 (- (* 1 (/ palette-height 9.0))
+                    (/ button-height 2.0)))))
     (Vector2f x y)))
 
 ;;; (compute-absorb-button-size screen::Screen)
@@ -60,7 +60,7 @@
 ;;; button
 
 (define (compute-absorb-button-size screen::Screen)
-  (Vector2f 128 96))
+  (Vector2f 96 96))
 
 ;;; (make-absorb-button screen::Screen)
 ;;; ---------------------------------------------------------------------
@@ -78,15 +78,15 @@
 ;;; button
 
 (define (compute-regenerate-button-origin screen::Screen)
-  (let* ((button-width 128)
+  (let* ((button-width 96)
          (button-height 96)
          (rect (compute-weapon-picker-rect screen))
          (palette-width (get-width rect))
          (palette-height (get-height rect))
          (x (- (/ palette-width 2.0)
                (/ button-width 2.0)))
-         (y (- (* 3 (/ palette-height 8.0))
-               (/ button-height 2.0))))
+         (y (+ 16 (- (* 3 (/ palette-height 9.0))
+                    (/ button-height 2.0)))))
     (Vector2f x y)))
 
 ;;; (compute-regenerate-button-size screen::Screen)
@@ -95,7 +95,7 @@
 ;;; button
 
 (define (compute-regenerate-button-size screen::Screen)
-  (Vector2f 128 96))
+  (Vector2f 96 96))
 
 ;;; (make-regenerate-button screen::Screen)
 ;;; ---------------------------------------------------------------------
@@ -113,15 +113,15 @@
 ;;; button
 
 (define (compute-power-button-origin screen::Screen)
-  (let* ((button-width 128)
+  (let* ((button-width 96)
          (button-height 96)
          (rect (compute-weapon-picker-rect screen))
          (palette-width (get-width rect))
          (palette-height (get-height rect))
          (x (- (/ palette-width 2.0)
                (/ button-width 2.0)))
-         (y (- (* 5 (/ palette-height 8.0))
-               (/ button-height 2.0))))
+         (y (+ 16 (- (* 5 (/ palette-height 9.0))
+                    (/ button-height 2.0)))))
     (Vector2f x y)))
 
 ;;; (compute-power-button-size screen::Screen)
@@ -130,7 +130,7 @@
 ;;; button
 
 (define (compute-power-button-size screen::Screen)
-  (Vector2f 128 96))
+  (Vector2f 96 96))
 
 ;;; (make-power-button screen::Screen)
 ;;; ---------------------------------------------------------------------
@@ -148,15 +148,15 @@
 ;;; button
 
 (define (compute-energy-button-origin screen::Screen)
-  (let* ((button-width 128)
+  (let* ((button-width 96)
          (button-height 96)
          (rect (compute-weapon-picker-rect screen))
          (palette-width (get-width rect))
          (palette-height (get-height rect))
          (x (- (/ palette-width 2.0)
                (/ button-width 2.0)))
-         (y (- (* 7 (/ palette-height 8.0))
-               (/ button-height 2.0))))
+         (y (+ 16 (- (* 7 (/ palette-height 9.0))
+                    (/ button-height 2.0)))))
     (Vector2f x y)))
 
 ;;; (compute-energy-button-size screen::Screen)
@@ -165,7 +165,7 @@
 ;;; button
 
 (define (compute-energy-button-size screen::Screen)
-  (Vector2f 128 96))
+  (Vector2f 96 96))
 
 ;;; (make-energy-button screen::Screen)
 ;;; ---------------------------------------------------------------------
@@ -194,8 +194,8 @@
     (*:setWindowTitle win "Choose an armor:")
     (*:setAppState armors-group state)
     ;; absorb button
-    (*:setButtonIcon absorb-button 128 128 "Interface/absorb-armor-icon128.png")
-    (*:setButtonPressedInfo absorb-button "Interface/absorb-armor-icon128.png"
+    (*:setButtonIcon absorb-button 96 96 "Interface/absorb-armor-icon96.png")
+    (*:setButtonPressedInfo absorb-button "Interface/absorb-armor-icon96.png"
                             (ColorRGBA 0.0 1.0 0.0 1.0))
     (*:setText absorb-button "Absorb")
     (*:setTextAlign absorb-button align:Center)
@@ -204,8 +204,8 @@
     (*:addButton armors-group absorb-button)
     (*:addChild win absorb-button)
     ;; regenerate button
-    (*:setButtonIcon regenerate-button 128 128 "Interface/regen-armor-icon128.png")
-    (*:setButtonPressedInfo regenerate-button "Interface/regen-armor-icon128.png"
+    (*:setButtonIcon regenerate-button 96 96 "Interface/regen-armor-icon96.png")
+    (*:setButtonPressedInfo regenerate-button "Interface/regen-armor-icon96.png"
                             (ColorRGBA 0.0 1.0 0.0 1.0))
     (*:setText regenerate-button "Regenerate")
     (*:setTextAlign regenerate-button align:Center)
@@ -214,8 +214,8 @@
     (*:addButton armors-group regenerate-button)
     (*:addChild win regenerate-button)
     ;; power button
-    (*:setButtonIcon power-button 128 128 "Interface/power-armor-icon128.png")
-    (*:setButtonPressedInfo power-button "Interface/power-armor-icon128.png"
+    (*:setButtonIcon power-button 96 96 "Interface/power-armor-icon96.png")
+    (*:setButtonPressedInfo power-button "Interface/power-armor-icon96.png"
                             (ColorRGBA 0.0 1.0 0.0 1.0))
     (*:setText power-button "Power")
     (*:setTextAlign power-button align:Center)
@@ -224,8 +224,8 @@
     (*:addButton armors-group power-button)
     (*:addChild win power-button)
     ;; energy button
-    (*:setButtonIcon energy-button 128 128 "Interface/energy-armor-icon128.png")
-    (*:setButtonPressedInfo energy-button "Interface/energy-armor-icon128.png"
+    (*:setButtonIcon energy-button 96 96 "Interface/energy-armor-icon96.png")
+    (*:setButtonPressedInfo energy-button "Interface/energy-armor-icon96.png"
                             (ColorRGBA 0.0 1.0 0.0 1.0))
     (*:setText energy-button "Energy")
     (*:setTextAlign energy-button align:Center)

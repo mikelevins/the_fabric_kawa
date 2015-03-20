@@ -62,7 +62,7 @@
 ;;; layout computations
 
 (define (compute-faction-picker-rect screen::Screen)
-  (make-rectangle 8 8 512 200))
+  (make-rectangle 8 8 640 200))
 
 (define (compute-weapon-picker-rect screen::Screen)
   (let* ((faction-picker-rect (compute-faction-picker-rect screen))
@@ -71,7 +71,7 @@
                                (get-height faction-picker-rect)
                                8))
          (weapon-picker-width 256)
-         (weapon-picker-height 748))
+         (weapon-picker-height 720))
     (make-rectangle weapon-picker-left
                     weapon-picker-top
                     weapon-picker-width
@@ -93,7 +93,7 @@
 (define (compute-augment-picker-rect screen::Screen)
   (let* ((faction-picker-rect (compute-faction-picker-rect screen))
          (screen-width (*:getWidth screen))
-         (augment-picker-width (* 4/3 (get-width faction-picker-rect)))
+         (augment-picker-width (get-width faction-picker-rect))
          (augment-picker-height (get-height faction-picker-rect))
          (augment-picker-left (- screen-width augment-picker-width 8))
          (augment-picker-top (get-top faction-picker-rect)))
