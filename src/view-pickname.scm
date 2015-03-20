@@ -23,6 +23,7 @@
 (require "model-rect.scm")
 (require "view-name-selector.scm")
 (require "data-names.scm")
+(require "view-random-name-button.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -50,7 +51,8 @@
          (selector7::NameSelector (NameSelector screen "NameSelector7"  (Vector2f 1242 36)(Vector2f 180 172)))
          (win (Window screen "NamePicker"
                       (Vector2f (get-left rect) (get-top rect))
-                      (Vector2f (get-width rect) (get-height rect)))))
+                      (Vector2f (get-width rect) (get-height rect))))
+         (random-name-button (make-random-name-button screen)))
     (*:setWindowTitle win "Choose a name from any column. You may choose from more than one column.")
     (for-each (lambda (nm)(*:addListItem selector0 nm nm))(domain0))
     (*:addChild win selector0)
@@ -68,4 +70,5 @@
     (*:addChild win selector6)
     (for-each (lambda (nm)(*:addListItem selector7 nm nm))(domain7))
     (*:addChild win selector7)
+    (*:addChild win random-name-button)
     win))
