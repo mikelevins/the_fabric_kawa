@@ -15,6 +15,8 @@
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
+(require 'list-lib)
+
 (require "util-java.scm")
 (require "util-error.scm")
 (require "syntax-classes.scm")
@@ -49,26 +51,25 @@
          (selector5::NameSelector (NameSelector screen "NameSelector5"  (Vector2f 866 36)(Vector2f 180 172)))
          (selector6::NameSelector (NameSelector screen "NameSelector6"  (Vector2f 1054 36)(Vector2f 180 172)))
          (selector7::NameSelector (NameSelector screen "NameSelector7"  (Vector2f 1242 36)(Vector2f 180 172)))
+         (selectors/domains (zip
+                             (list selector0 selector1 selector2 selector3
+                                   selector4 selector5 selector6 selector7)
+                             (list (domain0) (domain1) (domain2) (domain3)
+                                   (domain4) (domain5) (domain6) (domain7))))
          (win (Window screen "NamePicker"
                       (Vector2f (get-left rect) (get-top rect))
                       (Vector2f (get-width rect) (get-height rect))))
          (random-name-button (make-random-name-button screen)))
     (*:setWindowTitle win "Choose a name from any column. You may choose from more than one column.")
-    (for-each (lambda (nm)(*:addListItem selector0 nm nm))(domain0))
-    (*:addChild win selector0)
-    (for-each (lambda (nm)(*:addListItem selector1 nm nm))(domain1))
-    (*:addChild win selector1)
-    (for-each (lambda (nm)(*:addListItem selector2 nm nm))(domain2))
-    (*:addChild win selector2)
-    (for-each (lambda (nm)(*:addListItem selector3 nm nm))(domain3))
-    (*:addChild win selector3)
-    (for-each (lambda (nm)(*:addListItem selector4 nm nm))(domain4))
-    (*:addChild win selector4)
-    (for-each (lambda (nm)(*:addListItem selector5 nm nm))(domain5))
-    (*:addChild win selector5)
-    (for-each (lambda (nm)(*:addListItem selector6 nm nm))(domain6))
-    (*:addChild win selector6)
-    (for-each (lambda (nm)(*:addListItem selector7 nm nm))(domain7))
-    (*:addChild win selector7)
+    (for-each (lambda (sel/dom)
+                (let ((sel::NameSelector (car sel/dom))
+                      (names (cadr sel/dom)))
+                  (for-each (lambda (nm)(*:addListItem sel nm nm))
+                            names)
+                  (*:setIsMultiselect sel #f)
+                  (*:setSelectedIndex sel (*:intValue 0))
+                  (*:addChild win sel)))
+              selectors/domains)
     (*:addChild win random-name-button)
     win))
+
