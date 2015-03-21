@@ -84,7 +84,7 @@
       (*:setChatbox state chatbox)
       (*:setCelestialBody state body)
       (*:setFrustumFar camera 80000)
-      (*:setLocation camera (Vector3f 0.0 0.0 30000))
+      (*:setLocation camera (Vector3f 0.0 0.0 40000))
       (*:setSky state sky)
       (*:setInitialized state #t))))
 
