@@ -83,8 +83,8 @@
       (*:setActionBar state action-bar)
       (*:setChatbox state chatbox)
       (*:setCelestialBody state body)
-      (*:setFrustumFar camera 40000)
-      (*:setLocation camera (Vector3f 0.0 0.0 18000))
+      (*:setFrustumFar camera 80000)
+      (*:setLocation camera (Vector3f 0.0 0.0 30000))
       (*:setSky state sky)
       (*:setInitialized state #t))))
 
