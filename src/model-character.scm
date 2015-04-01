@@ -9,7 +9,6 @@
 ;;;; ***********************************************************************
 
 (module-export
- make-player-character
  PlayerCharacter)
 
 ;;; ---------------------------------------------------------------------
@@ -37,21 +36,8 @@
   (slots:
    (node init-form: (Node "PlayerCharacterNode") getter: getNode setter: setNode)
    (name init-form: #f getter: getName setter: setName)
-   (faction init-form: #f getter: getFaction setter: setFaction)
    (weapon init-form #f getter: getWeapon setter: setWeapon)
    (armor init-form #f getter: getArmor setter: setArmor)
-   (augment init-form #f getter: getAugment setter: setAugment))
+   (augment init-form #f getter: getAugment setter: setAugment)
+   (alignment init-form #f getter: getAlignment setter: setAlignment))
   (methods:))
-
-;;; (make-player-character)
-;;; ---------------------------------------------------------------------
-;;; returns a newly-constructed player-character entity that contains
-;;; a cube node suitable for use as its avatar
-
-(define (make-player-character)
-  (let* ((character (PlayerCharacter))
-         (node (*:getNode character))
-         ;;(cube (make-player-character-cube))
-         )
-    ;;(*:attachChild node cube)
-    character))

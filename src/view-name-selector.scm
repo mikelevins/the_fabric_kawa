@@ -36,8 +36,6 @@
            (scrollarea (*:getScrollableArea (this))))
       (*:setFontColor scrollarea (ColorRGBA 0.0 1.0 0.0 1.0))
       (*:setTexture mat "ColorMap" img)
-      ;;(*:setFont (this) "Interface/Fonts/Laconic24.fnt")
-      ;;(*:setFont scrollarea "Interface/Fonts/Laconic24.fnt")
       (*:setFontSize (this) 24)
       (*:setFontSize scrollarea 24)))
    ((onChange)(format #t "name selection changed"))

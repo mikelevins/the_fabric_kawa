@@ -54,7 +54,6 @@
 (import-as Vector2f com.jme3.math.Vector2f)
 (import-as Window tonegod.gui.controls.windows.Window)
 
-
 ;;; ---------------------------------------------------------------------
 ;;; CreateCharacterGameState functions
 ;;; ---------------------------------------------------------------------
