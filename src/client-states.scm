@@ -1,30 +1,30 @@
 ;;;; ***********************************************************************
 ;;;;
-;;;; Name:          gamestates.scm
+;;;; Name:          client-states.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
-;;;; Purpose:       Fabric game states
+;;;; Purpose:       Fabric client states
 ;;;; Author:        mikel evins
 ;;;; Copyright:     2015 by mikel evins
 ;;;;
 ;;;; ***********************************************************************
 
 (module-export
- CreateCharacterGameState
- FabricGameState
- LoginGameState
- PickCharacterGameState
- PlayGameState
- TransitGameState
- WorkshopGameState)
+ CreateCharacterClientState
+ FabricClientState
+ LoginClientState
+ PickCharacterClientState
+ PlayClientState
+ TransitClientState
+ WorkshopClientState)
 
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
 ;;; ---------------------------------------------------------------------
 
-;;; a FabricGameState is an AppState that represents one of the Fabric
+;;; a FabricClientState is an AppState that represents one of the Fabric
 ;;; client's major modes: login, create a character, pick a character,
-;;; or play. FabricGameState defines a small set of common slots and methods
-;;; that all Fabric GameStates must implement
+;;; or play. FabricClientState defines a small set of common slots and methods
+;;; that all Fabric Client-States must implement
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -35,12 +35,12 @@
 (require "util-lists.scm")
 (require "syntax-classes.scm")
 (require "view-loginbox.scm")
-(require "gamestates-login.scm")
-(require "gamestates-createchar.scm")
-(require "gamestates-pickchar.scm")
-(require "gamestates-play.scm")
-(require "gamestates-transit.scm")
-(require "gamestates-workshop.scm")
+(require "client-state-login.scm")
+(require "client-state-create-character.scm")
+(require "client-state-pick-character.scm")
+(require "client-state-play.scm")
+(require "client-state-transit.scm")
+(require "client-state-workshop.scm")
 (require "client-main.scm")
 
 ;;; ---------------------------------------------------------------------
@@ -66,34 +66,34 @@
 
 
 ;;; =====================================================================
-;;; CLASS FabricGameState
+;;; CLASS FabricClientState
 ;;; =====================================================================
 
-(defclass FabricGameState (AbstractAppState)
+(defclass FabricClientState (AbstractAppState)
   (slots:
    (app init-form: #!null getter: getApp setter: setApp)
    (initialized init-form: #F getter: getInitialized setter: setInitialized))
   (methods:
    ((cleanup)
-    (error "cleanup must be implemented in subclasses of FabricGameState"))
+    (error "cleanup must be implemented in subclasses of FabricClientState"))
    ((isEnabled)
-    (error "isEnabled must be implemented in subclasses of FabricGameState"))
+    (error "isEnabled must be implemented in subclasses of FabricClientState"))
    ((isInitialized) initialized)
    ((prepareToAttach mgr::AppStateManager client::FabricClient)
-    (error "prepareToAttach must be implemented in subclasses of FabricGameState"))
+    (error "prepareToAttach must be implemented in subclasses of FabricClientState"))
    ((stateAttached mgr::AppStateManager)
-    (error "stateAttached must be implemented in subclasses of FabricGameState"))
+    (error "stateAttached must be implemented in subclasses of FabricClientState"))
    ((stateDetached mgr::AppStateManager)
-    (error "stateDetached must be implemented in subclasses of FabricGameState"))
+    (error "stateDetached must be implemented in subclasses of FabricClientState"))
    ((cleanupDetached mgr::AppStateManager client::FabricClient)
-    (error "cleanupDetached must be implemented in subclasses of FabricGameState"))))
+    (error "cleanupDetached must be implemented in subclasses of FabricClientState"))))
 
 
 ;;; =====================================================================
-;;; CLASS CreateCharacterGameState
+;;; CLASS CreateCharacterClientState
 ;;; =====================================================================
 
-(defclass CreateCharacterGameState (FabricGameState)
+(defclass CreateCharacterClientState (FabricClientState)
   (slots:
    (faction init-form: #f getter: getFaction setter: setFaction)
    (weapon init-form: #f getter: getWeapon setter: setWeapon)
@@ -114,22 +114,22 @@
    ((isInitialized) initialized)
    ;; prepare to attach the state
    ((prepareToAttach mgr::AppStateManager client::FabricClient)
-    (prepare-to-attach-create-character-gamestate (this) client))
+    (prepare-to-attach-create-character-client-state (this) client))
    ;; the state has been attached
    ((stateAttached mgr::AppStateManager)
-    (did-attach-create-character-gamestate (this) mgr))
+    (did-attach-create-character-client-state (this) mgr))
    ;; the state has been detached
    ((stateDetached mgr::AppStateManager)
-    (did-detach-create-character-gamestate (this) mgr))
+    (did-detach-create-character-client-state (this) mgr))
    ;; cleanup after the state is detached
    ((cleanupDetached mgr::AppStateManager client::FabricClient) #!void)))
 
 
 ;;; =====================================================================
-;;; CLASS LoginGameState
+;;; CLASS LoginClientState
 ;;; =====================================================================
 
-(defclass LoginGameState (FabricGameState)
+(defclass LoginClientState (FabricClientState)
   (slots:
    (sky init-form: #!null getter: getSky setter: setSky)
    (loginbox init-form: #!null getter: getLoginBox setter: setLoginBox))
@@ -139,22 +139,22 @@
    ((isInitialized) initialized)
    ;; prepare to attach the state
    ((prepareToAttach mgr::AppStateManager client::FabricClient)
-    (prepare-to-attach-login-gamestate (this) client))
+    (prepare-to-attach-login-client-state (this) client))
    ;; the state has been attached
    ((stateAttached mgr::AppStateManager)
-    (did-attach-login-gamestate (this) mgr))
+    (did-attach-login-client-state (this) mgr))
    ;; the state has been detached
    ((stateDetached mgr::AppStateManager)
-    (did-detach-login-gamestate (this) mgr))
+    (did-detach-login-client-state (this) mgr))
    ((cleanupDetached mgr::AppStateManager client::FabricClient) #!void)))
 
 ;;; =====================================================================
-;;; CLASS PickCharacterGameState
+;;; CLASS PickCharacterClientState
 ;;; =====================================================================
 ;;; TODO: make a node picker so the player can choose which accessible node
 ;;; to enter the game at
 
-(defclass PickCharacterGameState (FabricGameState)
+(defclass PickCharacterClientState (FabricClientState)
   (slots:
    (sky init-form: #!null getter: getSky setter: setSky)
    (picker init-form: #!null getter: getCharacterPicker setter: setCharacterPicker))
@@ -164,18 +164,18 @@
    ((isInitialized) initialized)
    ;; prepare to attach the state
    ((prepareToAttach mgr::AppStateManager client::FabricClient)
-    (prepare-to-attach-pick-character-gamestate (this) client))
+    (prepare-to-attach-pick-character-client-state (this) client))
    ;; the state has been attached
    ((stateAttached mgr::AppStateManager)
-    (did-attach-pick-character-gamestate (this) mgr))
+    (did-attach-pick-character-client-state (this) mgr))
    ;; the state has been detached
    ((stateDetached mgr::AppStateManager)
-    (did-detach-pick-character-gamestate (this) mgr))
+    (did-detach-pick-character-client-state (this) mgr))
    ((cleanupDetached mgr::AppStateManager client::FabricClient) #!void)))
 
 
 ;;; =====================================================================
-;;; CLASS PlayGameState
+;;; CLASS PlayClientState
 ;;; =====================================================================
 ;;; for the moment, until I make a real solution for picking nodes
 ;;; from the character picker, we'll just choose a random Fabric node
@@ -184,7 +184,7 @@
 ;;; TODO: destroy the central celestial object when detaching
 ;;; so that we can reattach with a different one
 
-(defclass PlayGameState (FabricGameState)
+(defclass PlayClientState (FabricClientState)
   (slots:
    (celestial-body init-form: #!null getter: getCelestialBody setter: setCelestialBody)
    (sky init-form: #!null getter: getSky setter: setSky)
@@ -197,22 +197,22 @@
    ((isInitialized) initialized)
    ;; prepare to attach the state
    ((prepareToAttach mgr::AppStateManager client::FabricClient)
-    (prepare-to-attach-play-gamestate (this) client))
+    (prepare-to-attach-play-client-state (this) client))
    ;; the state has been attached
    ((stateAttached mgr::AppStateManager)
-    (did-attach-play-gamestate (this) mgr))
+    (did-attach-play-client-state (this) mgr))
    ;; the state has been detached; dispose of the celestial body
    ((stateDetached mgr::AppStateManager)
-    (did-detach-play-gamestate (this) mgr))
+    (did-detach-play-client-state (this) mgr))
    ((cleanupDetached mgr::AppStateManager client::FabricClient) #!void)))
 
 
 ;;; =====================================================================
-;;; CLASS TransitGameState
+;;; CLASS TransitClientState
 ;;; =====================================================================
-;;; A GameState used to display transit from one Fabric node to another
+;;; A FabricClientState used to display transit from one Fabric node to another
 
-(defclass TransitGameState (FabricGameState)
+(defclass TransitClientState (FabricClientState)
   (slots:
    (sky init-form: #!null getter: getSky setter: setSky)
    (status-label init-form: #!null getter: getStatusLabel setter: setFactionNameplate))
@@ -222,23 +222,23 @@
    ((isInitialized) initialized)
    ;; prepare to attach the state
    ((prepareToAttach mgr::AppStateManager client::FabricClient)
-    (prepare-to-attach-transit-gamestate (this) client))
+    (prepare-to-attach-transit-client-state (this) client))
    ;; the state has been attached
    ((stateAttached mgr::AppStateManager)
-    (did-attach-transit-gamestate (this) mgr))
+    (did-attach-transit-client-state (this) mgr))
    ;; the state has been detached
    ((stateDetached mgr::AppStateManager)
-    (did-detach-transit-gamestate (this) mgr))
+    (did-detach-transit-client-state (this) mgr))
    ;; cleanup after the state is detached
    ((cleanupDetached mgr::AppStateManager client::FabricClient) #!void)))
 
 
 ;;; =====================================================================
-;;; CLASS WorkshopGameState
+;;; CLASS WorkshopClientState
 ;;; =====================================================================
-;;; A GameState used to test and display game elements
+;;; A FabricClientState used to test and display game elements
 
-(defclass WorkshopGameState (FabricGameState)
+(defclass WorkshopClientState (FabricClientState)
   (slots:
    (sky init-form: #!null getter: getSky setter: setSky))
   (methods:
@@ -247,13 +247,13 @@
    ((isInitialized) initialized)
    ;; prepare to attach the state
    ((prepareToAttach mgr::AppStateManager client::FabricClient)
-    (prepare-to-attach-workshop-gamestate (this) client))
+    (prepare-to-attach-workshop-client-state (this) client))
    ;; the state has been attached
    ((stateAttached mgr::AppStateManager)
-    (did-attach-workshop-gamestate (this) mgr))
+    (did-attach-workshop-client-state (this) mgr))
    ;; the state has been detached
    ((stateDetached mgr::AppStateManager)
-    (did-detach-workshop-gamestate (this) mgr))
+    (did-detach-workshop-client-state (this) mgr))
    ;; cleanup after the state is detached
    ((cleanupDetached mgr::AppStateManager client::FabricClient) #!void)))
 

@@ -19,8 +19,8 @@
 (require "util-error.scm")
 (require "syntax-classes.scm")
 (require "client-main.scm")
-(require "gamestates.scm")
-(require "gamestates-createchar.scm")
+(require "client-states.scm")
+(require "client-state-create-character.scm")
 (require "model-rect.scm")
 (require "view-faction-button-group.scm")
 
@@ -143,7 +143,7 @@
 ;;; make-character-picker
 ;;; ---------------------------------------------------------------------
 
-(define (make-faction-picker state::FabricGameState screen::Screen)
+(define (make-faction-picker state::FabricClientState screen::Screen)
   (let* ((align BitmapFont:Align)
          (valign BitmapFont:VAlign)
          (rect (compute-faction-picker-rect screen))

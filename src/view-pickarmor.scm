@@ -20,8 +20,8 @@
 (require "syntax-classes.scm")
 (require "client-main.scm")
 (require "view-pickfaction.scm")
-(require "gamestates.scm")
-(require "gamestates-createchar.scm")
+(require "client-states.scm")
+(require "client-state-create-character.scm")
 (require "model-rect.scm")
 (require "view-armors-button-group.scm")
 
@@ -179,7 +179,7 @@
 ;;; make-armor-picker
 ;;; ---------------------------------------------------------------------
 
-(define (make-armor-picker state::FabricGameState screen::Screen)
+(define (make-armor-picker state::FabricClientState screen::Screen)
   (let* ((rect (compute-armor-picker-rect screen))
          (align BitmapFont:Align)
          (valign BitmapFont:VAlign)

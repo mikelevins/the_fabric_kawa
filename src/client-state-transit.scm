@@ -1,17 +1,17 @@
 ;;;; ***********************************************************************
 ;;;;
-;;;; Name:          gamestates-login.scm
+;;;; Name:          client-state-transit.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
-;;;; Purpose:       supporting functions for LoginGameState
+;;;; Purpose:       supporting functions for TransitClientState
 ;;;; Author:        mikel evins
 ;;;; Copyright:     2015 by mikel evins
 ;;;;
 ;;;; ***********************************************************************
 
 (module-export
- did-attach-login-gamestate
- did-detach-login-gamestate
- prepare-to-attach-login-gamestate)
+ did-attach-transit-client-state
+ did-detach-transit-client-state
+ prepare-to-attach-transit-client-state)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -22,9 +22,8 @@
 (require "util-lists.scm")
 (require "syntax-classes.scm")
 (require "view-loginbox.scm")
-(require "gamestates.scm")
+(require "client-states.scm")
 (require "client-main.scm")
-(require "model-rect.scm")
 (require "view-skybox.scm")
 
 ;;; ---------------------------------------------------------------------
@@ -32,6 +31,9 @@
 ;;; ---------------------------------------------------------------------
 
 (import-as AppStateManager com.jme3.app.state.AppStateManager)
+(import-as BitmapFont com.jme3.font.BitmapFont)
+(import-as ColorRGBA com.jme3.math.ColorRGBA)
+(import-as Label tonegod.gui.controls.text.Label)
 (import-as Node com.jme3.scene.Node)
 (import-as Screen tonegod.gui.core.Screen)
 (import-as Spatial com.jme3.scene.Spatial)
@@ -39,39 +41,26 @@
 
 
 ;;; ---------------------------------------------------------------------
-;;; LoginGameState functions
+;;; TransitClientState functions
 ;;; ---------------------------------------------------------------------
 
-(define (compute-login-box-rect screen::Screen)
-  (let* ((screen-width (*:getWidth screen))
-         (screen-height (*:getHeight screen))
-         (box-width 700)
-         (box-height 300)
-         (box-left (- (/ screen-width 2)
-                      (/ box-width 2)))
-         (box-top (- (/ screen-height 2)
-                     (/ box-height 2))))
-    (make-rectangle box-left
-                    box-top
-                    box-width
-                    box-height)))
-
-(define (prepare-to-attach-login-gamestate state::LoginGameState client::FabricClient)
+(define (prepare-to-attach-transit-client-state state::TransitClientState client::FabricClient)
   (unless (*:getInitialized state)
-    (let* ((client::FabricClient (*:getApp state))
-           (screen::Screen (*:getScreen client))
-           (sky::Spatial (make-sky-box))
+    (let* ((screen::Screen (*:getScreen client))
            (gui-node::Node (*:getGuiNode client))
-           (rect (compute-login-box-rect screen))
-           (box::FabricLoginBox (FabricLoginBox screen "LoginBox"
-                                                (Vector2f (get-left rect) (get-top rect))
-                                                (Vector2f (get-width rect) (get-height rect)))))
-      (*:setWindowTitle box "Log in to the Fabric")
-      (*:setLoginBox state box)
+           (sky::Spatial (make-sky-box))
+           (Align BitmapFont:Align)
+           (label::Label (Label screen "FactionNameplate" (Vector2f 600 40)(Vector2f 1200 40))))
+      (*:setFactionNameplate state label)
       (*:setSky state sky)
+      (*:setText label "In transit...")
+      (*:setTextAlign label Align:Left)
+      (*:setFont label "Interface/Fonts/Laconic30.fnt")
+      (*:setFontSize label 30)
+      (*:setFontColor label ColorRGBA:Green)
       (*:setInitialized state #t))))
 
-(define (did-attach-login-gamestate state::LoginGameState mgr::AppStateManager)
+(define (did-attach-transit-client-state state::TransitClientState mgr::AppStateManager)
   (when (*:getInitialized state)
     (let* ((client::FabricClient (*:getApp state))
            (screen::Screen (*:getScreen client))
@@ -81,10 +70,10 @@
                              (let ((client::FabricClient (*:getApp state))
                                    (root::Node (*:getRootNode client)))
                                (*:attachChild root (*:getSky state))
-                               (*:addElement screen (*:getLoginBox state))
+                               (*:addElement screen (*:getStatusLabel state))
                                (*:addControl gui-node screen))))))))
 
-(define (did-detach-login-gamestate state::LoginGameState mgr::AppStateManager)
+(define (did-detach-transit-client-state state::TransitClientState mgr::AppStateManager)
   (when (*:getInitialized state)
     (let* ((client::FabricClient (*:getApp state))
            (screen::Screen (*:getScreen client))
@@ -96,6 +85,6 @@
                                    (sky::Spatial (*:getSky state)))
                                (*:detachChild root sky)
                                (*:setSky state #!null)
-                               (*:removeElement screen (*:getLoginBox state))
+                               (*:removeElement screen (*:getStatusLabel state))
                                (*:removeControl gui-node screen)
                                (*:setInitialized state #f))))))))

@@ -19,8 +19,8 @@
 (require "util-error.scm")
 (require "syntax-classes.scm")
 (require "client-main.scm")
-(require "gamestates.scm")
-(require "gamestates-createchar.scm")
+(require "client-states.scm")
+(require "client-state-create-character.scm")
 (require "model-rect.scm")
 (require "view-augments-button-group.scm")
 
@@ -178,7 +178,7 @@
 ;;; make-character-picker
 ;;; ---------------------------------------------------------------------
 
-(define (make-augment-picker state::FabricGameState screen::Screen)
+(define (make-augment-picker state::FabricClientState screen::Screen)
   (let* ((rect (compute-augment-picker-rect screen))
          (align BitmapFont:Align)
          (valign BitmapFont:VAlign)

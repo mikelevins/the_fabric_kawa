@@ -1,17 +1,18 @@
 ;;;; ***********************************************************************
 ;;;;
-;;;; Name:          gamestates-transit.scm
+;;;; Name:          client-state-pickchar.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
-;;;; Purpose:       supporting functions for TransitGameState
+;;;; Purpose:       supporting functions for PickCharacterClientState
 ;;;; Author:        mikel evins
 ;;;; Copyright:     2015 by mikel evins
 ;;;;
 ;;;; ***********************************************************************
 
 (module-export
- did-attach-transit-gamestate
- did-detach-transit-gamestate
- prepare-to-attach-transit-gamestate)
+ compute-character-picker-rect
+ did-attach-pick-character-client-state
+ did-detach-pick-character-client-state
+ prepare-to-attach-pick-character-client-state)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -22,8 +23,10 @@
 (require "util-lists.scm")
 (require "syntax-classes.scm")
 (require "view-loginbox.scm")
-(require "gamestates.scm")
+(require "client-states.scm")
 (require "client-main.scm")
+(require "view-pickcharacter.scm")
+(require "model-rect.scm")
 (require "view-skybox.scm")
 
 ;;; ---------------------------------------------------------------------
@@ -31,9 +34,6 @@
 ;;; ---------------------------------------------------------------------
 
 (import-as AppStateManager com.jme3.app.state.AppStateManager)
-(import-as BitmapFont com.jme3.font.BitmapFont)
-(import-as ColorRGBA com.jme3.math.ColorRGBA)
-(import-as Label tonegod.gui.controls.text.Label)
 (import-as Node com.jme3.scene.Node)
 (import-as Screen tonegod.gui.core.Screen)
 (import-as Spatial com.jme3.scene.Spatial)
@@ -41,26 +41,31 @@
 
 
 ;;; ---------------------------------------------------------------------
-;;; TransitGameState functions
+;;; PickCharacterClientState functions
 ;;; ---------------------------------------------------------------------
 
-(define (prepare-to-attach-transit-gamestate state::TransitGameState client::FabricClient)
+(define (compute-character-picker-rect screen::Screen)
+  (let* ((screen-height (*:getHeight screen))
+         (picker-left 16)
+         (picker-top 16)
+         (picker-width 512)
+         (picker-height (- screen-height (* 2 16))))
+    (make-rectangle picker-left
+                    picker-top
+                    picker-width
+                    picker-height)))
+
+(define (prepare-to-attach-pick-character-client-state state::PickCharacterClientState client::FabricClient)
   (unless (*:getInitialized state)
-    (let* ((screen::Screen (*:getScreen client))
-           (gui-node::Node (*:getGuiNode client))
+    (let* ((client::FabricClient (*:getApp state))
+           (screen::Screen (*:getScreen client))
            (sky::Spatial (make-sky-box))
-           (Align BitmapFont:Align)
-           (label::Label (Label screen "FactionNameplate" (Vector2f 600 40)(Vector2f 1200 40))))
-      (*:setFactionNameplate state label)
+           (gui-node::Node (*:getGuiNode client)))
+      (*:setCharacterPicker state (make-character-picker screen))
       (*:setSky state sky)
-      (*:setText label "In transit...")
-      (*:setTextAlign label Align:Left)
-      (*:setFont label "Interface/Fonts/Laconic30.fnt")
-      (*:setFontSize label 30)
-      (*:setFontColor label ColorRGBA:Green)
       (*:setInitialized state #t))))
 
-(define (did-attach-transit-gamestate state::TransitGameState mgr::AppStateManager)
+(define (did-attach-pick-character-client-state state::PickCharacterClientState mgr::AppStateManager)
   (when (*:getInitialized state)
     (let* ((client::FabricClient (*:getApp state))
            (screen::Screen (*:getScreen client))
@@ -70,10 +75,10 @@
                              (let ((client::FabricClient (*:getApp state))
                                    (root::Node (*:getRootNode client)))
                                (*:attachChild root (*:getSky state))
-                               (*:addElement screen (*:getStatusLabel state))
+                               (*:addElement screen (*:getCharacterPicker state))
                                (*:addControl gui-node screen))))))))
 
-(define (did-detach-transit-gamestate state::TransitGameState mgr::AppStateManager)
+(define (did-detach-pick-character-client-state state::PickCharacterClientState mgr::AppStateManager)
   (when (*:getInitialized state)
     (let* ((client::FabricClient (*:getApp state))
            (screen::Screen (*:getScreen client))
@@ -85,6 +90,6 @@
                                    (sky::Spatial (*:getSky state)))
                                (*:detachChild root sky)
                                (*:setSky state #!null)
-                               (*:removeElement screen (*:getStatusLabel state))
+                               (*:removeElement screen (*:getCharacterPicker state))
                                (*:removeControl gui-node screen)
                                (*:setInitialized state #f))))))))

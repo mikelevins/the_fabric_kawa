@@ -16,7 +16,7 @@
 ;;; ---------------------------------------------------------------------
 
 (require "util-java.scm")
-(require "gamestates-createchar.scm")
+(require "client-state-create-character.scm")
 (require "model-rect.scm")
 
 ;;; ---------------------------------------------------------------------

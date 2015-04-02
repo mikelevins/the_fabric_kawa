@@ -39,7 +39,7 @@
 (require "util-java.scm")
 (require "util-error.scm")
 (require "syntax-classes.scm")
-(require "gamestates.scm")
+(require "client-states.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -52,32 +52,32 @@
 (define *appstate-pool* '())
 
 (define (%construct-login-appstate client)
-  (let ((state (LoginGameState)))
+  (let ((state (LoginClientState)))
     (*:setApp state client)
     state))
 
 (define (%construct-createchar-appstate client)
-  (let ((state (CreateCharacterGameState)))
+  (let ((state (CreateCharacterClientState)))
     (*:setApp state client)
     state))
 
 (define (%construct-pickchar-appstate client)
-  (let ((state (PickCharacterGameState)))
+  (let ((state (PickCharacterClientState)))
     (*:setApp state client)
     state))
 
 (define (%construct-play-appstate client)
-  (let ((state (PlayGameState)))
+  (let ((state (PlayClientState)))
     (*:setApp state client)
     state))
 
 (define (%construct-transit-appstate client)
-  (let ((state (TransitGameState)))
+  (let ((state (TransitClientState)))
     (*:setApp state client)
     state))
 
 (define (%construct-workshop-appstate client)
-  (let ((state (WorkshopGameState)))
+  (let ((state (WorkshopClientState)))
     (*:setApp state client)
     state))
 

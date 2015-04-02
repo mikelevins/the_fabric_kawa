@@ -12,7 +12,7 @@
  NameSelector)
 
 (require "util-java.scm")
-(require "gamestates.scm")
+(require "client-states.scm")
 (require "syntax-classes.scm")
 
 (import-as AssetManager com.jme3.asset.AssetManager)

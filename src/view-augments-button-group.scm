@@ -12,7 +12,7 @@
  AugmentsButtonGroup)
 
 (require "util-java.scm")
-(require "gamestates.scm")
+(require "client-states.scm")
 (require "syntax-classes.scm")
 
 (import-as Button tonegod.gui.controls.buttons.Button)
@@ -27,7 +27,7 @@
     (invoke-special RadioButtonGroup (this) '*init* screen uid))
    ((onSelect index::int value::Button)
     (let ((button-id (*:getUID value))
-          (state::CreateCharacterGameState (*:getAppState (this))))
+          (state::CreateCharacterClientState (*:getAppState (this))))
       (cond
        ((equal? "ForceButton" button-id)(*:setAugment state 'force))
        ((equal? "OpticsButton" button-id)(*:setAugment state 'optics))

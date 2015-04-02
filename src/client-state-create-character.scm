@@ -1,8 +1,8 @@
 ;;;; ***********************************************************************
 ;;;;
-;;;; Name:          gamestates-createchar.scm
+;;;; Name:          client-state-create-character.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
-;;;; Purpose:       supporting functions for CreateCharacterGameState
+;;;; Purpose:       supporting functions for CreateCharacterClientState
 ;;;; Author:        mikel evins
 ;;;; Copyright:     2015 by mikel evins
 ;;;;
@@ -14,9 +14,9 @@
  compute-faction-picker-rect
  compute-name-picker-rect
  compute-weapon-picker-rect
- did-attach-create-character-gamestate
- did-detach-create-character-gamestate
- prepare-to-attach-create-character-gamestate)
+ did-attach-create-character-client-state
+ did-detach-create-character-client-state
+ prepare-to-attach-create-character-client-state)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -28,7 +28,7 @@
 (require "syntax-classes.scm")
 (require "view-loginbox.scm")
 (require "model-rect.scm")
-(require "gamestates.scm")
+(require "client-states.scm")
 (require "client-main.scm")
 (require "view-skybox.scm")
 (require "view-character-nameplate.scm")
@@ -55,7 +55,7 @@
 (import-as Window tonegod.gui.controls.windows.Window)
 
 ;;; ---------------------------------------------------------------------
-;;; CreateCharacterGameState functions
+;;; CreateCharacterClientState functions
 ;;; ---------------------------------------------------------------------
 
 ;;; layout computations
@@ -119,7 +119,7 @@
 
 ;;; attach and detach
 
-(define (prepare-to-attach-create-character-gamestate state::CreateCharacterGameState client::FabricClient)
+(define (prepare-to-attach-create-character-client-state state::CreateCharacterClientState client::FabricClient)
   (unless (*:getInitialized state)
     (let* ((screen::Screen (*:getScreen client))
            (gui-node::Node (*:getGuiNode client))
@@ -144,7 +144,7 @@
       (*:setSky state sky)
       (*:setInitialized state #t))))
 
-(define (did-attach-create-character-gamestate state::CreateCharacterGameState mgr::AppStateManager)
+(define (did-attach-create-character-client-state state::CreateCharacterClientState mgr::AppStateManager)
   (when (*:getInitialized state)
     (let* ((client::FabricClient (*:getApp state))
            (screen::Screen (*:getScreen client))
@@ -164,7 +164,7 @@
                                (*:attachChild root (*:getSky state))
                                (*:addControl gui-node screen))))))))
 
-(define (did-detach-create-character-gamestate state::CreateCharacterGameState mgr::AppStateManager)
+(define (did-detach-create-character-client-state state::CreateCharacterClientState mgr::AppStateManager)
   (when (*:getInitialized state)
     (let* ((client::FabricClient (*:getApp state))
            (screen::Screen (*:getScreen client))

@@ -1,17 +1,17 @@
 ;;;; ***********************************************************************
 ;;;;
-;;;; Name:          gamestates-workshop.scm
+;;;; Name:          client-state-login.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
-;;;; Purpose:       supporting functions for WorkshopGameState
+;;;; Purpose:       supporting functions for LoginClientState
 ;;;; Author:        mikel evins
 ;;;; Copyright:     2015 by mikel evins
 ;;;;
 ;;;; ***********************************************************************
 
 (module-export
- did-attach-workshop-gamestate
- did-detach-workshop-gamestate
- prepare-to-attach-workshop-gamestate)
+ did-attach-login-client-state
+ did-detach-login-client-state
+ prepare-to-attach-login-client-state)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -22,8 +22,9 @@
 (require "util-lists.scm")
 (require "syntax-classes.scm")
 (require "view-loginbox.scm")
-(require "gamestates.scm")
+(require "client-states.scm")
 (require "client-main.scm")
+(require "model-rect.scm")
 (require "view-skybox.scm")
 
 ;;; ---------------------------------------------------------------------
@@ -31,9 +32,6 @@
 ;;; ---------------------------------------------------------------------
 
 (import-as AppStateManager com.jme3.app.state.AppStateManager)
-(import-as BitmapFont com.jme3.font.BitmapFont)
-(import-as ColorRGBA com.jme3.math.ColorRGBA)
-(import-as Label tonegod.gui.controls.text.Label)
 (import-as Node com.jme3.scene.Node)
 (import-as Screen tonegod.gui.core.Screen)
 (import-as Spatial com.jme3.scene.Spatial)
@@ -41,19 +39,39 @@
 
 
 ;;; ---------------------------------------------------------------------
-;;; WorkshopGameState functions
+;;; LoginClientState functions
 ;;; ---------------------------------------------------------------------
 
-(define (prepare-to-attach-workshop-gamestate state::WorkshopGameState client::FabricClient)
+(define (compute-login-box-rect screen::Screen)
+  (let* ((screen-width (*:getWidth screen))
+         (screen-height (*:getHeight screen))
+         (box-width 700)
+         (box-height 300)
+         (box-left (- (/ screen-width 2)
+                      (/ box-width 2)))
+         (box-top (- (/ screen-height 2)
+                     (/ box-height 2))))
+    (make-rectangle box-left
+                    box-top
+                    box-width
+                    box-height)))
+
+(define (prepare-to-attach-login-client-state state::LoginClientState client::FabricClient)
   (unless (*:getInitialized state)
-    (let* ((screen::Screen (*:getScreen client))
-           (gui-node::Node (*:getGuiNode client))
+    (let* ((client::FabricClient (*:getApp state))
+           (screen::Screen (*:getScreen client))
            (sky::Spatial (make-sky-box))
-           (Align BitmapFont:Align))
+           (gui-node::Node (*:getGuiNode client))
+           (rect (compute-login-box-rect screen))
+           (box::FabricLoginBox (FabricLoginBox screen "LoginBox"
+                                                (Vector2f (get-left rect) (get-top rect))
+                                                (Vector2f (get-width rect) (get-height rect)))))
+      (*:setWindowTitle box "Log in to the Fabric")
+      (*:setLoginBox state box)
       (*:setSky state sky)
       (*:setInitialized state #t))))
 
-(define (did-attach-workshop-gamestate state::WorkshopGameState mgr::AppStateManager)
+(define (did-attach-login-client-state state::LoginClientState mgr::AppStateManager)
   (when (*:getInitialized state)
     (let* ((client::FabricClient (*:getApp state))
            (screen::Screen (*:getScreen client))
@@ -63,9 +81,10 @@
                              (let ((client::FabricClient (*:getApp state))
                                    (root::Node (*:getRootNode client)))
                                (*:attachChild root (*:getSky state))
+                               (*:addElement screen (*:getLoginBox state))
                                (*:addControl gui-node screen))))))))
 
-(define (did-detach-workshop-gamestate state::WorkshopGameState mgr::AppStateManager)
+(define (did-detach-login-client-state state::LoginClientState mgr::AppStateManager)
   (when (*:getInitialized state)
     (let* ((client::FabricClient (*:getApp state))
            (screen::Screen (*:getScreen client))
@@ -77,5 +96,6 @@
                                    (sky::Spatial (*:getSky state)))
                                (*:detachChild root sky)
                                (*:setSky state #!null)
+                               (*:removeElement screen (*:getLoginBox state))
                                (*:removeControl gui-node screen)
                                (*:setInitialized state #f))))))))

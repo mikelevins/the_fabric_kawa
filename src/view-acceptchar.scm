@@ -19,7 +19,7 @@
 (require "util-error.scm")
 (require "syntax-classes.scm")
 (require "client-main.scm")
-(require "gamestates-createchar.scm")
+(require "client-state-create-character.scm")
 (require "model-rect.scm")
 
 ;;; ---------------------------------------------------------------------

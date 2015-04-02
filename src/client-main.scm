@@ -28,7 +28,7 @@
 (require "util-java.scm")
 (require "syntax-classes.scm")
 (require "model-statepool.scm")
-(require "gamestates.scm")
+(require "client-states.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -55,7 +55,7 @@
 (defclass FabricClient (SimpleApplication AnalogListener ActionListener)
   (slots:
    (app-settings init-form: (AppSettings #t) getter: getAppSettings)
-   (game-state init-form: #!null getter: getGameState setter: setGameState)
+   (client-state init-form: #!null getter: getClientState setter: setClientState)
    (screen init-form: #!null)
    (fabric-node init-form: #f getter: getFabricNode setter: setFabricNode)) 
   (methods:
@@ -91,7 +91,7 @@
 ;;; ---------------------------------------------------------------------
 
 (define (%client-state-different? client::FabricClient new-state)
-  (let ((current-state (*:getGameState client)))
+  (let ((current-state (*:getClientState client)))
     (or (and (jnull? current-state)
              (not (jnull? new-state)))
         (and (not (jnull? current-state))
@@ -106,17 +106,17 @@
 ;;; %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 (define (%detach-and-cleanup-current-state client::FabricClient)
-  (let ((current-state (*:getGameState client))
+  (let ((current-state (*:getClientState client))
         (mgr (*:getStateManager client)))
     (unless (jnull? current-state)
       (*:detach mgr current-state)
-      (*:setGameState client #!null)
-      (*:cleanupDetached (as FabricGameState current-state) mgr client))))
+      (*:setClientState client #!null)
+      (*:cleanupDetached (as FabricClientState current-state) mgr client))))
 
 (define (%attach-and-activate-new-state client::FabricClient new-state)
   (let ((mgr (*:getStateManager client)))
-    (*:prepareToAttach (as FabricGameState new-state) mgr client)
-    (*:setGameState client new-state)
+    (*:prepareToAttach (as FabricClientState new-state) mgr client)
+    (*:setClientState client new-state)
     (*:attach mgr new-state)))
 
 (define (%update-client-state client::FabricClient new-state)

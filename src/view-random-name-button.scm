@@ -15,8 +15,8 @@
 (require "util-java.scm")
 (require "syntax-classes.scm")
 (require "model-rect.scm")
-(require "gamestates.scm")
-(require "gamestates-createchar.scm")
+(require "client-states.scm")
+(require "client-state-create-character.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports

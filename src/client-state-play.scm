@@ -1,8 +1,8 @@
 ;;;; ***********************************************************************
 ;;;;
-;;;; Name:          gamestates-play.scm
+;;;; Name:          client-state-play.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
-;;;; Purpose:       supporting functions for PlayGameState
+;;;; Purpose:       supporting functions for PlayClientState
 ;;;; Author:        mikel evins
 ;;;; Copyright:     2015 by mikel evins
 ;;;;
@@ -10,9 +10,9 @@
 
 (module-export
  compute-node-nameplate-rect
- did-attach-play-gamestate
- did-detach-play-gamestate
- prepare-to-attach-play-gamestate)
+ did-attach-play-client-state
+ did-detach-play-client-state
+ prepare-to-attach-play-client-state)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -23,7 +23,7 @@
 (require "util-lists.scm")
 (require "syntax-classes.scm")
 (require "view-loginbox.scm")
-(require "gamestates.scm")
+(require "client-states.scm")
 (require "client-main.scm")
 (require "data-nodes.scm")
 (require "view-celestial-body.scm")
@@ -50,7 +50,7 @@
 
 
 ;;; ---------------------------------------------------------------------
-;;; PlayGameState functions
+;;; PlayClientState functions
 ;;; ---------------------------------------------------------------------
 
 (define (compute-node-nameplate-rect screen::Screen)
@@ -64,7 +64,7 @@
                     nameplate-width
                     nameplate-height)))
 
-(define (prepare-to-attach-play-gamestate state::PlayGameState client::FabricClient)
+(define (prepare-to-attach-play-client-state state::PlayClientState client::FabricClient)
   (unless (*:getInitialized state)
     (let* ((client::FabricClient (*:getApp state))
            (screen::Screen (*:getScreen client))
@@ -88,7 +88,7 @@
       (*:setSky state sky)
       (*:setInitialized state #t))))
 
-(define (did-attach-play-gamestate state::PlayGameState mgr::AppStateManager)
+(define (did-attach-play-client-state state::PlayClientState mgr::AppStateManager)
   (when (*:getInitialized state)
     (let* ((client::FabricClient (*:getApp state))
            (screen::Screen (*:getScreen client))
@@ -104,7 +104,7 @@
                                (*:attachChild root (*:getCelestialBody state))
                                (*:addControl gui-node screen))))))))
 
-(define (did-detach-play-gamestate state::PlayGameState mgr::AppStateManager)
+(define (did-detach-play-client-state state::PlayClientState mgr::AppStateManager)
   (when (*:getInitialized state)
     (let* ((client::FabricClient (*:getApp state))
            (screen::Screen (*:getScreen client))

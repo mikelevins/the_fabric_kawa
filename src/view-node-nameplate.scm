@@ -16,7 +16,7 @@
 ;;; ---------------------------------------------------------------------
 
 (require "util-java.scm")
-(require "gamestates-play.scm")
+(require "client-state-play.scm")
 (require "model-rect.scm")
 
 ;;; ---------------------------------------------------------------------

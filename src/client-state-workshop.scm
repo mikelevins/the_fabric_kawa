@@ -1,18 +1,17 @@
 ;;;; ***********************************************************************
 ;;;;
-;;;; Name:          gamestates-pickchar.scm
+;;;; Name:          client-state-workshop.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
-;;;; Purpose:       supporting functions for PickCharacterGameState
+;;;; Purpose:       supporting functions for WorkshopClientState
 ;;;; Author:        mikel evins
 ;;;; Copyright:     2015 by mikel evins
 ;;;;
 ;;;; ***********************************************************************
 
 (module-export
- compute-character-picker-rect
- did-attach-pick-character-gamestate
- did-detach-pick-character-gamestate
- prepare-to-attach-pick-character-gamestate)
+ did-attach-workshop-client-state
+ did-detach-workshop-client-state
+ prepare-to-attach-workshop-client-state)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -23,10 +22,8 @@
 (require "util-lists.scm")
 (require "syntax-classes.scm")
 (require "view-loginbox.scm")
-(require "gamestates.scm")
+(require "client-states.scm")
 (require "client-main.scm")
-(require "view-pickcharacter.scm")
-(require "model-rect.scm")
 (require "view-skybox.scm")
 
 ;;; ---------------------------------------------------------------------
@@ -34,6 +31,9 @@
 ;;; ---------------------------------------------------------------------
 
 (import-as AppStateManager com.jme3.app.state.AppStateManager)
+(import-as BitmapFont com.jme3.font.BitmapFont)
+(import-as ColorRGBA com.jme3.math.ColorRGBA)
+(import-as Label tonegod.gui.controls.text.Label)
 (import-as Node com.jme3.scene.Node)
 (import-as Screen tonegod.gui.core.Screen)
 (import-as Spatial com.jme3.scene.Spatial)
@@ -41,31 +41,19 @@
 
 
 ;;; ---------------------------------------------------------------------
-;;; PickCharacterGameState functions
+;;; WorkshopClientState functions
 ;;; ---------------------------------------------------------------------
 
-(define (compute-character-picker-rect screen::Screen)
-  (let* ((screen-height (*:getHeight screen))
-         (picker-left 16)
-         (picker-top 16)
-         (picker-width 512)
-         (picker-height (- screen-height (* 2 16))))
-    (make-rectangle picker-left
-                    picker-top
-                    picker-width
-                    picker-height)))
-
-(define (prepare-to-attach-pick-character-gamestate state::PickCharacterGameState client::FabricClient)
+(define (prepare-to-attach-workshop-client-state state::WorkshopClientState client::FabricClient)
   (unless (*:getInitialized state)
-    (let* ((client::FabricClient (*:getApp state))
-           (screen::Screen (*:getScreen client))
+    (let* ((screen::Screen (*:getScreen client))
+           (gui-node::Node (*:getGuiNode client))
            (sky::Spatial (make-sky-box))
-           (gui-node::Node (*:getGuiNode client)))
-      (*:setCharacterPicker state (make-character-picker screen))
+           (Align BitmapFont:Align))
       (*:setSky state sky)
       (*:setInitialized state #t))))
 
-(define (did-attach-pick-character-gamestate state::PickCharacterGameState mgr::AppStateManager)
+(define (did-attach-workshop-client-state state::WorkshopClientState mgr::AppStateManager)
   (when (*:getInitialized state)
     (let* ((client::FabricClient (*:getApp state))
            (screen::Screen (*:getScreen client))
@@ -75,10 +63,9 @@
                              (let ((client::FabricClient (*:getApp state))
                                    (root::Node (*:getRootNode client)))
                                (*:attachChild root (*:getSky state))
-                               (*:addElement screen (*:getCharacterPicker state))
                                (*:addControl gui-node screen))))))))
 
-(define (did-detach-pick-character-gamestate state::PickCharacterGameState mgr::AppStateManager)
+(define (did-detach-workshop-client-state state::WorkshopClientState mgr::AppStateManager)
   (when (*:getInitialized state)
     (let* ((client::FabricClient (*:getApp state))
            (screen::Screen (*:getScreen client))
@@ -90,6 +77,5 @@
                                    (sky::Spatial (*:getSky state)))
                                (*:detachChild root sky)
                                (*:setSky state #!null)
-                               (*:removeElement screen (*:getCharacterPicker state))
                                (*:removeControl gui-node screen)
                                (*:setInitialized state #f))))))))
