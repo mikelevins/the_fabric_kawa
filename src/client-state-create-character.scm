@@ -27,6 +27,7 @@
 (require "util-lists.scm")
 (require "syntax-classes.scm")
 (require "view-loginbox.scm")
+(require "model-character.scm")
 (require "model-rect.scm")
 (require "client-states.scm")
 (require "client-main.scm")

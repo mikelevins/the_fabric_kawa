@@ -33,6 +33,7 @@
 (require "util-java.scm")
 (require "util-error.scm")
 (require "util-lists.scm")
+(require "model-character.scm")
 (require "syntax-classes.scm")
 (require "view-loginbox.scm")
 (require "client-state-login.scm")
@@ -95,6 +96,7 @@
 
 (defclass CreateCharacterClientState (FabricClientState)
   (slots:
+   (character init-form: (PlayerCharacter) getter: getCharacter setter: setCharacter)
    (faction init-form: #f getter: getFaction setter: setFaction)
    (weapon init-form: #f getter: getWeapon setter: setWeapon)
    (armor init-form: #f getter: getArmor setter: setArmor)

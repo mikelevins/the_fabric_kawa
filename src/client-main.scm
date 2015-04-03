@@ -113,9 +113,9 @@
       (*:setClientState client #!null)
       (*:cleanupDetached (as FabricClientState current-state) mgr client))))
 
-(define (%attach-and-activate-new-state client::FabricClient new-state)
+(define (%attach-and-activate-new-state client::FabricClient new-state::FabricClientState)
   (let ((mgr (*:getStateManager client)))
-    (*:prepareToAttach (as FabricClientState new-state) mgr client)
+    (*:prepareToAttach new-state mgr client)
     (*:setClientState client new-state)
     (*:attach mgr new-state)))
 
