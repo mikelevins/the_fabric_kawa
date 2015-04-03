@@ -1,6 +1,6 @@
 ;;;; ***********************************************************************
 ;;;;
-;;;; Name:          view-acceptchar.scm
+;;;; Name:          view-accept-character.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
 ;;;; Purpose:       the name picker 
 ;;;; Author:        mikel evins

@@ -12,6 +12,7 @@
  NameSelector)
 
 (require "util-java.scm")
+(require "data-assets.scm")
 (require "client-states.scm")
 (require "syntax-classes.scm")
 

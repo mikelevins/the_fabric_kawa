@@ -34,7 +34,7 @@
 (require "view-skybox.scm")
 (require "view-character-nameplate.scm")
 (require "view-faction-nameplate.scm")
-(require "view-acceptchar.scm")
+(require "view-accept-character.scm")
 (require "view-pickarmor.scm")
 (require "view-pickaugment.scm")
 (require "view-pickfaction.scm")

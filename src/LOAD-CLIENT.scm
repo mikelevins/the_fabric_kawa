@@ -14,17 +14,7 @@
 ;;; load this file in order to load the Fabric client in an
 ;;; interactive session
 
-(require "version.scm")
-(require "util-error.scm")
-(require "util-java.scm")
-(require "model-id.scm")
-(require "init-config-local.scm")
-(require "util-crypt.scm")
-(require "model-namegen.scm")
-(require "data-assets.scm")
-(require "model-statepool.scm")
 (require "client-main.scm")
-(require "syntax-time.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; loading
