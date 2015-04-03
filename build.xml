@@ -127,14 +127,22 @@
       <classpath refid="library.class.path"/>
       <arg line="-C
                  Fabric.scm
-                 appstate-gamestate.scm
                  client-main.scm
+                 client-state-create-character.scm
+                 client-state-login.scm
+                 client-state-pick-character.scm
+                 client-state-play.scm
+                 client-state-transit.scm
+                 client-state-workshop.scm
+                 client-states.scm
                  data-assets.scm
                  data-names.scm
+                 data-nodes.scm
                  init-config-local.scm
                  model-character.scm
                  model-id.scm
                  model-namegen.scm
+                 model-rect.scm
                  model-statepool.scm
                  syntax-classes.scm
                  syntax-time.scm
@@ -147,8 +155,28 @@
                  util-random.scm
                  util-sort.scm
                  version.scm
+                 view-accept-character.scm
+                 view-actionbar.scm
+                 view-armors-button-group.scm
+                 view-augments-button-group.scm
+                 view-celestial-body.scm
+                 view-character-nameplate.scm
+                 view-chatbox.scm
+                 view-faction-button-group.scm
+                 view-faction-nameplate.scm
+                 view-loginbox.scm
+                 view-name-selector.scm
+                 view-node-nameplate.scm
+                 view-pickarmor.scm
+                 view-pickaugment.scm
+                 view-pickcharacter.scm
+                 view-pickfaction.scm
+                 view-pickname.scm
+                 view-pickweapon.scm
+                 view-random-name-button.scm
+                 view-rotatecontrol.scm
                  view-skybox.scm
-                 "/>
+                 view-weapons-button-group.scm"/>
     </java>
   </target>
 
