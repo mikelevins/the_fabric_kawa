@@ -188,6 +188,7 @@
 
 (defclass PlayClientState (FabricClientState)
   (slots:
+   (node-name init-form: #f getter: getNodeName setter: setNodeName)
    (celestial-body init-form: #!null getter: getCelestialBody setter: setCelestialBody)
    (sky init-form: #!null getter: getSky setter: setSky)
    (node-nameplate init-form: #!null getter: getNodeNameplate setter: setNodeNameplate)

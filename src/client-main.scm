@@ -11,7 +11,12 @@
 (module-export
  FabricClient
  make-client
- set-client-state!)
+ set-login-state!
+ set-create-character-state!
+ set-pick-character-state!
+ set-play-state!
+ set-transit-state!
+ set-workshop-state!)
 
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
@@ -26,6 +31,8 @@
 
 (require "util-error.scm")
 (require "util-java.scm")
+(require "util-lists.scm")
+(require "data-nodes.scm")
 (require "syntax-classes.scm")
 (require "model-statepool.scm")
 (require "client-states.scm")
@@ -157,8 +164,36 @@
     (Mouse:setGrabbed #f)
     client))
 
-(define (set-client-state! client::FabricClient state-name)
-  (let ((new-state (get-appstate client state-name)))
+(define (set-login-state! client::FabricClient)
+  (let ((new-state (get-appstate client 'login)))
+    (when new-state
+      (enqueue-client-state-update client new-state))))
+
+(define (set-create-character-state! client::FabricClient)
+  (let ((new-state (get-appstate client 'create-character)))
+    (when new-state
+      (enqueue-client-state-update client new-state))))
+
+(define (set-pick-character-state! client::FabricClient)
+  (let ((new-state (get-appstate client 'pick-character)))
+    (when new-state
+      (enqueue-client-state-update client new-state))))
+
+(define (set-play-state! client::FabricClient #!key (node #f))
+  (let ((new-state::PlayClientState (get-appstate client 'play)))
+    (when new-state
+      (let ((node-name (or node
+                           (car (choose-any +fabric-nodes+)))))
+        (*:setNodeName new-state node-name)
+        (enqueue-client-state-update client new-state)))))
+
+(define (set-transit-state! client::FabricClient)
+  (let ((new-state (get-appstate client 'transit)))
+    (when new-state
+      (enqueue-client-state-update client new-state))))
+
+(define (set-workshop-state! client::FabricClient)
+  (let ((new-state (get-appstate client 'workshop)))
     (when new-state
       (enqueue-client-state-update client new-state))))
 
