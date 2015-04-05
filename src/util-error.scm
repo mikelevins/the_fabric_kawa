@@ -7,6 +7,7 @@
 ;;;; Copyright:     2014 by mikel evins
 ;;;;
 ;;;; ***********************************************************************
+(format #t "~%loading util-error.cm")
 
 (module-export warn)
 

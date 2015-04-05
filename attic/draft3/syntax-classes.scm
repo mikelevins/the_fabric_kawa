@@ -7,7 +7,6 @@
 ;;;; Copyright:     2014 by mikel evins
 ;;;;
 ;;;; ***********************************************************************
-(format #t "~%loading syntax-classes.cm")
 
 (module-export
  defclass

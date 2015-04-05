@@ -7,7 +7,6 @@
 ;;;; Copyright:     2015 by mikel evins
 ;;;;
 ;;;; ***********************************************************************
-(format #t "~%loading util-lists.cm")
 
 (module-export
  any-n

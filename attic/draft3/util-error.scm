@@ -1,25 +1,27 @@
 ;;;; ***********************************************************************
 ;;;;
-;;;; Name:          LOAD-CLIENT.scm
+;;;; Name:          util-error.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
-;;;; Purpose:       the game login and loading client
+;;;; Purpose:       error and warning utilities
 ;;;; Author:        mikel evins
 ;;;; Copyright:     2014 by mikel evins
 ;;;;
 ;;;; ***********************************************************************
 
+(module-export warn)
+
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
 ;;; ---------------------------------------------------------------------
-;;; load this file in order to load the Fabric client in an
-;;; interactive session
+;;; conveniences for issuing errors and warnings
 
-(require "client-main.scm")
-
+;;; (warn format-string args)
 ;;; ---------------------------------------------------------------------
-;;; loading
-;;; ---------------------------------------------------------------------
-;;; evaluate these expressions to create and run the Fabric client
+;;; print a warning that includes the format-string in the output
 
-;;; (define $client::FabricClient (make-client))
-;;; (*:start $client)
+(define-syntax warn
+  (syntax-rules ()
+    ((warn msg arg ...)
+     (format #t (string-append "~%Warning: " msg) arg ...))))
+
+

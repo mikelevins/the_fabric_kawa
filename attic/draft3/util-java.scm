@@ -7,7 +7,6 @@
 ;;;; Copyright:     2014 by mikel evins
 ;;;;
 ;;;; ***********************************************************************
-(format #t "~%loading util-java.cm")
 
 (module-export
  context-class-loader

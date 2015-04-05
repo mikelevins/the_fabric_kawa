@@ -8,7 +8,6 @@
 ;;;;
 ;;;; ***********************************************************************
 ;;;; slightly modified by mikel evins
-(format #t "~%loading util-sort.cm")
 
 (module-export sort)
 

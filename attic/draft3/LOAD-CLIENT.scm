@@ -23,3 +23,10 @@
 
 ;;; (define $client::FabricClient (make-client))
 ;;; (*:start $client)
+
+;;; (set-login-state! $client)
+;;; (set-create-character-state! $client)
+;;; (set-pick-character-state! $client)
+;;; (set-play-state! $client node: "Tethys")
+;;; (set-transit-state! $client)
+;;; (set-workshop-state! $client)
