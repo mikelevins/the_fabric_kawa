@@ -51,12 +51,21 @@
    ((stateDetached state-manager::AppStateManager)
     (%create-character-state-detached (this) state-manager))))
 
-(define (%create-character-state-cleanup state::CreateCharacterState) #!void)
-(define (%create-character-state-initialize state::CreateCharacterState) #!void)
+(define (%create-character-state-cleanup state::CreateCharacterState)
+  (format #t "~%%create-character-state-cleanup called"))
+
+(define (%create-character-state-initialize state::CreateCharacterState)
+  (format #t "~%%create-character-state-initialize called"))
+
 (define (%create-character-state-enabled? state::CreateCharacterState) #t)
+
 (define (%create-character-state-initialized? state::CreateCharacterState) #t)
-(define (%create-character-state-attached state::CreateCharacterState manager::AppStateManager) #!void)
-(define (%create-character-state-detached state::CreateCharacterState manager::AppStateManager) #!void)
+
+(define (%create-character-state-attached state::CreateCharacterState manager::AppStateManager)
+  (format #t "~%%create-character-state-attached called"))
+
+(define (%create-character-state-detached state::CreateCharacterState manager::AppStateManager)
+  (format #t "~%%create-character-state-detached called"))
 
 (define (make-create-character-state client::Application)
   (let ((state (CreateCharacterState)))

@@ -52,12 +52,21 @@
    ((stateDetached state-manager::AppStateManager)
     (%login-state-detached (this) state-manager))))
 
-(define (%login-state-cleanup state::LoginState) #!void)
-(define (%login-state-initialize state::LoginState) #!void)
+(define (%login-state-cleanup state::LoginState)
+  (format #t "~%%login-state-cleanup called"))
+
+(define (%login-state-initialize state::LoginState)
+  (format #t "~%%login-state-initialize called"))
+
 (define (%login-state-enabled? state::LoginState) #t)
+
 (define (%login-state-initialized? state::LoginState) #t)
-(define (%login-state-attached state::LoginState manager::AppStateManager) #!void)
-(define (%login-state-detached state::LoginState manager::AppStateManager) #!void)
+
+(define (%login-state-attached state::LoginState manager::AppStateManager)
+  (format #t "~%%login-state-attached called"))
+
+(define (%login-state-detached state::LoginState manager::AppStateManager)
+  (format #t "~%%login-state-detached called"))
 
 (define (make-login-state client::Application)
   (let ((state (LoginState)))

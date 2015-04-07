@@ -53,12 +53,21 @@
    ((stateDetached state-manager::AppStateManager)
     (%transit-state-detached (this) state-manager))))
 
-(define (%transit-state-cleanup state::TransitState) #!void)
-(define (%transit-state-initialize state::TransitState) #!void)
+(define (%transit-state-cleanup state::TransitState)
+  (format #t "~%%transit-state-cleanup called"))
+
+(define (%transit-state-initialize state::TransitState)
+  (format #t "~%%transit-state-initialize called"))
+
 (define (%transit-state-enabled? state::TransitState) #t)
+
 (define (%transit-state-initialized? state::TransitState) #t)
-(define (%transit-state-attached state::TransitState manager::AppStateManager) #!void)
-(define (%transit-state-detached state::TransitState manager::AppStateManager) #!void)
+
+(define (%transit-state-attached state::TransitState manager::AppStateManager)
+  (format #t "~%%transit-state-attached called"))
+
+(define (%transit-state-detached state::TransitState manager::AppStateManager)
+  (format #t "~%%transit-state-detached called"))
 
 (define (make-transit-state client::Application #!key (from "The Sun")(to "Earth"))
   (let ((state (TransitState)))

@@ -27,4 +27,4 @@
 ;;; (client-set-create-character-state! $client)
 ;;; (client-set-pick-character-state! $client)
 ;;; (client-set-play-state! $client "The Sun")
-;;; (client-set-transit-state! $client from: "The Sun" to: "Earth"))
+;;; (client-set-transit-state! $client from: "The Sun" to: "Earth")

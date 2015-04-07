@@ -52,12 +52,21 @@
    ((stateDetached state-manager::AppStateManager)
     (%play-state-detached (this) state-manager))))
 
-(define (%play-state-cleanup state::PlayState) #!void)
-(define (%play-state-initialize state::PlayState) #!void)
+(define (%play-state-cleanup state::PlayState)
+  (format #t "~%%play-state-cleanup called"))
+
+(define (%play-state-initialize state::PlayState)
+  (format #t "~%%play-state-initialize called"))
+
 (define (%play-state-enabled? state::PlayState) #t)
+
 (define (%play-state-initialized? state::PlayState) #t)
-(define (%play-state-attached state::PlayState manager::AppStateManager) #!void)
-(define (%play-state-detached state::PlayState manager::AppStateManager) #!void)
+
+(define (%play-state-attached state::PlayState manager::AppStateManager)
+  (format #t "~%%play-state-attached called"))
+
+(define (%play-state-detached state::PlayState manager::AppStateManager)
+  (format #t "~%%play-state-detached called"))
 
 (define (make-play-state client::Application node-name)
   (let ((state (PlayState)))

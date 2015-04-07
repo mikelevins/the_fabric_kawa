@@ -51,12 +51,21 @@
    ((stateDetached state-manager::AppStateManager)
     (%pick-character-state-detached (this) state-manager))))
 
-(define (%pick-character-state-cleanup state::PickCharacterState) #!void)
-(define (%pick-character-state-initialize state::PickCharacterState) #!void)
+(define (%pick-character-state-cleanup state::PickCharacterState)
+  (format #t "~%%pick-character-state-cleanup called"))
+
+(define (%pick-character-state-initialize state::PickCharacterState)
+  (format #t "~%%pick-character-state-initialize called"))
+
 (define (%pick-character-state-enabled? state::PickCharacterState) #t)
+
 (define (%pick-character-state-initialized? state::PickCharacterState) #t)
-(define (%pick-character-state-attached state::PickCharacterState manager::AppStateManager) #!void)
-(define (%pick-character-state-detached state::PickCharacterState manager::AppStateManager) #!void)
+
+(define (%pick-character-state-attached state::PickCharacterState manager::AppStateManager)
+  (format #t "~%%pick-character-state-attached called"))
+
+(define (%pick-character-state-detached state::PickCharacterState manager::AppStateManager)
+  (format #t "~%%pick-character-state-detached called"))
 
 (define (make-pick-character-state client::Application)
   (let ((state (PickCharacterState)))
