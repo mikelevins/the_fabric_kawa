@@ -159,11 +159,11 @@
              (runnable (lambda ()
                          (%update-client-state! client new-state)))))
 
-(define (client-set-create-character-state! client::FabricClient)
-  (%enqueue-state-change client (make-create-character-state client)))
-
 (define (client-set-login-state! client::FabricClient)
   (%enqueue-state-change client (make-login-state client)))
+
+(define (client-set-create-character-state! client::FabricClient)
+  (%enqueue-state-change client (make-create-character-state client)))
 
 (define (client-set-pick-character-state! client::FabricClient)
   (%enqueue-state-change client (make-pick-character-state client)))
@@ -171,6 +171,6 @@
 (define (client-set-play-state! client::FabricClient #!optional (node-name "The Sun"))
   (%enqueue-state-change client (make-play-state client node-name)))
 
-(define (client-set-transit-state! client::FabricClient #!optional (from-name "The Sun")(to-name "Earth"))
-  (%enqueue-state-change client (make-transit-state client from-name to-name)))
+(define (client-set-transit-state! client::FabricClient #!key (from "The Sun")(to "Earth"))
+  (%enqueue-state-change client (make-transit-state client from: from to: to)))
 

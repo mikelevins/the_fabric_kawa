@@ -36,6 +36,14 @@
 ;;; ---------------------------------------------------------------------
 ;;; the client AppState class
 ;;; ---------------------------------------------------------------------
+;;; the methods of FabricClientState, and of all sublcasses of it,
+;;; are implemented by simply calling functions that implement the
+;;; behavior of the methods. We do it this way so that redefinition
+;;; of the method implementations does not change the implementation
+;;; of the class itself, which in turn avoids the necessity of
+;;; restarting Kawa when class methods are redefined. (Kawa on the
+;;; JVM cannot redefine classes themselves once they are defined,
+;;; except by killing and restarting the process.)
 
 ;;; CLASS FabricClientState
 ;;; ---------------------------------------------------------------------
@@ -43,5 +51,20 @@
 (defclass FabricClientState (AbstractAppState)
   (slots:
    (client init-form: #!null getter: getClient setter: setClient)) 
-  (methods:))
+  (methods:
+   ((cleanup) (%state-cleanup (this)))
+   ((initialize) (%state-initialize (this)))
+   ((isEnabled) (%state-enabled? (this)))
+   ((isInitialized) (%state-initialized? (this)))
+   ((stateAttached state-manager::AppStateManager)
+    (%state-attached (this) state-manager))
+   ((stateDetached state-manager::AppStateManager)
+    (%state-detached (this) state-manager))))
+
+(define (%state-cleanup state::FabricClientState) #!void)
+(define (%state-initialize state::FabricClientState) #!void)
+(define (%state-enabled? state::FabricClientState) #t)
+(define (%state-initialized? state::FabricClientState) #t)
+(define (%state-attached state::FabricClientState manager::AppStateManager) #!void)
+(define (%state-detached state::FabricClientState manager::AppStateManager) #!void)
 

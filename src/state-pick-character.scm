@@ -42,26 +42,21 @@
   (slots:
    (initialized? init-form: #f getter: getInitialized setter: setInitialized)) 
   (methods:
-   ((cleanup) (%pick-character-client-state-cleanup (this)))
-   ((initialize) (%pick-character-client-state-initialize (this)))
-   ((isEnabled) #t)
-   ((isInitialized) (*:getInitialized (this)))
+   ((cleanup) (%pick-character-state-cleanup (this)))
+   ((initialize) (%pick-character-state-initialize (this)))
+   ((isEnabled) (%pick-character-state-enabled? (this)))
+   ((isInitialized) (%pick-character-state-initialized? (this)))
    ((stateAttached state-manager::AppStateManager)
-    (%pick-character-client-state-attached (this) state-manager))
+    (%pick-character-state-attached (this) state-manager))
    ((stateDetached state-manager::AppStateManager)
-    (%pick-character-client-state-detached (this) state-manager))))
+    (%pick-character-state-detached (this) state-manager))))
 
-(define (%pick-character-client-state-cleanup state::PickCharacterState)
-  #!void)
-
-(define (%pick-character-client-state-initialize state::PickCharacterState)
-  #!void)
-
-(define (%pick-character-client-state-attached state::PickCharacterState manager::AppStateManager)
-  #!void)
-
-(define (%pick-character-client-state-detached state::PickCharacterState manager::AppStateManager)
-  #!void)
+(define (%pick-character-state-cleanup state::PickCharacterState) #!void)
+(define (%pick-character-state-initialize state::PickCharacterState) #!void)
+(define (%pick-character-state-enabled? state::PickCharacterState) #t)
+(define (%pick-character-state-initialized? state::PickCharacterState) #t)
+(define (%pick-character-state-attached state::PickCharacterState manager::AppStateManager) #!void)
+(define (%pick-character-state-detached state::PickCharacterState manager::AppStateManager) #!void)
 
 (define (make-pick-character-state client::Application)
   (let ((state (PickCharacterState)))

@@ -23,3 +23,8 @@
 
 ;;; (define $client::FabricClient (make-client))
 ;;; (*:start $client)
+;;; (client-set-login-state! $client)
+;;; (client-set-create-character-state! $client)
+;;; (client-set-pick-character-state! $client)
+;;; (client-set-play-state! $client "The Sun")
+;;; (client-set-transit-state! $client from: "The Sun" to: "Earth"))

@@ -43,24 +43,21 @@
    (initialized? init-form: #f getter: getInitialized setter: setInitialized)
    (login-box init-form: #!null getter: getLoginBox setter: setLoginBox)) 
   (methods:
-   ((cleanup) (%login-client-state-cleanup (this)))
-   ((initialize) (%login-client-state-initialize (this)))
-   ((isEnabled) #t)
-   ((isInitialized) (*:getInitialized (this)))
-   ((stateAttached state-manager::AppStateManager) (%login-client-state-attached (this) state-manager))
-   ((stateDetached state-manager::AppStateManager) (%login-client-state-detached (this) state-manager))))
+   ((cleanup) (%login-state-cleanup (this)))
+   ((initialize) (%login-state-initialize (this)))
+   ((isEnabled) (%login-state-enabled? (this)))
+   ((isInitialized) (%login-state-initialized? (this)))
+   ((stateAttached state-manager::AppStateManager)
+    (%login-state-attached (this) state-manager))
+   ((stateDetached state-manager::AppStateManager)
+    (%login-state-detached (this) state-manager))))
 
-(define (%login-client-state-cleanup state::LoginState)
-  #!void)
-
-(define (%login-client-state-initialize state::LoginState)
-  #!void)
-
-(define (%login-client-state-attached state::LoginState manager::AppStateManager)
-  #!void)
-
-(define (%login-client-state-detached state::LoginState manager::AppStateManager)
-  #!void)
+(define (%login-state-cleanup state::LoginState) #!void)
+(define (%login-state-initialize state::LoginState) #!void)
+(define (%login-state-enabled? state::LoginState) #t)
+(define (%login-state-initialized? state::LoginState) #t)
+(define (%login-state-attached state::LoginState manager::AppStateManager) #!void)
+(define (%login-state-detached state::LoginState manager::AppStateManager) #!void)
 
 (define (make-login-state client::Application)
   (let ((state (LoginState)))

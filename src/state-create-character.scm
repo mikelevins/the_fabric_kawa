@@ -44,24 +44,19 @@
   (methods:
    ((cleanup) (%create-character-state-cleanup (this)))
    ((initialize) (%create-character-state-initialize (this)))
-   ((isEnabled) #t)
-   ((isInitialized) (*:getInitialized (this)))
+   ((isEnabled) (%create-character-state-enabled? (this)))
+   ((isInitialized) (%create-character-state-initialized? (this)))
    ((stateAttached state-manager::AppStateManager)
     (%create-character-state-attached (this) state-manager))
    ((stateDetached state-manager::AppStateManager)
     (%create-character-state-detached (this) state-manager))))
 
-(define (%create-character-state-cleanup state::CreateCharacterState)
-  #!void)
-
-(define (%create-character-state-initialize state::CreateCharacterState)
-  #!void)
-
-(define (%create-character-state-attached state::CreateCharacterState manager::AppStateManager)
-  #!void)
-
-(define (%create-character-state-detached state::CreateCharacterState manager::AppStateManager)
-  #!void)
+(define (%create-character-state-cleanup state::CreateCharacterState) #!void)
+(define (%create-character-state-initialize state::CreateCharacterState) #!void)
+(define (%create-character-state-enabled? state::CreateCharacterState) #t)
+(define (%create-character-state-initialized? state::CreateCharacterState) #t)
+(define (%create-character-state-attached state::CreateCharacterState manager::AppStateManager) #!void)
+(define (%create-character-state-detached state::CreateCharacterState manager::AppStateManager) #!void)
 
 (define (make-create-character-state client::Application)
   (let ((state (CreateCharacterState)))

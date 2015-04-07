@@ -43,24 +43,21 @@
    (node-name init-form: #f getter: getNodeName setter: setNodeName)
    (initialized? init-form: #f getter: getInitialized setter: setInitialized)) 
   (methods:
-   ((cleanup) (%play-client-state-cleanup (this)))
-   ((initialize) (%play-client-state-initialize (this)))
-   ((isEnabled) #t)
-   ((isInitialized) (*:getInitialized (this)))
-   ((stateAttached state-manager::AppStateManager) (%play-client-state-attached (this) state-manager))
-   ((stateDetached state-manager::AppStateManager) (%play-client-state-detached (this) state-manager))))
+   ((cleanup) (%play-state-cleanup (this)))
+   ((initialize) (%play-state-initialize (this)))
+   ((isEnabled) (%play-state-enabled? (this)))
+   ((isInitialized) (%play-state-initialized? (this)))
+   ((stateAttached state-manager::AppStateManager)
+    (%play-state-attached (this) state-manager))
+   ((stateDetached state-manager::AppStateManager)
+    (%play-state-detached (this) state-manager))))
 
-(define (%play-client-state-cleanup state::PlayState)
-  #!void)
-
-(define (%play-client-state-initialize state::PlayState)
-  #!void)
-
-(define (%play-client-state-attached state::PlayState manager::AppStateManager)
-  #!void)
-
-(define (%play-client-state-detached state::PlayState manager::AppStateManager)
-  #!void)
+(define (%play-state-cleanup state::PlayState) #!void)
+(define (%play-state-initialize state::PlayState) #!void)
+(define (%play-state-enabled? state::PlayState) #t)
+(define (%play-state-initialized? state::PlayState) #t)
+(define (%play-state-attached state::PlayState manager::AppStateManager) #!void)
+(define (%play-state-detached state::PlayState manager::AppStateManager) #!void)
 
 (define (make-play-state client::Application node-name)
   (let ((state (PlayState)))
