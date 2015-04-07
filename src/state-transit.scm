@@ -1,17 +1,17 @@
 ;;;; ***********************************************************************
 ;;;;
-;;;; Name:          client-state-pick-character.scm
+;;;; Name:          state-transit.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
 ;;;; Purpose:       fabric AppStates
 ;;;; Author:        mikel evins
 ;;;; Copyright:     2015 by mikel evins
 ;;;;
 ;;;; ***********************************************************************
-(format #t "~%loading client-state-pick-character.scm")
+(format #t "~%loading state-transit.scm")
 
 (module-export
- PickCharacterClientState
- make-pick-character-state)
+ TransitState
+ make-transit-state)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -32,38 +32,40 @@
 (import-as AppStateManager com.jme3.app.state.AppStateManager)
 
 ;;; ---------------------------------------------------------------------
-;;; the client character-creator AppState class
+;;; the client transit AppState class
 ;;; ---------------------------------------------------------------------
 
-;;; CLASS PickCharacterClientState
+;;; CLASS TransitState
 ;;; ---------------------------------------------------------------------
 
-(defclass PickCharacterClientState (FabricClientState)
+(defclass TransitState (FabricClientState)
   (slots:
-   (initialized? init-form: #f getter: getInitialized setter: setInitialized)) 
+   (initialized? init-form: #f getter: getInitialized setter: setInitialized)
+   (from-name init-form: #f getter: getFromName setter: setFromName)
+   (to-name init-form: #f getter: getToName setter: setToName)) 
   (methods:
-   ((cleanup) (%pick-character-client-state-cleanup (this)))
-   ((initialize) (%pick-character-client-state-initialize (this)))
+   ((cleanup) (%transit-client-state-cleanup (this)))
+   ((initialize) (%transit-client-state-initialize (this)))
    ((isEnabled) #t)
    ((isInitialized) (*:getInitialized (this)))
-   ((stateAttached state-manager::AppStateManager)
-    (%pick-character-client-state-attached (this) state-manager))
-   ((stateDetached state-manager::AppStateManager)
-    (%pick-character-client-state-detached (this) state-manager))))
+   ((stateAttached state-manager::AppStateManager) (%transit-client-state-attached (this) state-manager))
+   ((stateDetached state-manager::AppStateManager) (%transit-client-state-detached (this) state-manager))))
 
-(define (%pick-character-client-state-cleanup state::PickCharacterClientState)
+(define (%transit-client-state-cleanup state::TransitState)
   #!void)
 
-(define (%pick-character-client-state-initialize state::PickCharacterClientState)
+(define (%transit-client-state-initialize state::TransitState)
   #!void)
 
-(define (%pick-character-client-state-attached state::PickCharacterClientState manager::AppStateManager)
+(define (%transit-client-state-attached state::TransitState manager::AppStateManager)
   #!void)
 
-(define (%pick-character-client-state-detached state::PickCharacterClientState manager::AppStateManager)
+(define (%transit-client-state-detached state::TransitState manager::AppStateManager)
   #!void)
 
-(define (make-pick-character-state client::Application)
-  (let ((state (PickCharacterClientState)))
+(define (make-transit-state client::Application from-name to-name)
+  (let ((state (TransitState)))
     (*:setClient state client)
+    (*:setFromName state from-name)
+    (*:setToName state to-name)
     state))

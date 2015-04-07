@@ -1,17 +1,17 @@
 ;;;; ***********************************************************************
 ;;;;
-;;;; Name:          client-state-login.scm
+;;;; Name:          state-play.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
 ;;;; Purpose:       fabric AppStates
 ;;;; Author:        mikel evins
 ;;;; Copyright:     2015 by mikel evins
 ;;;;
 ;;;; ***********************************************************************
-(format #t "~%loading client-state-login.scm")
+(format #t "~%loading state-play.scm")
 
 (module-export
- LoginClientState
- make-login-state)
+ PlayState
+ make-play-state)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -32,37 +32,38 @@
 (import-as AppStateManager com.jme3.app.state.AppStateManager)
 
 ;;; ---------------------------------------------------------------------
-;;; the client login AppState class
+;;; the client play AppState class
 ;;; ---------------------------------------------------------------------
 
-;;; CLASS LoginClientState
+;;; CLASS PlayState
 ;;; ---------------------------------------------------------------------
 
-(defclass LoginClientState (FabricClientState)
+(defclass PlayState (FabricClientState)
   (slots:
-   (initialized? init-form: #f getter: getInitialized setter: setInitialized)
-   (login-box init-form: #!null getter: getLoginBox setter: setLoginBox)) 
+   (node-name init-form: #f getter: getNodeName setter: setNodeName)
+   (initialized? init-form: #f getter: getInitialized setter: setInitialized)) 
   (methods:
-   ((cleanup) (%login-client-state-cleanup (this)))
-   ((initialize) (%login-client-state-initialize (this)))
+   ((cleanup) (%play-client-state-cleanup (this)))
+   ((initialize) (%play-client-state-initialize (this)))
    ((isEnabled) #t)
    ((isInitialized) (*:getInitialized (this)))
-   ((stateAttached state-manager::AppStateManager) (%login-client-state-attached (this) state-manager))
-   ((stateDetached state-manager::AppStateManager) (%login-client-state-detached (this) state-manager))))
+   ((stateAttached state-manager::AppStateManager) (%play-client-state-attached (this) state-manager))
+   ((stateDetached state-manager::AppStateManager) (%play-client-state-detached (this) state-manager))))
 
-(define (%login-client-state-cleanup state::LoginClientState)
+(define (%play-client-state-cleanup state::PlayState)
   #!void)
 
-(define (%login-client-state-initialize state::LoginClientState)
+(define (%play-client-state-initialize state::PlayState)
   #!void)
 
-(define (%login-client-state-attached state::LoginClientState manager::AppStateManager)
+(define (%play-client-state-attached state::PlayState manager::AppStateManager)
   #!void)
 
-(define (%login-client-state-detached state::LoginClientState manager::AppStateManager)
+(define (%play-client-state-detached state::PlayState manager::AppStateManager)
   #!void)
 
-(define (make-login-state client::Application)
-  (let ((state (LoginClientState)))
+(define (make-play-state client::Application node-name)
+  (let ((state (PlayState)))
     (*:setClient state client)
+    (*:setNodeName state node-name)
     state))

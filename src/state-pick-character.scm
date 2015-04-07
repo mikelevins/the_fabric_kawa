@@ -1,17 +1,17 @@
 ;;;; ***********************************************************************
 ;;;;
-;;;; Name:          client-state-create-character.scm
+;;;; Name:          state-pick-character.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
 ;;;; Purpose:       fabric AppStates
 ;;;; Author:        mikel evins
 ;;;; Copyright:     2015 by mikel evins
 ;;;;
 ;;;; ***********************************************************************
-(format #t "~%loading client-state-create-character.scm")
+(format #t "~%loading state-pick-character.scm")
 
 (module-export
- CreateCharacterClientState
- make-create-character-state)
+ PickCharacterState
+ make-pick-character-state)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -35,35 +35,35 @@
 ;;; the client character-creator AppState class
 ;;; ---------------------------------------------------------------------
 
-;;; CLASS CreateCharacterClientState
+;;; CLASS PickCharacterState
 ;;; ---------------------------------------------------------------------
 
-(defclass CreateCharacterClientState (FabricClientState)
+(defclass PickCharacterState (FabricClientState)
   (slots:
    (initialized? init-form: #f getter: getInitialized setter: setInitialized)) 
   (methods:
-   ((cleanup) (%create-character-client-state-cleanup (this)))
-   ((initialize) (%create-character-client-state-initialize (this)))
+   ((cleanup) (%pick-character-client-state-cleanup (this)))
+   ((initialize) (%pick-character-client-state-initialize (this)))
    ((isEnabled) #t)
    ((isInitialized) (*:getInitialized (this)))
    ((stateAttached state-manager::AppStateManager)
-    (%create-character-client-state-attached (this) state-manager))
+    (%pick-character-client-state-attached (this) state-manager))
    ((stateDetached state-manager::AppStateManager)
-    (%create-character-client-state-detached (this) state-manager))))
+    (%pick-character-client-state-detached (this) state-manager))))
 
-(define (%create-character-client-state-cleanup state::CreateCharacterClientState)
+(define (%pick-character-client-state-cleanup state::PickCharacterState)
   #!void)
 
-(define (%create-character-client-state-initialize state::CreateCharacterClientState)
+(define (%pick-character-client-state-initialize state::PickCharacterState)
   #!void)
 
-(define (%create-character-client-state-attached state::CreateCharacterClientState manager::AppStateManager)
+(define (%pick-character-client-state-attached state::PickCharacterState manager::AppStateManager)
   #!void)
 
-(define (%create-character-client-state-detached state::CreateCharacterClientState manager::AppStateManager)
+(define (%pick-character-client-state-detached state::PickCharacterState manager::AppStateManager)
   #!void)
 
-(define (make-create-character-state client::Application)
-  (let ((state (CreateCharacterClientState)))
+(define (make-pick-character-state client::Application)
+  (let ((state (PickCharacterState)))
     (*:setClient state client)
     state))

@@ -1,17 +1,17 @@
 ;;;; ***********************************************************************
 ;;;;
-;;;; Name:          client-state-transit.scm
+;;;; Name:          client-state-login.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
 ;;;; Purpose:       fabric AppStates
 ;;;; Author:        mikel evins
 ;;;; Copyright:     2015 by mikel evins
 ;;;;
 ;;;; ***********************************************************************
-(format #t "~%loading client-state-transit.scm")
+(format #t "~%loading client-state-login.scm")
 
 (module-export
- TransitClientState
- make-transit-state)
+ LoginState
+ make-login-state)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -32,40 +32,37 @@
 (import-as AppStateManager com.jme3.app.state.AppStateManager)
 
 ;;; ---------------------------------------------------------------------
-;;; the client transit AppState class
+;;; the client login AppState class
 ;;; ---------------------------------------------------------------------
 
-;;; CLASS TransitClientState
+;;; CLASS LoginState
 ;;; ---------------------------------------------------------------------
 
-(defclass TransitClientState (FabricClientState)
+(defclass LoginState (FabricClientState)
   (slots:
    (initialized? init-form: #f getter: getInitialized setter: setInitialized)
-   (from-name init-form: #f getter: getFromName setter: setFromName)
-   (to-name init-form: #f getter: getToName setter: setToName)) 
+   (login-box init-form: #!null getter: getLoginBox setter: setLoginBox)) 
   (methods:
-   ((cleanup) (%transit-client-state-cleanup (this)))
-   ((initialize) (%transit-client-state-initialize (this)))
+   ((cleanup) (%login-client-state-cleanup (this)))
+   ((initialize) (%login-client-state-initialize (this)))
    ((isEnabled) #t)
    ((isInitialized) (*:getInitialized (this)))
-   ((stateAttached state-manager::AppStateManager) (%transit-client-state-attached (this) state-manager))
-   ((stateDetached state-manager::AppStateManager) (%transit-client-state-detached (this) state-manager))))
+   ((stateAttached state-manager::AppStateManager) (%login-client-state-attached (this) state-manager))
+   ((stateDetached state-manager::AppStateManager) (%login-client-state-detached (this) state-manager))))
 
-(define (%transit-client-state-cleanup state::TransitClientState)
+(define (%login-client-state-cleanup state::LoginState)
   #!void)
 
-(define (%transit-client-state-initialize state::TransitClientState)
+(define (%login-client-state-initialize state::LoginState)
   #!void)
 
-(define (%transit-client-state-attached state::TransitClientState manager::AppStateManager)
+(define (%login-client-state-attached state::LoginState manager::AppStateManager)
   #!void)
 
-(define (%transit-client-state-detached state::TransitClientState manager::AppStateManager)
+(define (%login-client-state-detached state::LoginState manager::AppStateManager)
   #!void)
 
-(define (make-transit-state client::Application from-name to-name)
-  (let ((state (TransitClientState)))
+(define (make-login-state client::Application)
+  (let ((state (LoginState)))
     (*:setClient state client)
-    (*:setFromName state from-name)
-    (*:setToName state to-name)
     state))

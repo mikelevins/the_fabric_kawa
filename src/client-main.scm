@@ -35,11 +35,11 @@
 (require "data-nodes.scm")
 (require "syntax-classes.scm")
 (require "client-state.scm")
-(require "client-state-login.scm")
-(require "client-state-create-character.scm")
-(require "client-state-pick-character.scm")
-(require "client-state-play.scm")
-(require "client-state-transit.scm")
+(require "state-login.scm")
+(require "state-create-character.scm")
+(require "state-pick-character.scm")
+(require "state-play.scm")
+(require "state-transit.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports

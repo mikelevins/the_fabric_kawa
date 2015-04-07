@@ -1,17 +1,17 @@
 ;;;; ***********************************************************************
 ;;;;
-;;;; Name:          client-state-play.scm
+;;;; Name:          state-create-character.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
 ;;;; Purpose:       fabric AppStates
 ;;;; Author:        mikel evins
 ;;;; Copyright:     2015 by mikel evins
 ;;;;
 ;;;; ***********************************************************************
-(format #t "~%loading client-state-play.scm")
+(format #t "~%loading state-create-character.scm")
 
 (module-export
- PlayClientState
- make-play-state)
+ CreateCharacterState
+ make-create-character-state)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -32,38 +32,38 @@
 (import-as AppStateManager com.jme3.app.state.AppStateManager)
 
 ;;; ---------------------------------------------------------------------
-;;; the client play AppState class
+;;; the client character-creator AppState class
 ;;; ---------------------------------------------------------------------
 
-;;; CLASS PlayClientState
+;;; CLASS CreateCharacterState
 ;;; ---------------------------------------------------------------------
 
-(defclass PlayClientState (FabricClientState)
+(defclass CreateCharacterState (FabricClientState)
   (slots:
-   (node-name init-form: #f getter: getNodeName setter: setNodeName)
    (initialized? init-form: #f getter: getInitialized setter: setInitialized)) 
   (methods:
-   ((cleanup) (%play-client-state-cleanup (this)))
-   ((initialize) (%play-client-state-initialize (this)))
+   ((cleanup) (%create-character-state-cleanup (this)))
+   ((initialize) (%create-character-state-initialize (this)))
    ((isEnabled) #t)
    ((isInitialized) (*:getInitialized (this)))
-   ((stateAttached state-manager::AppStateManager) (%play-client-state-attached (this) state-manager))
-   ((stateDetached state-manager::AppStateManager) (%play-client-state-detached (this) state-manager))))
+   ((stateAttached state-manager::AppStateManager)
+    (%create-character-state-attached (this) state-manager))
+   ((stateDetached state-manager::AppStateManager)
+    (%create-character-state-detached (this) state-manager))))
 
-(define (%play-client-state-cleanup state::PlayClientState)
+(define (%create-character-state-cleanup state::CreateCharacterState)
   #!void)
 
-(define (%play-client-state-initialize state::PlayClientState)
+(define (%create-character-state-initialize state::CreateCharacterState)
   #!void)
 
-(define (%play-client-state-attached state::PlayClientState manager::AppStateManager)
+(define (%create-character-state-attached state::CreateCharacterState manager::AppStateManager)
   #!void)
 
-(define (%play-client-state-detached state::PlayClientState manager::AppStateManager)
+(define (%create-character-state-detached state::CreateCharacterState manager::AppStateManager)
   #!void)
 
-(define (make-play-state client::Application node-name)
-  (let ((state (PlayClientState)))
+(define (make-create-character-state client::Application)
+  (let ((state (CreateCharacterState)))
     (*:setClient state client)
-    (*:setNodeName state node-name)
     state))
