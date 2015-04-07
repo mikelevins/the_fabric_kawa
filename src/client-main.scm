@@ -10,6 +10,11 @@
 (format #t "~%loading client-main.cm")
 
 (module-export
+ client-set-create-character-state!
+ client-set-login-state!
+ client-set-pick-character-state!
+ client-set-play-state!
+ client-set-transit-state!
  FabricClient
  make-client)
 
@@ -30,6 +35,11 @@
 (require "data-nodes.scm")
 (require "syntax-classes.scm")
 (require "client-state.scm")
+(require "client-state-login.scm")
+(require "client-state-create-character.scm")
+(require "client-state-pick-character.scm")
+(require "client-state-play.scm")
+(require "client-state-transit.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -57,7 +67,9 @@
   (slots:
    (app-settings init-form: #!null getter: getAppSettings)
    (client-state init-form: #!null getter: getClientState setter: setClientState)
-   (screen init-form: #!null)
+   (user init-form: #!null getter: getUser setter: setUser)
+   (character init-form: #!null getter: getCharacter setter: setCharacter)
+   (screen init-form: #!null getter: getScreen setter: setScreen)
    (fabric-node init-form: #f getter: getFabricNode setter: setFabricNode)) 
   (methods:
    ((getCamera) cam)
@@ -110,4 +122,55 @@
   (*:setPauseOnLostFocus (as FabricClient client) pause-on-lost-focus)
   (Mouse:setGrabbed grab-mouse)
   client)
+
+;;; IMPORTANT
+;;; ---------------------------------------------------------------------
+;;; these functions are private and are not thread-safe; do not call
+;;; them directly; rely on enqueue-client-state-update
+;;; ---------------------------------------------------------------------
+;;; %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+(define (%detach-and-cleanup-current-state! client::FabricClient)
+  (let ((current-state (*:getClientState client))
+        (mgr (*:getStateManager client)))
+    (unless (jnull? current-state)
+      (*:detach mgr current-state)
+      (*:setClientState client #!null))))
+
+(define (%attach-and-activate-new-state! client::FabricClient new-state)
+  (let ((mgr (*:getStateManager client)))
+    (*:setClientState client new-state)
+    (*:attach mgr new-state)))
+
+(define (%update-client-state! client::FabricClient new-state)
+  (unless (equal? new-state (*:getClientState client))
+    (%detach-and-cleanup-current-state! client)
+    (%attach-and-activate-new-state! client new-state)))
+
+;;; %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;;; ---------------------------------------------------------------------
+
+;;; ---------------------------------------------------------------------
+;;; set the client's main state
+;;; ---------------------------------------------------------------------
+
+(define (%enqueue-state-change client::FabricClient new-state)
+  (*:enqueue client
+             (runnable (lambda ()
+                         (%update-client-state! client new-state)))))
+
+(define (client-set-create-character-state! client::FabricClient)
+  (%enqueue-state-change client (make-create-character-state client)))
+
+(define (client-set-login-state! client::FabricClient)
+  (%enqueue-state-change client (make-login-state client)))
+
+(define (client-set-pick-character-state! client::FabricClient)
+  (%enqueue-state-change client (make-pick-character-state client)))
+
+(define (client-set-play-state! client::FabricClient #!optional (node-name "The Sun"))
+  (%enqueue-state-change client (make-play-state client node-name)))
+
+(define (client-set-transit-state! client::FabricClient #!optional (from-name "The Sun")(to-name "Earth"))
+  (%enqueue-state-change client (make-transit-state client from-name to-name)))
 

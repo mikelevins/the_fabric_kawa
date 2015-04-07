@@ -42,29 +42,6 @@
 
 (defclass FabricClientState (AbstractAppState)
   (slots:
-   (cleanupFn #!null getter: getCleanupFn setter: setCleanupFn)
-   (initializeFn #!null getter: getInitializeFn setter: setInitializeFn)
-   (isEnabledFn #!null getter: getIsEnabledFn setter: setIsEnabledFn)
-   (isInitializedFn #!null getter: getIsInitializedFn setter: setIsInitializedFn)
-   (postRenderFn #!null getter: getPostRenderFn setter: setPostRenderFn)
-   (renderFn #!null getter: getRenderFn setter: setRenderFn)
-   (setEnabledFn #!null getter: getSetEnabledFn setter: setSetEnabledFn)
-   (stateAttachedFn #!null getter: getStateAttachedFn setter: setStateAttachedFn)
-   (stateDetachedFn #!null getter: getStateDetachedFn setter: setStateDetachedFn)
-   (updateFn #!null getter: getUpdateFn setter: setUpdateFn)) 
-  (methods:
-   ((cleanup)(unless (jnull? cleanupFn)(cleanupFn (this))))
-   ((initialize state-manager::AppStateManager app::Application)
-    (unless (jnull? initializeFn)(initializeFn (this) state-manager app)))
-   ((isEnabled)(unless (jnull? isEnabledFn)(isEnabledFn (this))))
-   ((isInitialized)(unless (jnull? isInitializedFn)(isInitializedFn (this))))
-   ((postRender)(unless (jnull? postRenderFn)(postRenderFn (this))))
-   ((render render-manager::RenderManager)(unless (jnull? renderFn)(renderFn (this) render-manager)))
-   ((setEnabled enabled?::Boolean)(unless (jnull? setEnabledFn)(setEnabledFn (this) enabled?)))
-   ((stateAttached state-manager::AppStateManager)(unless (jnull? stateAttachedFn)(stateAttachedFn (this))))
-   ((stateDetached state-manager::AppStateManager)(unless (jnull? stateDetachedFn)(stateDetachedFn (this))))
-   ((update tpf::Float)(unless (jnull? updateFn)(updateFn (this))))))
-
-
-
+   (client init-form: #!null getter: getClient setter: setClient)) 
+  (methods:))
 
