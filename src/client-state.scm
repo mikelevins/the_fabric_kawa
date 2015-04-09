@@ -29,8 +29,6 @@
 (import-as AbstractAppState com.jme3.app.state.AbstractAppState)
 (import-as Application com.jme3.app.Application)
 (import-as AppStateManager com.jme3.app.state.AppStateManager)
-(import-as Boolean java.lang.Boolean)
-(import-as Float java.lang.Float)
 (import-as RenderManager com.jme3.renderer.RenderManager)
 
 ;;; ---------------------------------------------------------------------
