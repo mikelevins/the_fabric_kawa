@@ -1,29 +1,12 @@
 ;;;; ***********************************************************************
 ;;;;
-;;;; Name:          client-main.scm
+;;;; Name:          client-class.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
-;;;; Purpose:       fabric client main program
+;;;; Purpose:       The FabricClient class
 ;;;; Author:        mikel evins
 ;;;; Copyright:     2015 by mikel evins
 ;;;;
 ;;;; ***********************************************************************
-(format #t "~%loading client-main.cm")
-
-(module-export
- client-set-create-character-state!
- client-set-login-state!
- client-set-pick-character-state!
- client-set-play-state!
- client-set-transit-state!
- FabricClient
- make-client)
-
-;;; ---------------------------------------------------------------------
-;;; ABOUT
-;;; ---------------------------------------------------------------------
-;;; This file implements the main Fabric client, the program that
-;;; renders the game world and provides the user interface of the
-;;; game.
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -31,70 +14,68 @@
 
 (require "util-error.scm")
 (require "util-java.scm")
-(require "util-lists.scm")
-(require "data-nodes.scm")
-(require "syntax-classes.scm")
-(require "client-state.scm")
-(require "state-login.scm")
-(require "state-create-character.scm")
-(require "state-pick-character.scm")
-(require "state-play.scm")
-(require "state-transit.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
-(import-as ActionListener com.jme3.input.controls.ActionListener)
-(import-as AnalogListener com.jme3.input.controls.AnalogListener)
 (import-as AppSettings com.jme3.system.AppSettings)
 (import-as Mouse org.lwjgl.input.Mouse)
 (import-as Screen tonegod.gui.core.Screen)
 (import-as SimpleApplication com.jme3.app.SimpleApplication)
 
 ;;; ---------------------------------------------------------------------
-;;; the client application class
+;;; FabricClient
 ;;; ---------------------------------------------------------------------
 
-;;; CLASS FabricClient
-;;; ---------------------------------------------------------------------
-;;; a SimpleApplication subclass that represents the Fabric client
-;;; application. FabricClient renders the game world, provides all
-;;; user interface, and manages network connections that make it
-;;; possible to play the game.
+(define-simple-class FabricClient (SimpleApplication)
+  ;; slots
+  ;; app-settings
+  (app-settings init: #!null)
+  ((getAppSettings) app-settings)
+  ((setAppSettings settings) (set! app-settings settings))
+  ;; client-state
+  (client-state init: #!null)
+  ((getClientState) client-state)
+  ((setClientState state) (set! client-state state))
+  ;; user
+  (user init: #!null)
+  ((getUser) user)
+  ((setUser usr) (set! user usr))
+  ;; character
+  (character init: #!null)
+  ((getCharacter) character)
+  ((setCharacter char) (set! character char))
+  ;; screen
+  (screen init: #!null)
+  ((getScreen) screen)
+  ((setScreen char) (set! screen char))
+  ;; other accessors
+  ((getCamera) cam)
+  ((getCameraDirection) (*:getDirection cam))
+  ((getAudioRenderer) audioRenderer)
+  ((getViewport) viewPort)
+  ((getInputManager) inputManager)
+  ((getStateManager) stateManager)
+  ((getGuiNode) guiNode)
+  ((getGuiFont) guiFont)
+  ((getKeyInput) keyInput)
+  ((getScreen)(begin (if (eqv? screen #!null)(set! screen (Screen (this))))
+                     screen))
+  ;; init
+  ((simpleInitApp) (init-app (this))))
 
-(defclass FabricClient (SimpleApplication AnalogListener ActionListener)
-  (slots:
-   (app-settings init-form: #!null getter: getAppSettings)
-   (client-state init-form: #!null getter: getClientState setter: setClientState)
-   (user init-form: #!null getter: getUser setter: setUser)
-   (character init-form: #!null getter: getCharacter setter: setCharacter)
-   (screen init-form: #!null getter: getScreen setter: setScreen)
-   (fabric-node init-form: #f getter: getFabricNode setter: setFabricNode)) 
-  (methods:
-   ((getCamera) cam)
-   ((getCameraDirection) (*:getDirection cam))
-   ((getAudioRenderer) audioRenderer)
-   ((getViewport) viewPort)
-   ((getInputManager) inputManager)
-   ((getStateManager) stateManager)
-   ((getGuiNode) guiNode)
-   ((getGuiFont) guiFont)
-   ((getKeyInput) keyInput)
-   ((getScreen)(begin (if (jnull? screen)(set! screen (Screen (this))))
-                      screen))
-   ;; stubs for now; fix up in AppState
-   ((onAnalog name value tpf) #f) 
-   ((onAction name key-pressed? tpf) #f)
-   ;; init the app
-   ((simpleInitApp)(begin (*:setEnabled (*:getFlyByCamera (this)) #f)
-                          #!void))))
+(define (init-app app::FabricClient)
+  (begin (*:setEnabled (*:getFlyByCamera app) #f)
+         #!void))
 
 ;;; ---------------------------------------------------------------------
 ;;; construct the client app
 ;;; ---------------------------------------------------------------------
 
-;;; (make-client #!key )
+;;; (make-client #!key client settings screen-width screen-height title
+;;;                    settings-image show-fps show-settings
+;;;                    show-statistics pause-on-lost-focus grab-mouse)
 ;;; ---------------------------------------------------------------------
 ;;; returns a newly-created and -configured instance of the
 ;;; client application. The game can be started by calling
@@ -123,7 +104,8 @@
   (Mouse:setGrabbed grab-mouse)
   client)
 
-;;; IMPORTANT
+
+;;; PRIVATE
 ;;; ---------------------------------------------------------------------
 ;;; these functions are private and are not thread-safe; do not call
 ;;; them directly; rely on enqueue-client-state-update
@@ -173,4 +155,3 @@
 
 (define (client-set-transit-state! client::FabricClient #!key (from "The Sun")(to "Earth"))
   (%enqueue-state-change client (make-transit-state client from: from to: to)))
-

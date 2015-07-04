@@ -159,7 +159,7 @@
     "Backs" "Bakes" "Bears" "Becomes" "Begets" "Begins" "Bleaches" "Blesses" "Blots" "Bolts"
     "Bombs" "Boxes" "Brakes" "Bursts" "Buzzes" "Calculates" "Casts" "Charges" "Chews" "Chokes" "Claims"
     "Clips" "Coils" "Communicates" "Competes" "Completes" "Concentrates" "Consists" "Contains" "Continues"
-    "Costs" "Coughs" "Counts" "Covers" "Cracks" "Creeps" "Cries" "Curls" "Cycles" "Dams" "Decays" "Decides"
+    "Converges" "Coughs" "Counts" "Covers" "Cracks" "Creeps" "Cries" "Curls" "Cycles" "Dams" "Decays" "Decides"
     "Decorates" "Destroys" "Digs" "Disagrees" "Disarms" "Draws" "Drips" "Drives" "Drops" "Drums" "Dusts"
     "Educates" "Encourages" "Escapes" "Exercises" "Expands" "Expects" "Explains" "Explodes" "Falls" "Fastens"
     "Faxes" "Fetches" "Fills" "Fires" "Flees" "Flies" "Follows" "Forgets" "Forsakes" "Founds" "Frames"
