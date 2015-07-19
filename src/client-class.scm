@@ -14,6 +14,7 @@
 
 (require "util-error.scm")
 (require "util-java.scm")
+(require "state-login.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
