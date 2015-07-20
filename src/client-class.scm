@@ -15,6 +15,10 @@
 (require "util-error.scm")
 (require "util-java.scm")
 (require "state-login.scm")
+(require "state-create-character.scm")
+(require "state-pick-character.scm")
+(require "state-play.scm")
+(require "state-transit.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
