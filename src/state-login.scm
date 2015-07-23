@@ -23,7 +23,9 @@
 (require "data-nodes.scm")
 (require "client-state.scm")
 (require "client-class.scm")
+(require "model-rect.scm")
 (require "view-loginbox.scm")
+(require "view-skybox.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
