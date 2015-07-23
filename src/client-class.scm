@@ -53,7 +53,8 @@
   ((setCharacter char) (set! character char))
   ;; screen
   (screen init: #!null)
-  ((getScreen) screen)
+  ((getScreen)(begin (if (eqv? screen #!null)(set! screen (Screen (this))))
+                     screen))
   ((setScreen char) (set! screen char))
   ;; other accessors
   ((getCamera) cam)
@@ -65,8 +66,7 @@
   ((getGuiNode) guiNode)
   ((getGuiFont) guiFont)
   ((getKeyInput) keyInput)
-  ((getScreen)(begin (if (eqv? screen #!null)(set! screen (Screen (this))))
-                     screen))
+  
   ;; init
   ((simpleInitApp) (init-app (this))))
 

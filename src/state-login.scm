@@ -25,7 +25,6 @@
 (require "client-class.scm")
 (require "model-rect.scm")
 (require "view-loginbox.scm")
-(require "view-skybox.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -75,7 +74,9 @@
 (define (%login-state-initialized? state::LoginState) #t)
 
 (define (%login-state-attached state::LoginState manager::AppStateManager)
-  (format #t "~%%login-state-attached called"))
+  (let ((client::Application (*:getClient state)))
+    (prepare-to-attach-login-client-state state client)
+    (did-attach-login-client-state state manager)))
 
 (define (%login-state-detached state::LoginState manager::AppStateManager)
   (format #t "~%%login-state-detached called"))
@@ -105,9 +106,8 @@
 
 (define (prepare-to-attach-login-client-state state::LoginState client::FabricClient)
   (unless (*:getInitialized state)
-    (let* ((client::FabricClient (*:getApp state))
+    (let* ((client::FabricClient (*:getClient state))
            (screen::Screen (*:getScreen client))
-           (sky::Spatial (make-sky-box))
            (gui-node::Node (*:getGuiNode client))
            (rect (compute-login-box-rect screen))
            (box::FabricLoginBox (FabricLoginBox screen "LoginBox"
@@ -115,34 +115,29 @@
                                                 (Vector2f (get-width rect) (get-height rect)))))
       (*:setWindowTitle box "Log in to the Fabric")
       (*:setLoginBox state box)
-      (*:setSky state sky)
       (*:setInitialized state #t))))
 
 (define (did-attach-login-client-state state::LoginState mgr::AppStateManager)
   (when (*:getInitialized state)
-    (let* ((client::FabricClient (*:getApp state))
+    (let* ((client::FabricClient (*:getClient state))
            (screen::Screen (*:getScreen client))
            (gui-node::Node (*:getGuiNode client)))
       (*:enqueue client
                  (runnable (lambda ()
-                             (let ((client::FabricClient (*:getApp state))
-                                   (root::Node (*:getRootNode client)))
-                               (*:attachChild root (*:getSky state))
+                             (let* ((client::FabricClient (*:getClient state))
+                                    (root::Node (*:getRootNode client)))
                                (*:addElement screen (*:getLoginBox state))
                                (*:addControl gui-node screen))))))))
 
 (define (did-detach-login-client-state state::LoginState mgr::AppStateManager)
   (when (*:getInitialized state)
-    (let* ((client::FabricClient (*:getApp state))
+    (let* ((client::FabricClient (*:getClient state))
            (screen::Screen (*:getScreen client))
            (gui-node::Node (*:getGuiNode client)))
       (*:enqueue client
                  (runnable (lambda ()
-                             (let ((client::FabricClient (*:getApp state))
-                                   (root::Node (*:getRootNode client))
-                                   (sky::Spatial (*:getSky state)))
-                               (*:detachChild root sky)
-                               (*:setSky state #!null)
+                             (let* ((client::FabricClient (*:getClient state))
+                                    (root::Node (*:getRootNode client)))
                                (*:removeElement screen (*:getLoginBox state))
                                (*:removeControl gui-node screen)
                                (*:setInitialized state #f))))))))
