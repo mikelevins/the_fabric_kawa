@@ -77,7 +77,7 @@
   (format #t "~%%play-state-attached called"))
 
 (define (%play-state-detached state::PlayState manager::AppStateManager)
-  (format #t "~%%play-state-detached called"))
+  (did-detach-play-state state manager))
 
 (define (make-play-state client::Application node-name)
   (let ((state (PlayState)))
@@ -107,3 +107,14 @@
                                  (let ((client (*:getClient state))
                                        (root::Node (*:getRootNode client)))
                                    (*:addControl gui-node screen))))))))
+
+(define (did-detach-play-state state::PlayState mgr::AppStateManager)
+  (when (*:getInitialized state)
+    (let* ((client (*:getClient state))
+           (screen::Screen (*:getScreen client))
+           (gui-node::Node (*:getGuiNode client)))
+      (*:enqueue client
+                 (runnable (lambda ()
+                             (let ((client (*:getClient state))
+                                   (root::Node (*:getRootNode client)))
+                               (*:removeControl gui-node screen))))))))

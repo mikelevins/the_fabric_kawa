@@ -80,7 +80,7 @@
   (format #t "~%%transit-state-attached called"))
 
 (define (%transit-state-detached state::TransitState manager::AppStateManager)
-  (format #t "~%%transit-state-detached called"))
+  (did-detach-transit-state state manager))
 
 (define (make-transit-state client::Application #!key (from "The Sun")(to "Earth"))
   (let ((state (TransitState)))
@@ -111,3 +111,14 @@
                                  (let ((client (*:getClient state))
                                        (root::Node (*:getRootNode client)))
                                    (*:addControl gui-node screen))))))))
+
+(define (did-detach-transit-state state::TransitState mgr::AppStateManager)
+  (when (*:getInitialized state)
+    (let* ((client (*:getClient state))
+           (screen::Screen (*:getScreen client))
+           (gui-node::Node (*:getGuiNode client)))
+      (*:enqueue client
+                 (runnable (lambda ()
+                             (let ((client (*:getClient state))
+                                   (root::Node (*:getRootNode client)))
+                               (*:removeControl gui-node screen))))))))

@@ -74,7 +74,7 @@
   (format #t "~%%pick-character-state-attached called"))
 
 (define (%pick-character-state-detached state::PickCharacterState manager::AppStateManager)
-  (format #t "~%%pick-character-state-detached called"))
+  (did-detach-pick-character-state state manager))
 
 (define (make-pick-character-state client::Application)
   (let ((state (PickCharacterState)))
@@ -103,3 +103,14 @@
                                  (let ((client (*:getClient state))
                                        (root::Node (*:getRootNode client)))
                                    (*:addControl gui-node screen))))))))
+
+(define (did-detach-pick-character-state state::PickCharacterState mgr::AppStateManager)
+  (when (*:getInitialized state)
+    (let* ((client (*:getClient state))
+           (screen::Screen (*:getScreen client))
+           (gui-node::Node (*:getGuiNode client)))
+      (*:enqueue client
+                 (runnable (lambda ()
+                             (let ((client (*:getClient state))
+                                   (root::Node (*:getRootNode client)))
+                               (*:removeControl gui-node screen))))))))

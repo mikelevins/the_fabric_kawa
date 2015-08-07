@@ -76,7 +76,7 @@
     (did-attach-create-character-state state manager)))
 
 (define (%create-character-state-detached state::CreateCharacterState manager::AppStateManager)
-  (format #t "~%%create-character-state-detached called"))
+  (did-detach-create-character-state state manager))
 
 (define (make-create-character-state client::Application)
   (let ((state (CreateCharacterState)))
@@ -129,3 +129,22 @@
                                    ;;(*:addElement screen (*:getNamePicker state))
                                    ;;(*:addElement screen (*:getCharacterAcceptor state))
                                    (*:addControl gui-node screen))))))))
+
+(define (did-detach-create-character-state state::CreateCharacterState mgr::AppStateManager)
+  (when (*:getInitialized state)
+    (let* ((client (*:getClient state))
+           (screen::Screen (*:getScreen client))
+           (gui-node::Node (*:getGuiNode client)))
+      (*:enqueue client
+                 (runnable (lambda ()
+                             (let ((client (*:getClient state))
+                                   (root::Node (*:getRootNode client)))
+                               ;;(*:addElement screen (*:getFactionNameplate state))
+                               ;;(*:addElement screen (*:getCharacterNameplate state))
+                               ;;(*:addElement screen (*:getFactionPicker state))
+                               ;;(*:addElement screen (*:getWeaponPicker state))
+                               ;;(*:addElement screen (*:getArmorPicker state))
+                               ;;(*:addElement screen (*:getAugmentPicker state))
+                               ;;(*:addElement screen (*:getNamePicker state))
+                               ;;(*:addElement screen (*:getCharacterAcceptor state))
+                               (*:removeControl gui-node screen))))))))
