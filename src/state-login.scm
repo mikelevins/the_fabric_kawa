@@ -79,7 +79,7 @@
     (did-attach-login-client-state state manager)))
 
 (define (%login-state-detached state::LoginState manager::AppStateManager)
-  (format #t "~%%login-state-detached called"))
+  (did-detach-login-client-state state manager))
 
 (define (make-login-state client::Application)
   (let ((state (LoginState)))
