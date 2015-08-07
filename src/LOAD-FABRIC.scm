@@ -14,6 +14,9 @@
 ;;; load this file in order to load the Fabric client in an
 ;;; interactive session
 
+(require "util-random.scm")
+(require "data-names.scm")
+(require "model-namegen.scm")
 (require "client-class.scm")
 
 ;;; ---------------------------------------------------------------------
