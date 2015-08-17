@@ -21,6 +21,7 @@
 (require "util-java.scm")
 (require "util-lists.scm")
 (require "data-nodes.scm")
+(require "view-skybox.scm")
 (require "client-state.scm")
 
 ;;; ---------------------------------------------------------------------
@@ -49,6 +50,9 @@
   (node-name init: #f)
   ((getNodeName) node-name)
   ((setNodeName new-name) (set! node-name new-name))
+  (sky init: #f)
+  ((getSky) sky)
+  ((setSky new-sky) (set! sky new-sky))
   (initialized? init: #f)
   ((getInitialized) initialized?)
   ((setInitialized newstate) (set! initialized? newstate))
@@ -74,7 +78,9 @@
 (define (%play-state-initialized? state::PlayState) #t)
 
 (define (%play-state-attached state::PlayState manager::AppStateManager)
-  (format #t "~%%play-state-attached called"))
+  (let ((client::Application (*:getClient state)))
+    (prepare-to-attach-play-state state client)
+    (did-attach-play-state state manager)))
 
 (define (%play-state-detached state::PlayState manager::AppStateManager)
   (did-detach-play-state state manager))
@@ -94,7 +100,8 @@
           (let* ((screen::Screen (*:getScreen client))
                  (gui-node::Node (*:getGuiNode client))
                  (Align BitmapFont:Align)
-                 )
+                 (sky::Spatial (make-sky-box)))
+            (*:setSky state sky)
             (*:setInitialized state #t))))
 
 (define (did-attach-play-state state::PlayState mgr::AppStateManager)
@@ -106,6 +113,7 @@
                      (runnable (lambda ()
                                  (let ((client (*:getClient state))
                                        (root::Node (*:getRootNode client)))
+                                   (*:attachChild root (*:getSky state))
                                    (*:addControl gui-node screen))))))))
 
 (define (did-detach-play-state state::PlayState mgr::AppStateManager)
@@ -116,5 +124,7 @@
       (*:enqueue client
                  (runnable (lambda ()
                              (let ((client (*:getClient state))
-                                   (root::Node (*:getRootNode client)))
+                                   (root::Node (*:getRootNode client))
+                                   (sky::Spatial (*:getSky state)))
+                               (*:detachChild root sky)
                                (*:removeControl gui-node screen))))))))
