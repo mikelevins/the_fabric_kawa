@@ -8,6 +8,15 @@
 ;;;;
 ;;;; ***********************************************************************
 
+(module-export
+ client-set-login-state!
+ client-set-create-character-state!
+ client-set-pick-character-state!
+ client-set-play-state!
+ client-set-transit-state!
+ FabricClient
+ make-client)
+
 ;;; ---------------------------------------------------------------------
 ;;; required modules
 ;;; ---------------------------------------------------------------------
