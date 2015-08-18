@@ -22,6 +22,7 @@
 (require "util-lists.scm")
 (require "data-nodes.scm")
 (require "view-skybox.scm")
+(require "view-celestial-body.scm")
 (require "client-state.scm")
 
 ;;; ---------------------------------------------------------------------
@@ -50,6 +51,9 @@
   (node-name init: #f)
   ((getNodeName) node-name)
   ((setNodeName new-name) (set! node-name new-name))
+  (celestial-body init: #!null)
+  ((getCelestialBody) celestial-body)
+  ((setCelestialBody new-body)(set! celestial-body new-body))
   (sky init: #f)
   ((getSky) sky)
   ((setSky new-sky) (set! sky new-sky))
@@ -95,12 +99,19 @@
 ;;; PlayState functions
 ;;; ---------------------------------------------------------------------
 
+(define (->texture-name name-text)
+  (string-append name-text ".jpg"))
+
 (define (prepare-to-attach-play-state state::PlayState client)
   (unless (*:getInitialized state)
           (let* ((screen::Screen (*:getScreen client))
                  (gui-node::Node (*:getGuiNode client))
                  (Align BitmapFont:Align)
+                 (name-text (*:getNodeName state))
+                 (texture-name (->texture-name name-text))
+                 (body (make-celestial-body texture-name))
                  (sky::Spatial (make-sky-box)))
+            (*:setCelestialBody state body)
             (*:setSky state sky)
             (*:setInitialized state #t))))
 
@@ -114,6 +125,7 @@
                                  (let ((client (*:getClient state))
                                        (root::Node (*:getRootNode client)))
                                    (*:attachChild root (*:getSky state))
+                                   (*:attachChild root (*:getCelestialBody state))
                                    (*:addControl gui-node screen))))))))
 
 (define (did-detach-play-state state::PlayState mgr::AppStateManager)
@@ -125,6 +137,8 @@
                  (runnable (lambda ()
                              (let ((client (*:getClient state))
                                    (root::Node (*:getRootNode client))
-                                   (sky::Spatial (*:getSky state)))
+                                   (sky::Spatial (*:getSky state))
+                                   (body (*:getCelestialBody state)))
                                (*:detachChild root sky)
+                               (*:detachChild root body)
                                (*:removeControl gui-node screen))))))))
