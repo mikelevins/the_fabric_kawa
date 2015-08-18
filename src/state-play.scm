@@ -29,14 +29,17 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
-(import-as Application com.jme3.app.Application)
 (import-as AppStateManager com.jme3.app.state.AppStateManager)
+(import-as Application com.jme3.app.Application)
 (import-as BitmapFont com.jme3.font.BitmapFont)
+(import-as Geometry com.jme3.scene.Geometry)
 (import-as Label tonegod.gui.controls.text.Label)
 (import-as Node com.jme3.scene.Node)
+(import-as Panel tonegod.gui.controls.windows.Panel)
 (import-as Screen tonegod.gui.core.Screen)
 (import-as Spatial com.jme3.scene.Spatial)
 (import-as Vector2f com.jme3.math.Vector2f)
+(import-as Vector3f com.jme3.math.Vector3f)
 (import-as Window tonegod.gui.controls.windows.Window)
 
 ;;; ---------------------------------------------------------------------
@@ -110,7 +113,10 @@
                  (name-text (*:getNodeName state))
                  (texture-name (->texture-name name-text))
                  (body (make-celestial-body texture-name))
-                 (sky::Spatial (make-sky-box)))
+                 (sky::Spatial (make-sky-box))
+                 (camera (*:getCamera client)))
+            (*:setFrustumFar camera 80000)
+            (*:setLocation camera (Vector3f 0.0 0.0 40000))
             (*:setCelestialBody state body)
             (*:setSky state sky)
             (*:setInitialized state #t))))
