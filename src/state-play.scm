@@ -23,6 +23,8 @@
 (require "data-nodes.scm")
 (require "view-skybox.scm")
 (require "view-celestial-body.scm")
+(require "syntax-events.scm")
+(require "client-class.scm")
 (require "client-state.scm")
 
 ;;; ---------------------------------------------------------------------
@@ -33,7 +35,12 @@
 (import-as Application com.jme3.app.Application)
 (import-as BitmapFont com.jme3.font.BitmapFont)
 (import-as Geometry com.jme3.scene.Geometry)
+(import-as KeyInput com.jme3.input.KeyInput)
+(import-as KeyTrigger com.jme3.input.controls.KeyTrigger)
 (import-as Label tonegod.gui.controls.text.Label)
+(import-as MouseAxisTrigger com.jme3.input.controls.MouseAxisTrigger)
+(import-as MouseButtonTrigger com.jme3.input.controls.MouseButtonTrigger)
+(import-as MouseInput com.jme3.input.MouseInput)
 (import-as Node com.jme3.scene.Node)
 (import-as Panel tonegod.gui.controls.windows.Panel)
 (import-as Screen tonegod.gui.core.Screen)
@@ -99,6 +106,184 @@
     state))
 
 ;;; ---------------------------------------------------------------------
+;;; player movement
+;;; ---------------------------------------------------------------------
+
+
+;;; (normalize-camera! app :: FabricClient)
+;;; ---------------------------------------------------------------------
+;;; orients the camera to where the player's character node is facing
+
+(define (normalize-camera! app :: FabricClient)
+  (let ((dir :: Vector3f (*:getCameraDirection app)))
+    (*:normalizeLocal dir)))
+
+
+;;; (move-player!  app :: FabricClient node :: Node amount :: float invert?)
+;;; ---------------------------------------------------------------------
+;;; moves the player's node _node_  an distance along an arbitrary vector.
+;;; used by more specific move- functions like move-player-forward!
+
+(define (move-player!  app :: FabricClient node :: Node amount :: float invert?)
+  (let ((dir :: Vector3f (*:getDirection app))
+        (sign (if invert? -1 1)))
+    (*:multLocal dir (* sign amount))
+    (*:move node dir)))
+
+
+;;; (move-player-forward! app :: FabricClient node :: Node amount :: float)
+;;; ---------------------------------------------------------------------
+;;; moves _node_ forward a distance of _amount_
+
+(define (move-player-forward! app :: FabricClient node :: Node amount :: float)
+  (normalize-camera! app)
+  (*:setDirection app (*:getCameraDirection app))
+  (move-player! app node amount #f))
+
+
+;;; (move-player-backward! app :: FabricClient node :: Node amount :: float)
+;;; ---------------------------------------------------------------------
+;;; moves _node_ backward a distance of _amount_
+
+(define (move-player-backward! app :: FabricClient node :: Node amount :: float)
+  (normalize-camera! app)
+  (*:setDirection app (*:getCameraDirection app))
+  (move-player! app node amount #t))
+
+
+;;; (move-player-left! app :: FabricClient node :: Node amount :: float)
+;;; ---------------------------------------------------------------------
+;;; moves _node_ to the left a distance of _amount_
+
+(define (move-player-left! app :: FabricClient node :: Node amount :: float)
+  (*:setDirection app (*:normalizeLocal (*:getLeft (*:getCamera app))))
+  (move-player! app node amount #f))
+
+
+;;; (move-player-right! app :: FabricClient node :: Node amount :: float)
+;;; ---------------------------------------------------------------------
+;;; moves _node_ to the right a distance of _amount_
+
+(define (move-player-right! app :: FabricClient node :: Node amount :: float)
+  (*:setDirection app (*:normalizeLocal (*:getLeft (*:getCamera app))))
+  (move-player! app node amount #t))
+
+
+;;; (rotate-player-right! node :: Node amount :: float)
+;;; ---------------------------------------------------------------------
+;;; rotates _node_ to the right an angle of _amount_ 
+
+(define (rotate-player-right! node :: Node amount :: float)
+  (*:rotate node 0 (* -1 amount) 0))
+
+
+;;; (rotate-player-left! node :: Node amount :: float)
+;;; ---------------------------------------------------------------------
+;;; rotates _node_ to the left an angle of _amount_ 
+
+(define (rotate-player-left! node :: Node amount :: float)
+  (*:rotate node 0 amount 0))
+
+
+;;; (rotate-player-up! node :: Node amount :: float)
+;;; ---------------------------------------------------------------------
+;;; rotates _node_ upward an angle of _amount_ 
+
+(define (rotate-player-up! node :: Node amount :: float)
+  (*:rotate node (* -1 amount) 0 0))
+
+
+;;; (rotate-player-down! node :: Node amount :: float)
+;;; ---------------------------------------------------------------------
+;;; rotates _node_ downward an angle of _amount_ 
+
+(define (rotate-player-down! node :: Node amount :: float)
+  (*:rotate node amount 0 0))
+
+;;; ---------------------------------------------------------------------
+;;; input-handling
+;;; ---------------------------------------------------------------------
+
+;;; (setup-inputs app::FabricClient)
+;;; ---------------------------------------------------------------------
+;;; establishes the event handlers that translate keypresses and
+;;; mouse movements into movements of the player's node and camera
+
+(define (setup-inputs app::FabricClient)
+  ;; set up the player's controls
+  (let ((key-input ::KeyInput (*:getKeyInput app))
+        (input-manager (*:getInputManager app)))
+    (route-keys (input-manager)
+                ((KeyTrigger key-input:KEY_UP) -> "moveForward")
+                ((KeyTrigger key-input:KEY_W) ->  "moveForward")
+                ((MouseButtonTrigger MouseInput:BUTTON_LEFT) ->  "maybeMoveForward")
+                ((MouseButtonTrigger MouseInput:BUTTON_LEFT) ->  "leftButton")
+                ((MouseButtonTrigger MouseInput:BUTTON_RIGHT) -> "rightButton")
+                ((KeyTrigger key-input:KEY_RIGHT) -> "moveRight")
+                ((KeyTrigger key-input:KEY_D) -> "moveRight")
+                ((MouseAxisTrigger 0 #f) -> "mouseRotateRight")
+                ((KeyTrigger key-input:KEY_LEFT) -> "moveLeft")
+                ((KeyTrigger key-input:KEY_A) -> "moveLeft")
+                ((MouseAxisTrigger 0 #t) -> "mouseRotateLeft")
+                ((MouseAxisTrigger 1 #f) -> "mouseRotateUp")
+                ((KeyTrigger key-input:KEY_DOWN) -> "moveBackward")
+                ((KeyTrigger key-input:KEY_S) -> "moveBackward")
+                ((MouseAxisTrigger 1 #t) -> "mouseRotateDown")
+                ;; text inputs
+                ((KeyTrigger key-input:KEY_SPACE) -> "SPACE")
+                ((KeyTrigger key-input:KEY_A) -> "KEY_A"))
+    ;; set up the event listener
+    (*:addListener input-manager app
+                   ;; motion controls
+                   "moveForward" "maybeMoveForward" "moveBackward" "moveRight" "moveLeft"
+                   "leftButton" "rightButton" "rotateRight" "rotateLeft" "rotateUp" "rotateDown"
+                   "mouseRotateRight" "mouseRotateLeft" "mouseRotateUp" "mouseRotateDown"
+                   ;; chat input
+                   "SPACE" "KEY_A")))
+
+
+;;; ---------------------------------------------------------------------
+;;; event-handling
+;;; ---------------------------------------------------------------------
+
+;;; (handle-analog-event app name value tpf)
+;;; ---------------------------------------------------------------------
+;;; handle mouse movements and other continuous events
+
+(define (handle-analog-event app::FabricClient name value tpf)
+  (let ((speed (*:getSpeed app))
+        (node (*:getPlayerNode app))
+        (right-button-down? (*:getRightButton app)))
+    (on-analog (name)
+               ("moveForward" -> (move-player-forward! app node (* speed tpf)))
+               ("maybeMoveForward" -> (when right-button-down?
+                                        (move-player-forward! app node (* speed tpf))))
+               ("moveBackward" -> (move-player-backward! app node (* 0.6 speed tpf)))
+               ("moveRight" -> (move-player-right! app node (* speed tpf)))
+               ("moveLeft" -> (move-player-left! app node (* speed tpf)))
+               ("rotateRight" -> (rotate-player-right! node (* 0.25 tpf)))
+               ("mouseRotateRight" -> (when right-button-down?
+                                        (rotate-player-right! node value)))
+               ("rotateLeft" -> (rotate-player-left! node (* 0.25 tpf)))
+               ("mouseRotateLeft" -> (when right-button-down?
+                                       (rotate-player-left! node value)))
+               ("rotateUp" -> (rotate-player-up! node (* 0.125 tpf)))
+               ("mouseRotateUp" -> (when right-button-down?
+                                     (rotate-player-up! node value)))
+               ("rotateDown" -> (rotate-player-down! node (* 0.125 tpf)))
+               ("mouseRotateDown" -> (when right-button-down?
+                                       (rotate-player-down! node value))))))
+
+;;; (handle-action-event app name key-pressed? tpf)
+;;; ---------------------------------------------------------------------
+;;; handle keypresses, mouse clicks, and other discrete events
+
+(define (handle-action-event app::FabricClient name key-pressed? tpf)
+  (on-action (name)
+             ("leftButton" -> (*:setLeftButton app key-pressed?))
+             ("rightButton" -> (*:setRightButton app key-pressed?))))
+
+;;; ---------------------------------------------------------------------
 ;;; PlayState functions
 ;;; ---------------------------------------------------------------------
 
@@ -119,6 +304,7 @@
             (*:setLocation camera (Vector3f 0.0 0.0 40000))
             (*:setCelestialBody state body)
             (*:setSky state sky)
+            (setup-inputs client)
             (*:setInitialized state #t))))
 
 (define (did-attach-play-state state::PlayState mgr::AppStateManager)

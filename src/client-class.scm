@@ -33,6 +33,8 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
+(import-as ActionListener com.jme3.input.controls.ActionListener)
+(import-as AnalogListener com.jme3.input.controls.AnalogListener)
 (import-as AppSettings com.jme3.system.AppSettings)
 (import-as Mouse org.lwjgl.input.Mouse)
 (import-as Screen tonegod.gui.core.Screen)
@@ -42,7 +44,7 @@
 ;;; FabricClient
 ;;; ---------------------------------------------------------------------
 
-(define-simple-class FabricClient (SimpleApplication)
+(define-simple-class FabricClient (SimpleApplication AnalogListener ActionListener)
   ;; slots
   ;; app-settings
   (app-settings init: #!null)
@@ -75,6 +77,9 @@
   ((getGuiNode) guiNode)
   ((getGuiFont) guiFont)
   ((getKeyInput) keyInput)
+   ;; stubs for now; fix up in AppState
+   ((onAnalog name value tpf) #f) 
+   ((onAction name key-pressed? tpf) #f)
   
   ;; init
   ((simpleInitApp) (init-app (this))))
