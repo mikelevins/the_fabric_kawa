@@ -56,7 +56,11 @@
   ((stateAttached state-manager::AppStateManager)
    (%state-attached (this) state-manager))
   ((stateDetached state-manager::AppStateManager)
-   (%state-detached (this) state-manager)))
+   (%state-detached (this) state-manager))
+  ((handleAnalogEvent name value tpf)
+   (format #t "~%handleAnalogEvent must be implemented in a subclass of FabricClientSate"))
+  ((handleActionEvent name key-pressed? tpf)
+   (format #t "~%handleActionEvent must be implemented in a subclass of FabricClientSate")))
 
 (define (%state-cleanup state::FabricClientState) #!void)
 (define (%state-initialize state::FabricClientState) #!void)

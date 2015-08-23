@@ -77,9 +77,8 @@
   ((getGuiNode) guiNode)
   ((getGuiFont) guiFont)
   ((getKeyInput) keyInput)
-   ;; stubs for now; fix up in AppState
-   ((onAnalog name value tpf) #f) 
-   ((onAction name key-pressed? tpf) #f)
+  ((onAnalog name value tpf)(*:handleAnalogEvent client-state name value tpf))
+  ((onAction name key-pressed? tpf)(*:handleActionEvent client-state name key-pressed? tpf))
   
   ;; init
   ((simpleInitApp) (init-app (this))))

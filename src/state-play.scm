@@ -213,6 +213,7 @@
   ;; set up the player's controls
   (let ((key-input ::KeyInput (*:getKeyInput app))
         (input-manager (*:getInputManager app)))
+    (format #t "~%setup-inputs called")
     (route-keys (input-manager)
                 ((KeyTrigger key-input:KEY_UP) -> "moveForward")
                 ((KeyTrigger key-input:KEY_W) ->  "moveForward")
@@ -254,6 +255,7 @@
   (let ((speed (*:getSpeed app))
         (node (*:getPlayerNode app))
         (right-button-down? (*:getRightButton app)))
+    (format #t "~%%handle-analog-event called")
     (on-analog (name)
                ("moveForward" -> (move-player-forward! app node (* speed tpf)))
                ("maybeMoveForward" -> (when right-button-down?
