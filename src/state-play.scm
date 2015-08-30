@@ -77,7 +77,10 @@
    (%play-state-attached (this) state-manager))
   ((stateDetached state-manager::AppStateManager)
    (%play-state-detached (this) state-manager))
-  ;; init
+  ((handleAnalogEvent name value tpf)
+   (play-state-handle-analog-event (this) name value tpf))
+  ((handleActionEvent name key-pressed? tpf)
+   (play-state-handle-action-event (this) name key-pressed? tpf))
   ((initialize) (%play-state-initialize (this)))
   ((isInitialized) (%play-state-initialized? (this))))
 
@@ -251,10 +254,11 @@
 ;;; ---------------------------------------------------------------------
 ;;; handle mouse movements and other continuous events
 
-(define (handle-analog-event app::FabricClient name value tpf)
-  (let ((speed (*:getSpeed app))
-        (node (*:getPlayerNode app))
-        (right-button-down? (*:getRightButton app)))
+(define (play-state-handle-analog-event state::PlayState name value tpf)
+  (let* ((app::FabricClient (*:getClient state))
+         (speed (*:getSpeed app))
+         (node (*:getPlayerNode app))
+         (right-button-down? (*:getRightButton app)))
     (format #t "~%%handle-analog-event called")
     (on-analog (name)
                ("moveForward" -> (move-player-forward! app node (* speed tpf)))
@@ -280,10 +284,11 @@
 ;;; ---------------------------------------------------------------------
 ;;; handle keypresses, mouse clicks, and other discrete events
 
-(define (handle-action-event app::FabricClient name key-pressed? tpf)
-  (on-action (name)
-             ("leftButton" -> (*:setLeftButton app key-pressed?))
-             ("rightButton" -> (*:setRightButton app key-pressed?))))
+(define (play-state-handle-action-event state::PlayState name key-pressed? tpf)
+  (let ((app::FabricClient (*:getClient state)))
+    (on-action (name)
+               ("leftButton" -> (*:setLeftButton app key-pressed?))
+               ("rightButton" -> (*:setRightButton app key-pressed?)))))
 
 ;;; ---------------------------------------------------------------------
 ;;; PlayState functions

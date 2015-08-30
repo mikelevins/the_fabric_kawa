@@ -67,6 +67,9 @@
   ((getScreen)(begin (if (eqv? screen #!null)(set! screen (Screen (this))))
                      screen))
   ((setScreen char) (set! screen char))
+  (speed init: #!null)
+  ((getSpeed) speed)
+  ((setSpeed newspeed) (set! speed newspeed))
   ;; other accessors
   ((getCamera) cam)
   ((getCameraDirection) (*:getDirection cam))
@@ -77,6 +80,7 @@
   ((getGuiNode) guiNode)
   ((getGuiFont) guiFont)
   ((getKeyInput) keyInput)
+  ;; event handlers
   ((onAnalog name value tpf)(*:handleAnalogEvent client-state name value tpf))
   ((onAction name key-pressed? tpf)(*:handleActionEvent client-state name key-pressed? tpf))
   
