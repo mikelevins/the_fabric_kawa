@@ -16,7 +16,8 @@
  fabric-name-bits
  fabric-name-bytes
  fabric-name-bytestrings
- fabric-name-strings)
+ fabric-name-strings
+ random-fabric-name)
 
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
@@ -106,4 +107,6 @@
 (define (blank-fabric-name)
   (FabricName 0))
 
+(define (random-fabric-name)
+  (FabricName (apply bytes->integer (gen-bytes 8))))
 

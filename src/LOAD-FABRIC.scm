@@ -17,6 +17,7 @@
 (require "util-random.scm")
 (require "data-names.scm")
 (require "model-namegen.scm")
+(require "model-character.scm")
 (require "client-class.scm")
 
 ;;; ---------------------------------------------------------------------
