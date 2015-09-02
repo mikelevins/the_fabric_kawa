@@ -27,6 +27,7 @@
 (require "state-create-character.scm")
 (require "state-pick-character.scm")
 (require "state-play.scm")
+(require "model-character.scm")
 (require "state-transit.scm")
 
 ;;; ---------------------------------------------------------------------
@@ -172,8 +173,8 @@
 (define (client-set-pick-character-state! client::FabricClient)
   (%enqueue-state-change client (make-pick-character-state client)))
 
-(define (client-set-play-state! client::FabricClient #!optional (node-name "The Sun"))
-  (%enqueue-state-change client (make-play-state client node-name)))
+(define (client-set-play-state! client::FabricClient character::FabricCharacter #!optional (node-name "The Sun"))
+  (%enqueue-state-change client (make-play-state client character node-name)))
 
 (define (client-set-transit-state! client::FabricClient #!key (from "The Sun")(to "Earth"))
   (%enqueue-state-change client (make-transit-state client from: from to: to)))

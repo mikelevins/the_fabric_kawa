@@ -24,6 +24,7 @@
 (require "view-skybox.scm")
 (require "view-celestial-body.scm")
 (require "syntax-events.scm")
+(require "model-character.scm")
 (require "client-class.scm")
 (require "client-state.scm")
 
@@ -58,6 +59,9 @@
 
 (define-simple-class PlayState (FabricClientState)
   ;; slots
+  (player-character init: #!null)
+  ((getPlayerCharacter) player-character)
+  ((setPlayerCharacter new-character) (set! player-character new-character))
   (node-name init: #f)
   ((getNodeName) node-name)
   ((setNodeName new-name) (set! node-name new-name))
@@ -102,10 +106,11 @@
 (define (%play-state-detached state::PlayState manager::AppStateManager)
   (did-detach-play-state state manager))
 
-(define (make-play-state client::Application node-name)
+(define (make-play-state client::Application character::FabricCharacter node-name)
   (let ((state (PlayState)))
     (*:setClient state client)
     (*:setNodeName state node-name)
+    (*:setPlayerCharacter state character)
     state))
 
 ;;; ---------------------------------------------------------------------
@@ -257,7 +262,8 @@
 (define (play-state-handle-analog-event state::PlayState name value tpf)
   (let* ((app::FabricClient (*:getClient state))
          (speed (*:getSpeed app))
-         (node (*:getPlayerNode app))
+         (pchar (*:getPlayerCharacter state))
+         (node (*:getNode pchar))
          (right-button-down? (*:getRightButton app)))
     (format #t "~%%handle-analog-event called")
     (on-analog (name)
