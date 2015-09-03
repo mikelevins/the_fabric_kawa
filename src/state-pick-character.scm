@@ -10,8 +10,11 @@
 (format #t "~%loading state-pick-character.scm")
 
 (module-export
+ did-attach-pick-character-state
+ did-detach-pick-character-state
  PickCharacterState
- make-pick-character-state)
+ make-pick-character-state
+ prepare-to-attach-pick-character-state)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -22,6 +25,7 @@
 (require "util-lists.scm")
 (require "data-nodes.scm")
 (require "client-state.scm")
+(require "client-class.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -85,32 +89,29 @@
 ;;; PickCharacterState functions
 ;;; ---------------------------------------------------------------------
 
-(define (prepare-to-attach-pick-character-state state::PickCharacterState client)
+(define (prepare-to-attach-pick-character-state state::PickCharacterState client::FabricClient)
   (unless (*:getInitialized state)
-          (let* ((screen::Screen (*:getScreen client))
-                 (gui-node::Node (*:getGuiNode client))
-                 (Align BitmapFont:Align)
-                 )
-            (*:setInitialized state #t))))
+    (let* ((screen::Screen (*:getScreen client))
+           (gui-node::Node (*:getGuiNode client))
+           (Align BitmapFont:Align))
+      (*:setInitialized state #t))))
 
 (define (did-attach-pick-character-state state::PickCharacterState mgr::AppStateManager)
   (when (*:getInitialized state)
-        (let* ((client (*:getClient state))
-               (screen::Screen (*:getScreen client))
-               (gui-node::Node (*:getGuiNode client)))
-          (*:enqueue client
-                     (runnable (lambda ()
-                                 (let ((client (*:getClient state))
-                                       (root::Node (*:getRootNode client)))
-                                   (*:addControl gui-node screen))))))))
-
-(define (did-detach-pick-character-state state::PickCharacterState mgr::AppStateManager)
-  (when (*:getInitialized state)
-    (let* ((client (*:getClient state))
+    (let* ((client::FabricClient (*:getClient state))
            (screen::Screen (*:getScreen client))
            (gui-node::Node (*:getGuiNode client)))
       (*:enqueue client
                  (runnable (lambda ()
-                             (let ((client (*:getClient state))
-                                   (root::Node (*:getRootNode client)))
+                             (let ((root::Node (*:getRootNode client)))
+                               (*:addControl gui-node screen))))))))
+
+(define (did-detach-pick-character-state state::PickCharacterState mgr::AppStateManager)
+  (when (*:getInitialized state)
+    (let* ((client::FabricClient (*:getClient state))
+           (screen::Screen (*:getScreen client))
+           (gui-node::Node (*:getGuiNode client)))
+      (*:enqueue client
+                 (runnable (lambda ()
+                             (let ((root::Node (*:getRootNode client)))
                                (*:removeControl gui-node screen))))))))

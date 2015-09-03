@@ -59,18 +59,27 @@
 
 (define-simple-class PlayState (FabricClientState)
   ;; slots
+  ;; the player's character
   (player-character init: #!null)
   ((getPlayerCharacter) player-character)
   ((setPlayerCharacter new-character) (set! player-character new-character))
+  ;; the name of location in the game world
   (node-name init: #f)
   ((getNodeName) node-name)
   ((setNodeName new-name) (set! node-name new-name))
+  ;; the nearest celestial body
   (celestial-body init: #!null)
   ((getCelestialBody) celestial-body)
   ((setCelestialBody new-body)(set! celestial-body new-body))
+  ;; the background of the scene
   (sky init: #f)
   ((getSky) sky)
   ((setSky new-sky) (set! sky new-sky))
+  ;; the speed of camera movement
+  (speed type: float init-form: 0.0)
+  ((getSpeed) speed)
+  ((setSpeed new-speed) (set! speed new-speed))
+  ;; whether the scene is initialized
   (initialized? init: #f)
   ((getInitialized) initialized?)
   ((setInitialized newstate) (set! initialized? newstate))
@@ -87,6 +96,10 @@
    (play-state-handle-action-event (this) name key-pressed? tpf))
   ((initialize) (%play-state-initialize (this)))
   ((isInitialized) (%play-state-initialized? (this))))
+
+;;; ---------------------------------------------------------------------
+;;; PlayState setup and teardown
+;;; ---------------------------------------------------------------------
 
 (define (%play-state-cleanup state::PlayState)
   (format #t "~%%play-state-cleanup called"))
@@ -106,6 +119,10 @@
 (define (%play-state-detached state::PlayState manager::AppStateManager)
   (did-detach-play-state state manager))
 
+;;; ---------------------------------------------------------------------
+;;; construction
+;;; ---------------------------------------------------------------------
+
 (define (make-play-state client::Application character::FabricCharacter node-name)
   (let ((state (PlayState)))
     (*:setClient state client)
@@ -113,100 +130,6 @@
     (*:setPlayerCharacter state character)
     state))
 
-;;; ---------------------------------------------------------------------
-;;; player movement
-;;; ---------------------------------------------------------------------
-
-
-;;; (normalize-camera! app :: FabricClient)
-;;; ---------------------------------------------------------------------
-;;; orients the camera to where the player's character node is facing
-
-(define (normalize-camera! app :: FabricClient)
-  (let ((dir :: Vector3f (*:getCameraDirection app)))
-    (*:normalizeLocal dir)))
-
-
-;;; (move-player!  app :: FabricClient node :: Node amount :: float invert?)
-;;; ---------------------------------------------------------------------
-;;; moves the player's node _node_  an distance along an arbitrary vector.
-;;; used by more specific move- functions like move-player-forward!
-
-(define (move-player!  app :: FabricClient node :: Node amount :: float invert?)
-  (let ((dir :: Vector3f (*:getDirection app))
-        (sign (if invert? -1 1)))
-    (*:multLocal dir (* sign amount))
-    (*:move node dir)))
-
-
-;;; (move-player-forward! app :: FabricClient node :: Node amount :: float)
-;;; ---------------------------------------------------------------------
-;;; moves _node_ forward a distance of _amount_
-
-(define (move-player-forward! app :: FabricClient node :: Node amount :: float)
-  (normalize-camera! app)
-  (*:setDirection app (*:getCameraDirection app))
-  (move-player! app node amount #f))
-
-
-;;; (move-player-backward! app :: FabricClient node :: Node amount :: float)
-;;; ---------------------------------------------------------------------
-;;; moves _node_ backward a distance of _amount_
-
-(define (move-player-backward! app :: FabricClient node :: Node amount :: float)
-  (normalize-camera! app)
-  (*:setDirection app (*:getCameraDirection app))
-  (move-player! app node amount #t))
-
-
-;;; (move-player-left! app :: FabricClient node :: Node amount :: float)
-;;; ---------------------------------------------------------------------
-;;; moves _node_ to the left a distance of _amount_
-
-(define (move-player-left! app :: FabricClient node :: Node amount :: float)
-  (*:setDirection app (*:normalizeLocal (*:getLeft (*:getCamera app))))
-  (move-player! app node amount #f))
-
-
-;;; (move-player-right! app :: FabricClient node :: Node amount :: float)
-;;; ---------------------------------------------------------------------
-;;; moves _node_ to the right a distance of _amount_
-
-(define (move-player-right! app :: FabricClient node :: Node amount :: float)
-  (*:setDirection app (*:normalizeLocal (*:getLeft (*:getCamera app))))
-  (move-player! app node amount #t))
-
-
-;;; (rotate-player-right! node :: Node amount :: float)
-;;; ---------------------------------------------------------------------
-;;; rotates _node_ to the right an angle of _amount_ 
-
-(define (rotate-player-right! node :: Node amount :: float)
-  (*:rotate node 0 (* -1 amount) 0))
-
-
-;;; (rotate-player-left! node :: Node amount :: float)
-;;; ---------------------------------------------------------------------
-;;; rotates _node_ to the left an angle of _amount_ 
-
-(define (rotate-player-left! node :: Node amount :: float)
-  (*:rotate node 0 amount 0))
-
-
-;;; (rotate-player-up! node :: Node amount :: float)
-;;; ---------------------------------------------------------------------
-;;; rotates _node_ upward an angle of _amount_ 
-
-(define (rotate-player-up! node :: Node amount :: float)
-  (*:rotate node (* -1 amount) 0 0))
-
-
-;;; (rotate-player-down! node :: Node amount :: float)
-;;; ---------------------------------------------------------------------
-;;; rotates _node_ downward an angle of _amount_ 
-
-(define (rotate-player-down! node :: Node amount :: float)
-  (*:rotate node amount 0 0))
 
 ;;; ---------------------------------------------------------------------
 ;;; input-handling
@@ -255,46 +178,46 @@
 ;;; event-handling
 ;;; ---------------------------------------------------------------------
 
-;;; (handle-analog-event app name value tpf)
+;;; (handle-analog-event state name value tpf)
 ;;; ---------------------------------------------------------------------
 ;;; handle mouse movements and other continuous events
 
 (define (play-state-handle-analog-event state::PlayState name value tpf)
-  (let* ((app::FabricClient (*:getClient state))
-         (speed (*:getSpeed app))
-         (pchar (*:getPlayerCharacter state))
+  (let* ((client::FabricClient (*:getClient state))
+         (speed (*:getSpeed state))
+         (pchar::FabricCharacter (*:getPlayerCharacter state))
          (node (*:getNode pchar))
-         (right-button-down? (*:getRightButton app)))
+         (right-button-down? (*:getRightButton client)))
     (format #t "~%%handle-analog-event called")
     (on-analog (name)
-               ("moveForward" -> (move-player-forward! app node (* speed tpf)))
+               ("moveForward" -> (move-node-forward! state node (* speed tpf)))
                ("maybeMoveForward" -> (when right-button-down?
-                                        (move-player-forward! app node (* speed tpf))))
-               ("moveBackward" -> (move-player-backward! app node (* 0.6 speed tpf)))
-               ("moveRight" -> (move-player-right! app node (* speed tpf)))
-               ("moveLeft" -> (move-player-left! app node (* speed tpf)))
-               ("rotateRight" -> (rotate-player-right! node (* 0.25 tpf)))
+                                        (move-node-forward! state node (* speed tpf))))
+               ("moveBackward" -> (move-node-backward! state node (* 0.6 speed tpf)))
+               ("moveRight" -> (move-node-right! state node (* speed tpf)))
+               ("moveLeft" -> (move-node-left! state node (* speed tpf)))
+               ("rotateRight" -> (rotate-node-right! node (* 0.25 tpf)))
                ("mouseRotateRight" -> (when right-button-down?
-                                        (rotate-player-right! node value)))
-               ("rotateLeft" -> (rotate-player-left! node (* 0.25 tpf)))
+                                        (rotate-node-right! node value)))
+               ("rotateLeft" -> (rotate-node-left! node (* 0.25 tpf)))
                ("mouseRotateLeft" -> (when right-button-down?
-                                       (rotate-player-left! node value)))
-               ("rotateUp" -> (rotate-player-up! node (* 0.125 tpf)))
+                                       (rotate-node-left! node value)))
+               ("rotateUp" -> (rotate-node-up! node (* 0.125 tpf)))
                ("mouseRotateUp" -> (when right-button-down?
-                                     (rotate-player-up! node value)))
-               ("rotateDown" -> (rotate-player-down! node (* 0.125 tpf)))
+                                     (rotate-node-up! node value)))
+               ("rotateDown" -> (rotate-node-down! node (* 0.125 tpf)))
                ("mouseRotateDown" -> (when right-button-down?
-                                       (rotate-player-down! node value))))))
+                                       (rotate-node-down! node value))))))
 
-;;; (handle-action-event app name key-pressed? tpf)
+;;; (handle-action-event state name key-pressed? tpf)
 ;;; ---------------------------------------------------------------------
 ;;; handle keypresses, mouse clicks, and other discrete events
 
 (define (play-state-handle-action-event state::PlayState name key-pressed? tpf)
-  (let ((app::FabricClient (*:getClient state)))
+  (let ((client::FabricClient (*:getClient state)))
     (on-action (name)
-               ("leftButton" -> (*:setLeftButton app key-pressed?))
-               ("rightButton" -> (*:setRightButton app key-pressed?)))))
+               ("leftButton" -> (*:setLeftButton client key-pressed?))
+               ("rightButton" -> (*:setRightButton client key-pressed?)))))
 
 ;;; ---------------------------------------------------------------------
 ;;; PlayState functions
@@ -303,7 +226,7 @@
 (define (->texture-name name-text)
   (string-append name-text ".jpg"))
 
-(define (prepare-to-attach-play-state state::PlayState client)
+(define (prepare-to-attach-play-state state::PlayState client::FabricClient)
   (unless (*:getInitialized state)
           (let* ((screen::Screen (*:getScreen client))
                  (gui-node::Node (*:getGuiNode client))
@@ -322,7 +245,7 @@
 
 (define (did-attach-play-state state::PlayState mgr::AppStateManager)
   (when (*:getInitialized state)
-        (let* ((client (*:getClient state))
+        (let* ((client::FabricClient (*:getClient state))
                (screen::Screen (*:getScreen client))
                (gui-node::Node (*:getGuiNode client)))
           (*:enqueue client
@@ -335,7 +258,7 @@
 
 (define (did-detach-play-state state::PlayState mgr::AppStateManager)
   (when (*:getInitialized state)
-    (let* ((client (*:getClient state))
+    (let* ((client::FabricClient (*:getClient state))
            (screen::Screen (*:getScreen client))
            (gui-node::Node (*:getGuiNode client)))
       (*:enqueue client

@@ -11,7 +11,10 @@
 
 (module-export
  TransitState
- make-transit-state)
+ did-attach-transit-state
+ did-detach-transit-state
+ make-transit-state
+ prepare-to-attach-transit-state)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -22,6 +25,7 @@
 (require "util-lists.scm")
 (require "data-nodes.scm")
 (require "client-state.scm")
+(require "client-class.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -93,32 +97,29 @@
 ;;; TransitState functions
 ;;; ---------------------------------------------------------------------
 
-(define (prepare-to-attach-transit-state state::TransitState client)
+(define (prepare-to-attach-transit-state state::TransitState client::FabricClient)
   (unless (*:getInitialized state)
-          (let* ((screen::Screen (*:getScreen client))
-                 (gui-node::Node (*:getGuiNode client))
-                 (Align BitmapFont:Align)
-                 )
-            (*:setInitialized state #t))))
+    (let* ((screen::Screen (*:getScreen client))
+           (gui-node::Node (*:getGuiNode client))
+           (Align BitmapFont:Align))
+      (*:setInitialized state #t))))
 
 (define (did-attach-transit-state state::TransitState mgr::AppStateManager)
   (when (*:getInitialized state)
-        (let* ((client (*:getClient state))
-               (screen::Screen (*:getScreen client))
-               (gui-node::Node (*:getGuiNode client)))
-          (*:enqueue client
-                     (runnable (lambda ()
-                                 (let ((client (*:getClient state))
-                                       (root::Node (*:getRootNode client)))
-                                   (*:addControl gui-node screen))))))))
-
-(define (did-detach-transit-state state::TransitState mgr::AppStateManager)
-  (when (*:getInitialized state)
-    (let* ((client (*:getClient state))
+    (let* ((client::FabricClient (*:getClient state))
            (screen::Screen (*:getScreen client))
            (gui-node::Node (*:getGuiNode client)))
       (*:enqueue client
                  (runnable (lambda ()
-                             (let ((client (*:getClient state))
-                                   (root::Node (*:getRootNode client)))
+                             (let ((root::Node (*:getRootNode client)))
+                               (*:addControl gui-node screen))))))))
+
+(define (did-detach-transit-state state::TransitState mgr::AppStateManager)
+  (when (*:getInitialized state)
+    (let* ((client::FabricClient (*:getClient state))
+           (screen::Screen (*:getScreen client))
+           (gui-node::Node (*:getGuiNode client)))
+      (*:enqueue client
+                 (runnable (lambda ()
+                             (let ((root::Node (*:getRootNode client)))
                                (*:removeControl gui-node screen))))))))
