@@ -72,6 +72,10 @@
 
 (define-simple-class CreateCharacterState (FabricClientState)
   ;; slots
+  (faction-nameplate init-form: #!null)
+  ((getFactionNameplate) faction-nameplate)
+  ((setFactionNameplate new-plate) (set! faction-nameplate new-plate))
+  ;; initialized
   (initialized? init: #f)
   ((getInitialized) initialized?)
   ((setInitialized newstate) (set! initialized? newstate))
@@ -177,7 +181,7 @@
     (let* ((screen::Screen (*:getScreen client))
            (gui-node::Node (*:getGuiNode client))
            (Align BitmapFont:Align)
-           ;;(faction-nameplate::Label (make-faction-nameplate screen))
+           (faction-nameplate::Label (make-faction-nameplate screen))
            ;;(character-nameplate::Label (make-character-nameplate screen))
            ;;(faction-picker::Window (make-faction-picker state screen))
            ;;(weapon-picker::Window (make-weapon-picker state screen))
@@ -192,7 +196,7 @@
       ;;(*:setAugmentPicker state augment-picker)
       ;;(*:setNamePicker state name-picker)
       ;;(*:setCharacterAcceptor state character-acceptor)
-      ;;(*:setFactionNameplate state faction-nameplate)
+      (*:setFactionNameplate state faction-nameplate)
       ;;(*:setCharacterNameplate state character-nameplate)
       (*:setInitialized state #t))))
 
@@ -204,7 +208,7 @@
       (*:enqueue client
                  (runnable (lambda ()
                              (let ((root::Node (*:getRootNode client)))
-                               ;;(*:addElement screen (*:getFactionNameplate state))
+                               (*:addElement screen (*:getFactionNameplate state))
                                ;;(*:addElement screen (*:getCharacterNameplate state))
                                ;;(*:addElement screen (*:getFactionPicker state))
                                ;;(*:addElement screen (*:getWeaponPicker state))
@@ -222,7 +226,7 @@
       (*:enqueue client
                  (runnable (lambda ()
                              (let ((root::Node (*:getRootNode client)))
-                               ;;(*:addElement screen (*:getFactionNameplate state))
+                               (*:removeElement screen (*:getFactionNameplate state))
                                ;;(*:addElement screen (*:getCharacterNameplate state))
                                ;;(*:addElement screen (*:getFactionPicker state))
                                ;;(*:addElement screen (*:getWeaponPicker state))
