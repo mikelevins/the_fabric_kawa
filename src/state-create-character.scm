@@ -72,9 +72,18 @@
 
 (define-simple-class CreateCharacterState (FabricClientState)
   ;; slots
+  ;; faction
+  (faction init-form: #!null)
+  ((getFaction) faction)
+  ((setFaction new-faction) (set! faction new-faction))
+  ;; faction nameplate
   (faction-nameplate init-form: #!null)
   ((getFactionNameplate) faction-nameplate)
   ((setFactionNameplate new-plate) (set! faction-nameplate new-plate))
+  ;; faction picker
+  (faction-picker init-form: #!null)
+  ((getFactionPicker) faction-picker)
+  ((setFactionPicker new-plate) (set! faction-picker new-plate))
   ;; initialized
   (initialized? init: #f)
   ((getInitialized) initialized?)
@@ -183,14 +192,14 @@
            (Align BitmapFont:Align)
            (faction-nameplate::Label (make-faction-nameplate screen))
            ;;(character-nameplate::Label (make-character-nameplate screen))
-           ;;(faction-picker::Window (make-faction-picker state screen))
+           (faction-picker::Window (make-faction-picker state screen))
            ;;(weapon-picker::Window (make-weapon-picker state screen))
            ;;(armor-picker::Window (make-armor-picker state screen))
            ;;(augment-picker::Window (make-augment-picker state screen))
            ;;(name-picker::Window (make-name-picker screen))
            ;;(character-acceptor::Window (make-character-acceptor screen))
            )
-      ;;(*:setFactionPicker state faction-picker)
+      (*:setFactionPicker state faction-picker)
       ;;(*:setWeaponPicker state weapon-picker)
       ;;(*:setArmorPicker state armor-picker)
       ;;(*:setAugmentPicker state augment-picker)
@@ -210,7 +219,7 @@
                              (let ((root::Node (*:getRootNode client)))
                                (*:addElement screen (*:getFactionNameplate state))
                                ;;(*:addElement screen (*:getCharacterNameplate state))
-                               ;;(*:addElement screen (*:getFactionPicker state))
+                               (*:addElement screen (*:getFactionPicker state))
                                ;;(*:addElement screen (*:getWeaponPicker state))
                                ;;(*:addElement screen (*:getArmorPicker state))
                                ;;(*:addElement screen (*:getAugmentPicker state))
@@ -228,7 +237,7 @@
                              (let ((root::Node (*:getRootNode client)))
                                (*:removeElement screen (*:getFactionNameplate state))
                                ;;(*:addElement screen (*:getCharacterNameplate state))
-                               ;;(*:addElement screen (*:getFactionPicker state))
+                               (*:removeElement screen (*:getFactionPicker state))
                                ;;(*:addElement screen (*:getWeaponPicker state))
                                ;;(*:addElement screen (*:getArmorPicker state))
                                ;;(*:addElement screen (*:getAugmentPicker state))
