@@ -26,7 +26,7 @@
 ;;; evaluate these expressions to create and run the Fabric client
 
 ;;; (define $client::FabricClient (make-client))
-;;; (define $pchar (FabricCharacter))
+;;; (define $pchar (make-fabric-character))
 ;;; (*:start $client)
 ;;; (client-set-login-state! $client)
 ;;; (client-set-create-character-state! $client)
