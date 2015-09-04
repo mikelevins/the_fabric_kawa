@@ -72,6 +72,10 @@
 
 (define-simple-class CreateCharacterState (FabricClientState)
   ;; slots
+  ;; name picker UI
+  (name-picker init-form: #!null)
+  ((getNamePicker) name-picker)
+  ((setNamePicker new-picker) (set! name-picker new-picker))
   ;; faction
   (faction init-form: #!null)
   ((getFaction) faction)
@@ -228,14 +232,13 @@
            (weapon-picker::Window (make-weapon-picker state screen))
            (armor-picker::Window (make-armor-picker state screen))
            (augment-picker::Window (make-augment-picker state screen))
-           ;;(name-picker::Window (make-name-picker screen))
-           (character-acceptor::Window (make-character-acceptor screen))
-           )
+           (name-picker::Window (make-name-picker screen))
+           (character-acceptor::Window (make-character-acceptor screen)))
       (*:setFactionPicker state faction-picker)
       (*:setWeaponPicker state weapon-picker)
       (*:setArmorPicker state armor-picker)
       (*:setAugmentPicker state augment-picker)
-      ;;(*:setNamePicker state name-picker)
+      (*:setNamePicker state name-picker)
       (*:setCharacterAcceptor state character-acceptor)
       (*:setFactionNameplate state faction-nameplate)
       (*:setCharacterNameplate state character-nameplate)
@@ -255,7 +258,7 @@
                                (*:addElement screen (*:getWeaponPicker state))
                                (*:addElement screen (*:getArmorPicker state))
                                (*:addElement screen (*:getAugmentPicker state))
-                               ;;(*:addElement screen (*:getNamePicker state))
+                               (*:addElement screen (*:getNamePicker state))
                                (*:addElement screen (*:getCharacterAcceptor state))
                                (*:addControl gui-node screen))))))))
 
@@ -273,6 +276,6 @@
                                (*:removeElement screen (*:getWeaponPicker state))
                                (*:removeElement screen (*:getArmorPicker state))
                                (*:removeElement screen (*:getAugmentPicker state))
-                               ;;(*:addElement screen (*:getNamePicker state))
+                               (*:removeElement screen (*:getNamePicker state))
                                (*:removeElement screen (*:getCharacterAcceptor state))
                                (*:removeControl gui-node screen))))))))
