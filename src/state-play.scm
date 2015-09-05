@@ -80,7 +80,7 @@
   ((getSky) sky)
   ((setSky new-sky) (set! sky new-sky))
   ;; the speed of camera movement
-  (speed type: float init-form: 0.0)
+  (speed type: float init-form: 3000.0)
   ((getSpeed) speed)
   ((setSpeed new-speed) (set! speed new-speed))
   ;; whether the scene is initialized
@@ -148,7 +148,6 @@
   ;; set up the player's controls
   (let ((key-input ::KeyInput (*:getKeyInput app))
         (input-manager (*:getInputManager app)))
-    (format #t "~%setup-inputs called")
     (route-keys (input-manager)
                 ((KeyTrigger key-input:KEY_UP) -> "moveForward")
                 ((KeyTrigger key-input:KEY_W) ->  "moveForward")
@@ -265,7 +264,7 @@
                              (let* ((root::Node (*:getRootNode client))
                                     (rotation (Quaternion))
                                     (pitch-axis (Vector3f 1 0 0)))
-                               (*:setLocalTranslation pnode 0.0 16000.0 0.0)
+                               (*:setLocalTranslation pnode 0.0 20000.0 0.0)
                                ;; PI/4 radians points us right at the center
                                (*:fromAngleAxis rotation (/ PI 4) pitch-axis)
                                (*:setLocalRotation pnode rotation)
