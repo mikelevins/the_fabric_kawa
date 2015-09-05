@@ -29,8 +29,8 @@
    (let ((button-id (*:getUID value))
          (state::CreateCharacterState (*:getAppState (this))))
      (cond
-      ((equal? "AbsorbButton" button-id)(*:setArmor state 'absorb))
-      ((equal? "RegenerateButton" button-id)(*:setArmor state 'regenerate))
-      ((equal? "PowerButton" button-id)(*:setArmor state 'power))
-      ((equal? "EnergyButton" button-id)(*:setArmor state 'energy))
+      ((equal? "AbsorbButton" button-id)(set!  state:armor 'absorb))
+      ((equal? "RegenerateButton" button-id)(set! state:armor 'regenerate))
+      ((equal? "PowerButton" button-id)(set! state:armor 'power))
+      ((equal? "EnergyButton" button-id)(set! state:armor 'energy))
       (else (format #t "~%Unknown armor selected"))))))

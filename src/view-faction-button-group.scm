@@ -29,7 +29,7 @@
    (let ((button-id (*:getUID value))
          (state::CreateCharacterState (*:getAppState (this))))
      (cond
-      ((equal? "CaretakerButton" button-id)(*:setFaction state 'caretakers))
-      ((equal? "RoguesButton" button-id)(*:setFaction state 'rogues))
-      ((equal? "AbjurersButton" button-id)(*:setFaction state 'abjurers))
+      ((equal? "CaretakerButton" button-id)(set! state:faction 'caretakers))
+      ((equal? "RoguesButton" button-id)(set! state:faction 'rogues))
+      ((equal? "AbjurersButton" button-id)(set! state:faction 'abjurers))
       (else (format #t "~%Unknown faction selected"))))))

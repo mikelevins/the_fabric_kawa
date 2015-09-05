@@ -72,58 +72,19 @@
 
 (define-simple-class CreateCharacterState (FabricClientState)
   ;; slots
-  ;; name picker UI
   (name-picker init-form: #!null)
-  ((getNamePicker) name-picker)
-  ((setNamePicker new-picker) (set! name-picker new-picker))
-  ;; faction
   (faction init-form: #!null)
-  ((getFaction) faction)
-  ((setFaction new-faction) (set! faction new-faction))
-  ;; character nameplate
   (character-nameplate init-form: #!null)
-  ((getCharacterNameplate) character-nameplate)
-  ((setCharacterNameplate new-plate)(set! character-nameplate new-plate))
-  ;; faction nameplate
   (faction-nameplate init-form: #!null)
-  ((getFactionNameplate) faction-nameplate)
-  ((setFactionNameplate new-plate) (set! faction-nameplate new-plate))
-  ;; faction picker
   (faction-picker init-form: #!null)
-  ((getFactionPicker) faction-picker)
-  ((setFactionPicker new-plate) (set! faction-picker new-plate))
-  ;; weapon
   (weapon init-form: #!null)
-  ((getWeapon) weapon)
-  ((setWeapon new-weapon) (set! weapon new-weapon))
-  ;; weapon picker UI
   (weapon-picker init-form: #!null)
-  ((getWeaponPicker) weapon-picker)
-  ((setWeaponPicker new-picker) (set! weapon-picker new-picker))
-  ;; armor
   (armor init-form: #!null)
-  ((getArmor) armor)
-  ((setArmor new-armor) (set! armor new-armor))
-  ;; armor picker UI
   (armor-picker init-form: #!null)
-  ((getArmorPicker) armor-picker)
-  ((setArmorPicker new-picker) (set! armor-picker new-picker))
-  ;; augment
   (augment init-form: #!null)
-  ((getAugment) augment)
-  ((setAugment new-augment) (set! augment new-augment))
-  ;; augment picker UI
   (augment-picker init-form: #!null)
-  ((getAugmentPicker) augment-picker)
-  ((setAugmentPicker new-picker) (set! augment-picker new-picker))
-  ;; character acceptor UI
   (character-acceptor init-form: #!null)
-  ((getCharacterAcceptor) character-acceptor)
-  ((setCharacterAcceptor new-acceptor)(set! character-acceptor new-acceptor))
-  ;; initialized
   (initialized? init: #f)
-  ((getInitialized) initialized?)
-  ((setInitialized newstate) (set! initialized? newstate))
   ;; methods
   ((cleanup) (%create-character-state-cleanup (this)))
   ((isEnabled) (%create-character-state-enabled? (this)))
@@ -133,7 +94,7 @@
    (%create-character-state-detached (this) state-manager))
   ;; init
   ((initialize) (%create-character-state-initialize (this)))
-  ((isInitialized) (%create-character-state-initialized? (this))))
+  ((isInitialized) initialized?))
 
 (define (%create-character-state-cleanup state::CreateCharacterState)
   (format #t "~%%create-character-state-cleanup called"))
@@ -222,7 +183,7 @@
 ;;; attach and detach
 
 (define (prepare-to-attach-create-character-state state::CreateCharacterState client::FabricClient)
-  (unless (*:getInitialized state)
+  (unless state:initialized?
     (let* ((screen::Screen (*:getScreen client))
            (gui-node::Node (*:getGuiNode client))
            (Align BitmapFont:Align)
@@ -234,48 +195,48 @@
            (augment-picker::Window (make-augment-picker state screen))
            (name-picker::Window (make-name-picker screen))
            (character-acceptor::Window (make-character-acceptor screen)))
-      (*:setFactionPicker state faction-picker)
-      (*:setWeaponPicker state weapon-picker)
-      (*:setArmorPicker state armor-picker)
-      (*:setAugmentPicker state augment-picker)
-      (*:setNamePicker state name-picker)
-      (*:setCharacterAcceptor state character-acceptor)
-      (*:setFactionNameplate state faction-nameplate)
-      (*:setCharacterNameplate state character-nameplate)
-      (*:setInitialized state #t))))
+      (set! state:faction-picker faction-picker)
+      (set! state:weapon-picker weapon-picker)
+      (set! state:armor-picker armor-picker)
+      (set! state:augment-picker augment-picker)
+      (set! state:name-picker name-picker)
+      (set! state:character-acceptor character-acceptor)
+      (set! state:faction-nameplate faction-nameplate)
+      (set! state:character-nameplate character-nameplate)
+      (set! state:initialized? #t))))
 
 (define (did-attach-create-character-state state::CreateCharacterState mgr::AppStateManager)
-  (when (*:getInitialized state)
+  (when state:initialized?
     (let* ((client::FabricClient (*:getClient state))
            (screen::Screen (*:getScreen client))
            (gui-node::Node (*:getGuiNode client)))
       (*:enqueue client
                  (runnable (lambda ()
                              (let ((root::Node (*:getRootNode client)))
-                               (*:addElement screen (*:getFactionNameplate state))
-                               (*:addElement screen (*:getCharacterNameplate state))
-                               (*:addElement screen (*:getFactionPicker state))
-                               (*:addElement screen (*:getWeaponPicker state))
-                               (*:addElement screen (*:getArmorPicker state))
-                               (*:addElement screen (*:getAugmentPicker state))
-                               (*:addElement screen (*:getNamePicker state))
-                               (*:addElement screen (*:getCharacterAcceptor state))
+                               (*:addElement screen state:faction-nameplate)
+                               (*:addElement screen state:character-nameplate)
+                               (*:addElement screen state:faction-picker)
+                               (*:addElement screen state:weapon-picker)
+                               (*:addElement screen state:armor-picker)
+                               (*:addElement screen state:augment-picker)
+                               (*:addElement screen state:name-picker)
+                               (*:addElement screen state:character-acceptor)
                                (*:addControl gui-node screen))))))))
 
 (define (did-detach-create-character-state state::CreateCharacterState mgr::AppStateManager)
-  (when (*:getInitialized state)
+  (when state:initialized?
     (let* ((client::FabricClient (*:getClient state))
            (screen::Screen (*:getScreen client))
            (gui-node::Node (*:getGuiNode client)))
       (*:enqueue client
                  (runnable (lambda ()
                              (let ((root::Node (*:getRootNode client)))
-                               (*:removeElement screen (*:getFactionNameplate state))
-                               (*:removeElement screen (*:getCharacterNameplate state))
-                               (*:removeElement screen (*:getFactionPicker state))
-                               (*:removeElement screen (*:getWeaponPicker state))
-                               (*:removeElement screen (*:getArmorPicker state))
-                               (*:removeElement screen (*:getAugmentPicker state))
-                               (*:removeElement screen (*:getNamePicker state))
-                               (*:removeElement screen (*:getCharacterAcceptor state))
+                               (*:removeElement screen state:faction-nameplate)
+                               (*:removeElement screen state:character-nameplate)
+                               (*:removeElement screen state:faction-picker)
+                               (*:removeElement screen state:weapon-picker)
+                               (*:removeElement screen state:armor-picker)
+                               (*:removeElement screen state:augment-picker)
+                               (*:removeElement screen state:name-picker)
+                               (*:removeElement screen state:character-acceptor)
                                (*:removeControl gui-node screen))))))))

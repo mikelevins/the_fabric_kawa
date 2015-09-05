@@ -29,9 +29,9 @@
    (let ((button-id (*:getUID value))
          (state::CreateCharacterState (*:getAppState (this))))
      (cond
-      ((equal? "CannonButton" button-id)(*:setWeapon state 'cannon))
-      ((equal? "ImpulseButton" button-id)(*:setWeapon state 'impulse))
-      ((equal? "MalwareButton" button-id)(*:setWeapon state 'malware))
-      ((equal? "BotsButton" button-id)(*:setWeapon state 'bots))
+      ((equal? "CannonButton" button-id)(set! state:weapon 'cannon))
+      ((equal? "ImpulseButton" button-id)(set! state:weapon 'impulse))
+      ((equal? "MalwareButton" button-id)(set! state:weapon 'malware))
+      ((equal? "BotsButton" button-id)(set! state:weapon 'bots))
       (else (format #t "~%Unknown weapon selected"))))))
 

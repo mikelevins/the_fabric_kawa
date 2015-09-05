@@ -29,8 +29,8 @@
    (let ((button-id (*:getUID value))
          (state::CreateCharacterState (*:getAppState (this))))
      (cond
-      ((equal? "ForceButton" button-id)(*:setAugment state 'force))
-      ((equal? "OpticsButton" button-id)(*:setAugment state 'optics))
-      ((equal? "PortalsButton" button-id)(*:setAugment state 'portals))
-      ((equal? "TurretsButton" button-id)(*:setAugment state 'turrets))
+      ((equal? "ForceButton" button-id)(set! state:augment 'force))
+      ((equal? "OpticsButton" button-id)(set! state:augment 'optics))
+      ((equal? "PortalsButton" button-id)(set! state:augment 'portals))
+      ((equal? "TurretsButton" button-id)(set! state:augment 'turrets))
       (else (format #t "~%Unknown augment selected"))))))
