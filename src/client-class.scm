@@ -151,7 +151,7 @@
 ;;; PRIVATE
 ;;; ---------------------------------------------------------------------
 ;;; these functions are private and are not thread-safe; do not call
-;;; them directly; rely on enqueue-client-state-update
+;;; them directly; rely on enqueue-state-change
 ;;; ---------------------------------------------------------------------
 ;;; %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
