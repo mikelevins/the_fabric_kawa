@@ -65,7 +65,7 @@
   ((getAppSettings) app-settings)
   ((setAppSettings settings) (set! app-settings settings))
   ;; client-state
-  (client-state::FabricClientState init: #!null)
+  (client-state init: #!null)
   ((getClientState) client-state)
   ((setClientState state) (set! client-state state))
   ;; user
