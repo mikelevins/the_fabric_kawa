@@ -191,7 +191,7 @@
          (power-button (make-power-button screen))
          (energy-button (make-energy-button screen)))
     (*:setWindowTitle win "Choose an armor:")
-    (*:setAppState armors-group state)
+    (set! armors-group:app-state state)
     ;; absorb button
     (*:setButtonIcon absorb-button 96 96 "Interface/absorb-armor-icon96.png")
     (*:setButtonPressedInfo absorb-button "Interface/absorb-armor-icon96.png"

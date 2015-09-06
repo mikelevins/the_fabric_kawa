@@ -190,7 +190,7 @@
                       (Vector2f (get-left rect)(get-top rect))
                       (Vector2f (get-width rect)(get-height rect)))))
     (*:setWindowTitle win "Choose an augment:")
-    (*:setAppState augments-group state)
+    (set! augments-group:app-state state)
     ;; force button
     (*:setButtonIcon force-button 96 96 "Interface/force-augment-icon96.png")
     (*:setButtonPressedInfo force-button "Interface/force-augment-icon96.png"

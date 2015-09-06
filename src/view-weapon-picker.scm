@@ -190,7 +190,7 @@
          (malware-button (make-malware-button screen))
          (bots-button (make-bots-button screen)))
     (*:setWindowTitle win "Choose a weapon:")
-    (*:setAppState weapons-group state)
+    (set! weapons-group:app-state state)
     ;; cannon button
     (*:setButtonIcon cannon-button 96 96 "Interface/cannon-weapon-icon96.png")
     (*:setButtonPressedInfo cannon-button "Interface/cannon-weapon-icon96.png"

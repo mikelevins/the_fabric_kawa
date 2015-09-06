@@ -154,7 +154,7 @@
          (abjurers-button (make-abjurers-button screen))
          (rogues-button (make-rogues-button screen)))
     (*:setWindowTitle win "Choose a faction:")
-    (*:setAppState faction-group state)
+    (set! faction-group:app-state state)
     ;; caretaker button
     (*:setButtonIcon caretaker-button 96 96 "Interface/caretakers-icon96.png")
     (*:setButtonPressedInfo caretaker-button "Interface/caretakers-icon96.png"

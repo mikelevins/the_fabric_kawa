@@ -35,8 +35,6 @@
 
 (define-simple-class RandomNameButton (Button)
   (palette init-form: #!null)
-  ((getPalette) palette)
-  ((setPalette new-palette)(set! palette new-palette))
   ((*init* screen::Screen uid::String position::Vector2f size::Vector2f)
    (invoke-special Button (this) '*init* screen uid position size))
   ((onButtonMouseLeftDown evt::MouseButtonEvent toggled::boolean) #!void)

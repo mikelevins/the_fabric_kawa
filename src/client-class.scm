@@ -60,56 +60,26 @@
 
 (define-simple-class FabricClient (SimpleApplication AnalogListener ActionListener)
   ;; slots
-  ;; app-settings
   (app-settings init: #!null)
-  ((getAppSettings) app-settings)
-  ((setAppSettings settings) (set! app-settings settings))
-  ;; client-state
   (client-state init: #!null)
-  ((getClientState) client-state)
-  ((setClientState state) (set! client-state state))
-  ;; user
   (user init: #!null)
-  ((getUser) user)
-  ((setUser usr) (set! user usr))
-  ;; screen
   (screen init: #!null)
-  ((getScreen)(begin (if (eqv? screen #!null)(set! screen (Screen (this))))
-                     screen))
-  ((setScreen char) (set! screen char))
   (speed init: #!null)
-  ((getSpeed) speed)
-  ((setSpeed newspeed) (set! speed newspeed))
-  ;; camera direction
   (direction type: Vector3f init-form: (Vector3f))
-  ((getDirection) direction)
-  ((setDirection new-direction)(set! direction new-direction))
-  ;; mouse-button states
   (left-button? init-form: #f)
-  ((getLeftButton) left-button?)
-  ((setLeftButton newbutton)(set! left-button? newbutton))
   (right-button? init-form: #f)
-  ((getRightButton) right-button?)
-  ((setRightButton newbutton)(set! right-button? newbutton))
-  ;; other accessors
-  ((getCamera) cam)
-  ((getCameraDirection) (*:getDirection cam))
-  ((getAudioRenderer) audioRenderer)
-  ((getViewport) viewPort)
-  ((getInputManager) inputManager)
-  ((getStateManager) stateManager)
-  ((getGuiNode) guiNode)
-  ((getGuiFont) guiFont)
+  ;; accessors
   ((getKeyInput) keyInput)
+  ((getCameraDirection) (*:getDirection cam))
   ;; event handlers
   ((onAnalog name value tpf)(*:handleAnalogEvent client-state name value tpf))
   ((onAction name key-pressed? tpf)(*:handleActionEvent client-state name key-pressed? tpf))
-  
   ;; init
   ((simpleInitApp) (init-app (this))))
 
 (define (init-app app::FabricClient)
   (begin (*:setEnabled (*:getFlyByCamera app) #f)
+         (set! app:screen (Screen app))
          #!void))
 
 ;;; ---------------------------------------------------------------------
@@ -156,19 +126,19 @@
 ;;; %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 (define (%detach-and-cleanup-current-state! client::FabricClient)
-  (let ((current-state (*:getClientState client))
+  (let ((current-state client:client-state)
         (mgr (*:getStateManager client)))
     (unless (jnull? current-state)
       (*:detach mgr current-state)
-      (*:setClientState client #!null))))
+      (set! client:client-state #!null))))
 
 (define (%attach-and-activate-new-state! client::FabricClient new-state)
   (let ((mgr (*:getStateManager client)))
-    (*:setClientState client new-state)
+    (set! client:client-state new-state)
     (*:attach mgr new-state)))
 
 (define (%update-client-state! client::FabricClient new-state)
-  (unless (equal? new-state (*:getClientState client))
+  (unless (equal? new-state client:client-state)
     (%detach-and-cleanup-current-state! client)
     (%attach-and-activate-new-state! client new-state)))
 
@@ -219,7 +189,7 @@
 ;;; used by more specific move- functions like move-node-forward!
 
 (define (move-node!  app :: FabricClient node :: Node amount :: float invert?)
-  (let ((dir :: Vector3f (*:getDirection app))
+  (let ((dir :: Vector3f app:direction)
         (sign (if invert? -1 1)))
     (*:multLocal dir (* sign amount))
     (*:move node dir)))
@@ -231,7 +201,7 @@
 
 (define (move-node-forward! app :: FabricClient node :: Node amount :: float)
   (normalize-camera! app)
-  (*:setDirection app (*:getCameraDirection app))
+  (set! app:direction (*:getCameraDirection app))
   (move-node! app node amount #f))
 
 
@@ -241,7 +211,7 @@
 
 (define (move-node-backward! app :: FabricClient node :: Node amount :: float)
   (normalize-camera! app)
-  (*:setDirection app (*:getCameraDirection app))
+  (set! app:direction (*:getCameraDirection app))
   (move-node! app node amount #t))
 
 
@@ -250,7 +220,7 @@
 ;;; moves _node_ to the left a distance of _amount_
 
 (define (move-node-left! app :: FabricClient node :: Node amount :: float)
-  (*:setDirection app (*:normalizeLocal (*:getLeft (*:getCamera app))))
+  (set! app:direction (*:normalizeLocal (*:getLeft (*:getCamera app))))
   (move-node! app node amount #f))
 
 
@@ -259,7 +229,7 @@
 ;;; moves _node_ to the right a distance of _amount_
 
 (define (move-node-right! app :: FabricClient node :: Node amount :: float)
-  (*:setDirection app (*:normalizeLocal (*:getLeft (*:getCamera app))))
+  (set! app:direction (*:normalizeLocal (*:getLeft (*:getCamera app))))
   (move-node! app node amount #t))
 
 

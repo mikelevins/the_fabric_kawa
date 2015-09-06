@@ -63,30 +63,17 @@
 
 (define-simple-class PlayState (FabricClientState)
   ;; slots
-  ;; the player's character
   (player-character init: #!null)
-  ((getPlayerCharacter) player-character)
-  ((setPlayerCharacter new-character) (set! player-character new-character))
   ;; the name of location in the game world
   (node-name init: #f)
-  ((getNodeName) node-name)
-  ((setNodeName new-name) (set! node-name new-name))
   ;; the nearest celestial body
   (celestial-body init: #!null)
-  ((getCelestialBody) celestial-body)
-  ((setCelestialBody new-body)(set! celestial-body new-body))
   ;; the background of the scene
   (sky init: #f)
-  ((getSky) sky)
-  ((setSky new-sky) (set! sky new-sky))
   ;; the speed of camera movement
   (speed type: float init-form: 3000.0)
-  ((getSpeed) speed)
-  ((setSpeed new-speed) (set! speed new-speed))
   ;; whether the scene is initialized
   (initialized? init: #f)
-  ((getInitialized) initialized?)
-  ((setInitialized newstate) (set! initialized? newstate))
   ;; methods
   ((cleanup) (%play-state-cleanup (this)))
   ((isEnabled) (%play-state-enabled? (this)))
@@ -116,7 +103,7 @@
 (define (%play-state-initialized? state::PlayState) #t)
 
 (define (%play-state-attached state::PlayState manager::AppStateManager)
-  (let ((client::Application (*:getClient state)))
+  (let ((client::Application state:client))
     (prepare-to-attach-play-state state client)
     (did-attach-play-state state manager)))
 
@@ -129,9 +116,9 @@
 
 (define (make-play-state client::Application character::FabricCharacter node-name)
   (let ((state (PlayState)))
-    (*:setClient state client)
-    (*:setNodeName state node-name)
-    (*:setPlayerCharacter state character)
+    (set! state:client client)
+    (set! state:node-name node-name)
+    (set! state:player-character character)
     state))
 
 
@@ -186,11 +173,11 @@
 ;;; handle mouse movements and other continuous events
 
 (define (play-state-handle-analog-event state::PlayState name value tpf)
-  (let* ((client::FabricClient (*:getClient state))
-         (speed (*:getSpeed state))
-         (pchar::FabricCharacter (*:getPlayerCharacter state))
-         (node (*:getNode pchar))
-         (right-button-down? (*:getRightButton client)))
+  (let* ((client::FabricClient state:client)
+         (speed state:speed)
+         (pchar::FabricCharacter state:player-character)
+         (node pchar:node)
+         (right-button-down? client:right-button?))
     (on-analog (name)
                ("moveForward" -> (move-node-forward! client node (* speed tpf)))
                ("maybeMoveForward" -> (when right-button-down?
@@ -216,10 +203,10 @@
 ;;; handle keypresses, mouse clicks, and other discrete events
 
 (define (play-state-handle-action-event state::PlayState name key-pressed? tpf)
-  (let ((client::FabricClient (*:getClient state)))
+  (let ((client::FabricClient state:client))
     (on-action (name)
-               ("leftButton" -> (*:setLeftButton client key-pressed?))
-               ("rightButton" -> (*:setRightButton client key-pressed?)))))
+               ("leftButton" -> (set! client:left-button? key-pressed?))
+               ("rightButton" -> (set! client:right-button? key-pressed?)))))
 
 ;;; ---------------------------------------------------------------------
 ;;; PlayState functions
@@ -229,61 +216,60 @@
   (string-append name-text ".jpg"))
 
 (define (prepare-to-attach-play-state state::PlayState client::FabricClient)
-  (unless (*:getInitialized state)
-    (let* ((screen::Screen (*:getScreen client))
-           (gui-node::Node (*:getGuiNode client))
+  (unless state:initialized?
+    (let* ((screen::Screen client:screen)
+           (gui-node::Node client:guiNode)
            (Align BitmapFont:Align)
-           (name-text (*:getNodeName state))
+           (name-text state:node-name)
            (texture-name (->texture-name name-text))
            (body (make-celestial-body texture-name))
            (sky::Spatial (make-sky-box))
            (camera::com.jme3.renderer.Camera (*:getCamera client))
            (cam-node (CameraNode "camera" camera))
-           (pchar::FabricCharacter (*:getPlayerCharacter state))
-           (pnode::Node (*:getNode pchar)))
+           (pchar::FabricCharacter state:player-character)
+           (pnode::Node pchar:node))
       (*:setControlDir cam-node CameraControl:ControlDirection:SpatialToCamera)
       (*:setFrustumFar camera 80000)
       (*:setLocalTranslation cam-node (Vector3f 0 30 -30))
       (*:lookAt cam-node (*:getLocalTranslation pnode) Vector3f:UNIT_Y)
       (*:attachChild pnode cam-node)
-      (*:setCelestialBody state body)
-      (*:setSky state sky)
+      (set! state:celestial-body body)
+      (set! state:sky sky)
       (*:setEnabled (*:getFlyByCamera client) #f)
       (setup-inputs client)
-      (*:setInitialized state #t))))
+      (set! state:initialized? #t))))
 
 (define (did-attach-play-state state::PlayState mgr::AppStateManager)
-  (when (*:getInitialized state)
-    (let* ((client::FabricClient (*:getClient state))
-           (screen::Screen (*:getScreen client))
-           (gui-node::Node (*:getGuiNode client))
-           (pchar::FabricCharacter (*:getPlayerCharacter state))
-           (pnode::Node (*:getNode pchar)))
+  (when state:initialized?
+    (let* ((client::FabricClient state:client)
+           (screen::Screen client:screen)
+           (gui-node::Node client:guiNode)
+           (pchar::FabricCharacter state:player-character)
+           (pnode::Node pchar:node))
       (*:enqueue client
                  (runnable (lambda ()
-                             (let* ((root::Node (*:getRootNode client))
+                             (let* ((root::Node client:rootNode)
                                     (rotation (Quaternion))
                                     (pitch-axis (Vector3f 1 0 0)))
                                (*:setLocalTranslation pnode 0.0 20000.0 0.0)
                                ;; PI/4 radians points us right at the center
                                (*:fromAngleAxis rotation (/ PI 4) pitch-axis)
                                (*:setLocalRotation pnode rotation)
-                               (*:attachChild root (*:getSky state))
-                               (*:attachChild root (*:getCelestialBody state))
+                               (*:attachChild root state:sky)
+                               (*:attachChild root state:celestial-body)
                                (*:attachChild root pnode)
                                (*:addControl gui-node screen))))))))
 
 (define (did-detach-play-state state::PlayState mgr::AppStateManager)
-  (when (*:getInitialized state)
-    (let* ((client::FabricClient (*:getClient state))
-           (screen::Screen (*:getScreen client))
-           (gui-node::Node (*:getGuiNode client)))
+  (when state:initialized?
+    (let* ((client::FabricClient state:client)
+           (screen::Screen client:screen)
+           (gui-node::Node client:guiNode))
       (*:enqueue client
                  (runnable (lambda ()
-                             (let ((client (*:getClient state))
-                                   (root::Node (*:getRootNode client))
-                                   (sky::Spatial (*:getSky state))
-                                   (body (*:getCelestialBody state)))
+                             (let ((root::Node client:rootNode)
+                                   (sky::Spatial state:sky)
+                                   (body state:celestial-body))
                                (*:detachChild root sky)
                                (*:detachChild root body)
                                (*:removeControl gui-node screen))))))))

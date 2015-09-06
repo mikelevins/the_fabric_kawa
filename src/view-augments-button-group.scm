@@ -21,13 +21,11 @@
 
 (define-simple-class AugmentsButtonGroup (RadioButtonGroup)
   (app-state init-form: #!null)
-  ((getAppState) app-state)
-  ((setAppState new-state)(set! app-state new-state))
   ((*init* screen::Screen uid::String)
    (invoke-special RadioButtonGroup (this) '*init* screen uid))
   ((onSelect index::int value::Button)
    (let ((button-id (*:getUID value))
-         (state::CreateCharacterState (*:getAppState (this))))
+         (state::CreateCharacterState app-state))
      (cond
       ((equal? "ForceButton" button-id)(set! state:augment 'force))
       ((equal? "OpticsButton" button-id)(set! state:augment 'optics))

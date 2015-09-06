@@ -107,7 +107,7 @@
 (define (%create-character-state-initialized? state::CreateCharacterState) #t)
 
 (define (%create-character-state-attached state::CreateCharacterState manager::AppStateManager)
-  (let ((client::Application (*:getClient state)))
+  (let ((client::Application state:client))
     (prepare-to-attach-create-character-state state client)
     (did-attach-create-character-state state manager)))
 
@@ -116,7 +116,7 @@
 
 (define (make-create-character-state client::Application)
   (let ((state (CreateCharacterState)))
-    (*:setClient state client)
+    (set! state:client client)
     state))
 
 ;;; ---------------------------------------------------------------------
@@ -184,8 +184,8 @@
 
 (define (prepare-to-attach-create-character-state state::CreateCharacterState client::FabricClient)
   (unless state:initialized?
-    (let* ((screen::Screen (*:getScreen client))
-           (gui-node::Node (*:getGuiNode client))
+    (let* ((screen::Screen client:screen)
+           (gui-node::Node client:guiNode)
            (Align BitmapFont:Align)
            (faction-nameplate::Label (make-faction-nameplate screen))
            (character-nameplate::Label (make-character-nameplate screen))
@@ -207,9 +207,9 @@
 
 (define (did-attach-create-character-state state::CreateCharacterState mgr::AppStateManager)
   (when state:initialized?
-    (let* ((client::FabricClient (*:getClient state))
-           (screen::Screen (*:getScreen client))
-           (gui-node::Node (*:getGuiNode client)))
+    (let* ((client::FabricClient state:client)
+           (screen::Screen client:screen)
+           (gui-node::Node client:guiNode))
       (*:enqueue client
                  (runnable (lambda ()
                              (let ((root::Node (*:getRootNode client)))
@@ -225,12 +225,12 @@
 
 (define (did-detach-create-character-state state::CreateCharacterState mgr::AppStateManager)
   (when state:initialized?
-    (let* ((client::FabricClient (*:getClient state))
-           (screen::Screen (*:getScreen client))
-           (gui-node::Node (*:getGuiNode client)))
+    (let* ((client::FabricClient state:client)
+           (screen::Screen client:screen)
+           (gui-node::Node client:guiNode))
       (*:enqueue client
                  (runnable (lambda ()
-                             (let ((root::Node (*:getRootNode client)))
+                             (let ((root::Node client:rootNode))
                                (*:removeElement screen state:faction-nameplate)
                                (*:removeElement screen state:character-nameplate)
                                (*:removeElement screen state:faction-picker)

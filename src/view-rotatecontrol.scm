@@ -16,14 +16,8 @@
 
 (define-simple-class RotateControl (AbstractControl)
   (xrate type: float init: 0.0)
-  ((getXRate) xrate)
-  ((setXRate new-rate)(set! xrate new-rate))
   (yrate type: float init: 0.0)
-  ((getYrate) yrate)
-  ((setYrate new-rate)(set! yrate new-rate))
   (zrate type: float init: 0.0)
-  ((getZrate) zrate)
-  ((setZrate new-rate)(set! zrate new-rate))
   ((*init* xr yr zr)
    (begin
      (set! xrate xr)

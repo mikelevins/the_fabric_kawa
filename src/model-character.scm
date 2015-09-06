@@ -34,14 +34,9 @@
 
 (define-simple-class FabricCharacter ()
   ;; slots
-  ;; name
   (name init: #!null type: FabricName)
-  ((getName) name)
-  ((setName newname) (set! name newname))
   ;; node -- the JME node that represents the character in a scene
-  (node init: #!null type: Node)
-  ((getNode) node)
-  ((setNode newnode) (set! node newnode)))
+  (node init: #!null type: Node))
 
 (define (make-fabric-character #!optional fabric-name)
   (let* ((fname::FabricName (or fabric-name (random-fabric-name)))
@@ -49,14 +44,14 @@
          (fname-string (apply string-append (interpose " " fname-strings)))
          (fnode (Node fname-string))
          (fchar (FabricCharacter)))
-    (*:setNode fchar fnode)
-    (*:setName fchar fname)
+    (set! fchar:node fnode)
+    (set! fchar:name fname)
     fchar))
 
 (define (set-fabric-name! fchar::FabricCharacter fname::FabricName)
   (let* ((fname-strings (fabric-name-strings fname))
          (fname-string (apply string-append (interpose " " fname-strings)))
          (fnode (Node fname-string)))
-    (*:setNode fchar fnode)
-    (*:setName fchar fname)
+    (set! fchar:node fnode)
+    (set! fchar:name fname)
     fchar))

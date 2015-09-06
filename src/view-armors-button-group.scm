@@ -21,13 +21,11 @@
 
 (define-simple-class  ArmorsButtonGroup (RadioButtonGroup)
   (app-state init-form: #!null)
-  ((getAppState) app-state)
-  ((setAppState new-state) (set! app-state new-state))
   ((*init* screen::Screen uid::String)
    (invoke-special RadioButtonGroup (this) '*init* screen uid))
   ((onSelect index::int value::Button)
    (let ((button-id (*:getUID value))
-         (state::CreateCharacterState (*:getAppState (this))))
+         (state::CreateCharacterState app-state))
      (cond
       ((equal? "AbsorbButton" button-id)(set!  state:armor 'absorb))
       ((equal? "RegenerateButton" button-id)(set! state:armor 'regenerate))

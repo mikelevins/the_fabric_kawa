@@ -47,11 +47,7 @@
 (define-simple-class LoginState (FabricClientState)
   ;; slots
   (initialized? init: #f)
-  ((getInitialized) initialized?)
-  ((setInitialized newstate) (set! initialized? newstate))
   (login-box init: #!null)
-  ((getLoginBox) login-box)
-  ((setLoginBox newbox) (set! login-box newbox))
   ;; methods
   ((cleanup) (%login-state-cleanup (this)))
   ((isEnabled) (%login-state-enabled? (this)))
@@ -74,7 +70,7 @@
 (define (%login-state-initialized? state::LoginState) #t)
 
 (define (%login-state-attached state::LoginState manager::AppStateManager)
-  (let ((client::Application (*:getClient state)))
+  (let ((client::Application state:client))
     (prepare-to-attach-login-client-state state client)
     (did-attach-login-client-state state manager)))
 
@@ -83,7 +79,7 @@
 
 (define (make-login-state client::Application)
   (let ((state (LoginState)))
-    (*:setClient state client)
+    (set! state:client client)
     state))
 
 ;;; ---------------------------------------------------------------------
@@ -91,8 +87,8 @@
 ;;; ---------------------------------------------------------------------
 
 (define (compute-login-box-rect screen::Screen)
-  (let* ((screen-width (*:getWidth screen))
-         (screen-height (*:getHeight screen))
+  (let* ((screen-width screen:width)
+         (screen-height screen:height)
          (box-width 700)
          (box-height 300)
          (box-left (- (/ screen-width 2)
@@ -105,39 +101,39 @@
                     box-height)))
 
 (define (prepare-to-attach-login-client-state state::LoginState client::FabricClient)
-  (unless (*:getInitialized state)
-    (let* ((client::FabricClient (*:getClient state))
-           (screen::Screen (*:getScreen client))
-           (gui-node::Node (*:getGuiNode client))
+  (unless state:initialized?
+    (let* ((client::FabricClient state:client)
+           (screen::Screen client:screen)
+           (gui-node::Node client:guiNode)
            (rect (compute-login-box-rect screen))
            (box::FabricLoginBox (FabricLoginBox screen "LoginBox"
                                                 (Vector2f (get-left rect) (get-top rect))
                                                 (Vector2f (get-width rect) (get-height rect)))))
       (*:setWindowTitle box "Log in to the Fabric")
-      (*:setLoginBox state box)
-      (*:setInitialized state #t))))
+      (set! state:login-box box)
+      (set! state:initialized? #t))))
 
 (define (did-attach-login-client-state state::LoginState mgr::AppStateManager)
-  (when (*:getInitialized state)
-    (let* ((client::FabricClient (*:getClient state))
-           (screen::Screen (*:getScreen client))
-           (gui-node::Node (*:getGuiNode client)))
+  (when state:initialized?
+    (let* ((client::FabricClient state:client)
+           (screen::Screen client:screen)
+           (gui-node::Node client:guiNode))
       (*:enqueue client
                  (runnable (lambda ()
-                             (let* ((client::FabricClient (*:getClient state))
-                                    (root::Node (*:getRootNode client)))
-                               (*:addElement screen (*:getLoginBox state))
+                             (let* ((client::FabricClient state:client)
+                                    (root::Node client:rootNode))
+                               (*:addElement screen state:login-box)
                                (*:addControl gui-node screen))))))))
 
 (define (did-detach-login-client-state state::LoginState mgr::AppStateManager)
-  (when (*:getInitialized state)
-    (let* ((client::FabricClient (*:getClient state))
-           (screen::Screen (*:getScreen client))
-           (gui-node::Node (*:getGuiNode client)))
+  (when state:initialized?
+    (let* ((client::FabricClient state:client)
+           (screen::Screen client:screen)
+           (gui-node::Node client:guiNode))
       (*:enqueue client
                  (runnable (lambda ()
-                             (let* ((client::FabricClient (*:getClient state))
-                                    (root::Node (*:getRootNode client)))
-                               (*:removeElement screen (*:getLoginBox state))
+                             (let* ((client::FabricClient state:client)
+                                    (root::Node client:rootNode))
+                               (*:removeElement screen state:login-box)
                                (*:removeControl gui-node screen)
-                               (*:setInitialized state #f))))))))
+                               (set! state:initialized? #f))))))))

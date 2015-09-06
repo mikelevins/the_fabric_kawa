@@ -47,8 +47,6 @@
 
 (define-simple-class FabricClientState (AbstractAppState)
   (client init: #!null)
-  ((getClient) client)
-  ((setClient new-client) (set! client new-client))
   ((cleanup) (%state-cleanup (this)))
   ((initialize) (%state-initialize (this)))
   ((isEnabled) (%state-enabled? (this)))
