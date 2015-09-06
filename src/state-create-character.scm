@@ -39,6 +39,7 @@
 (require "view-faction-picker.scm")
 (require "view-name-picker.scm")
 (require "view-weapon-picker.scm")
+(require "view-name-generator.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -74,6 +75,7 @@
 (define-simple-class CreateCharacterState (FabricClientState)
   ;; slots
   (name-picker init-form: #!null)
+  (name-generator init-form: #!null)
   (faction init-form: #!null)
   (character-nameplate init-form: #!null)
   (character-model init-form: #!null)
@@ -196,6 +198,7 @@
            (armor-picker::Window (make-armor-picker state screen))
            (augment-picker::Window (make-augment-picker state screen))
            ;;(name-picker::Window (make-name-picker screen))
+           (name-generator::Window (make-name-generator screen))
            (character-acceptor::Window (make-character-acceptor screen))
            (character-model (make-character-model)))
       (set! state:faction-picker faction-picker)
@@ -203,6 +206,7 @@
       (set! state:armor-picker armor-picker)
       (set! state:augment-picker augment-picker)
       ;;(set! state:name-picker name-picker)
+      (set! state:name-generator name-generator)
       (set! state:character-acceptor character-acceptor)
       (set! state:faction-nameplate faction-nameplate)
       (set! state:character-nameplate character-nameplate)
@@ -225,6 +229,7 @@
                                (*:addElement screen state:armor-picker)
                                (*:addElement screen state:augment-picker)
                                ;;(*:addElement screen state:name-picker)
+                               (*:addElement screen state:name-generator)
                                (*:addElement screen state:character-acceptor)
                                (*:setLocalTranslation model 0.0 0.0 -5.0)
                                (*:attachChild root model)
@@ -244,6 +249,7 @@
                                (*:removeElement screen state:weapon-picker)
                                (*:removeElement screen state:armor-picker)
                                (*:removeElement screen state:augment-picker)
-                               (*:removeElement screen state:name-picker)
+                               ;;(*:removeElement screen state:name-picker)
+                               (*:removeElement screen state:name-generator)
                                (*:removeElement screen state:character-acceptor)
                                (*:removeControl gui-node screen))))))))
