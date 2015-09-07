@@ -157,8 +157,8 @@
 (define (client-set-login-state! client::FabricClient)
   (%enqueue-state-change client (make-login-state client)))
 
-(define (client-set-create-character-state! client::FabricClient)
-  (%enqueue-state-change client (make-create-character-state client)))
+(define (client-set-create-character-state! client::FabricClient character::FabricCharacter)
+  (%enqueue-state-change client (make-create-character-state client character)))
 
 (define (client-set-pick-character-state! client::FabricClient)
   (%enqueue-state-change client (make-pick-character-state client)))

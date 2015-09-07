@@ -10,13 +10,15 @@
 ;;;; ***********************************************************************
 
 (module-export
- blank-fabric-name
  FabricName
+ blank-fabric-name
+ fabric-name->string
  fabric-name-bit-patterns
  fabric-name-bits
  fabric-name-bytes
  fabric-name-bytestrings
  fabric-name-strings
+ generate-fabric-name
  random-fabric-name)
 
 ;;; ---------------------------------------------------------------------
@@ -104,9 +106,33 @@
                      (name-domains))))
     parts))
 
+(define (fabric-name->string nm::FabricName)
+  (let ((parts (fabric-name-strings nm)))
+    (apply string-append
+           (interpose " "
+                      (filter (lambda (x)(not (string=? x "")))
+                              parts)))))
+
 (define (blank-fabric-name)
   (FabricName 0))
 
 (define (random-fabric-name)
   (FabricName (apply bytes->integer (gen-bytes 8))))
+
+;;; (generate-fabric-name #!key (part-count 3))
+;;; ---------------------------------------------------------------------
+;;; generate and return a new random Fabric name with part-count
+;;; non-blank parts
+
+(define (generate-fabric-name #!key (part-count 3))
+  (let* ((picked-indexes (let loop ((count part-count)
+                                    (result '()))
+                           (if (<= count 0)
+                               result
+                               (loop (- count 1)
+                                     (cons (+ 1 (random-integer 255))
+                                           result)))))
+         (indexes (shuffle (append picked-indexes
+                                   (list-fill (- 8 part-count) 0)))))
+    (FabricName (apply bytes->integer indexes))))
 

@@ -76,6 +76,7 @@
   (name-picker init-form: #!null)
   (name-generator init-form: #!null)
   (faction init-form: #!null)
+  (character::FabricCharacter init-form: #!null)
   (character-nameplate init-form: #!null)
   (character-model init-form: #!null)
   (faction-nameplate init-form: #!null)
@@ -115,9 +116,10 @@
 (define (%create-character-state-detached state::CreateCharacterState manager::AppStateManager)
   (did-detach-create-character-state state manager))
 
-(define (make-create-character-state client::Application)
+(define (make-create-character-state client::Application character::FabricCharacter)
   (let ((state (CreateCharacterState)))
     (set! state:client client)
+    (set! state:character character)
     state))
 
 ;;; ---------------------------------------------------------------------
@@ -195,7 +197,7 @@
            (armor-picker::Window (make-armor-picker state screen))
            (augment-picker::Window (make-augment-picker state screen))
            ;;(name-picker::Window (make-name-picker screen))
-           (name-generator::Window (make-name-generator screen))
+           (name-generator::Window (make-name-generator screen state:character:name))
            (character-acceptor::Window (make-character-acceptor screen))
            (character-model (make-character-model)))
       (set! state:faction-picker faction-picker)
@@ -236,7 +238,8 @@
   (when state:initialized?
     (let* ((client::FabricClient state:client)
            (screen::Screen client:screen)
-           (gui-node::Node client:guiNode))
+           (gui-node::Node client:guiNode)
+           (model state:character-model))
       (*:enqueue client
                  (runnable (lambda ()
                              (let ((root::Node client:rootNode))
@@ -249,4 +252,5 @@
                                ;;(*:removeElement screen state:name-picker)
                                (*:removeElement screen state:name-generator)
                                (*:removeElement screen state:character-acceptor)
+                               (*:detachChild root model)
                                (*:removeControl gui-node screen))))))))

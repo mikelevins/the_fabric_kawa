@@ -15,6 +15,7 @@
 ;;; interactive session
 
 (require "util-random.scm")
+(require "util-bytes.scm")
 (require "data-names.scm")
 (require "model-namegen.scm")
 (require "model-character.scm")
@@ -29,7 +30,7 @@
 ;;; (define $pchar (make-fabric-character))
 ;;; (*:start $client)
 ;;; (client-set-login-state! $client)
-;;; (client-set-create-character-state! $client)
+;;; (client-set-create-character-state! $client $pchar)
 ;;; (client-set-pick-character-state! $client)
 ;;; (client-set-play-state! $client $pchar "Earth")
 ;;; (client-set-transit-state! $client from: "The Sun" to: "Earth")

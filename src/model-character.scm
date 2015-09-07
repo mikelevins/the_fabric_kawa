@@ -37,7 +37,7 @@
   (node init: #!null type: Node))
 
 (define (make-fabric-character #!optional fabric-name)
-  (let* ((fname::FabricName (or fabric-name (random-fabric-name)))
+  (let* ((fname::FabricName (or fabric-name (generate-fabric-name part-count: (+ 1 (random-integer 5)))))
          (fname-strings (fabric-name-strings fname))
          (fname-string (apply string-append (interpose " " fname-strings)))
          (fnode (Node fname-string))

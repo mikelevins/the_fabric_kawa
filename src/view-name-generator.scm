@@ -20,6 +20,7 @@
 (require "util-java.scm")
 (require "util-error.scm")
 (require "client-class.scm")
+(require "model-character.scm")
 (require "model-rect.scm")
 (require "data-names.scm")
 (require "state-create-character.scm")
@@ -37,13 +38,13 @@
 (import-as Vector2f com.jme3.math.Vector2f)
 (import-as Window tonegod.gui.controls.windows.Window)
 
-
 ;;; make-name-picker
 ;;; ---------------------------------------------------------------------
 
-(define (make-name-generator screen::Screen)
+(define (make-name-generator screen::Screen fname::FabricName)
   (let* ((Align BitmapFont:Align)
          (rect (compute-name-picker-rect screen))
+         (name-strings (fabric-name-strings fname))
          (indexes (iota 8))
          (index-strings (map number->string indexes))
          (uids (map (lambda (i)(format #f "name field ~a" i))
@@ -58,7 +59,7 @@
                       (Vector2f (get-width rect) (get-height rect)))))
     (for-each (lambda (i)
                 (let ((f::Label (list-ref fields i)))
-                  (*:setText f (format #f "name field ~a" i))
+                  (*:setText f (list-ref name-strings i))
                   (*:setTextAlign f Align:Left)
                   (*:setFont f "Interface/Fonts/Laconic24.fnt")
                   (*:setFontSize f 24)
