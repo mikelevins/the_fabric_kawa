@@ -64,15 +64,10 @@
 (define-simple-class PlayState (FabricClientState)
   ;; slots
   (player-character init: #!null)
-  ;; the name of location in the game world
   (node-name init: #f)
-  ;; the nearest celestial body
   (celestial-body init: #!null)
-  ;; the background of the scene
   (sky init: #f)
-  ;; the speed of camera movement
   (speed type: float init-form: 3000.0)
-  ;; whether the scene is initialized
   (initialized? init: #f)
   ;; methods
   ((cleanup) (%play-state-cleanup (this)))

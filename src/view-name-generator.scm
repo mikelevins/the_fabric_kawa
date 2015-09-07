@@ -28,7 +28,10 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
+(import-as BitmapFont com.jme3.font.BitmapFont)
+(import-as BitmapText com.jme3.font.BitmapText)
 (import-as ColorRGBA com.jme3.math.ColorRGBA)
+(import-as Label tonegod.gui.controls.text.Label)
 (import-as Screen tonegod.gui.core.Screen)
 (import-as SelectList tonegod.gui.controls.lists.SelectList)
 (import-as Vector2f com.jme3.math.Vector2f)
@@ -39,10 +42,28 @@
 ;;; ---------------------------------------------------------------------
 
 (define (make-name-generator screen::Screen)
-  (let* ((rect (compute-name-picker-rect screen))
+  (let* ((Align BitmapFont:Align)
+         (rect (compute-name-picker-rect screen))
+         (indexes (iota 8))
+         (index-strings (map number->string indexes))
+         (uids (map (lambda (i)(format #f "name field ~a" i))
+                    indexes))
+         (positions (map (lambda (i)(Vector2f (+ 16 (* i 200)) 48.0))
+                         indexes))
+         (size (Vector2f 190.0 24.0))
+         (fields (map (lambda (i)(Label screen (list-ref uids i)(list-ref positions i) size))
+                      indexes))
          (win (Window screen "NameGenerator"
                       (Vector2f (get-left rect) (get-top rect))
                       (Vector2f (get-width rect) (get-height rect)))))
-    (*:setWindowTitle win "Generate a random Fabric name.")
+    (for-each (lambda (i)
+                (let ((f::Label (list-ref fields i)))
+                  (*:setText f (format #f "name field ~a" i))
+                  (*:setTextAlign f Align:Left)
+                  (*:setFont f "Interface/Fonts/Laconic24.fnt")
+                  (*:setFontSize f 24)
+                  (*:setFontColor f ColorRGBA:Green)
+                  (*:addChild win f)))
+              indexes)
+    (*:setWindowTitle win "Pick a Fabric name:")
     win))
-

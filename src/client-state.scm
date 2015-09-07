@@ -46,7 +46,9 @@
 ;;; ---------------------------------------------------------------------
 
 (define-simple-class FabricClientState (AbstractAppState)
+  ;; slots
   (client init: #!null)
+  ;; methods
   ((cleanup) (%state-cleanup (this)))
   ((initialize) (%state-initialize (this)))
   ((isEnabled) (%state-enabled? (this)))

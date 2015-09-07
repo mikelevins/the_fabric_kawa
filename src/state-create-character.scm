@@ -45,7 +45,6 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
-
 (import-as AbstractAppState com.jme3.app.state.AbstractAppState)
 (import-as AppStateManager com.jme3.app.state.AppStateManager)
 (import-as Application com.jme3.app.Application)

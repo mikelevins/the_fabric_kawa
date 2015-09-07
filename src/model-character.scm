@@ -33,9 +33,7 @@
 ;;; ---------------------------------------------------------------------
 
 (define-simple-class FabricCharacter ()
-  ;; slots
   (name init: #!null type: FabricName)
-  ;; node -- the JME node that represents the character in a scene
   (node init: #!null type: Node))
 
 (define (make-fabric-character #!optional fabric-name)
