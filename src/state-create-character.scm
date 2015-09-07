@@ -108,8 +108,6 @@
 
 (define (%create-character-state-enabled? state::CreateCharacterState) #t)
 
-(define (%create-character-state-initialized? state::CreateCharacterState) #t)
-
 (define (%create-character-state-attached state::CreateCharacterState manager::AppStateManager)
   (let ((client::Application state:client))
     (prepare-to-attach-create-character-state state client)
@@ -231,7 +229,7 @@
                                ;;(*:addElement screen state:name-picker)
                                (*:addElement screen state:name-generator)
                                (*:addElement screen state:character-acceptor)
-                               (*:setLocalTranslation model 0.0 0.0 -5.0)
+                               (*:setLocalTranslation (as Node model) 0.0 0.0 -5.0)
                                (*:attachChild root model)
                                (*:addControl gui-node screen))))))))
 

@@ -72,8 +72,8 @@
   ((getKeyInput) keyInput)
   ((getCameraDirection) (*:getDirection cam))
   ;; event handlers
-  ((onAnalog name value tpf)(*:handleAnalogEvent client-state name value tpf))
-  ((onAction name key-pressed? tpf)(*:handleActionEvent client-state name key-pressed? tpf))
+  ((onAnalog name value tpf)(*:handleAnalogEvent (as FabricClientState client-state) name value tpf))
+  ((onAction name key-pressed? tpf)(*:handleActionEvent (as FabricClientState client-state) name key-pressed? tpf))
   ;; init
   ((simpleInitApp) (init-app (this))))
 
@@ -95,8 +95,8 @@
 ;;; the new client application's start method.
 
 (define (make-client #!key
-                     (client (FabricClient))
-                     (settings (AppSettings #t))
+                     (client::FabricClient (FabricClient))
+                     (settings::AppSettings (AppSettings #t))
                      (screen-width 1920)
                      (screen-height 1200)
                      (title "The Fabric")
@@ -106,14 +106,14 @@
                      (show-statistics #f)
                      (pause-on-lost-focus #f)
                      (grab-mouse #f))
-  (*:setResolution (as AppSettings settings) screen-width screen-height)
-  (*:setTitle (as AppSettings settings) title)
-  (*:setSettingsDialogImage (as AppSettings settings) settings-image)
-  (*:setSettings (as FabricClient client) (as AppSettings settings))
-  (*:setDisplayFps (as FabricClient client) show-fps)
-  (*:setShowSettings (as FabricClient client) show-settings)
-  (*:setDisplayStatView (as FabricClient client) show-statistics)
-  (*:setPauseOnLostFocus (as FabricClient client) pause-on-lost-focus)
+  (*:setResolution settings screen-width screen-height)
+  (*:setTitle settings title)
+  (*:setSettingsDialogImage settings settings-image)
+  (*:setSettings client settings)
+  (*:setDisplayFps client show-fps)
+  (*:setShowSettings client show-settings)
+  (*:setDisplayStatView client show-statistics)
+  (*:setPauseOnLostFocus client pause-on-lost-focus)
   (Mouse:setGrabbed grab-mouse)
   client)
 
