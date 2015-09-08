@@ -27,6 +27,7 @@
 (require "util-lists.scm")
 (require "data-nodes.scm")
 (require "model-rect.scm")
+(require "syntax-events.scm")
 (require "client-state.scm")
 (require "client-class.scm")
 (require "view-skybox.scm")
@@ -96,6 +97,10 @@
    (%create-character-state-attached (this) state-manager))
   ((stateDetached state-manager::AppStateManager)
    (%create-character-state-detached (this) state-manager))
+  ((handleAnalogEvent name value tpf)
+   (create-character-state-handle-analog-event (this) name value tpf))
+  ((handleActionEvent name key-pressed? tpf)
+   (create-character-state-handle-action-event (this) name key-pressed? tpf))
   ;; init
   ((initialize) (%create-character-state-initialize (this)))
   ((isInitialized) initialized?))
@@ -121,6 +126,44 @@
     (set! state:client client)
     (set! state:character character)
     state))
+
+;;; ---------------------------------------------------------------------
+;;; event-handling
+;;; ---------------------------------------------------------------------
+
+
+;;; (create-character-state-handle-analog-event state name value tpf)
+;;; ---------------------------------------------------------------------
+;;; handle mouse movements and other continuous events
+
+(define (create-character-state-handle-analog-event state::CreateCharacterState name value tpf)
+  (let* ((client::FabricClient state:client)
+         (pchar::FabricCharacter state:character)
+         (node pchar:node)
+         (right-button-down? client:right-button?))
+    (on-analog (name)
+               ("rotateRight" -> (rotate-node-right! node (* 0.25 tpf)))
+               ("mouseRotateRight" -> (when right-button-down?
+                                        (rotate-node-right! node value)))
+               ("rotateLeft" -> (rotate-node-left! node (* 0.25 tpf)))
+               ("mouseRotateLeft" -> (when right-button-down?
+                                       (rotate-node-left! node value)))
+               ("rotateUp" -> (rotate-node-up! node (* 0.125 tpf)))
+               ("mouseRotateUp" -> (when right-button-down?
+                                     (rotate-node-up! node value)))
+               ("rotateDown" -> (rotate-node-down! node (* 0.125 tpf)))
+               ("mouseRotateDown" -> (when right-button-down?
+                                       (rotate-node-down! node value))))))
+
+;;; (create-character-state-handle-action-event state name key-pressed? tpf)
+;;; ---------------------------------------------------------------------
+;;; handle keypresses, mouse clicks, and other discrete events
+
+(define (create-character-state-handle-action-event state::CreateCharacterState name key-pressed? tpf)
+  (let ((client::FabricClient state:client))
+    (on-action (name)
+               ("leftButton" -> (set! client:left-button? key-pressed?))
+               ("rightButton" -> (set! client:right-button? key-pressed?)))))
 
 ;;; ---------------------------------------------------------------------
 ;;; CreateCharacterState functions

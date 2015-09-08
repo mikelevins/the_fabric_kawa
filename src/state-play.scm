@@ -163,7 +163,7 @@
 ;;; event-handling
 ;;; ---------------------------------------------------------------------
 
-;;; (handle-analog-event state name value tpf)
+;;; (play-state-handle-analog-event state name value tpf)
 ;;; ---------------------------------------------------------------------
 ;;; handle mouse movements and other continuous events
 
@@ -193,7 +193,7 @@
                ("mouseRotateDown" -> (when right-button-down?
                                        (rotate-node-down! node value))))))
 
-;;; (handle-action-event state name key-pressed? tpf)
+;;; (play-state-handle-action-event state name key-pressed? tpf)
 ;;; ---------------------------------------------------------------------
 ;;; handle keypresses, mouse clicks, and other discrete events
 
