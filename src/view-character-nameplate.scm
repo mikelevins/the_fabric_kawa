@@ -46,7 +46,7 @@
          (character-nameplate (Label screen "CharacterNameplate"
                                      (Vector2f nameplate-left nameplate-top)
                                      (Vector2f 1200 40))))
-    (*:setText character-nameplate "Character: ")
+    (*:setText character-nameplate "Name: ")
     (*:setTextAlign character-nameplate Align:Left)
     (*:setFont character-nameplate "Interface/Fonts/Laconic30.fnt")
     (*:setFontSize character-nameplate 30)

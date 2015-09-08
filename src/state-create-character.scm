@@ -77,7 +77,7 @@
   (name-generator init-form: #!null)
   (faction init-form: #!null)
   (character::FabricCharacter init-form: #!null)
-  (character-nameplate init-form: #!null)
+  (character-nameplate::Label init-form: #!null)
   (character-model init-form: #!null)
   (faction-nameplate init-form: #!null)
   (faction-picker init-form: #!null)
@@ -217,7 +217,8 @@
     (let* ((client::FabricClient state:client)
            (screen::Screen client:screen)
            (gui-node::Node client:guiNode)
-           (model state:character-model))
+           (model state:character-model)
+           (fname state:character:name))
       (*:enqueue client
                  (runnable (lambda ()
                              (let ((root::Node (*:getRootNode client)))
@@ -232,6 +233,7 @@
                                (*:addElement screen state:character-acceptor)
                                (*:setLocalTranslation (as Node model) 0.0 0.0 -5.0)
                                (*:attachChild root model)
+                               (*:setText state:character-nameplate (fabric-name->string fname))
                                (*:addControl gui-node screen))))))))
 
 (define (did-detach-create-character-state state::CreateCharacterState mgr::AppStateManager)
