@@ -15,7 +15,6 @@
  choose-any
  copy-list
  every?
- every?
  get-key
  interpose
  list-fill
