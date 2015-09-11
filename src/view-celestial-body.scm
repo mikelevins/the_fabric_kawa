@@ -40,7 +40,7 @@
          (celestial-body::Sphere (Sphere 128 128 4096.0))
          (body-mat::Material (Material asset-manager "Common/MatDefs/Misc/Unshaded.j3md"))
          (body-texture (*:loadTexture asset-manager (string-append "Textures/" texture-name)))
-         (body-pivot::Geometry (Geometry "Center" celestial-body))
+         (body-pivot::Geometry (Geometry texture-name celestial-body))
          (body-rotator::RotateControl (RotateControl 0.0 0.0 0.025))
          (rotation (Quaternion))
          (TextureMode Sphere:TextureMode)

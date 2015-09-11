@@ -13,7 +13,7 @@
  client-set-create-character-state!
  client-set-pick-character-state!
  client-set-play-state!
- client-set-transit-state!
+ client-transit-to!
  FabricClient
  make-client
  move-node!
@@ -52,6 +52,7 @@
 (import-as Node com.jme3.scene.Node)
 (import-as Screen tonegod.gui.core.Screen)
 (import-as SimpleApplication com.jme3.app.SimpleApplication)
+(import-as Thread java.lang.Thread)
 (import-as Vector3f com.jme3.math.Vector3f)
 
 ;;; ---------------------------------------------------------------------
@@ -166,9 +167,10 @@
 (define (client-set-play-state! client::FabricClient character::FabricCharacter #!optional (node-name "The Sun"))
   (%enqueue-state-change client (make-play-state client character node-name)))
 
-(define (client-set-transit-state! client::FabricClient #!key (from "The Sun")(to "Earth"))
-  (%enqueue-state-change client (make-transit-state client from: from to: to)))
-
+(define (client-transit-to! client::FabricClient character::FabricCharacter destination::String)
+  (%enqueue-state-change client (make-transit-state client))
+  (Thread:sleep 500)
+  (%enqueue-state-change client (make-play-state client character destination)))
 
 ;;; ---------------------------------------------------------------------
 ;;; node and camera movement

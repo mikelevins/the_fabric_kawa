@@ -11,7 +11,8 @@
 (module-export
  on-action
  on-analog
- route-keys)
+ route-keys
+ unroute-keys)
 
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
@@ -65,5 +66,17 @@
                  ...)
      (begin
        (*:addMapping input-manager-object event-name trigger-object)
+       ...))))
+
+;;; (unroute-keys (input-manager-object)(event-name) ...)
+;;; ---------------------------------------------------------------------
+;;; removes event-routers for key events
+
+(define-syntax unroute-keys
+  (syntax-rules ()
+    ((unroute-keys (input-manager-object)
+                   event-name ...)
+     (begin
+       (*:deleteMapping input-manager-object event-name)
        ...))))
 

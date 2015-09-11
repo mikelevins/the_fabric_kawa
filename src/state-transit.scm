@@ -51,8 +51,6 @@
 (define-simple-class TransitState (FabricClientState)
   ;; slots
   (initialized? init: #f)
-  (from-name init: #f)
-  (to-name init: #f)
   ;; methods
   ((cleanup) (%transit-state-cleanup (this)))
   ((isEnabled) (%transit-state-enabled? (this)))
@@ -68,23 +66,21 @@
   (format #t "~%%transit-state-cleanup called"))
 
 (define (%transit-state-initialize state::TransitState)
-  (format #t "~%%transit-state-initialize called"))
+  #f)
 
 (define (%transit-state-enabled? state::TransitState) #t)
 
 (define (%transit-state-initialized? state::TransitState) #t)
 
 (define (%transit-state-attached state::TransitState manager::AppStateManager)
-  (format #t "~%%transit-state-attached called"))
+  #f)
 
 (define (%transit-state-detached state::TransitState manager::AppStateManager)
   (did-detach-transit-state state manager))
 
-(define (make-transit-state client::Application #!key (from "The Sun")(to "Earth"))
+(define (make-transit-state client::Application)
   (let ((state (TransitState)))
     (set! state:client client)
-    (set! state:from-name from)
-    (set! state:to-name to)
     state))
 
 ;;; ---------------------------------------------------------------------

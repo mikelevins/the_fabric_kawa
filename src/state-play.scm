@@ -160,6 +160,33 @@
                    "SPACE" "KEY_A")))
 
 
+;;; (teardown-inputs app::FabricClient)
+;;; ---------------------------------------------------------------------
+;;; removes the event handlers that translate keypresses and
+;;; mouse movements into movements of the player's node and camera
+
+(define (teardown-inputs app::FabricClient)
+  ;; set up the player's controls
+  (let* ((key-input ::KeyInput (*:getKeyInput app))
+         (input-manager (*:getInputManager app)))
+    (unroute-keys (input-manager)
+                  "leftButton"
+                  "maybeMoveForward"
+                  "mouseRotateDown"
+                  "mouseRotateLeft"
+                  "mouseRotateRight"
+                  "mouseRotateUp"
+                  "moveBackward"
+                  "moveForward"
+                  "moveLeft"
+                  "moveRight"
+                  "rightButton"
+                  ;; text inputs
+                  "SPACE"
+                  "KEY_A")
+    ;; set up the event listener
+    (*:removeListener input-manager app)))
+
 ;;; ---------------------------------------------------------------------
 ;;; event-handling
 ;;; ---------------------------------------------------------------------
@@ -210,6 +237,11 @@
 
 (define (->texture-name name-text)
   (string-append name-text ".jpg"))
+
+;;; (reset-play-state! state::PlayState)
+;;; ---------------------------------------------------------------------
+;;; reset the play scene to its default starting state, with the
+;;; default camera position and orientation
 
 (define (reset-play-state! state::PlayState)
   (let* ((pchar::FabricCharacter state:player-character)
@@ -273,4 +305,7 @@
                                    (body state:celestial-body))
                                (*:detachChild root sky)
                                (*:detachChild root body)
-                               (*:removeControl gui-node screen))))))))
+                               (*:removeControl gui-node screen)
+                               (teardown-inputs client))))))))
+
+
