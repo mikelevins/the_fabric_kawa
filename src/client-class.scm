@@ -61,7 +61,7 @@
 (define-simple-class FabricClient (SimpleApplication AnalogListener ActionListener)
   ;; slots
   (app-settings init: #!null)
-  (client-state init: #!null)
+  (state init: #!null)
   (user init: #!null)
   (screen init: #!null)
   (speed init: #!null)
@@ -72,8 +72,8 @@
   ((getKeyInput) keyInput)
   ((getCameraDirection) (*:getDirection cam))
   ;; event handlers
-  ((onAnalog name value tpf)(*:handleAnalogEvent (as FabricClientState client-state) name value tpf))
-  ((onAction name key-pressed? tpf)(*:handleActionEvent (as FabricClientState client-state) name key-pressed? tpf))
+  ((onAnalog name value tpf)(*:handleAnalogEvent (as FabricClientState state) name value tpf))
+  ((onAction name key-pressed? tpf)(*:handleActionEvent (as FabricClientState state) name key-pressed? tpf))
   ;; init
   ((simpleInitApp) (init-app (this))))
 
@@ -126,19 +126,19 @@
 ;;; %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 (define (%detach-and-cleanup-current-state! client::FabricClient)
-  (let ((current-state client:client-state)
+  (let ((current-state client:state)
         (mgr (*:getStateManager client)))
     (unless (jnull? current-state)
       (*:detach mgr current-state)
-      (set! client:client-state #!null))))
+      (set! client:state #!null))))
 
 (define (%attach-and-activate-new-state! client::FabricClient new-state)
   (let ((mgr (*:getStateManager client)))
-    (set! client:client-state new-state)
+    (set! client:state new-state)
     (*:attach mgr new-state)))
 
 (define (%update-client-state! client::FabricClient new-state)
-  (unless (equal? new-state client:client-state)
+  (unless (equal? new-state client:state)
     (%detach-and-cleanup-current-state! client)
     (%attach-and-activate-new-state! client new-state)))
 

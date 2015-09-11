@@ -20,6 +20,7 @@
 (require "model-namegen.scm")
 (require "model-character.scm")
 (require "client-class.scm")
+(require "state-play.scm")
 
 ;;; ---------------------------------------------------------------------
 ;;; loading
@@ -33,4 +34,5 @@
 ;;; (client-set-create-character-state! $client $pchar)
 ;;; (client-set-pick-character-state! $client)
 ;;; (client-set-play-state! $client $pchar "Earth")
+;;; (reset-play-state! $client:state)
 ;;; (client-set-transit-state! $client from: "The Sun" to: "Earth")

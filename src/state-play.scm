@@ -11,7 +11,8 @@
 
 (module-export
  PlayState
- make-play-state)
+ make-play-state
+ reset-play-state!)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -128,8 +129,8 @@
 
 (define (setup-inputs app::FabricClient)
   ;; set up the player's controls
-  (let ((key-input ::KeyInput (*:getKeyInput app))
-        (input-manager (*:getInputManager app)))
+  (let* ((key-input ::KeyInput (*:getKeyInput app))
+         (input-manager (*:getInputManager app)))
     (route-keys (input-manager)
                 ((KeyTrigger key-input:KEY_UP) -> "moveForward")
                 ((KeyTrigger key-input:KEY_W) ->  "moveForward")
@@ -210,6 +211,16 @@
 (define (->texture-name name-text)
   (string-append name-text ".jpg"))
 
+(define (reset-play-state! state::PlayState)
+  (let* ((pchar::FabricCharacter state:player-character)
+         (pnode::Node pchar:node)
+         (rotation (Quaternion))
+         (pitch-axis (Vector3f 1 0 0)))
+    (*:setLocalTranslation pnode 0.0 20000.0 0.0)
+    ;; PI/4 radians points us right at the center
+    (*:fromAngleAxis rotation (/ PI 4) pitch-axis)
+    (*:setLocalRotation pnode rotation)))
+
 (define (prepare-to-attach-play-state state::PlayState client::FabricClient)
   (unless state:initialized?
     (let* ((screen::Screen client:screen)
@@ -243,13 +254,8 @@
            (pnode::Node pchar:node))
       (*:enqueue client
                  (runnable (lambda ()
-                             (let* ((root::Node client:rootNode)
-                                    (rotation (Quaternion))
-                                    (pitch-axis (Vector3f 1 0 0)))
-                               (*:setLocalTranslation pnode 0.0 20000.0 0.0)
-                               ;; PI/4 radians points us right at the center
-                               (*:fromAngleAxis rotation (/ PI 4) pitch-axis)
-                               (*:setLocalRotation pnode rotation)
+                             (let* ((root::Node client:rootNode))
+                               (reset-play-state! state)
                                (*:attachChild root state:sky)
                                (*:attachChild root state:celestial-body)
                                (*:attachChild root pnode)
