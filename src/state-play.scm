@@ -248,10 +248,10 @@
          (pnode::Node pchar:node)
          (rotation (Quaternion))
          (pitch-axis (Vector3f 1 0 0)))
-    (*:setLocalTranslation pnode 0.0 20000.0 0.0)
-    ;; PI/4 radians points us right at the center
-    (*:fromAngleAxis rotation (/ PI 4) pitch-axis)
-    (*:setLocalRotation pnode rotation)))
+    (*:setLocalTranslation pnode 0.0 0.0 -25000.0)
+    (*:fromAngleAxis rotation (* -1 (/ PI 4)) pitch-axis)
+    (*:setLocalRotation pnode rotation)
+    ))
 
 (define (prepare-to-attach-play-state state::PlayState client::FabricClient)
   (unless state:initialized?

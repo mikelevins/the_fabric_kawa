@@ -36,4 +36,4 @@
 ;;; (client-set-play-state! $client $pchar "Pluto")
 ;;; (client-set-play-state! $client $pchar "Earth")
 ;;; (reset-play-state! $client:state)
-;;; (client-transit-to! $client $pchar "Sedna")
+;;; (client-transit-to! $client $pchar "Jupiter")
