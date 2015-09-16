@@ -18,7 +18,7 @@
 (require "util-random.scm")
 (require "util-bytes.scm")
 (require "util-lists.scm")
-(require "klos.scm")
+(require "util-klos.scm")
 (require "data-names.scm")
 (require "model-namegen.scm")
 (require "model-character.scm")

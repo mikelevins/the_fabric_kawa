@@ -21,6 +21,7 @@
  position-if
  put-key
  remove-duplicates
+ remove-if
  replace-element
  shuffle
  some?)
@@ -156,6 +157,25 @@
                     result)
               (loop (cdr items)
                     (cons next result)))))))
+
+
+;;; (remove-if test ls)
+;;; ---------------------------------------------------------------------
+;;; applies _test_ to each element of _ls_. If any application returns
+;;; a true value, remove-if removes the corresponding element from the
+;;; output list
+
+(define (remove-if test ls)
+  (let loop ((items ls)
+             (result '()))
+    (if (null? items)
+        (reverse result)
+        (if (test (car items))
+            (loop (cdr items)
+                  result)
+            (loop (cdr items)
+                  (cons (car items)
+                        result))))))
 
 ;;; (replace-element ls index new-element)
 ;;; ---------------------------------------------------------------------

@@ -35,6 +35,17 @@
  )
 
 ;;; ---------------------------------------------------------------------
+;;; ABOUT
+;;; ---------------------------------------------------------------------
+;;; klos is a simple implementation of generic functions for Kawa
+;;; it does not extend the Java object model on which Kawa's Scheme types
+;;; are built, and so does not require sophisticated class linearization
+;;; algorithms. Class precedence for the purposes of dispatch is computed
+;;; from the Java inheritance chain. The class of an object is always more
+;;; specific than any interfaces the class implements, but java.lang.Object
+;;; is always the least specific supertype.
+
+;;; ---------------------------------------------------------------------
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
@@ -218,5 +229,4 @@
 ;;; (gadd 2 "bar")
 ;;; (add-method! gadd (signature gnu.math.IntNum java.lang.String) (lambda (x y)(string-append (format #f "~a" x) y)))
 ;;; (gadd 2 "bar")
-
 
