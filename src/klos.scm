@@ -9,23 +9,27 @@
 ;;;; ***********************************************************************
 
 (module-export
+ add-method!
  all-supertypes-of
  assert-entry!
  class-object?
  class-of
  direct-supertypes-of
+ generic-function
+ make-generic
  make-method-table
  matching-entries
  method-table
- method-table?
  method-table-entries
+ method-table?
+ no-applicable-method
  retract-entry!
  set-method-table-entries!
  signature
- signature?
+ signature-more-specific?
  signature-types
  signature=?
- signature-more-specific?
+ signature?
  subtype?
  type-object?
  )
@@ -38,6 +42,13 @@
 (require "util-error.scm")
 (require "util-java.scm")
 (require "util-lists.scm")
+(require "util-sort.scm")
+
+;;; ---------------------------------------------------------------------
+;;; imports
+;;; ---------------------------------------------------------------------
+
+(import-as ProcedureN gnu.mapping.ProcedureN)
 
 ;;; ---------------------------------------------------------------------
 ;;; Scheme and Java types
@@ -91,7 +102,7 @@
 
 (define (signature-more-specific? s1 s2)
   (if (eqv? s1 s2)
-      #f
+      #t
       (every? subtype?
               (signature-types s1)
               (signature-types s2))))
@@ -111,9 +122,9 @@
 
 (define (matching-entries mtable sig)
   (let* ((entries (method-table-entries mtable)))
-    (filter (lambda (e)(or (signature=? sig (car e))
-                           (signature-more-specific? sig (car e))))
-            entries)))
+    (sort (filter (lambda (e)(signature-more-specific? sig (car e)))
+                  entries)
+          (lambda (e f)(signature-more-specific? (car e)(car f))))))
 
 (define (%find-method-entry-for mtable sig)
   (let* ((entries (method-table-entries mtable)))
@@ -143,3 +154,69 @@
                                                   (method-table-entries mtable)))
                mtable)
         mtable)))
+
+;;; ---------------------------------------------------------------------
+;;; generic functions
+;;; ---------------------------------------------------------------------
+
+;;; (no-applicable-method . args)
+;;; ---------------------------------------------------------------------
+;;; called when a generic function is applied to some arguments
+;;; and no method applicable to the arguments can be found on the
+;;; generic function. Signals an error whose message reports the
+;;; arguments and their types.
+
+(define (no-applicable-method . args)
+  (error (format #f "No applicable method for arguments ~s with types ~s "
+                 args (map (lambda (a)(a:getClass))
+                           args))))
+
+;;; (%apply-gf-to-args gf args default-method)
+;;; ---------------------------------------------------------------------
+;;; FORWARD REFERENCE
+
+(define %apply-gf-to-args #f)
+
+;;; CLASS generic-function
+;;; ---------------------------------------------------------------------
+;;; the class of generic functions. generic functions are procedures
+;;; that select a method to run by examining the types of arguments
+;;; passed to them.
+
+(define-simple-class generic-function (ProcedureN)
+  (default-method::ProcedureN init-form: no-applicable-method)
+  (methods init-form: (make-method-table))
+  ((applyN args::Object[]) (%apply-gf-to-args (this) (array->list args) default-method))
+  ((addMethod method-signature::type-signature method::ProcedureN)
+   (assert-entry! methods method-signature method)))
+
+(define (make-generic)(generic-function))
+
+(define (add-method! gf::generic-function sig::type-signature method::ProcedureN)
+  (assert-entry! gf:methods sig method)
+  gf)
+
+;;; (%apply-gf-to-args gf args default-method)
+;;; ---------------------------------------------------------------------
+;;; a private function that executes generic function application.
+;;; called when a generic function is applied to a set of arguments.
+
+(set! %apply-gf-to-args
+      (lambda (gf::generic-function args default-method)
+        (let* ((mtable gf:methods)
+               (sig (apply signature (map class-of args)))
+               (entries (matching-entries mtable sig)))
+          (if (null? entries)
+              (apply default-method args)
+              (apply (cdr (car entries)) args)))))
+
+;;; (define gadd (make-generic))
+;;; (add-method! gadd (signature gnu.math.IntNum gnu.math.IntNum) (lambda (x y)(+ x y)))
+;;; (gadd 2 3)
+;;; (add-method! gadd (signature java.lang.String java.lang.String) (lambda (x y)(string-append x y)))
+;;; (gadd "foo" "bar")
+;;; (gadd 2 "bar")
+;;; (add-method! gadd (signature gnu.math.IntNum java.lang.String) (lambda (x y)(string-append (format #f "~a" x) y)))
+;;; (gadd 2 "bar")
+
+
