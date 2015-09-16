@@ -9,6 +9,7 @@
 ;;;; ***********************************************************************
 
 (module-export
+ *the-singleton-table*
  add-method!
  all-supertypes-of
  assert-entry!
@@ -30,6 +31,10 @@
  signature-types
  signature=?
  signature?
+ singleton
+ singleton?
+ singleton-type
+ singleton-value
  subtype?
  type-object?
  )
@@ -54,6 +59,7 @@
 (require "util-java.scm")
 (require "util-lists.scm")
 (require "util-sort.scm")
+(import (rnrs hashtables))
 
 ;;; ---------------------------------------------------------------------
 ;;; imports
@@ -65,29 +71,61 @@
 ;;; Scheme and Java types
 ;;; ---------------------------------------------------------------------
 
+(define *the-singleton-table* (make-eqv-hashtable))
+
+(define-simple-class singleton-type (java.lang.reflect.Type)
+  (value init: #!null)
+  ((*init* val)(set! value val)))
+
+(define (singleton v)
+  (let* ((absent (cons #!null #!null))
+         (already (hashtable-ref *the-singleton-table* v absent)))
+    (if (eqv? already absent)
+        (let ((s (singleton-type v)))
+          (hashtable-set! *the-singleton-table* v s)
+          s)
+        already)))
+
+(define (singleton? thing)
+  (eqv? singleton-type (class-of thing)))
+
+(define (singleton-value s::singleton-type)
+  s:value)
+
 (define (class-of thing)(*:getClass  thing))
 (define (class-object? thing)(instance? thing java.lang.Class))
 (define (type-object? thing)(instance? thing java.lang.reflect.Type))
 
-(define (direct-supertypes-of a-class::java.lang.Class)
-  (let* ((super (*:getSuperclass a-class))
-         (interfaces (array->list (*:getInterfaces a-class))))
-    (if (eqv? #!null super)
-        '()
-        (if (eqv? super java.lang.Object)
-            (append interfaces (list super))
-            (cons super interfaces)))))
+(define (direct-supertypes-of a-class::java.lang.reflect.Type)
+  (if (singleton? a-class)
+      (direct-supertypes-of (class-of (singleton-value a-class)))
+      (if (class-object? a-class)
+          (let* ((a-class (as java.lang.Class a-class))
+                 (super (*:getSuperclass a-class))
+                 (interfaces (array->list (*:getInterfaces a-class))))
+            (if (eqv? #!null super)
+                '()
+                (if (eqv? super java.lang.Object)
+                    (append interfaces (list super))
+                    (cons super interfaces))))
+          '())))
 
-(define (all-supertypes-of a-class::java.lang.Class)
+(define (all-supertypes-of a-class::java.lang.reflect.Type)
   (let ((supers (direct-supertypes-of a-class)))
     (if (null? supers)
         '()
         (remove-duplicates (append supers (apply append (map all-supertypes-of supers)))))))
 
-(define (subtype? thing1::java.lang.Class thing2::java.lang.Class)
-  (if (eqv? thing1 thing2)
-      #t
-      (*:isAssignableFrom thing2 thing1)))
+
+(define (subtype? thing1::java.lang.reflect.Type thing2::java.lang.reflect.Type)
+  (cond
+   ((eqv? thing1 thing2) #t)
+   ((singleton? thing2) #f)
+   ((singleton? thing1)(subtype? (class-of (singleton-value thing1)) thing2))
+   (else (let ((thing1 (as java.lang.Class thing1))
+               (thing2 (as java.lang.Class thing2)))
+           (*:isAssignableFrom thing2 thing1)))))
+
 
 ;;; ---------------------------------------------------------------------
 ;;; klos type signatures
@@ -229,4 +267,5 @@
 ;;; (gadd 2 "bar")
 ;;; (add-method! gadd (signature gnu.math.IntNum java.lang.String) (lambda (x y)(string-append (format #f "~a" x) y)))
 ;;; (gadd 2 "bar")
-
+;;; (add-method! gadd (signature (singleton '()) java.lang.String) (lambda (x y) y))
+;;; (gadd '() "Wow!")
