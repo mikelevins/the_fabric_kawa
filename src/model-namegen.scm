@@ -19,6 +19,7 @@
  fabric-name-bytestrings
  fabric-name-strings
  generate-fabric-name
+ generate-mech-name
  random-fabric-name)
 
 ;;; ---------------------------------------------------------------------
@@ -136,3 +137,12 @@
                                    (list-fill (- 8 part-count) 0)))))
     (FabricName (apply bytes->integer indexes))))
 
+(define (generate-mech-name)
+  (let* ((num-byte (+ 1 (random-integer 254)))
+         (surname-byte (+ 1 (random-integer 254)))
+         (name-index (choose-any '(0 2 4 5 6 7)))
+         (name-byte (+ 1 (random-integer 254)))
+         (name-domain (list-ref (name-domains) name-index)))
+    (list (list-ref name-domain name-byte)
+          num-byte
+          (list-ref (domain3) surname-byte))))

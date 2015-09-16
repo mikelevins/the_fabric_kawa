@@ -14,8 +14,11 @@
 ;;; load this file in order to load the Fabric client in an
 ;;; interactive session
 
+(require 'list-lib)
 (require "util-random.scm")
 (require "util-bytes.scm")
+(require "util-lists.scm")
+(require "klos.scm")
 (require "data-names.scm")
 (require "model-namegen.scm")
 (require "model-character.scm")
