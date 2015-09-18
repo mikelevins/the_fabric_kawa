@@ -11,9 +11,9 @@
 (module-export
  ArmorsButtonGroup)
 
-(require "util-java.scm")
-(require "client-state.scm")
-(require "state-create-character.scm")
+(require util-java)
+(require client-state)
+(require state-create-character)
 
 (import-as Button tonegod.gui.controls.buttons.Button)
 (import-as RadioButtonGroup tonegod.gui.controls.buttons.RadioButtonGroup)

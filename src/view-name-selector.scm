@@ -11,9 +11,9 @@
 (module-export
  NameSelector)
 
-(require "util-java.scm")
-(require "data-assets.scm")
-(require "client-state.scm")
+(require util-java)
+(require data-assets)
+(require client-state)
 
 (import-as AssetManager com.jme3.asset.AssetManager)
 (import-as Button tonegod.gui.controls.buttons.Button)

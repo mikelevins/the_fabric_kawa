@@ -17,10 +17,10 @@
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
-(require "util-error.scm")
-(require "util-java.scm")
-(require "util-lists.scm")
-(require "model-namegen.scm")
+(require util-error)
+(require util-java)
+(require util-lists)
+(require model-namegen)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports

@@ -17,14 +17,14 @@
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
-(require "util-error.scm")
-(require "util-java.scm")
-(require "util-lists.scm")
-(require "data-nodes.scm")
-(require "client-state.scm")
-(require "client-class.scm")
-(require "model-rect.scm")
-(require "view-loginbox.scm")
+(require util-error)
+(require util-java)
+(require util-lists)
+(require data-nodes)
+(require client-state)
+(require client-class)
+(require model-rect)
+(require view-loginbox)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports

@@ -16,10 +16,10 @@
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
-(require "util-error.scm")
-(require "util-java.scm")
-(require "util-lists.scm")
-(require "data-nodes.scm")
+(require util-error)
+(require util-java)
+(require util-lists)
+(require data-nodes)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports

@@ -15,13 +15,13 @@
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
-(require "util-java.scm")
-(require "util-error.scm")
-(require "client-class.scm")
-(require "client-state.scm")
-(require "state-create-character.scm")
-(require "model-rect.scm")
-(require "view-augments-button-group.scm")
+(require util-java)
+(require util-error)
+(require client-class)
+(require client-state)
+(require state-create-character)
+(require model-rect)
+(require view-augments-button-group)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports

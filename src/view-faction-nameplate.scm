@@ -15,9 +15,9 @@
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
-(require "util-java.scm")
-(require "state-create-character.scm")
-(require "model-rect.scm")
+(require util-java)
+(require state-create-character)
+(require model-rect)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports

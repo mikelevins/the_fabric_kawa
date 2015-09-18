@@ -18,7 +18,7 @@
 
 (require 'srfi-60)
 (require 'list-lib)
-(require "util-random.scm")
+(require util-random)
 
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT

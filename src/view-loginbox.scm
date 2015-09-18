@@ -15,9 +15,9 @@
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
-(require "util-java.scm")
-(require "util-error.scm")
-(require "client-class.scm")
+(require util-java)
+(require util-error)
+(require client-class)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports

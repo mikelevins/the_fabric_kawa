@@ -16,14 +16,13 @@
 ;;; ---------------------------------------------------------------------
 
 (require 'list-lib)
-
-(require "util-java.scm")
-(require "util-error.scm")
-(require "client-class.scm")
-(require "model-character.scm")
-(require "model-rect.scm")
-(require "data-names.scm")
-(require "state-create-character.scm")
+(require util-java)
+(require util-error)
+(require client-class)
+(require model-character)
+(require model-rect)
+(require data-names)
+(require state-create-character)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports

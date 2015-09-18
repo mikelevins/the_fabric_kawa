@@ -11,8 +11,8 @@
 (module-export
  make-sky-box)
 
-(require "util-java.scm")
-(require "data-assets.scm")
+(require util-java)
+(require data-assets)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports

@@ -32,9 +32,9 @@
 ;;; 
 
 (require 'list-lib)
-(require "util-random.scm")
-(require "util-sort.scm")
-(require "util-java.scm")
+(require util-random)
+(require util-sort)
+(require util-java)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports

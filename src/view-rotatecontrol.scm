@@ -10,7 +10,7 @@
 
 (module-export RotateControl)
 
-(require "util-java.scm")
+(require util-java)
 
 (import-as AbstractControl com.jme3.scene.control.AbstractControl)
 

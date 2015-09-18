@@ -31,15 +31,15 @@
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
-(require "util-error.scm")
-(require "util-java.scm")
-(require "state-login.scm")
-(require "state-create-character.scm")
-(require "state-pick-character.scm")
-(require "state-play.scm")
-(require "model-character.scm")
-(require "state-transit.scm")
-(require "client-state.scm")
+(require util-error)
+(require util-java)
+(require state-login)
+(require state-create-character)
+(require state-pick-character)
+(require state-play)
+(require model-character)
+(require state-transit)
+(require client-state)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports

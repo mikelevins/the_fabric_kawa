@@ -15,14 +15,14 @@
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
-(require "util-java.scm")
-(require "util-error.scm")
-(require "client-class.scm")
-(require "client-state.scm")
-(require "model-rect.scm")
-(require "view-faction-picker.scm")
-(require "state-create-character.scm")
-(require "view-weapons-button-group.scm")
+(require util-java)
+(require util-error)
+(require client-class)
+(require client-state)
+(require model-rect)
+(require view-faction-picker)
+(require state-create-character)
+(require view-weapons-button-group)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports

@@ -12,10 +12,10 @@
  make-random-name-button
  RandomNameButton)
 
-(require "util-java.scm")
-(require "model-rect.scm")
-(require "client-state.scm")
-(require "state-create-character.scm")
+(require util-java)
+(require model-rect)
+(require client-state)
+(require state-create-character)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports

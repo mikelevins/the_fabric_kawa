@@ -19,7 +19,7 @@
 ;;; loads media assets on demand. The client uses the asset manager
 ;;; to load textures, icons, and other media for us in the game.
 
-(require "util-java.scm")
+(require util-java)
 
 ;;; ---------------------------------------------------------------------
 ;;; required imports

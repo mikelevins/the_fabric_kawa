@@ -15,9 +15,9 @@
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
-(require "util-java.scm")
-(require "data-assets.scm")
-(require "view-rotatecontrol.scm")
+(require util-java)
+(require data-assets)
+(require view-rotatecontrol)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports

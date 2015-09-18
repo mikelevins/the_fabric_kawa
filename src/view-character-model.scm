@@ -15,11 +15,11 @@
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
-(require "util-java.scm")
-(require "util-error.scm")
-(require "client-class.scm")
-(require "data-assets.scm")
-(require "model-rect.scm")
+(require util-java)
+(require util-error)
+(require client-class)
+(require data-assets)
+(require model-rect)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports

@@ -16,7 +16,7 @@
 ;;; this file provides utilities for generating pseudi-random numbers
 ;;; for use in Fabric code
 
-(require "util-java.scm")
+(require util-java)
 
 ;;; PARAMETER random-state
 ;;; ---------------------------------------------------------------------

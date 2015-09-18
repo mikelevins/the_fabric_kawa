@@ -34,11 +34,11 @@
 
 (require 'srfi-60)
 (require 'list-lib)
-(require "util-java.scm")
-(require "util-bytes.scm")
-(require "util-random.scm")
-(require "util-lists.scm")
-(require "data-names.scm")
+(require util-java)
+(require util-bytes)
+(require util-random)
+(require util-lists)
+(require data-names)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports

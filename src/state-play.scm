@@ -18,16 +18,16 @@
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
-(require "util-error.scm")
-(require "util-java.scm")
-(require "util-lists.scm")
-(require "data-nodes.scm")
-(require "view-skybox.scm")
-(require "view-celestial-body.scm")
-(require "syntax-events.scm")
-(require "model-character.scm")
-(require "client-class.scm")
-(require "client-state.scm")
+(require util-error)
+(require util-java)
+(require util-lists)
+(require data-nodes)
+(require view-skybox)
+(require view-celestial-body)
+(require syntax-events)
+(require model-character)
+(require client-class)
+(require client-state)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
