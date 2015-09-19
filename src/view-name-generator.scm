@@ -42,7 +42,7 @@
 
 (define (make-name-generator screen::Screen fname::FabricName)
   (let* ((Align BitmapFont:Align)
-         (rect (compute-name-picker-rect screen))
+         (rect (compute-name-generator-rect screen))
          (position (Vector2f 10 48))
          (size (Vector2f 600 24.0))
          (f (Label screen "name field" position size))
@@ -55,5 +55,5 @@
     (*:setFontSize f 24)
     (*:setFontColor f ColorRGBA:Green)
     (*:addChild win f)
-    (*:setWindowTitle win "Pick a Fabric name:")
+    (*:setWindowTitle win "Generate a Fabric name:")
     win))

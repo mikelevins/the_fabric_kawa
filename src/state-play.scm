@@ -256,8 +256,7 @@
     (normalize-camera! client)
     (*:setLocalTranslation pnode 0.0 0.0 -25000.0)
     (*:fromAngleAxis rotation (* -1 (/ PI 4)) pitch-axis)
-    (*:setLocalRotation pnode rotation)
-    ))
+    (*:setLocalRotation pnode rotation)))
 
 (define (prepare-to-attach-play-state state::PlayState client::FabricClient)
   (unless state:initialized?

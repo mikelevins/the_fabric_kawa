@@ -14,6 +14,7 @@
  compute-armor-picker-rect
  compute-augment-picker-rect
  compute-faction-picker-rect
+ compute-name-generator-rect
  compute-name-picker-rect
  compute-weapon-picker-rect
  make-create-character-state)
@@ -225,6 +226,21 @@
                     picker-top
                     picker-width
                     picker-height)))
+
+
+(define (compute-name-generator-rect screen::Screen)
+  (let* ((weapon-picker-rect (compute-weapon-picker-rect screen))
+         (screen-width (*:getWidth screen))
+         (screen-height (*:getHeight screen))
+         (generator-width 256)
+         (generator-height 220)
+         (generator-top (- screen-height
+                           (+ generator-height 8)))
+         (generator-left 8))
+    (make-rectangle generator-left
+                    generator-top
+                    generator-width
+                    generator-height)))
 
 ;;; attach and detach
 
