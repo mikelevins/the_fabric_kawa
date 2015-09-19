@@ -93,6 +93,9 @@
   (augment init-form: #!null)
   (augment-picker init-form: #!null)
   (character-acceptor init-form: #!null)
+  (abjurers-button init-form: #!null)
+  (caretakers-button init-form: #!null)
+  (rogues-button init-form: #!null)
   (initialized? init: #f)
   ;; methods
   ((cleanup) (%create-character-state-cleanup (this)))
@@ -146,8 +149,8 @@
     (route-keys (input-manager)
                 ((MouseButtonTrigger MouseInput:BUTTON_LEFT) ->  "leftButton")
                 ((MouseButtonTrigger MouseInput:BUTTON_RIGHT) -> "rightButton")
-                ((MouseAxisTrigger 0 #f) -> "mouseRotateRight")
-                ((MouseAxisTrigger 0 #t) -> "mouseRotateLeft")
+                ((MouseAxisTrigger 0 #f) -> "mouseRotateLeft")
+                ((MouseAxisTrigger 0 #t) -> "mouseRotateRight")
                 ((MouseAxisTrigger 1 #f) -> "mouseRotateUp")
                 ((MouseAxisTrigger 1 #t) -> "mouseRotateDown"))
     ;; set up the event listener
