@@ -22,6 +22,7 @@
 (require model-character)
 (require model-rect)
 (require data-names)
+(require view-random-name-button)
 (require state-create-character)
 
 ;;; ---------------------------------------------------------------------
@@ -30,6 +31,7 @@
 
 (import-as BitmapFont com.jme3.font.BitmapFont)
 (import-as BitmapText com.jme3.font.BitmapText)
+(import-as Button tonegod.gui.controls.buttons.Button)
 (import-as ColorRGBA com.jme3.math.ColorRGBA)
 (import-as Label tonegod.gui.controls.text.Label)
 (import-as Screen tonegod.gui.core.Screen)
@@ -40,12 +42,13 @@
 ;;; make-name-picker
 ;;; ---------------------------------------------------------------------
 
-(define (make-name-generator screen::Screen fname::FabricName)
+(define (make-name-generator screen::Screen state::CreateCharacterState fname::FabricName)
   (let* ((Align BitmapFont:Align)
          (rect (compute-name-generator-rect screen))
          (position (Vector2f 10 48))
          (size (Vector2f 600 24.0))
          (f (Label screen "name field" position size))
+         (btn::Button (make-random-name-button screen state))
          (win (Window screen "NameGenerator"
                       (Vector2f (get-left rect) (get-top rect))
                       (Vector2f (get-width rect) (get-height rect)))))
@@ -55,5 +58,6 @@
     (*:setFontSize f 24)
     (*:setFontColor f ColorRGBA:Green)
     (*:addChild win f)
+    (*:addChild win btn)
     (*:setWindowTitle win "Generate a Fabric name:")
     win))

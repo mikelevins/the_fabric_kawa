@@ -13,7 +13,9 @@
  RandomNameButton)
 
 (require util-java)
+(require util-random)
 (require model-rect)
+(require model-namegen)
 (require client-state)
 (require state-create-character)
 
@@ -22,6 +24,7 @@
 ;;; ---------------------------------------------------------------------
 
 (import-as Button tonegod.gui.controls.buttons.Button)
+(import-as Label tonegod.gui.controls.text.Label)
 (import-as MouseButtonEvent com.jme3.input.event.MouseButtonEvent)
 (import-as MouseMotionEvent com.jme3.input.event.MouseMotionEvent)
 (import-as Screen tonegod.gui.core.Screen)
@@ -34,33 +37,42 @@
 ;;; characters
 
 (define-simple-class RandomNameButton (Button)
+  (state::CreateCharacterState init-form: #!null)
   (palette init-form: #!null)
   ((*init* screen::Screen uid::String position::Vector2f size::Vector2f)
    (invoke-special Button (this) '*init* screen uid position size))
   ((onButtonMouseLeftDown evt::MouseButtonEvent toggled::boolean) #!void)
   ((onButtonMouseRightDown evt::MouseButtonEvent toggled::boolean) #!void)
-  ((onButtonMouseLeftUp evt::MouseButtonEvent toggled::boolean)
-   (format #t "Clicked the random name button"))
+  ((onButtonMouseLeftUp evt::MouseButtonEvent toggled::boolean)(handle-generate-random-name state))
   ((onButtonMouseRightUp evt::MouseButtonEvent toggled::boolean) #!void)
   ((onButtonFocus evt::MouseMotionEvent) #!void)
   ((onButtonLostFocus evt::MouseMotionEvent) #!void))
 
+;;; (handle-generate-random-name)
+;;; ---------------------------------------------------------------------
+;;; replace the appstate's character name with a newly-generated one
+
+(define (handle-generate-random-name state::CreateCharacterState)
+  (let* ((character::FabricCharacter state:character)
+         (nameplate::Label state:character-nameplate)
+         (new-name (generate-fabric-name part-count: (+ 1 (random-integer 4)))))
+    (set! character:name new-name)
+    (*:setText nameplate (fabric-character-namestring character))))
 
 ;;; (make-random-name-button screen::Screen)
 ;;; ---------------------------------------------------------------------
 ;;; returns a newly-constructed random-name button
 
-(define (make-random-name-button screen::Screen)
+(define (make-random-name-button screen::Screen state::CreateCharacterState)
   (let* ((rect (compute-name-picker-rect screen))
          (button-width 144)
          (button-height 36)
-         (button-left (- (get-width rect)
-                         (* 1/9 (get-width rect))))
-         (button-top (- (/ (get-height rect) 2)
-                        (/ button-height 2)))
+         (button-left 16)
+         (button-top 48)
          (button::RandomNameButton (RandomNameButton screen "RandomNameButton"
                                                      (Vector2f button-left button-top)
                                                      (Vector2f button-width button-height))))
-    (*:setText button "Random Name")
+    (*:setText button "Generate Name")
+    (set! button:state state)
     button))
 

@@ -39,7 +39,6 @@
 (require view-armor-picker)
 (require view-augment-picker)
 (require view-faction-picker)
-(require view-name-picker)
 (require view-weapon-picker)
 (require view-name-generator)
 
@@ -300,7 +299,7 @@
            (armor-picker::Window (make-armor-picker state screen))
            (augment-picker::Window (make-augment-picker state screen))
            ;;(name-picker::Window (make-name-picker screen))
-           (name-generator::Window (make-name-generator screen state:character:name))
+           (name-generator::Window (make-name-generator screen state state:character:name))
            (character-acceptor::Window (make-character-acceptor screen))
            (character-model (make-character-model)))
       (set! state:faction-picker faction-picker)

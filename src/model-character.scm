@@ -10,6 +10,7 @@
 
 (module-export
  FabricCharacter
+ fabric-character-namestring
  make-fabric-character
  set-fabric-name!)
 
@@ -38,18 +39,14 @@
 
 (define (make-fabric-character #!optional fabric-name)
   (let* ((fname::FabricName (or fabric-name (generate-fabric-name part-count: (+ 1 (random-integer 5)))))
-         (fname-strings (fabric-name-strings fname))
-         (fname-string (apply string-append (interpose " " fname-strings)))
-         (fnode (Node fname-string))
+         (fnode (Node "Player Character"))
          (fchar (FabricCharacter)))
     (set! fchar:node fnode)
     (set! fchar:name fname)
     fchar))
 
+(define (fabric-character-namestring fchar::FabricCharacter)
+  (apply string-append (interpose " " (fabric-name-strings fchar:name))))
+
 (define (set-fabric-name! fchar::FabricCharacter fname::FabricName)
-  (let* ((fname-strings (fabric-name-strings fname))
-         (fname-string (apply string-append (interpose " " fname-strings)))
-         (fnode (Node fname-string)))
-    (set! fchar:node fnode)
-    (set! fchar:name fname)
-    fchar))
+  (set! fchar:name fname))
