@@ -12,6 +12,7 @@
  FabricCharacter
  fabric-character-namestring
  make-fabric-character
+ recolor-character-model!
  set-fabric-name!)
 
 ;;; ---------------------------------------------------------------------
@@ -22,26 +23,30 @@
 (require util-java)
 (require util-lists)
 (require model-namegen)
+(require view-character-model)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
+(import-as ColorRGBA com.jme3.math.ColorRGBA)
+(import-as Geometry com.jme3.scene.Geometry)
+(import-as Material com.jme3.material.Material)
 (import-as Node com.jme3.scene.Node)
+(import-as SafeArrayList com.jme3.util.SafeArrayList)
 
 ;;; ---------------------------------------------------------------------
 ;;; FabricCharacter
 ;;; ---------------------------------------------------------------------
 
 (define-simple-class FabricCharacter ()
-  (name init: #!null type: FabricName)
-  (node init: #!null type: Node))
+  (name::FabricName init: #!null)
+  (model::Node init: #!null))
 
-(define (make-fabric-character #!optional fabric-name)
-  (let* ((fname::FabricName (or fabric-name (generate-fabric-name part-count: (+ 1 (random-integer 5)))))
-         (fnode (Node "Player Character"))
-         (fchar (FabricCharacter)))
-    (set! fchar:node fnode)
+(define (make-fabric-character fname::FabricName)
+  (let* ((fchar (FabricCharacter))
+         (fmodel (make-character-model fchar)))
+    (set! fchar:model fmodel)
     (set! fchar:name fname)
     fchar))
 
@@ -50,3 +55,20 @@
 
 (define (set-fabric-name! fchar::FabricCharacter fname::FabricName)
   (set! fchar:name fname))
+
+(define (recolor-character-model! character::FabricCharacter lit-color::ColorRGBA dim-color::ColorRGBA)
+  (let* ((model::Node character:model)
+         (cubes::SafeArrayList (*:getChildren model))
+         (name::FabricName character:name)
+         (name-bits (fabric-name-bits name))
+         (glow-color (ColorRGBA 1 1 1 0.5))
+         (cube-count (*:size cubes)))
+    (format #t "~%recoloring character model: ~S" model)
+    (let loop ((i 0))
+      (if (< i cube-count)
+          (let* ((cube::Geometry (*:get cubes i))
+                 (mat::Material (*:getMaterial cube))
+                 (flag (list-ref name-bits i)))
+            (*:setColor mat "Color" (if flag lit-color dim-color))
+            (*:setColor mat "GlowColor" (if flag glow-color dim-color))
+            (loop (+ i 1)))))))

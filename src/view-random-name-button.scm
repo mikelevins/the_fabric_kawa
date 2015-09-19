@@ -16,6 +16,7 @@
 (require util-random)
 (require model-rect)
 (require model-namegen)
+(require model-character)
 (require client-state)
 (require state-create-character)
 

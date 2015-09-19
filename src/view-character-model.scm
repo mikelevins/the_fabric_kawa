@@ -20,6 +20,7 @@
 (require client-class)
 (require data-assets)
 (require model-rect)
+(require model-character)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -73,11 +74,11 @@
 ;;; or non-player character avatar in Fabric scenes. the node is
 ;;; constructed from 64 translucent, tinted cubes arranged in a cube.
 
-(define (make-character-model)
+(define (make-character-model character::FabricCharacter)
   (let ((i 0)
         (indexes '(-1.5 -0.5 0.5 1.5))
         (cubes '())
-        (cubes-pivot (Node "CharacterPivot")))
+        (model::Node (Node "CharacterModel")))
     (for-each
      (lambda (x)
        (for-each
@@ -90,7 +91,8 @@
            indexes))
         indexes))
      indexes)
-    (*:setLocalTranslation cubes-pivot 0 0 0)
-    (for-each (lambda (cube)(*:attachChild cubes-pivot cube))
+    (*:setLocalTranslation model 0 0 0)
+    (for-each (lambda (cube)(*:attachChild model cube))
               cubes)
-    cubes-pivot))
+    (format #t "~%returning character model: ~S" model)
+    model))

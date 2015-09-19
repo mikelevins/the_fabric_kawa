@@ -30,7 +30,8 @@
 ;;; evaluate these expressions to create and run the Fabric client
 
 ;;; (define $client::FabricClient (make-client))
-;;; (define $pchar (make-fabric-character))
+;;; (define $fname (generate-fabric-name part-count: (+ 1 (random-integer 4))))
+;;; (define $pchar (make-fabric-character $fname))
 ;;; (*:start $client)
 ;;; (client-set-login-state! $client)
 ;;; (client-set-create-character-state! $client $pchar)
