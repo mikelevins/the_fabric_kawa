@@ -17,6 +17,7 @@
 
 (require util-java)
 (require util-error)
+(require util-color)
 (require client-class)
 (require data-assets)
 (require model-rect)
@@ -38,12 +39,6 @@
 ;;; ---------------------------------------------------------------------
 ;;; 
 ;;; ---------------------------------------------------------------------
-
-(define (default-character-color)
-  (ColorRGBA 0.25 0.25 0.25 0.25))
-
-(define (default-glow-color)
-  (ColorRGBA 1 1 1 0.5))
 
 ;;; (make-component-cube x y z)
 ;;; ---------------------------------------------------------------------
@@ -94,5 +89,4 @@
     (*:setLocalTranslation model 0 0 0)
     (for-each (lambda (cube)(*:attachChild model cube))
               cubes)
-    (format #t "~%returning character model: ~S" model)
     model))

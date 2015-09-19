@@ -13,6 +13,7 @@
  RandomNameButton)
 
 (require util-java)
+(require util-color)
 (require util-random)
 (require model-rect)
 (require model-namegen)
@@ -56,9 +57,21 @@
 (define (handle-generate-random-name state::CreateCharacterState)
   (let* ((character::FabricCharacter state:character)
          (nameplate::Label state:character-nameplate)
-         (new-name (generate-fabric-name part-count: (+ 1 (random-integer 4)))))
+         (new-name (generate-fabric-name part-count: (+ 1 (random-integer 4))))
+         (faction state:faction)
+         (lit-color (case faction
+                      ((caretakers)(bright-caretakers-color))
+                      ((rogues)(bright-rogues-color))
+                      ((abjurers)(bright-abjurers-color))
+                      (else (default-glow-color))))
+         (dim-color (case faction
+                      ((caretakers)(dim-caretakers-color))
+                      ((rogues)(dim-rogues-color))
+                      ((abjurers)(dim-abjurers-color))
+                      (else (default-character-color)))))
     (set! character:name new-name)
-    (*:setText nameplate (fabric-character-namestring character))))
+    (*:setText nameplate (fabric-character-namestring character))
+    (recolor-character-model! character lit-color dim-color)))
 
 ;;; (make-random-name-button screen::Screen)
 ;;; ---------------------------------------------------------------------

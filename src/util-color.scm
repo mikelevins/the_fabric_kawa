@@ -9,12 +9,27 @@
 ;;;; ***********************************************************************
 
 (module-export
+ bright-abjurers-color
+ bright-caretakers-color
+ bright-rogues-color
  brighten-color
- darken-color)
+ darken-color
+ default-character-color
+ default-glow-color
+ dim-abjurers-color
+ dim-caretakers-color
+ dim-rogues-color)
 
 (require util-java)
 
 (import-as ColorRGBA com.jme3.math.ColorRGBA)
+
+
+(define default-character-color
+  (make-parameter (ColorRGBA 0.25 0.25 0.25 0.25)))
+
+(define default-glow-color
+  (make-parameter (ColorRGBA 1 1 1 0.5)))
 
 
 ;;; (brighten color::ColorRGBA)
@@ -44,3 +59,11 @@
          (dark-b (/ found-b 2.0))
          (dark-a 0.4))
     (ColorRGBA dark-r dark-g dark-b dark-a)))
+
+(define bright-caretakers-color (make-parameter (ColorRGBA 0.6 1.0 0.6 0.6)))
+(define dim-caretakers-color (make-parameter (ColorRGBA 0.1 0.4 0.1 0.3)))
+(define bright-rogues-color (make-parameter (ColorRGBA 0.4 0.8 1.0 0.6)))
+(define dim-rogues-color (make-parameter (ColorRGBA 0.0 0.3 0.6 0.3)))
+(define bright-abjurers-color (make-parameter (ColorRGBA 1.0 0.0 0.0 0.6)))
+(define dim-abjurers-color (make-parameter (ColorRGBA 0.4 0.0 0.0 0.2)))
+
