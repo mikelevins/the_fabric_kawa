@@ -18,9 +18,11 @@
  make-client
  move-node!
  move-node-backward!
+ move-node-down!
  move-node-forward!
  move-node-left!
  move-node-right!
+ move-node-up!
  normalize-camera!
  rotate-node-down!
  rotate-node-left!
@@ -232,6 +234,22 @@
 
 (define (move-node-right! app :: FabricClient node :: Node amount :: float)
   (set! app:direction (*:normalizeLocal (*:getLeft (*:getCamera app))))
+  (move-node! app node amount #t))
+
+;;; (move-node-up! app :: FabricClient node :: Node amount :: float)
+;;; ---------------------------------------------------------------------
+;;; moves _node_ upward a distance of _amount_
+
+(define (move-node-up! app :: FabricClient node :: Node amount :: float)
+  (set! app:direction (*:normalizeLocal (*:getUp (*:getCamera app))))
+  (move-node! app node (* -1 amount) #t))
+
+;;; (move-node-down! app :: FabricClient node :: Node amount :: float)
+;;; ---------------------------------------------------------------------
+;;; moves _node_ downward a distance of _amount_
+
+(define (move-node-down! app :: FabricClient node :: Node amount :: float)
+  (set! app:direction (*:normalizeLocal (*:getUp (*:getCamera app))))
   (move-node! app node amount #t))
 
 

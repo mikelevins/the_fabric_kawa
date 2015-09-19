@@ -147,13 +147,13 @@
                 ((KeyTrigger key-input:KEY_DOWN) -> "moveBackward")
                 ((KeyTrigger key-input:KEY_S) -> "moveBackward")
                 ((MouseAxisTrigger 1 #t) -> "mouseRotateDown")
-                ;; text inputs
-                ((KeyTrigger key-input:KEY_SPACE) -> "SPACE")
-                ((KeyTrigger key-input:KEY_A) -> "KEY_A"))
+                ((KeyTrigger key-input:KEY_SPACE) -> "moveUp")
+                ((KeyTrigger key-input:KEY_X) -> "moveDown"))
     ;; set up the event listener
     (*:addListener input-manager app
                    ;; motion controls
                    "moveForward" "maybeMoveForward" "moveBackward" "moveRight" "moveLeft"
+                   "moveUp" "moveDown"
                    "leftButton" "rightButton" "rotateRight" "rotateLeft" "rotateUp" "rotateDown"
                    "mouseRotateRight" "mouseRotateLeft" "mouseRotateUp" "mouseRotateDown"
                    ;; chat input
@@ -180,6 +180,8 @@
                   "moveForward"
                   "moveLeft"
                   "moveRight"
+                  "moveUp"
+                  "moveDown"
                   "rightButton"
                   ;; text inputs
                   "SPACE"
@@ -208,6 +210,8 @@
                ("moveBackward" -> (move-node-backward! client node (* 0.6 speed tpf)))
                ("moveRight" -> (move-node-right! client node (* speed tpf)))
                ("moveLeft" -> (move-node-left! client node (* speed tpf)))
+               ("moveUp" -> (move-node-up! client node (* speed tpf)))
+               ("moveDown" -> (move-node-down! client node (* speed tpf)))
                ("rotateRight" -> (rotate-node-right! node (* 0.25 tpf)))
                ("mouseRotateRight" -> (when right-button-down?
                                         (rotate-node-right! node value)))
