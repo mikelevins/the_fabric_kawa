@@ -56,6 +56,9 @@
 (import-as ConnectException java.net.ConnectException)
 (import-as DefaultClient com.jme3.network.base.DefaultClient)
 (import-as Label tonegod.gui.controls.text.Label)
+(import-as MouseAxisTrigger com.jme3.input.controls.MouseAxisTrigger)
+(import-as MouseButtonTrigger com.jme3.input.controls.MouseButtonTrigger)
+(import-as MouseInput com.jme3.input.MouseInput)
 (import-as Network com.jme3.network.Network)
 (import-as Node com.jme3.scene.Node)
 (import-as Screen tonegod.gui.core.Screen)
@@ -132,6 +135,44 @@
 ;;; event-handling
 ;;; ---------------------------------------------------------------------
 
+;;; (setup-inputs app::FabricClient)
+;;; ---------------------------------------------------------------------
+;;; establishes the event handlers that translate keypresses and
+;;; mouse movements into movements of the player's node and camera
+
+(define (setup-inputs app::FabricClient)
+  ;; set up the player's controls
+  (let* ((input-manager (*:getInputManager app)))
+    (route-keys (input-manager)
+                ((MouseButtonTrigger MouseInput:BUTTON_LEFT) ->  "leftButton")
+                ((MouseButtonTrigger MouseInput:BUTTON_RIGHT) -> "rightButton")
+                ((MouseAxisTrigger 0 #f) -> "mouseRotateRight")
+                ((MouseAxisTrigger 0 #t) -> "mouseRotateLeft")
+                ((MouseAxisTrigger 1 #f) -> "mouseRotateUp")
+                ((MouseAxisTrigger 1 #t) -> "mouseRotateDown"))
+    ;; set up the event listener
+    (*:addListener input-manager app
+                   ;; motion controls
+                   "leftButton" "rightButton"
+                   "mouseRotateRight" "mouseRotateLeft" "mouseRotateUp" "mouseRotateDown")))
+
+
+;;; (teardown-inputs app::FabricClient)
+;;; ---------------------------------------------------------------------
+;;; removes the event handlers that translate keypresses and
+;;; mouse movements into movements of the player's node and camera
+
+(define (teardown-inputs app::FabricClient)
+  ;; set up the player's controls
+  (let* ((input-manager (*:getInputManager app)))
+    (unroute-keys (input-manager)
+                  "leftButton"
+                  "mouseRotateDown"
+                  "mouseRotateLeft"
+                  "mouseRotateRight"
+                  "mouseRotateUp")
+    ;; set up the event listener
+    (*:removeListener input-manager app)))
 
 ;;; (create-character-state-handle-analog-event state name value tpf)
 ;;; ---------------------------------------------------------------------
@@ -140,21 +181,21 @@
 (define (create-character-state-handle-analog-event state::CreateCharacterState name value tpf)
   (let* ((client::FabricClient state:client)
          (pchar::FabricCharacter state:character)
-         (node pchar:node)
+         (model state:character-model)
          (right-button-down? client:right-button?))
     (on-analog (name)
-               ("rotateRight" -> (rotate-node-right! node (* 0.25 tpf)))
+               ("rotateRight" -> (rotate-node-right! model (* 0.25 tpf)))
                ("mouseRotateRight" -> (when right-button-down?
-                                        (rotate-node-right! node value)))
-               ("rotateLeft" -> (rotate-node-left! node (* 0.25 tpf)))
+                                        (rotate-node-right! model value)))
+               ("rotateLeft" -> (rotate-node-left! model (* 0.25 tpf)))
                ("mouseRotateLeft" -> (when right-button-down?
-                                       (rotate-node-left! node value)))
-               ("rotateUp" -> (rotate-node-up! node (* 0.125 tpf)))
+                                       (rotate-node-left! model value)))
+               ("rotateUp" -> (rotate-node-up! model (* 0.125 tpf)))
                ("mouseRotateUp" -> (when right-button-down?
-                                     (rotate-node-up! node value)))
-               ("rotateDown" -> (rotate-node-down! node (* 0.125 tpf)))
+                                     (rotate-node-up! model value)))
+               ("rotateDown" -> (rotate-node-down! model (* 0.125 tpf)))
                ("mouseRotateDown" -> (when right-button-down?
-                                       (rotate-node-down! node value))))))
+                                       (rotate-node-down! model value))))))
 
 ;;; (create-character-state-handle-action-event state name key-pressed? tpf)
 ;;; ---------------------------------------------------------------------
@@ -269,6 +310,7 @@
       (set! state:faction-nameplate faction-nameplate)
       (set! state:character-nameplate character-nameplate)
       (set! state:character-model character-model)
+      (setup-inputs client)
       (set! state:initialized? #t))))
 
 (define (did-attach-create-character-state state::CreateCharacterState mgr::AppStateManager)
@@ -314,4 +356,5 @@
                                (*:removeElement screen state:name-generator)
                                (*:removeElement screen state:character-acceptor)
                                (*:detachChild root model)
+                               (teardown-inputs client)
                                (*:removeControl gui-node screen))))))))
