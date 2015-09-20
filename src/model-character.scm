@@ -10,6 +10,8 @@
 
 (module-export
  FabricCharacter
+ character-model-namecubes
+ character-model-root
  fabric-character-namestring
  make-fabric-character
  recolor-character-model!
@@ -101,9 +103,16 @@
 (define (set-fabric-name! fchar::FabricCharacter fname::FabricName)
   (set! fchar:name fname))
 
-(define (recolor-character-model! character::FabricCharacter lit-color::ColorRGBA dim-color::ColorRGBA)
+(define (character-model-root character::FabricCharacter)
+  character:model)
+
+(define (character-model-namecubes character::FabricCharacter)
   (let* ((model::Node character:model)
-         (cubes::SafeArrayList (*:getChildren model))
+         (namecube::Node (*:getChild model "NameCube")))
+    (*:getChildren namecube)))
+
+(define (recolor-character-model! character::FabricCharacter lit-color::ColorRGBA dim-color::ColorRGBA)
+  (let* ((cubes::SafeArrayList (character-model-namecubes character))
          (name::FabricName character:name)
          (name-bits (fabric-name-bits name))
          (glow-color (ColorRGBA 1 1 1 0.6))

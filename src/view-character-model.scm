@@ -73,7 +73,8 @@
   (let ((i 0)
         (indexes '(-1.5 -0.5 0.5 1.5))
         (cubes '())
-        (model::Node (Node "CharacterModel")))
+        (model::Node (Node "CharacterModel"))
+        (namecube::Node (Node "NameCube")))
     (for-each
      (lambda (x)
        (for-each
@@ -87,6 +88,9 @@
         indexes))
      indexes)
     (*:setLocalTranslation model 0 0 0)
-    (for-each (lambda (cube)(*:attachChild model cube))
+    (*:setLocalTranslation namecube 0 0 0)
+    (*:attachChild model namecube)
+    (for-each (lambda (cube)(*:attachChild namecube cube))
               cubes)
     model))
+
