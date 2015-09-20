@@ -19,7 +19,6 @@
 ;;; ---------------------------------------------------------------------
 
 (require util-error)
-(require util-java)
 (require util-lists)
 (require data-nodes)
 (require view-skybox)

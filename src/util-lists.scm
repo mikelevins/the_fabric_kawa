@@ -34,7 +34,6 @@
 (require 'list-lib)
 (require util-random)
 (require util-sort)
-(require util-java)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports

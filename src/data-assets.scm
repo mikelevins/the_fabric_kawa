@@ -19,13 +19,12 @@
 ;;; loads media assets on demand. The client uses the asset manager
 ;;; to load textures, icons, and other media for us in the game.
 
-(require util-java)
-
 ;;; ---------------------------------------------------------------------
 ;;; required imports
 ;;; ---------------------------------------------------------------------
 
 (import (class com.jme3.system JmeSystem))
+(import (class java.lang Thread))
 
 ;;; ---------------------------------------------------------------------
 ;;; the asset manager
@@ -36,8 +35,9 @@
 ;;; returns the asset manager
 
 (define (get-asset-manager)
-  (JmeSystem:newAssetManager (get-resource (context-class-loader (current-thread))
-                                           "com/jme3/asset/Desktop.cfg")))
+  (JmeSystem:newAssetManager
+   (*:getResource (*:getContextClassLoader (Thread:currentThread))
+                  "com/jme3/asset/Desktop.cfg")))
 
 
 

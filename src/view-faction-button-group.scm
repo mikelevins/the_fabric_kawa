@@ -11,7 +11,6 @@
 (module-export
  FactionButtonGroup)
 
-(require util-java)
 (require util-color)
 (require client-state)
 (require state-create-character)

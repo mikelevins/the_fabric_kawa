@@ -11,7 +11,6 @@
 (module-export
  WeaponsButtonGroup)
 
-(require util-java)
 (require client-state)
 (require model-character)
 (require state-create-character)

@@ -12,7 +12,6 @@
  make-random-name-button
  RandomNameButton)
 
-(require util-java)
 (require util-color)
 (require util-random)
 (require model-rect)

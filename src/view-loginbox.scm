@@ -15,7 +15,6 @@
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
-(require util-java)
 (require util-error)
 (require client-class)
 
@@ -38,7 +37,7 @@
    (invoke-special LoginBox (this) '*init* screen uid position size))
   ((onButtonLoginPressed evt::MouseButtonEvent toggle::boolean)
    (let ((server-connection #!null #|(connect-to-server)|#))
-     (if (jnull? server-connection)
+     (if (eqv? #!null server-connection)
          (warn "Connection to server failed")
          (let ((client::FabricClient app))
            (warn "Connection to server succeeded")

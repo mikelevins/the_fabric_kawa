@@ -15,7 +15,6 @@
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
-(require util-java)
 (require util-error)
 (require client-class)
 (require state-create-character)

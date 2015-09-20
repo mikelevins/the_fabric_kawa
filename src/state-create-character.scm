@@ -24,7 +24,6 @@
 ;;; ---------------------------------------------------------------------
 
 (require util-error)
-(require util-java)
 (require util-color)
 (require util-lists)
 (require data-nodes)

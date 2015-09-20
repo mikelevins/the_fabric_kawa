@@ -15,7 +15,6 @@
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
-(require util-java)
 (require data-assets)
 (require view-rotatecontrol)
 

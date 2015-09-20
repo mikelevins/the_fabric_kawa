@@ -15,7 +15,6 @@
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
-(require util-java)
 (require util-error)
 (require util-color)
 (require client-class)

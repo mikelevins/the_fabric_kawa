@@ -31,17 +31,13 @@
 ;;; ---------------------------------------------------------------------
 ;;; evaluate these expressions to create and run the Fabric client
 
-;;; (define $client::FabricClient (make-client))
-;;; (define $fname (generate-fabric-name part-count: (+ 1 (random-integer 4))))
-;;; (define $pchar (make-fabric-character $fname))
-;;; (*:start $client)
+;;; (start-client)
 ;;; (client-set-login-state! $client)
-;;; (client-set-create-character-state! $client $pchar)
+;;; (client-set-create-character-state! $client $character)
 ;;; (client-set-pick-character-state! $client)
-;;; (client-set-play-state! $client $pchar "Pluto")
-;;; (client-set-play-state! $client $pchar "Earth")  
+;;; (client-set-play-state! $client $character "Pluto")
 ;;; (reset-play-state! $client:state)
-;;; (client-transit-to! $client $pchar "Jupiter")
+;;; (client-transit-to! $client $character "Jupiter")
 
 ;;; supported transit destinations:
 ;; Callisto

@@ -16,8 +16,6 @@
 ;;; this file provides utilities for generating pseudi-random numbers
 ;;; for use in Fabric code
 
-(require util-java)
-
 ;;; PARAMETER random-state
 ;;; ---------------------------------------------------------------------
 ;;; a parameter that stores the current random-state object used by

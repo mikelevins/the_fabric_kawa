@@ -25,7 +25,6 @@
 ;;; ---------------------------------------------------------------------
 
 (require util-error)
-(require util-java)
 (require util-lists)
 (require model-namegen)
 (require view-character-model)

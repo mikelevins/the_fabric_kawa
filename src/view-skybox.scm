@@ -11,7 +11,6 @@
 (module-export
  make-sky-box)
 
-(require util-java)
 (require data-assets)
 
 ;;; ---------------------------------------------------------------------

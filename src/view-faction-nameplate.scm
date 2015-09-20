@@ -15,7 +15,6 @@
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
-(require util-java)
 (require state-create-character)
 (require model-rect)
 

@@ -9,6 +9,9 @@
 ;;;; ***********************************************************************
 
 (module-export
+ $client
+ $character
+ $character-name
  client-set-login-state!
  client-set-create-character-state!
  client-set-pick-character-state!
@@ -27,19 +30,20 @@
  rotate-node-down!
  rotate-node-left!
  rotate-node-right!
- rotate-node-up!)
+ rotate-node-up!
+ start-client)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
 (require util-error)
-(require util-java)
 (require state-login)
 (require state-create-character)
 (require state-pick-character)
 (require state-play)
 (require model-character)
+(require model-namegen)
 (require state-transit)
 (require client-state)
 
@@ -119,6 +123,18 @@
   (Mouse:setGrabbed grab-mouse)
   client)
 
+(define $client::FabricClient #!null)
+(define $character-name #f)
+(define $character #f)
+
+(define (start-client)
+  (begin (set! $client (make-client))
+         (set! $character-name (generate-fabric-name part-count: (+ 1 (random-integer 4))))
+         (set! $character (make-fabric-character $character-name))
+         (format #t "~% $client: ~S" $client)
+         (format #t "~% $character: ~S" $character)
+         (format #t "~% $character-name: ~S~%~%" (fabric-name-strings $character-name))
+         (*:start $client)))
 
 ;;; PRIVATE
 ;;; ---------------------------------------------------------------------
@@ -130,7 +146,7 @@
 (define (%detach-and-cleanup-current-state! client::FabricClient)
   (let ((current-state client:state)
         (mgr (*:getStateManager client)))
-    (unless (jnull? current-state)
+    (unless (eqv? #!null current-state)
       (*:detach mgr current-state)
       (set! client:state #!null))))
 

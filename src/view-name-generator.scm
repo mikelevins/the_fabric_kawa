@@ -16,7 +16,6 @@
 ;;; ---------------------------------------------------------------------
 
 (require 'list-lib)
-(require util-java)
 (require util-error)
 (require client-class)
 (require model-character)

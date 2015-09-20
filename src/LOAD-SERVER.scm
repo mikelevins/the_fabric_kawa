@@ -15,5 +15,4 @@
 ;;; interactive session
 
 (require version)
-(require util-java)
 (require model-datastore)

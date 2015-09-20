@@ -22,8 +22,6 @@
  faction-dim-color
  faction-lit-color)
 
-(require util-java)
-
 (import (class com.jme3.math ColorRGBA))
 
 (define default-character-color

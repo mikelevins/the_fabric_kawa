@@ -11,7 +11,6 @@
 (module-export
  ArmorsButtonGroup)
 
-(require util-java)
 (require client-state)
 (require state-create-character)
 (require model-character)
