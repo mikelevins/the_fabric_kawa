@@ -21,6 +21,7 @@
 (require data-names)
 (require model-namegen)
 (require model-character)
+(require model-player)
 (require client-class)
 (require state-play)
 
