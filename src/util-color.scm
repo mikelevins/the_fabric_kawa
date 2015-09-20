@@ -18,7 +18,9 @@
  default-glow-color
  dim-abjurers-color
  dim-caretakers-color
- dim-rogues-color)
+ dim-rogues-color
+ faction-dim-color
+ faction-lit-color)
 
 (require util-java)
 
@@ -66,3 +68,20 @@
 (define bright-abjurers-color (make-parameter (ColorRGBA 1.0 0.0 0.0 0.6)))
 (define dim-abjurers-color (make-parameter (ColorRGBA 0.4 0.0 0.0 0.2)))
 
+(define (faction-lit-color faction-name)
+  (if (eqv? #!null faction-name)
+      (default-glow-color)
+      (case faction-name
+        ((caretakers)(bright-caretakers-color))
+        ((rogues)(bright-rogues-color))
+        ((abjurers)(bright-abjurers-color))
+        (else (default-glow-color)))))
+
+(define (faction-dim-color faction-name)
+  (if (eqv? #!null faction-name)
+      (default-character-color)
+      (case faction-name
+        ((caretakers)(dim-caretakers-color))
+        ((rogues)(dim-rogues-color))
+        ((abjurers)(dim-abjurers-color))
+        (else (default-character-color)))))

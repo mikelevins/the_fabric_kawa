@@ -39,7 +39,7 @@
 ;;; (client-set-create-character-state! $client $pchar)
 ;;; (client-set-pick-character-state! $client)
 ;;; (client-set-play-state! $client $pchar "Pluto")
-;;; (client-set-play-state! $client $pchar "Earth")
+;;; (client-set-play-state! $client $pchar "Earth")  
 ;;; (reset-play-state! $client:state)
 ;;; (client-transit-to! $client $pchar "Jupiter")
 

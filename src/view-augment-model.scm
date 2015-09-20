@@ -27,7 +27,7 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
-(import-as PI com.jme3.math.FastMath:PI)
+(import (only (com jme3 math FastMath) PI))
 
 (import (class com.jme3.asset AssetManager))
 (import (class com.jme3.effect ParticleEmitter ParticleMesh))

@@ -33,7 +33,7 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
-(import-as PI com.jme3.math.FastMath:PI)
+(import (only (com jme3 math FastMath) PI))
 
 (import (class com.jme3.app Application))
 (import (class com.jme3.app.state AppStateManager))
@@ -245,10 +245,10 @@
          (pnode::Node pchar:model)
          (rotation (Quaternion))
          (pitch-axis (Vector3f 1 0 0)))
-    (normalize-camera! client)
     (*:setLocalTranslation pnode 0.0 0.0 -25000.0)
     (*:fromAngleAxis rotation (* -1 (/ PI 4)) pitch-axis)
-    (*:setLocalRotation pnode rotation)))
+    (*:setLocalRotation pnode rotation)
+    (normalize-camera! client)))
 
 (define (prepare-to-attach-play-state state::PlayState client::FabricClient)
   (unless state:initialized?

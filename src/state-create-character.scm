@@ -319,20 +319,8 @@
       (*:enqueue client
                  (runnable (lambda ()
                              (let ((root::Node (*:getRootNode client))
-                                   (lit-color (if (eqv? #!null faction)
-                                                  (default-glow-color)
-                                                  (case faction
-                                                    ((caretakers)(bright-caretakers-color))
-                                                    ((rogues)(bright-rogues-color))
-                                                    ((abjurers)(bright-abjurers-color))
-                                                    (else (default-glow-color)))))
-                                   (dim-color (if (eqv? #!null faction)
-                                                  (default-character-color)
-                                                  (case faction
-                                                    ((caretakers)(dim-caretakers-color))
-                                                    ((rogues)(dim-rogues-color))
-                                                    ((abjurers)(dim-abjurers-color))
-                                                    (else (default-character-color))))))
+                                   (lit-color (faction-lit-color faction))
+                                   (dim-color (faction-dim-color faction)))
                                (*:addElement screen state:faction-nameplate)
                                (*:addElement screen state:character-nameplate)
                                (*:addElement screen state:faction-picker)
