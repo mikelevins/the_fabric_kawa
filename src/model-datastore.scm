@@ -25,18 +25,27 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
-(import-as CommandException org.space4j.CommandException)
-(import-as CreateMapCmd org.space4j.command.CreateMapCmd)
-(import-as CreateSequenceCmd org.space4j.command.CreateSequenceCmd)
-(import-as IncrementSeqCmd org.space4j.command.IncrementSeqCmd)
-(import-as LoggerException org.space4j.LoggerException)
-(import-as Map java.util.Map)
-(import-as PutCmd org.space4j.command.PutCmd)
-(import-as RemoveCmd org.space4j.command.RemoveCmd)
-(import-as SimpleSpace4J org.space4j.implementation.SimpleSpace4J)
-(import-as Space org.space4j.Space)
-(import-as Space4J org.space4j.Space4J)
-(import-as String java.lang.String)
+(import (class java.lang
+          String))
+
+(import (class java.util
+          Map))
+
+(import (class org.space4j
+          CommandException
+          LoggerException
+          Space
+          Space4J))
+
+(import (class org.space4j.implementation
+          SimpleSpace4J))
+
+(import (class org.space4j.command
+          CreateMapCmd
+          CreateSequenceCmd
+          IncrementSeqCmd
+          PutCmd
+          RemoveCmd))
 
 ;;; ---------------------------------------------------------------------
 ;;; the datastore
@@ -64,4 +73,8 @@
 
 (define (next-id store::Datastore)
   (*:exec store:space4j (IncrementSeqCmd store:sequence-name)))
+
+;;; (define $space4j (org.space4j.implementation.SimpleSpace4J "fabric_store"))
+;;; (define $store (Datastore $space4j))
+;;; (init-datastore $store $space4j)
 
