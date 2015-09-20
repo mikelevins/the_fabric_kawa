@@ -13,6 +13,9 @@
  fabric-character-namestring
  make-fabric-character
  recolor-character-model!
+ set-character-armor!
+ set-character-augment!
+ set-character-weapon!
  set-fabric-name!)
 
 ;;; ---------------------------------------------------------------------
@@ -24,6 +27,9 @@
 (require util-lists)
 (require model-namegen)
 (require view-character-model)
+(require view-armor-model)
+(require view-augment-model)
+(require view-weapon-model)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -34,6 +40,8 @@
 (import-as Material com.jme3.material.Material)
 (import-as Node com.jme3.scene.Node)
 (import-as SafeArrayList com.jme3.util.SafeArrayList)
+(import-as Spatial com.jme3.scene.Spatial)
+(import-as Symbol gnu.mapping.Symbol)
 
 ;;; ---------------------------------------------------------------------
 ;;; FabricCharacter
@@ -44,10 +52,42 @@
   (model::Node init: #!null)
   (faction init-form: #!null)
   (weapon init-form: #!null)
+  (weapon-model init-form: #!null)
   (armor init-form: #!null)
+  (armor-model init-form: #!null)
   (augment init-form: #!null)
-  )
+  (augment-model init-form: #!null))
 
+(define (set-character-weapon! character::FabricCharacter weapon-name::Symbol)
+  (let ((previous-model character:weapon-model)
+        (new-model::Node (make-weapon-model weapon-name))
+        (character-model::Node character:model))
+    (set! character:weapon weapon-name)
+    (set! character:weapon-model new-model)
+    (unless (eqv? #!null previous-model)
+      (*:detachChild character-model previous-model))
+    (*:attachChild character-model new-model)))
+
+(define (set-character-armor! character::FabricCharacter armor-name::Symbol)
+  (let ((previous-model character:armor-model)
+        (new-model::Node (make-armor-model armor-name))
+        (character-model::Node character:model))
+    (set! character:armor armor-name)
+    (set! character:armor-model new-model)
+    (unless (eqv? #!null previous-model)
+        (*:detachChild character-model previous-model))
+    (*:attachChild character-model new-model)))
+  
+(define (set-character-augment! character::FabricCharacter augment-name::Symbol)
+  (let ((previous-model character:augment-model)
+        (new-model::Node (make-augment-model augment-name))
+        (character-model::Node character:model))
+    (set! character:augment augment-name)
+    (set! character:augment-model new-model)
+    (unless (eqv? #!null previous-model)
+      (*:detachChild character-model previous-model))
+    (*:attachChild character-model new-model)))
+  
 (define (make-fabric-character fname::FabricName)
   (let* ((fchar (FabricCharacter))
          (fmodel (make-character-model fchar)))

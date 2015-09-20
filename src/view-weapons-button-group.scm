@@ -13,6 +13,7 @@
 
 (require util-java)
 (require client-state)
+(require model-character)
 (require state-create-character)
 
 (import-as Button tonegod.gui.controls.buttons.Button)
@@ -24,12 +25,13 @@
   ((*init* screen::Screen uid::String)
    (invoke-special RadioButtonGroup (this) '*init* screen uid))
   ((onSelect index::int value::Button)
-   (let ((button-id (*:getUID value))
-         (state::CreateCharacterState app-state))
+   (let* ((button-id (*:getUID value))
+          (state::CreateCharacterState app-state)
+          (character::FabricCharacter state:character))
      (cond
-      ((equal? "CannonButton" button-id)(set! state:weapon 'cannon))
-      ((equal? "ImpulseButton" button-id)(set! state:weapon 'impulse))
-      ((equal? "MalwareButton" button-id)(set! state:weapon 'malware))
-      ((equal? "BotsButton" button-id)(set! state:weapon 'bots))
+      ((equal? "CannonButton" button-id)(set-character-weapon! character 'cannon))
+      ((equal? "ImpulseButton" button-id)(set-character-weapon! character 'impulse))
+      ((equal? "MalwareButton" button-id)(set-character-weapon! character 'malware))
+      ((equal? "BotsButton" button-id)(set-character-weapon! character 'bots))
       (else (format #t "~%Unknown weapon selected"))))))
 

@@ -14,6 +14,7 @@
 (require util-java)
 (require client-state)
 (require state-create-character)
+(require model-character)
 
 (import-as Button tonegod.gui.controls.buttons.Button)
 (import-as RadioButtonGroup tonegod.gui.controls.buttons.RadioButtonGroup)
@@ -24,11 +25,13 @@
   ((*init* screen::Screen uid::String)
    (invoke-special RadioButtonGroup (this) '*init* screen uid))
   ((onSelect index::int value::Button)
-   (let ((button-id (*:getUID value))
-         (state::CreateCharacterState app-state))
+   (let* ((button-id (*:getUID value))
+          (state::CreateCharacterState app-state)
+          (character::FabricCharacter state:character))
      (cond
-      ((equal? "ForceButton" button-id)(set! state:augment 'force))
-      ((equal? "OpticsButton" button-id)(set! state:augment 'optics))
-      ((equal? "PortalsButton" button-id)(set! state:augment 'portals))
-      ((equal? "TurretsButton" button-id)(set! state:augment 'turrets))
+      ((equal? "ForceButton" button-id)(set-character-augment! character 'force))
+      ((equal? "OpticsButton" button-id)(set-character-augment! character 'optics))
+      ((equal? "PortalsButton" button-id)(set-character-augment! character 'portals))
+      ((equal? "TurretsButton" button-id)(set-character-augment! character 'turrets))
       (else (format #t "~%Unknown augment selected"))))))
+
