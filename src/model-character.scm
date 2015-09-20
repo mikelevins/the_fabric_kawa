@@ -43,6 +43,9 @@
   (name::FabricName init: #!null)
   (model::Node init: #!null)
   (faction init-form: #!null)
+  (weapon init-form: #!null)
+  (armor init-form: #!null)
+  (augment init-form: #!null)
   )
 
 (define (make-fabric-character fname::FabricName)
