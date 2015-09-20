@@ -82,7 +82,6 @@
   ;; slots
   (name-picker init-form: #!null)
   (name-generator init-form: #!null)
-  (faction init-form: #!null)
   (character::FabricCharacter init-form: #!null)
   (character-nameplate::Label init-form: #!null)
   (character-model init-form: #!null)
@@ -324,8 +323,8 @@
            (screen::Screen client:screen)
            (gui-node::Node client:guiNode)
            (model state:character-model)
-           (faction state:faction)
            (character::FabricCharacter state:character)
+           (faction character:faction)
            (fname character:name))
       (*:enqueue client
                  (runnable (lambda ()

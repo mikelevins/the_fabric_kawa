@@ -41,7 +41,9 @@
 
 (define-simple-class FabricCharacter ()
   (name::FabricName init: #!null)
-  (model::Node init: #!null))
+  (model::Node init: #!null)
+  (faction init-form: #!null)
+  )
 
 (define (make-fabric-character fname::FabricName)
   (let* ((fchar (FabricCharacter))

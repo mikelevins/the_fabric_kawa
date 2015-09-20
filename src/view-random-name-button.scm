@@ -58,7 +58,7 @@
   (let* ((character::FabricCharacter state:character)
          (nameplate::Label state:character-nameplate)
          (new-name (generate-fabric-name part-count: (+ 1 (random-integer 4))))
-         (faction state:faction)
+         (faction character:faction)
          (lit-color (case faction
                       ((caretakers)(bright-caretakers-color))
                       ((rogues)(bright-rogues-color))
