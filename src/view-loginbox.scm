@@ -23,10 +23,10 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
-(import-as LoginBox tonegod.gui.controls.windows.LoginBox)
-(import-as MouseButtonEvent com.jme3.input.event.MouseButtonEvent)
-(import-as Screen tonegod.gui.core.Screen)
-(import-as Vector2f com.jme3.math.Vector2f)
+(import (class com.jme3.input.event MouseButtonEvent))
+(import (class com.jme3.math Vector2f))
+(import (class tonegod.gui.controls.windows LoginBox))
+(import (class tonegod.gui.core Screen))
 
 ;;; CLASS FabricLoginBox
 ;;; ---------------------------------------------------------------------

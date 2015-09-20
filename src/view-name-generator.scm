@@ -29,15 +29,13 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
-(import-as BitmapFont com.jme3.font.BitmapFont)
-(import-as BitmapText com.jme3.font.BitmapText)
-(import-as Button tonegod.gui.controls.buttons.Button)
-(import-as ColorRGBA com.jme3.math.ColorRGBA)
-(import-as Label tonegod.gui.controls.text.Label)
-(import-as Screen tonegod.gui.core.Screen)
-(import-as SelectList tonegod.gui.controls.lists.SelectList)
-(import-as Vector2f com.jme3.math.Vector2f)
-(import-as Window tonegod.gui.controls.windows.Window)
+(import (class com.jme3.font BitmapFont BitmapText))
+(import (class com.jme3.math ColorRGBA Vector2f))
+(import (class tonegod.gui.controls.buttons Button))
+(import (class tonegod.gui.controls.lists SelectList))
+(import (class tonegod.gui.controls.text Label))
+(import (class tonegod.gui.controls.windows Window))
+(import (class tonegod.gui.core Screen))
 
 ;;; make-name-picker
 ;;; ---------------------------------------------------------------------

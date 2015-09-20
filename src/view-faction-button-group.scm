@@ -17,12 +17,11 @@
 (require state-create-character)
 (require model-character)
 
-(import-as Button tonegod.gui.controls.buttons.Button)
-(import-as ColorRGBA com.jme3.math.ColorRGBA)
-(import-as Label tonegod.gui.controls.text.Label)
-(import-as Node com.jme3.scene.Node)
-(import-as RadioButtonGroup tonegod.gui.controls.buttons.RadioButtonGroup)
-(import-as Screen tonegod.gui.core.Screen)
+(import (class com.jme3.math ColorRGBA))
+(import (class com.jme3.scene Node))
+(import (class tonegod.gui.controls.buttons Button RadioButtonGroup))
+(import (class tonegod.gui.controls.text Label))
+(import (class tonegod.gui.core Screen))
 
 (define-simple-class FactionButtonGroup (RadioButtonGroup)
   (app-state init-form: #!null)

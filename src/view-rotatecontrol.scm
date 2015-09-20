@@ -12,7 +12,7 @@
 
 (require util-java)
 
-(import-as AbstractControl com.jme3.scene.control.AbstractControl)
+(import (class com.jme3.scene.control AbstractControl))
 
 (define-simple-class RotateControl (AbstractControl)
   (xrate type: float init: 0.0)

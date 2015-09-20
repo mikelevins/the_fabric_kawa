@@ -25,9 +25,9 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
-(import-as Screen tonegod.gui.core.Screen)
-(import-as Vector2f com.jme3.math.Vector2f)
-(import-as Window tonegod.gui.controls.windows.Window)
+(import (class com.jme3.math Vector2f))
+(import (class tonegod.gui.controls.windows Window))
+(import (class tonegod.gui.core Screen))
 
 
 ;;; make-character-acceptor

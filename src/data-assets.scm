@@ -25,7 +25,7 @@
 ;;; required imports
 ;;; ---------------------------------------------------------------------
 
-(import-as JmeSystem com.jme3.system.JmeSystem)
+(import (class com.jme3.system JmeSystem))
 
 ;;; ---------------------------------------------------------------------
 ;;; the asset manager

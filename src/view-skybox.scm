@@ -18,8 +18,8 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
-(import-as AssetManager com.jme3.asset.AssetManager)
-(import-as SkyFactory com.jme3.util.SkyFactory)
+(import (class com.jme3.asset AssetManager))
+(import (class com.jme3.util SkyFactory))
 
 ;;; ---------------------------------------------------------------------
 ;;; the skybox

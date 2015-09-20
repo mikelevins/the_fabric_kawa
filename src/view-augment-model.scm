@@ -27,30 +27,18 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
-(import-as AssetManager com.jme3.asset.AssetManager)
-(import-as Box com.jme3.scene.shape.Box)
-(import-as ColorRGBA com.jme3.math.ColorRGBA)
-(import-as Cylinder com.jme3.scene.shape.Cylinder)
-(import-as Dome com.jme3.scene.shape.Dome)
-(import-as Geometry com.jme3.scene.Geometry)
-(import-as Material com.jme3.material.Material)
-(import-as Node com.jme3.scene.Node)
 (import-as PI com.jme3.math.FastMath:PI)
-(import-as PQTorus com.jme3.scene.shape.PQTorus)
-(import-as ParticleEmitter com.jme3.effect.ParticleEmitter)
-(import-as ParticleMesh com.jme3.effect.ParticleMesh)
-(import-as PrMaterial com.jme3.material.Material)
-(import-as PrVector3f com.jme3.math.Vector3f)
-(import-as Quaternion com.jme3.math.Quaternion)
-(import-as RenderQueue com.jme3.renderer.queue.RenderQueue)
-(import-as RenderState com.jme3.material.RenderState)
-(import-as SafeArrayList com.jme3.util.SafeArrayList)
-(import-as Sphere com.jme3.scene.shape.Sphere)
-(import-as Symbol gnu.mapping.Symbol)
-(import-as Torus com.jme3.scene.shape.Torus)
-(import-as Vector3f com.jme3.math.Vector3f)
-(import-as WireBox com.jme3.scene.debug.WireBox)
-(import-as WireSphere com.jme3.scene.debug.WireSphere)
+
+(import (class com.jme3.asset AssetManager))
+(import (class com.jme3.effect ParticleEmitter ParticleMesh))
+(import (class com.jme3.material Material RenderState))
+(import (class com.jme3.math ColorRGBA Quaternion Vector3f))
+(import (class com.jme3.renderer.queue RenderQueue))
+(import (class com.jme3.scene Geometry Node))
+(import (class com.jme3.scene.debug WireBox WireSphere))
+(import (class com.jme3.scene.shape Box Cylinder Dome PQTorus Sphere Torus))
+(import (class com.jme3.util SafeArrayList))
+(import (class gnu.mapping Symbol))
 
 ;;; ---------------------------------------------------------------------
 ;;; 

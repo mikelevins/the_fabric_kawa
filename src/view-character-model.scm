@@ -27,14 +27,12 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
-(import-as Box com.jme3.scene.shape.Box)
-(import-as ColorRGBA com.jme3.math.ColorRGBA)
-(import-as Geometry com.jme3.scene.Geometry)
-(import-as Material com.jme3.material.Material)
-(import-as Node com.jme3.scene.Node)
-(import-as RenderQueue com.jme3.renderer.queue.RenderQueue)
-(import-as RenderState com.jme3.material.RenderState)
-(import-as SafeArrayList com.jme3.util.SafeArrayList)
+(import (class com.jme3.material Material RenderState))
+(import (class com.jme3.math ColorRGBA))
+(import (class com.jme3.renderer.queue RenderQueue))
+(import (class com.jme3.scene Geometry Node))
+(import (class com.jme3.scene.shape Box))
+(import (class com.jme3.util SafeArrayList))
 
 ;;; ---------------------------------------------------------------------
 ;;; 

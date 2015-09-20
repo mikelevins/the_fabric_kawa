@@ -25,27 +25,11 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
-(import (class java.lang
-          String))
-
-(import (class java.util
-          Map))
-
-(import (class org.space4j
-          CommandException
-          LoggerException
-          Space
-          Space4J))
-
-(import (class org.space4j.implementation
-          SimpleSpace4J))
-
-(import (class org.space4j.command
-          CreateMapCmd
-          CreateSequenceCmd
-          IncrementSeqCmd
-          PutCmd
-          RemoveCmd))
+(import (class java.lang String))
+(import (class java.util Map))
+(import (class org.space4j CommandException LoggerException Space Space4J))
+(import (class org.space4j.command CreateMapCmd CreateSequenceCmd IncrementSeqCmd PutCmd RemoveCmd))
+(import (class org.space4j.implementation SimpleSpace4J))
 
 ;;; ---------------------------------------------------------------------
 ;;; the datastore

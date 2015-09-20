@@ -25,10 +25,9 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
-(import-as AbstractAppState com.jme3.app.state.AbstractAppState)
-(import-as Application com.jme3.app.Application)
-(import-as AppStateManager com.jme3.app.state.AppStateManager)
-(import-as RenderManager com.jme3.renderer.RenderManager)
+(import (class com.jme3.app Application))
+(import (class com.jme3.app.state AbstractAppState AppStateManager))
+(import (class com.jme3.renderer RenderManager))
 
 ;;; ---------------------------------------------------------------------
 ;;; the client AppState class

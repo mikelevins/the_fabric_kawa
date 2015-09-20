@@ -33,27 +33,19 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
-(import-as AppStateManager com.jme3.app.state.AppStateManager)
-(import-as Application com.jme3.app.Application)
-(import-as BitmapFont com.jme3.font.BitmapFont)
-(import-as CameraControl com.jme3.scene.control.CameraControl)
-(import-as CameraNode com.jme3.scene.CameraNode)
-(import-as Geometry com.jme3.scene.Geometry)
-(import-as KeyInput com.jme3.input.KeyInput)
-(import-as KeyTrigger com.jme3.input.controls.KeyTrigger)
-(import-as Label tonegod.gui.controls.text.Label)
-(import-as MouseAxisTrigger com.jme3.input.controls.MouseAxisTrigger)
-(import-as MouseButtonTrigger com.jme3.input.controls.MouseButtonTrigger)
-(import-as MouseInput com.jme3.input.MouseInput)
-(import-as Node com.jme3.scene.Node)
-(import-as Panel tonegod.gui.controls.windows.Panel)
 (import-as PI com.jme3.math.FastMath:PI)
-(import-as Quaternion com.jme3.math.Quaternion)
-(import-as Screen tonegod.gui.core.Screen)
-(import-as Spatial com.jme3.scene.Spatial)
-(import-as Vector2f com.jme3.math.Vector2f)
-(import-as Vector3f com.jme3.math.Vector3f)
-(import-as Window tonegod.gui.controls.windows.Window)
+
+(import (class com.jme3.app Application))
+(import (class com.jme3.app.state AppStateManager))
+(import (class com.jme3.font BitmapFont))
+(import (class com.jme3.input KeyInput MouseInput))
+(import (class com.jme3.input.controls KeyTrigger MouseAxisTrigger MouseButtonTrigger))
+(import (class com.jme3.math Quaternion Vector2f Vector3f))
+(import (class com.jme3.scene CameraNode Geometry Node Spatial))
+(import (class com.jme3.scene.control CameraControl))
+(import (class tonegod.gui.controls.text Label))
+(import (class tonegod.gui.controls.windows Panel Window))
+(import (class tonegod.gui.core Screen))
 
 ;;; ---------------------------------------------------------------------
 ;;; the client play AppState class

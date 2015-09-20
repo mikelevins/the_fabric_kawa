@@ -16,9 +16,8 @@
 (require state-create-character)
 (require model-character)
 
-(import-as Button tonegod.gui.controls.buttons.Button)
-(import-as RadioButtonGroup tonegod.gui.controls.buttons.RadioButtonGroup)
-(import-as Screen tonegod.gui.core.Screen)
+(import (class tonegod.gui.controls.buttons Button RadioButtonGroup))
+(import (class tonegod.gui.core Screen))
 
 (define-simple-class AugmentsButtonGroup (RadioButtonGroup)
   (app-state init-form: #!null)

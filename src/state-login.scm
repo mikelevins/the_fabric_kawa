@@ -30,12 +30,11 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
-(import-as Application com.jme3.app.Application)
-(import-as AppStateManager com.jme3.app.state.AppStateManager)
-(import-as Node com.jme3.scene.Node)
-(import-as Screen tonegod.gui.core.Screen)
-(import-as Spatial com.jme3.scene.Spatial)
-(import-as Vector2f com.jme3.math.Vector2f)
+(import (class com.jme3.app Application))
+(import (class com.jme3.app.state AppStateManager))
+(import (class com.jme3.math Vector2f))
+(import (class com.jme3.scene Node Spatial))
+(import (class tonegod.gui.core Screen))
 
 ;;; ---------------------------------------------------------------------
 ;;; the client login AppState class

@@ -24,7 +24,7 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
-(import-as String java.lang.String)
+(import (class java.lang String))
 
 ;;; ---------------------------------------------------------------------
 ;;; FabricCharacter

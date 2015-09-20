@@ -22,8 +22,7 @@
 
 (require util-java)
 
-(import-as ColorRGBA com.jme3.math.ColorRGBA)
-
+(import (class com.jme3.math ColorRGBA))
 
 (define default-character-color
   (make-parameter (ColorRGBA 0.25 0.25 0.25 0.25)))

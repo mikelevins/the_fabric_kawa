@@ -23,13 +23,13 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
-(import-as AssetManager com.jme3.asset.AssetManager)
-(import-as Sphere com.jme3.scene.shape.Sphere)
-(import-as Material com.jme3.material.Material)
-(import-as Geometry com.jme3.scene.Geometry)
-(import-as Quaternion com.jme3.math.Quaternion)
-(import-as Vector3f com.jme3.math.Vector3f)
 (import-as PI com.jme3.math.FastMath:PI)
+
+(import (class com.jme3.asset AssetManager))
+(import (class com.jme3.material Material))
+(import (class com.jme3.math Quaternion Vector3f))
+(import (class com.jme3.scene Geometry))
+(import (class com.jme3.scene.shape Sphere))
 
 ;;; ---------------------------------------------------------------------
 ;;; building celestial bodies

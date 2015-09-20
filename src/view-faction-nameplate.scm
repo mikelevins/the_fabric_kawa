@@ -23,12 +23,11 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
-(import-as BitmapFont com.jme3.font.BitmapFont)
-(import-as BitmapText com.jme3.font.BitmapText)
-(import-as ColorRGBA com.jme3.math.ColorRGBA)
-(import-as Label tonegod.gui.controls.text.Label)
-(import-as Screen tonegod.gui.core.Screen)
-(import-as Vector2f com.jme3.math.Vector2f)
+(import (class com.jme3.font BitmapFont BitmapText))
+(import (class com.jme3.math ColorRGBA))
+(import (class tonegod.gui.controls.text Label))
+(import (class tonegod.gui.core Screen))
+(import (class com.jme3.math Vector2f))
 
 ;;; ---------------------------------------------------------------------
 ;;; faction nameplate

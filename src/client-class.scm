@@ -47,15 +47,14 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
-(import-as ActionListener com.jme3.input.controls.ActionListener)
-(import-as AnalogListener com.jme3.input.controls.AnalogListener)
-(import-as AppSettings com.jme3.system.AppSettings)
-(import-as Mouse org.lwjgl.input.Mouse)
-(import-as Node com.jme3.scene.Node)
-(import-as Screen tonegod.gui.core.Screen)
-(import-as SimpleApplication com.jme3.app.SimpleApplication)
-(import-as Thread java.lang.Thread)
-(import-as Vector3f com.jme3.math.Vector3f)
+(import (class com.jme3.app SimpleApplication))
+(import (class com.jme3.input.controls ActionListener AnalogListener))
+(import (class com.jme3.math Vector3f))
+(import (class com.jme3.scene Node))
+(import (class com.jme3.system AppSettings))
+(import (class java.lang Thread))
+(import (class org.lwjgl.input Mouse))
+(import (class tonegod.gui.core Screen))
 
 ;;; ---------------------------------------------------------------------
 ;;; FabricClient

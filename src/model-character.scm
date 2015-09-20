@@ -37,13 +37,11 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
-(import-as ColorRGBA com.jme3.math.ColorRGBA)
-(import-as Geometry com.jme3.scene.Geometry)
-(import-as Material com.jme3.material.Material)
-(import-as Node com.jme3.scene.Node)
-(import-as SafeArrayList com.jme3.util.SafeArrayList)
-(import-as Spatial com.jme3.scene.Spatial)
-(import-as Symbol gnu.mapping.Symbol)
+(import (class com.jme3.material Material))
+(import (class com.jme3.math ColorRGBA))
+(import (class com.jme3.scene Geometry Node Spatial))
+(import (class com.jme3.util SafeArrayList))
+(import (class gnu.mapping Symbol))
 
 ;;; ---------------------------------------------------------------------
 ;;; FabricCharacter
