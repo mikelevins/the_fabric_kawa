@@ -2,9 +2,9 @@
 ;;;;
 ;;;; Name:          LOAD-FABRIC.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
-;;;; Purpose:       common definitions for the client and server
+;;;; Purpose:       load the Fabric client
 ;;;; Author:        mikel evins
-;;;; Copyright:     2014 by mikel evins
+;;;; Copyright:     2015 by mikel evins
 ;;;;
 ;;;; ***********************************************************************
 
@@ -15,6 +15,7 @@
 ;;; interactive session
 
 (require 'list-lib)
+(require version)
 (require util-random)
 (require util-bytes)
 (require util-lists)
