@@ -9,9 +9,6 @@
 ;;;; ***********************************************************************
 
 (module-export
- $client
- $character
- $character-name
  client-set-login-state!
  client-set-create-character-state!
  client-set-pick-character-state!
@@ -142,9 +139,9 @@
   (Mouse:setGrabbed grab-mouse)
   client)
 
-(define $client::FabricClient #!null)
-(define $character-name #f)
-(define $character #f)
+(define-variable $client #!null)
+(define-variable $character-name #f)
+(define-variable $character #f)
 
 (define (start-client)
   (begin (set! $client (make-client))
@@ -153,7 +150,7 @@
          (format #t "~% $client: ~S" $client)
          (format #t "~% $character: ~S" $character)
          (format #t "~% $character-name: ~S~%~%" (fabric-name-strings $character-name))
-         (*:start $client)))
+         (*:start (as FabricClient $client))))
 
 ;;; PRIVATE
 ;;; ---------------------------------------------------------------------
