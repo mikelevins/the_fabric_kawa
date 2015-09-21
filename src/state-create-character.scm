@@ -50,7 +50,7 @@
 (import (class com.jme3.app Application SimpleApplication))
 (import (class com.jme3.app.state AbstractAppState AppStateManager))
 (import (class com.jme3.font BitmapFont))
-(import (class com.jme3.input MouseInput))
+(import (class com.jme3.input InputManager MouseInput))
 (import (class com.jme3.input.controls MouseAxisTrigger MouseButtonTrigger))
 (import (class com.jme3.math ColorRGBA Vector2f Vector4f))
 (import (class com.jme3.network Client Network))
@@ -128,21 +128,20 @@
 ;;; event-handling
 ;;; ---------------------------------------------------------------------
 
-;;; (setup-inputs app::FabricClient)
+;;; (state-create-setup-inputs app::FabricClient)
 ;;; ---------------------------------------------------------------------
 ;;; establishes the event handlers that translate keypresses and
 ;;; mouse movements into movements of the player's node and camera
 
-(define (setup-inputs app::FabricClient)
+(define (state-create-setup-inputs app::FabricClient)
   ;; set up the player's controls
-  (let* ((input-manager (*:getInputManager app)))
-    (route-keys (input-manager)
-                ((MouseButtonTrigger MouseInput:BUTTON_LEFT) ->  "leftButton")
-                ((MouseButtonTrigger MouseInput:BUTTON_RIGHT) -> "rightButton")
-                ((MouseAxisTrigger 0 #f) -> "mouseRotateLeft")
-                ((MouseAxisTrigger 0 #t) -> "mouseRotateRight")
-                ((MouseAxisTrigger 1 #f) -> "mouseRotateUp")
-                ((MouseAxisTrigger 1 #t) -> "mouseRotateDown"))
+  (let* ((input-manager::InputManager (*:getInputManager app)))
+    (*:addMapping input-manager "leftButton" (MouseButtonTrigger MouseInput:BUTTON_LEFT))
+    (*:addMapping input-manager "rightButton" (MouseButtonTrigger MouseInput:BUTTON_RIGHT))
+    (*:addMapping input-manager "mouseRotateLeft" (MouseAxisTrigger 0 #t))
+    (*:addMapping input-manager "mouseRotateRight" (MouseAxisTrigger 0 #f))
+    (*:addMapping input-manager "mouseRotateUp" (MouseAxisTrigger 1 #f))
+    (*:addMapping input-manager "mouseRotateDown" (MouseAxisTrigger 1 #t))
     ;; set up the event listener
     (*:addListener input-manager app
                    ;; motion controls
@@ -150,22 +149,21 @@
                    "mouseRotateRight" "mouseRotateLeft" "mouseRotateUp" "mouseRotateDown")))
 
 
-;;; (teardown-inputs app::FabricClient)
+;;; (state-create-teardown-inputs app::FabricClient)
 ;;; ---------------------------------------------------------------------
 ;;; removes the event handlers that translate keypresses and
 ;;; mouse movements into movements of the player's node and camera
 
-(define (teardown-inputs app::FabricClient)
-  ;; set up the player's controls
-  (let* ((input-manager (*:getInputManager app)))
-    (unroute-keys (input-manager)
-                  "leftButton"
-                  "mouseRotateDown"
-                  "mouseRotateLeft"
-                  "mouseRotateRight"
-                  "mouseRotateUp")
-    ;; set up the event listener
+(define (state-create-teardown-inputs app::FabricClient)
+  (let* ((input-manager::InputManager (*:getInputManager app)))
+    (*:deleteTrigger input-manager "leftButton" (MouseButtonTrigger MouseInput:BUTTON_LEFT))
+    (*:deleteTrigger input-manager "rightButton" (MouseButtonTrigger MouseInput:BUTTON_RIGHT))
+    (*:deleteTrigger input-manager "mouseRotateLeft" (MouseAxisTrigger 0 #t))
+    (*:deleteTrigger input-manager "mouseRotateRight" (MouseAxisTrigger 0 #f))
+    (*:deleteTrigger input-manager "mouseRotateUp" (MouseAxisTrigger 1 #f))
+    (*:deleteTrigger input-manager "mouseRotateDown" (MouseAxisTrigger 1 #t))
     (*:removeListener input-manager app)))
+
 
 ;;; (create-character-state-handle-analog-event state name value tpf)
 ;;; ---------------------------------------------------------------------
@@ -292,7 +290,7 @@
       (set! state:faction-nameplate (make-faction-nameplate screen))
       (set! state:character-nameplate (make-character-nameplate screen))
       (set! state:character-model state:character:model)
-      (setup-inputs client)
+      (state-create-setup-inputs client)
       (set! state:initialized? #t))))
 
 (define (did-attach-create-character-state state::CreateCharacterState mgr::AppStateManager)
@@ -338,9 +336,8 @@
                                (*:removeElement screen state:weapon-picker)
                                (*:removeElement screen state:armor-picker)
                                (*:removeElement screen state:augment-picker)
-                               ;;(*:removeElement screen state:name-picker)
                                (*:removeElement screen state:name-generator)
                                (*:removeElement screen state:character-acceptor)
                                (*:detachChild root model)
-                               (teardown-inputs client)
+                               (state-create-teardown-inputs client)
                                (*:removeControl gui-node screen))))))))

@@ -37,7 +37,7 @@
 (import (class com.jme3.app Application))
 (import (class com.jme3.app.state AppStateManager))
 (import (class com.jme3.font BitmapFont))
-(import (class com.jme3.input KeyInput MouseInput))
+(import (class com.jme3.input InputManager KeyInput MouseInput))
 (import (class com.jme3.input.controls KeyTrigger MouseAxisTrigger MouseButtonTrigger))
 (import (class com.jme3.math Quaternion Vector2f Vector3f))
 (import (class com.jme3.scene CameraNode Geometry Node Spatial))
@@ -113,33 +113,28 @@
 ;;; input-handling
 ;;; ---------------------------------------------------------------------
 
-;;; (setup-inputs app::FabricClient)
+;;; (state-play-setup-inputs app::FabricClient)
 ;;; ---------------------------------------------------------------------
 ;;; establishes the event handlers that translate keypresses and
 ;;; mouse movements into movements of the player's node and camera
 
-(define (setup-inputs app::FabricClient)
+(define (state-play-setup-inputs app::FabricClient)
   ;; set up the player's controls
-  (let* ((key-input ::KeyInput (*:getKeyInput app))
-         (input-manager (*:getInputManager app)))
-    (route-keys (input-manager)
-                ((KeyTrigger key-input:KEY_UP) -> "moveForward")
-                ((KeyTrigger key-input:KEY_W) ->  "moveForward")
-                ((MouseButtonTrigger MouseInput:BUTTON_LEFT) ->  "maybeMoveForward")
-                ((MouseButtonTrigger MouseInput:BUTTON_LEFT) ->  "leftButton")
-                ((MouseButtonTrigger MouseInput:BUTTON_RIGHT) -> "rightButton")
-                ((KeyTrigger key-input:KEY_RIGHT) -> "moveRight")
-                ((KeyTrigger key-input:KEY_D) -> "moveRight")
-                ((MouseAxisTrigger 0 #f) -> "mouseRotateRight")
-                ((KeyTrigger key-input:KEY_LEFT) -> "moveLeft")
-                ((KeyTrigger key-input:KEY_A) -> "moveLeft")
-                ((MouseAxisTrigger 0 #t) -> "mouseRotateLeft")
-                ((MouseAxisTrigger 1 #f) -> "mouseRotateUp")
-                ((KeyTrigger key-input:KEY_DOWN) -> "moveBackward")
-                ((KeyTrigger key-input:KEY_S) -> "moveBackward")
-                ((MouseAxisTrigger 1 #t) -> "mouseRotateDown")
-                ((KeyTrigger key-input:KEY_SPACE) -> "moveUp")
-                ((KeyTrigger key-input:KEY_X) -> "moveDown"))
+  (let* ((key-input::KeyInput (*:getKeyInput app))
+         (input-manager::InputManager (*:getInputManager app)))
+    (*:addMapping input-manager "moveForward" (KeyTrigger key-input:KEY_W))
+    (*:addMapping input-manager "maybeMoveForward" (MouseButtonTrigger MouseInput:BUTTON_LEFT))
+    (*:addMapping input-manager "leftButton" (MouseButtonTrigger MouseInput:BUTTON_LEFT))
+    (*:addMapping input-manager "rightButton" (MouseButtonTrigger MouseInput:BUTTON_RIGHT))
+    (*:addMapping input-manager "moveRight" (KeyTrigger key-input:KEY_D))
+    (*:addMapping input-manager "mouseRotateRight" (MouseAxisTrigger 0 #f))
+    (*:addMapping input-manager "moveLeft" (KeyTrigger key-input:KEY_A))
+    (*:addMapping input-manager "mouseRotateLeft" (MouseAxisTrigger 0 #t))
+    (*:addMapping input-manager "mouseRotateUp" (MouseAxisTrigger 1 #f))
+    (*:addMapping input-manager "moveBackward" (KeyTrigger key-input:KEY_S))
+    (*:addMapping input-manager "mouseRotateDown" (MouseAxisTrigger 1 #t))
+    (*:addMapping input-manager "moveUp" (KeyTrigger key-input:KEY_SPACE))
+    (*:addMapping input-manager "moveDown" (KeyTrigger key-input:KEY_X))
     ;; set up the event listener
     (*:addListener input-manager app
                    ;; motion controls
@@ -151,33 +146,29 @@
                    "SPACE" "KEY_A")))
 
 
-;;; (teardown-inputs app::FabricClient)
+;;; (state-play-teardown-inputs app::FabricClient)
 ;;; ---------------------------------------------------------------------
 ;;; removes the event handlers that translate keypresses and
 ;;; mouse movements into movements of the player's node and camera
 
-(define (teardown-inputs app::FabricClient)
+(define (state-play-teardown-inputs app::FabricClient)
   ;; set up the player's controls
-  (let* ((key-input ::KeyInput (*:getKeyInput app))
-         (input-manager (*:getInputManager app)))
-    (unroute-keys (input-manager)
-                  "leftButton"
-                  "maybeMoveForward"
-                  "mouseRotateDown"
-                  "mouseRotateLeft"
-                  "mouseRotateRight"
-                  "mouseRotateUp"
-                  "moveBackward"
-                  "moveForward"
-                  "moveLeft"
-                  "moveRight"
-                  "moveUp"
-                  "moveDown"
-                  "rightButton"
-                  ;; text inputs
-                  "SPACE"
-                  "KEY_A")
-    ;; set up the event listener
+  (let* ((key-input::KeyInput (*:getKeyInput app))
+         (input-manager::InputManager (*:getInputManager app)))
+    (*:deleteTrigger input-manager "moveForward" (KeyTrigger key-input:KEY_UP))
+    (*:deleteTrigger input-manager "moveForward" (KeyTrigger key-input:KEY_W))
+    (*:deleteTrigger input-manager "maybeMoveForward" (MouseButtonTrigger MouseInput:BUTTON_LEFT))
+    (*:deleteTrigger input-manager "leftButton" (MouseButtonTrigger MouseInput:BUTTON_LEFT))
+    (*:deleteTrigger input-manager "rightButton" (MouseButtonTrigger MouseInput:BUTTON_RIGHT))
+    (*:deleteTrigger input-manager "moveRight" (KeyTrigger key-input:KEY_D))
+    (*:deleteTrigger input-manager "mouseRotateRight" (MouseAxisTrigger 0 #f))
+    (*:deleteTrigger input-manager "moveLeft" (KeyTrigger key-input:KEY_A))
+    (*:deleteTrigger input-manager "mouseRotateLeft" (MouseAxisTrigger 0 #t))
+    (*:deleteTrigger input-manager "mouseRotateUp" (MouseAxisTrigger 1 #f))
+    (*:deleteTrigger input-manager "moveBackward" (KeyTrigger key-input:KEY_S))
+    (*:deleteTrigger input-manager "mouseRotateDown" (MouseAxisTrigger 1 #t))
+    (*:deleteTrigger input-manager "moveUp" (KeyTrigger key-input:KEY_SPACE))
+    (*:deleteTrigger input-manager "moveDown" (KeyTrigger key-input:KEY_X))
     (*:removeListener input-manager app)))
 
 ;;; ---------------------------------------------------------------------
@@ -270,7 +261,7 @@
       (set! state:celestial-body body)
       (set! state:sky sky)
       (*:setEnabled (*:getFlyByCamera client) #f)
-      (setup-inputs client)
+      (state-play-setup-inputs client)
       (reset-play-state! state)
       (set! state:initialized? #t))))
 
@@ -302,6 +293,6 @@
                                (*:detachChild root sky)
                                (*:detachChild root body)
                                (*:removeControl gui-node screen)
-                               (teardown-inputs client))))))))
+                               (state-play-teardown-inputs client))))))))
 
 

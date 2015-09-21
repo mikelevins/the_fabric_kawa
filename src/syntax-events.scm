@@ -10,9 +10,7 @@
 
 (module-export
  on-action
- on-analog
- route-keys
- unroute-keys)
+ on-analog)
 
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
@@ -50,33 +48,4 @@
      (cond
       ((invoke evt-name 'equals s) expr) ...
       (#t #f)))))
-
-;;; (route-keys (input-manager-object)(trigger-object -> event-name) ...)
-;;; ---------------------------------------------------------------------
-;;; creates event-routers for key events in which a key event
-;;; _trigger-object_ is mapped to an event-name _event-name_. When
-;;; _trigger-object_ is signalled, the macro signals event
-;;; _event-name_, which is then handled by any appropriately-defined
-;;; event-handlers.
-
-(define-syntax route-keys
-  (syntax-rules (->)
-    ((route-keys (input-manager-object)
-                 (trigger-object -> event-name)
-                 ...)
-     (begin
-       (*:addMapping input-manager-object event-name trigger-object)
-       ...))))
-
-;;; (unroute-keys (input-manager-object)(event-name) ...)
-;;; ---------------------------------------------------------------------
-;;; removes event-routers for key events
-
-(define-syntax unroute-keys
-  (syntax-rules ()
-    ((unroute-keys (input-manager-object)
-                   event-name ...)
-     (begin
-       (*:deleteMapping input-manager-object event-name)
-       ...))))
 
