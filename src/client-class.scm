@@ -31,6 +31,7 @@
  rotate-node-left!
  rotate-node-right!
  rotate-node-up!
+ setup-lighting
  start-client)
 
 ;;; ---------------------------------------------------------------------
@@ -38,6 +39,7 @@
 ;;; ---------------------------------------------------------------------
 
 (require util-error)
+(require data-assets)
 (require state-login)
 (require state-create-character)
 (require state-pick-character)
@@ -52,13 +54,18 @@
 ;;; ---------------------------------------------------------------------
 
 (import (class com.jme3.app SimpleApplication))
+(import (class com.jme3.asset AssetManager))
 (import (class com.jme3.input.controls ActionListener AnalogListener))
 (import (class com.jme3.math Vector3f))
+(import (class com.jme3.post FilterPostProcessor))
+(import (class com.jme3.post.filters BloomFilter))
+(import (class com.jme3.renderer ViewPort))
 (import (class com.jme3.scene Node))
 (import (class com.jme3.system AppSettings))
 (import (class java.lang Thread))
 (import (class org.lwjgl.input Mouse))
 (import (class tonegod.gui.core Screen))
+
 
 ;;; ---------------------------------------------------------------------
 ;;; FabricClient
@@ -77,6 +84,7 @@
   ;; accessors
   ((getKeyInput) keyInput)
   ((getCameraDirection) (*:getDirection cam))
+  ((getViewport) viewPort)
   ;; event handlers
   ((onAnalog name value tpf)(*:handleAnalogEvent (as FabricClientState state) name value tpf))
   ((onAction name key-pressed? tpf)(*:handleActionEvent (as FabricClientState state) name key-pressed? tpf))
@@ -91,6 +99,16 @@
 ;;; ---------------------------------------------------------------------
 ;;; construct the client app
 ;;; ---------------------------------------------------------------------
+
+(define (setup-lighting app::FabricClient)
+  (let* ((asset-manager::AssetManager (get-asset-manager))
+         (bloom (BloomFilter BloomFilter:GlowMode:Objects))
+         (filter-processor::FilterPostProcessor (FilterPostProcessor asset-manager))
+         (viewport::ViewPort (*:getViewport app)))
+    (*:setDownSamplingFactor bloom 2.0)
+    (*:setBloomIntensity bloom 2.0)
+    (*:addFilter filter-processor bloom)
+    (*:addProcessor viewport filter-processor)))
 
 ;;; (make-client #!key client settings screen-width screen-height title
 ;;;                    settings-image show-fps show-settings
