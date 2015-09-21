@@ -332,7 +332,6 @@
                                (*:setLocalTranslation (as Node model) 0.0 0.0 -5.0)
                                (*:attachChild root model)
                                (*:setText state:character-nameplate (fabric-name->string fname))
-                               (setup-lighting client)
                                (recolor-character-model! character lit-color dim-color)
                                (*:addControl gui-node screen))))))))
 

@@ -94,6 +94,7 @@
 (define (init-app app::FabricClient)
   (begin (*:setEnabled (*:getFlyByCamera app) #f)
          (set! app:screen (Screen app))
+         (setup-lighting app)
          #!void))
 
 ;;; ---------------------------------------------------------------------
