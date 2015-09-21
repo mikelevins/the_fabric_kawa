@@ -37,8 +37,7 @@
 ;;; (client-set-pick-character-state! $client)
 ;;; (client-set-play-state! $client $character "Pluto")
 ;;; (reset-play-state! $client:state)
-;;; (client-transit-to! $client $character "Jupiter")
-
+;;; (client-transit-to! $client $character "Earth")
 ;;; supported transit destinations:
 ;; Callisto
 ;; Dione

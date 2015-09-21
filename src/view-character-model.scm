@@ -21,6 +21,7 @@
 (require data-assets)
 (require model-rect)
 (require model-character)
+(require view-rotatecontrol)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -71,7 +72,8 @@
         (indexes '(-1.5 -0.5 0.5 1.5))
         (cubes '())
         (model::Node (Node "CharacterModel"))
-        (namecube::Node (Node "NameCube")))
+        (namecube::Node (Node "NameCube"))
+        (rotator::RotateControl (RotateControl 0.0 0.15 0.15)))
     (for-each
      (lambda (x)
        (for-each
@@ -89,5 +91,6 @@
     (*:attachChild model namecube)
     (for-each (lambda (cube)(*:attachChild namecube cube))
               cubes)
+    (*:addControl namecube rotator)
     model))
 
