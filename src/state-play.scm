@@ -55,7 +55,7 @@
 
 (define-simple-class PlayState (FabricClientState)
   ;; slots
-  (player-character init: #!null)
+  (character init: #!null)
   (node-name init: #f)
   (celestial-body init: #!null)
   (sky init: #f)
@@ -105,7 +105,7 @@
   (let ((state (PlayState)))
     (set! state:client client)
     (set! state:node-name node-name)
-    (set! state:player-character character)
+    (set! state:character character)
     state))
 
 
@@ -182,7 +182,7 @@
 (define (play-state-handle-analog-event state::PlayState name value tpf)
   (let* ((client::FabricClient state:client)
          (speed state:speed)
-         (pchar::FabricCharacter state:player-character)
+         (pchar::FabricCharacter state:character)
          (node pchar:model)
          (right-button-down? client:right-button?))
     (on-analog (name)
@@ -231,7 +231,7 @@
 
 (define (reset-play-state! state::PlayState)
   (let* ((client::FabricClient state:client)
-         (pchar::FabricCharacter state:player-character)
+         (pchar::FabricCharacter state:character)
          (pnode::Node pchar:model)
          (rotation (Quaternion))
          (pitch-axis (Vector3f 1 0 0)))
@@ -251,7 +251,7 @@
            (sky::Spatial (make-sky-box))
            (camera::com.jme3.renderer.Camera (*:getCamera client))
            (cam-node (CameraNode "camera" camera))
-           (pchar::FabricCharacter state:player-character)
+           (pchar::FabricCharacter state:character)
            (pnode::Node pchar:model))
       (*:attachChild pnode cam-node)
       (*:setControlDir cam-node CameraControl:ControlDirection:SpatialToCamera)
@@ -261,7 +261,7 @@
       (set! state:celestial-body body)
       (set! state:sky sky)
       (*:setEnabled (*:getFlyByCamera client) #f)
-      (state-play-setup-inputs client)
+      ;;(state-play-setup-inputs client)
       (reset-play-state! state)
       (set! state:initialized? #t))))
 
@@ -270,7 +270,7 @@
     (let* ((client::FabricClient state:client)
            (screen::Screen client:screen)
            (gui-node::Node client:guiNode)
-           (pchar::FabricCharacter state:player-character)
+           (pchar::FabricCharacter state:character)
            (pnode::Node pchar:model))
       (*:enqueue client
                  (runnable (lambda ()
@@ -284,15 +284,22 @@
   (when state:initialized?
     (let* ((client::FabricClient state:client)
            (screen::Screen client:screen)
-           (gui-node::Node client:guiNode))
+           (gui-node::Node client:guiNode)
+           (root::Node client:rootNode)
+           (sky::Spatial state:sky)
+           (body state:celestial-body)
+           (pchar::FabricCharacter state:character)
+           (pnode::Node pchar:model)
+           (camera::com.jme3.renderer.Camera (*:getCamera client))
+           (cam-node (CameraNode "camera" camera)))
       (*:enqueue client
                  (runnable (lambda ()
-                             (let ((root::Node client:rootNode)
-                                   (sky::Spatial state:sky)
-                                   (body state:celestial-body))
-                               (*:detachChild root sky)
-                               (*:detachChild root body)
-                               (*:removeControl gui-node screen)
-                               (state-play-teardown-inputs client))))))))
+                             (*:detachChild root sky)
+                             (*:detachChild root body)
+                             (*:detachChild pnode cam-node)
+                             (*:setCamera cam-node #!null)
+                             (*:removeControl gui-node screen)
+                             ;;(state-play-teardown-inputs client)
+                             ))))))
 
 
