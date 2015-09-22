@@ -16,7 +16,6 @@
 ;;; ---------------------------------------------------------------------
 
 (require util-error)
-(require client-class)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -37,11 +36,12 @@
    (invoke-special LoginBox (this) '*init* screen uid position size))
   ((onButtonLoginPressed evt::MouseButtonEvent toggle::boolean)
    (let ((server-connection #!null #|(connect-to-server)|#))
-     (if (eqv? #!null server-connection)
+     #|(if (eqv? #!null server-connection)
          (warn "Connection to server failed")
          (let ((client::FabricClient app))
            (warn "Connection to server succeeded")
-           ;;(*:setNetworkClient client server-connection)
-           ))))
+           (*:setNetworkClient client server-connection)
+           ))|#
+     #f))
   ((onButtonCancelPressed evt::MouseButtonEvent toggle::boolean)
    (*:stop app)))
