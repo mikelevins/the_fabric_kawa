@@ -28,6 +28,7 @@
  rotate-node-right!
  rotate-node-up!
  setup-lighting
+ setup-inputs
  start-client)
 
 ;;; ---------------------------------------------------------------------
@@ -49,9 +50,13 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
+(import (only (com jme3 input MouseInput) AXIS_X AXIS_Y))
+
 (import (class com.jme3.app SimpleApplication))
 (import (class com.jme3.asset AssetManager))
-(import (class com.jme3.input.controls ActionListener AnalogListener))
+(import (class com.jme3.input InputManager KeyInput MouseInput))
+(import (class com.jme3.input.controls ActionListener AnalogListener
+          KeyTrigger MouseAxisTrigger MouseButtonTrigger))
 (import (class com.jme3.math Vector3f))
 (import (class com.jme3.post FilterPostProcessor))
 (import (class com.jme3.post.filters BloomFilter))
@@ -61,6 +66,7 @@
 (import (class java.lang Thread))
 (import (class org.lwjgl.input Mouse))
 (import (class tonegod.gui.core Screen))
+
 
 
 ;;; ---------------------------------------------------------------------
@@ -91,6 +97,7 @@
   (begin (*:setEnabled (*:getFlyByCamera app) #f)
          (set! app:screen (Screen app))
          (setup-lighting app)
+         (setup-inputs app)
          #!void))
 
 ;;; ---------------------------------------------------------------------
@@ -106,6 +113,22 @@
     (*:setBloomIntensity bloom 2.0)
     (*:addFilter filter-processor bloom)
     (*:addProcessor viewport filter-processor)))
+
+(define (setup-inputs app::FabricClient)
+  (let* ((key-input::KeyInput (*:getKeyInput app))
+         (input-manager::InputManager (*:getInputManager app)))
+    (*:addMapping input-manager "KeyA" (KeyTrigger key-input:KEY_A))
+    (*:addMapping input-manager "KeyD" (KeyTrigger key-input:KEY_D))
+    (*:addMapping input-manager "KeyS" (KeyTrigger key-input:KEY_S))
+    (*:addMapping input-manager "KeySPACE" (KeyTrigger key-input:KEY_SPACE))
+    (*:addMapping input-manager "KeyW" (KeyTrigger key-input:KEY_W))
+    (*:addMapping input-manager "KeyX" (KeyTrigger key-input:KEY_X))
+    (*:addMapping input-manager "MouseButtonLeft" (MouseButtonTrigger MouseInput:BUTTON_LEFT))
+    (*:addMapping input-manager "MouseButtonRight" (MouseButtonTrigger MouseInput:BUTTON_RIGHT))
+    (*:addMapping input-manager "MouseDragDown" (MouseAxisTrigger AXIS_Y #t))
+    (*:addMapping input-manager "MouseDragUp" (MouseAxisTrigger AXIS_Y #f))
+    (*:addMapping input-manager "MouseDragLeft" (MouseAxisTrigger AXIS_X #t))
+    (*:addMapping input-manager "MouseDragRight" (MouseAxisTrigger AXIS_X #f))))
 
 ;;; (make-client #!key client settings screen-width screen-height title
 ;;;                    settings-image show-fps show-settings
@@ -219,7 +242,6 @@
   (let ((dir :: Vector3f (*:getCameraDirection app)))
     (*:normalizeLocal dir)))
 
-
 ;;; (move-node!  app :: FabricClient node :: Node amount :: float invert?)
 ;;; ---------------------------------------------------------------------
 ;;; moves  _node_  a distance along an arbitrary vector.
@@ -299,7 +321,7 @@
 ;;; rotates _node_ to the left an angle of _amount_ 
 
 (define (rotate-node-left! node :: Node amount :: float)
-  (*:rotate node 0 amount 0))
+  (*:rotate node 0 (* 1 amount) 0))
 
 
 ;;; (rotate-node-up! node :: Node amount :: float)

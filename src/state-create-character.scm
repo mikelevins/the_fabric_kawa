@@ -135,17 +135,11 @@
 (define (state-create-setup-inputs app::FabricClient)
   ;; set up the player's controls
   (let* ((input-manager::InputManager (*:getInputManager app)))
-    (*:addMapping input-manager "leftButton" (MouseButtonTrigger MouseInput:BUTTON_LEFT))
-    (*:addMapping input-manager "rightButton" (MouseButtonTrigger MouseInput:BUTTON_RIGHT))
-    (*:addMapping input-manager "mouseRotateLeft" (MouseAxisTrigger 0 #t))
-    (*:addMapping input-manager "mouseRotateRight" (MouseAxisTrigger 0 #f))
-    (*:addMapping input-manager "mouseRotateUp" (MouseAxisTrigger 1 #f))
-    (*:addMapping input-manager "mouseRotateDown" (MouseAxisTrigger 1 #t))
-    ;; set up the event listener
     (*:addListener input-manager app
                    ;; motion controls
-                   "leftButton" "rightButton"
-                   "mouseRotateRight" "mouseRotateLeft" "mouseRotateUp" "mouseRotateDown")))
+                   "KeyA" "KeyD" "KeyW" "KeyS" "KeySPACE" "KeyX"
+                   "MouseButtonLeft" "MouseButtonRight"
+                   "MouseDragRight" "MouseDragLeft" "MouseDragUp" "MouseDragDown")))
 
 
 ;;; (state-create-teardown-inputs app::FabricClient)
@@ -155,12 +149,6 @@
 
 (define (state-create-teardown-inputs app::FabricClient)
   (let* ((input-manager::InputManager (*:getInputManager app)))
-    (*:deleteTrigger input-manager "leftButton" (MouseButtonTrigger MouseInput:BUTTON_LEFT))
-    (*:deleteTrigger input-manager "rightButton" (MouseButtonTrigger MouseInput:BUTTON_RIGHT))
-    (*:deleteTrigger input-manager "mouseRotateLeft" (MouseAxisTrigger 0 #t))
-    (*:deleteTrigger input-manager "mouseRotateRight" (MouseAxisTrigger 0 #f))
-    (*:deleteTrigger input-manager "mouseRotateUp" (MouseAxisTrigger 1 #f))
-    (*:deleteTrigger input-manager "mouseRotateDown" (MouseAxisTrigger 1 #t))
     (*:removeListener input-manager app)))
 
 
@@ -174,18 +162,14 @@
          (model state:character:model)
          (right-button-down? client:right-button?))
     (on-analog (name)
-               ("rotateRight" -> (rotate-node-right! model (* 0.25 tpf)))
-               ("mouseRotateRight" -> (when right-button-down?
-                                        (rotate-node-right! model value)))
-               ("rotateLeft" -> (rotate-node-left! model (* 0.25 tpf)))
-               ("mouseRotateLeft" -> (when right-button-down?
-                                       (rotate-node-left! model value)))
-               ("rotateUp" -> (rotate-node-up! model (* 0.125 tpf)))
-               ("mouseRotateUp" -> (when right-button-down?
-                                     (rotate-node-up! model value)))
-               ("rotateDown" -> (rotate-node-down! model (* 0.125 tpf)))
-               ("mouseRotateDown" -> (when right-button-down?
-                                       (rotate-node-down! model value))))))
+               ("KeyD" -> (rotate-node-right! model (* 1 tpf)))
+               ("KeyA" -> (rotate-node-left! model (* 1 tpf)))
+               ("KeyW" -> (rotate-node-up! model (* 0.5 tpf)))
+               ("KeyS" -> (rotate-node-down! model (* 0.5 tpf)))
+               ("MouseDragLeft" -> (when right-button-down?(rotate-node-right! model value)))
+               ("MouseDragRight" -> (when right-button-down?(rotate-node-left! model value)))
+               ("MouseDragUp" -> (when right-button-down?(rotate-node-up! model value)))
+               ("MouseDragDown" -> (when right-button-down?(rotate-node-down! model value))))))
 
 ;;; (create-character-state-handle-action-event state name key-pressed? tpf)
 ;;; ---------------------------------------------------------------------
@@ -194,8 +178,8 @@
 (define (create-character-state-handle-action-event state::CreateCharacterState name key-pressed? tpf)
   (let ((client::FabricClient state:client))
     (on-action (name)
-               ("leftButton" -> (set! client:left-button? key-pressed?))
-               ("rightButton" -> (set! client:right-button? key-pressed?)))))
+               ("MouseButtonLeft" -> (set! client:left-button? key-pressed?))
+               ("MouseButtonRight" -> (set! client:right-button? key-pressed?)))))
 
 ;;; ---------------------------------------------------------------------
 ;;; CreateCharacterState functions
@@ -290,7 +274,7 @@
       (set! state:faction-nameplate (make-faction-nameplate screen))
       (set! state:character-nameplate (make-character-nameplate screen))
       (set! state:character:model state:character:model)
-      ;;(state-create-setup-inputs client)
+      (state-create-setup-inputs client)
       (set! state:initialized? #t))))
 
 (define (did-attach-create-character-state state::CreateCharacterState mgr::AppStateManager)
@@ -339,5 +323,5 @@
                                (*:removeElement screen state:name-generator)
                                (*:removeElement screen state:character-acceptor)
                                (*:detachChild root model)
-                               ;;(state-create-teardown-inputs client)
+                               (state-create-teardown-inputs client)
                                (*:removeControl gui-node screen))))))))
