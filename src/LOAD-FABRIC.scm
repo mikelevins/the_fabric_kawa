@@ -25,6 +25,7 @@
 (require model-player)
 (require client-class)
 (require state-play)
+(require state-transition)
 
 ;;; ---------------------------------------------------------------------
 ;;; loading

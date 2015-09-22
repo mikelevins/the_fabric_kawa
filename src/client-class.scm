@@ -44,7 +44,7 @@
 (require state-play)
 (require model-character)
 (require model-namegen)
-(require state-transit)
+(require state-transition)
 (require client-state)
 
 ;;; ---------------------------------------------------------------------
@@ -221,22 +221,22 @@
                          (%update-client-state! client new-state)))))
 
 (define (client-set-login-state! client::FabricClient)
-  (%enqueue-state-change client (make-transit-state client))
+  (%enqueue-state-change client (make-transition-state client))
   (Thread:sleep 500)
   (%enqueue-state-change client (make-login-state client)))
 
 (define (client-set-create-character-state! client::FabricClient character::FabricCharacter)
-  (%enqueue-state-change client (make-transit-state client))
+  (%enqueue-state-change client (make-transition-state client))
   (Thread:sleep 500)
   (%enqueue-state-change client (make-create-character-state client character)))
 
 (define (client-set-pick-character-state! client::FabricClient)
-  (%enqueue-state-change client (make-transit-state client))
+  (%enqueue-state-change client (make-transition-state client))
   (Thread:sleep 500)
   (%enqueue-state-change client (make-pick-character-state client)))
 
 (define (client-set-play-state! client::FabricClient character::FabricCharacter #!optional (node-name "The Sun"))
-  (%enqueue-state-change client (make-transit-state client))
+  (%enqueue-state-change client (make-transition-state client))
   (Thread:sleep 500)
   (%enqueue-state-change client (make-play-state client character node-name)))
 
