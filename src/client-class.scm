@@ -29,7 +29,8 @@
  rotate-node-up!
  setup-lighting
  setup-inputs
- start-client)
+ start-client
+ teardown-inputs)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -97,7 +98,6 @@
   (begin (*:setEnabled (*:getFlyByCamera app) #f)
          (set! app:screen (Screen app))
          (setup-lighting app)
-         (setup-inputs app)
          #!void))
 
 ;;; ---------------------------------------------------------------------
@@ -128,7 +128,17 @@
     (*:addMapping input-manager "MouseDragDown" (MouseAxisTrigger AXIS_Y #t))
     (*:addMapping input-manager "MouseDragUp" (MouseAxisTrigger AXIS_Y #f))
     (*:addMapping input-manager "MouseDragLeft" (MouseAxisTrigger AXIS_X #t))
-    (*:addMapping input-manager "MouseDragRight" (MouseAxisTrigger AXIS_X #f))))
+    (*:addMapping input-manager "MouseDragRight" (MouseAxisTrigger AXIS_X #f))
+    (*:addListener input-manager app
+                   ;; motion controls
+                   "KeyA" "KeyD" "KeyW" "KeyS" "KeySPACE" "KeyX"
+                   "MouseButtonLeft" "MouseButtonRight"
+                   "MouseDragRight" "MouseDragLeft" "MouseDragUp" "MouseDragDown")))
+
+(define (teardown-inputs app::FabricClient)
+  (let ((input-manager::InputManager (*:getInputManager app)))
+    (*:clearMappings input-manager)
+    (*:removeListener input-manager app)))
 
 ;;; (make-client #!key client settings screen-width screen-height title
 ;;;                    settings-image show-fps show-settings

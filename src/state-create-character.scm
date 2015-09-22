@@ -127,31 +127,6 @@
 ;;; event-handling
 ;;; ---------------------------------------------------------------------
 
-;;; (state-create-setup-inputs app::FabricClient)
-;;; ---------------------------------------------------------------------
-;;; establishes the event handlers that translate keypresses and
-;;; mouse movements into movements of the player's node and camera
-
-(define (state-create-setup-inputs app::FabricClient)
-  ;; set up the player's controls
-  (let* ((input-manager::InputManager (*:getInputManager app)))
-    (*:addListener input-manager app
-                   ;; motion controls
-                   "KeyA" "KeyD" "KeyW" "KeyS" "KeySPACE" "KeyX"
-                   "MouseButtonLeft" "MouseButtonRight"
-                   "MouseDragRight" "MouseDragLeft" "MouseDragUp" "MouseDragDown")))
-
-
-;;; (state-create-teardown-inputs app::FabricClient)
-;;; ---------------------------------------------------------------------
-;;; removes the event handlers that translate keypresses and
-;;; mouse movements into movements of the player's node and camera
-
-(define (state-create-teardown-inputs app::FabricClient)
-  (let* ((input-manager::InputManager (*:getInputManager app)))
-    (*:removeListener input-manager app)))
-
-
 ;;; (create-character-state-handle-analog-event state name value tpf)
 ;;; ---------------------------------------------------------------------
 ;;; handle mouse movements and other continuous events
@@ -274,7 +249,6 @@
       (set! state:faction-nameplate (make-faction-nameplate screen))
       (set! state:character-nameplate (make-character-nameplate screen))
       (set! state:character:model state:character:model)
-      (state-create-setup-inputs client)
       (set! state:initialized? #t))))
 
 (define (did-attach-create-character-state state::CreateCharacterState mgr::AppStateManager)
@@ -303,7 +277,8 @@
                              (*:attachChild root model)
                              (*:setText state:character-nameplate (fabric-name->string fname))
                              (recolor-character-model! character lit-color dim-color)
-                             (*:addControl gui-node screen)))))))
+                             (*:addControl gui-node screen)
+                             (setup-inputs client)))))))
 
 (define (did-detach-create-character-state state::CreateCharacterState mgr::AppStateManager)
   (when state:initialized?
@@ -314,6 +289,7 @@
       (*:enqueue client
                  (runnable (lambda ()
                              (let ((root::Node client:rootNode))
+                               (teardown-inputs client)
                                (*:removeElement screen state:faction-nameplate)
                                (*:removeElement screen state:character-nameplate)
                                (*:removeElement screen state:faction-picker)
@@ -323,5 +299,4 @@
                                (*:removeElement screen state:name-generator)
                                (*:removeElement screen state:character-acceptor)
                                (*:detachChild root model)
-                               (state-create-teardown-inputs client)
                                (*:removeControl gui-node screen))))))))
