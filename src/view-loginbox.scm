@@ -18,6 +18,7 @@
 ;;; ---------------------------------------------------------------------
 
 (require util-error)
+(require util-crypt)
 (require model-rect)
 (require state)
 (require client)
@@ -26,6 +27,7 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
+(import (class java.lang String))
 (import (class com.jme3.input.event MouseButtonEvent))
 (import (class com.jme3.math Vector2f))
 (import (class tonegod.gui.controls.windows LoginBox))
@@ -37,20 +39,21 @@
 ;;; log in to the remote Fabric server in order to play
 
 (define-simple-class FabricLoginBox (LoginBox)
+  (client::FabricClient init: #!null)
   ((*init* screen::Screen uid::String position::Vector2f size::Vector2f)
    (invoke-special LoginBox (this) '*init* screen uid position size))
   ((onButtonLoginPressed evt::MouseButtonEvent toggle::boolean)
-   (let ((server-connection #!null #|(connect-to-server)|#))
-     #|(if (eqv? #!null server-connection)
-         (warn "Connection to server failed")
-         (let ((client::FabricClient app))
-           (warn "Connection to server succeeded")
-           (*:setNetworkClient client server-connection)
-           ))|#
-     #f))
+   ;;; TODO: make this button log in to the server
+   (let* ((username::String (*:getTextUserName (this)))
+          (pw::String (*:getTextPassword (this)))
+          (pwdigest (text->digest pw (compute-random-salt)))
+          (pwhash (car pwdigest))
+          (pwsalt (cdr pwdigest)))
+     (set! client:username username)
+     (set! client:password-hash pwhash)
+     (set! client:password-salt pwsalt)))
   ((onButtonCancelPressed evt::MouseButtonEvent toggle::boolean)
    (*:stop app)))
-
 
 (define (compute-login-box-rect screen::Screen)
   (let* ((screen-width screen:width)
@@ -69,7 +72,9 @@
 (define (make-loginbox state::FabricClientState)
   (let* ((client::FabricClient state:client)
          (screen::Screen client:screen)
-         (rect (compute-login-box-rect screen)))
-    (FabricLoginBox screen "LoginBox"
-                    (Vector2f (get-left rect) (get-top rect))
-                    (Vector2f (get-width rect) (get-height rect)))))
+         (rect (compute-login-box-rect screen))
+         (box (FabricLoginBox screen "LoginBox"
+                              (Vector2f (get-left rect) (get-top rect))
+                              (Vector2f (get-width rect) (get-height rect)))))
+    (set! box:client client)
+    box))
