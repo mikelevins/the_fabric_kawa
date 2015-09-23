@@ -2,7 +2,7 @@
 ;;;;
 ;;;; Name:          state-transition.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
-;;;; Purpose:       the neutral state between Fabric app states
+;;;; Purpose:       the transition AppState
 ;;;; Author:        mikel evins
 ;;;; Copyright:     2015 by mikel evins
 ;;;;
@@ -10,54 +10,57 @@
 
 (module-export
  TransitionState
- make-transition-state)
+ )
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
-(require client-state)
-(require client-class)
+(require util-error)
+(require data-assets)
+(require state)
+(require client)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
-(import (class com.jme3.app Application))
-(import (class com.jme3.app.state AppStateManager))
-(import (class tonegod.gui.controls.windows Window))
-(import (class tonegod.gui.core Screen))
+(import (class com.jme3.app.state AbstractAppState AppStateManager))
 
 ;;; ---------------------------------------------------------------------
-;;; the client transit AppState class
+;;; TransitionState
 ;;; ---------------------------------------------------------------------
 
-;;; CLASS TransitionState
-;;; ---------------------------------------------------------------------
+(define (%transition-state-cleanup state::FabricClientState) #!void)
+
+(define (%transition-state-initialize state::FabricClientState)
+  (format #t "~%TransitionState initialized")
+  (set! state:state-initialized? #t))
+
+(define (%transition-state-enabled? state::FabricClientState) #t)
+(define (%transition-state-initialized? state::FabricClientState) state:state-initialized?)
+(define (%transition-state-attached state::FabricClientState manager::AppStateManager) #!void)
+(define (%transition-state-detached state::FabricClientState manager::AppStateManager) #!void)
+(define (%transition-state-handle-analog-event state name value tpf)
+  (warn "%transition-state-handle-analog-event is not yet implemented"))
+(define (%transition-state-handle-action-event state name key-pressed? tpf)
+  (warn "%transition-state-handle-action-event is not yet implemented"))
 
 (define-simple-class TransitionState (FabricClientState)
   ;; slots
-  (initialized? init: #f)
   ;; methods
   ((cleanup) (%transition-state-cleanup (this)))
+  ((initialize state-manager::AppStateManager app::FabricClient)
+   (begin (invoke-special FabricClientState (this) 'initialize state-manager app)
+          (%transition-state-initialize (this))))
   ((isEnabled) (%transition-state-enabled? (this)))
+  ((isInitialized) (%transition-state-initialized? (this)))
   ((stateAttached state-manager::AppStateManager)
    (%transition-state-attached (this) state-manager))
   ((stateDetached state-manager::AppStateManager)
    (%transition-state-detached (this) state-manager))
-  ;; init
-  ((initialize) (%transition-state-initialize (this)))
-  ((isInitialized) (%transition-state-initialized? (this))))
-
-(define (%transition-state-cleanup state::TransitionState) #!void)
-(define (%transition-state-enabled? state::TransitionState) #t)
-(define (%transition-state-attached state::TransitionState state-manager) #!void)
-(define (%transition-state-detached state::TransitionState state-manager) #!void)
-(define (%transition-state-initialize state::TransitionState) #!void)
-(define (%transition-state-initialized? state::TransitionState) #t)
-
-(define (make-transition-state client::Application)
-  (let ((state (TransitionState)))
-    (set! state:client client)
-    state))
+  ((handleAnalogEvent name value tpf)
+   (%transition-state-handle-analog-event (this) name value tpf))
+  ((handleActionEvent name key-pressed? tpf)
+   (%transition-state-handle-action-event (this) name key-pressed? tpf)))
 

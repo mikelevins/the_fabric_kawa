@@ -23,9 +23,13 @@
 (require model-namegen)
 (require model-character)
 (require model-player)
-(require client-class)
-(require state-play)
+(require state)
 (require state-transition)
+(require state-login)
+(require state-create-character)
+(require state-pick-character)
+(require state-play)
+(require client)
 
 ;;; ---------------------------------------------------------------------
 ;;; loading
@@ -33,11 +37,13 @@
 ;;; evaluate these expressions to create and run the Fabric client
 
 ;;; (start-client)
-;;; (client-set-login-state! $client)
-;;; (client-set-create-character-state! $client $character)
-;;; (client-set-pick-character-state! $client)
-;;; (client-set-play-state! $client $character "Pluto")
-;;; (reset-play-state! $client:state)
+;;; (activate-state $client 'login)
+;;; (activate-state $client 'create-character)
+;;; (activate-state $client 'pick-character)
+;;; (activate-state $client 'play)
+;;; (activate-state $client 'transition)
+;;; (stop-client)
+
 
 ;;; supported transit destinations:
 ;; Callisto
