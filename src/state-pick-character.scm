@@ -31,7 +31,8 @@
 ;;; PickCharacterState
 ;;; ---------------------------------------------------------------------
 
-(define (%pick-character-state-cleanup state::FabricClientState) #!void)
+(define (%pick-character-state-cleanup state::FabricClientState)
+  (format #t "~%PickCharacterState cleaned up"))
 
 (define (%pick-character-state-initialize state::FabricClientState)
   (format #t "~%PickCharacterState initialized")
@@ -52,6 +53,7 @@
   ((cleanup) (%pick-character-state-cleanup (this)))
   ((initialize state-manager::AppStateManager app::FabricClient)
    (begin (invoke-special FabricClientState (this) 'initialize state-manager app)
+          (set! app:state (this))
           (%pick-character-state-initialize (this))))
   ((isEnabled) (%pick-character-state-enabled? (this)))
   ((isInitialized) (%pick-character-state-initialized? (this)))

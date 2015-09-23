@@ -9,13 +9,18 @@
 ;;;; ***********************************************************************
 
 (module-export
- FabricLoginBox)
+ FabricLoginBox
+ compute-login-box-rect
+ make-loginbox)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
 (require util-error)
+(require model-rect)
+(require state)
+(require client)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -45,3 +50,26 @@
      #f))
   ((onButtonCancelPressed evt::MouseButtonEvent toggle::boolean)
    (*:stop app)))
+
+
+(define (compute-login-box-rect screen::Screen)
+  (let* ((screen-width screen:width)
+         (screen-height screen:height)
+         (box-width 700)
+         (box-height 300)
+         (box-left (- (/ screen-width 2)
+                      (/ box-width 2)))
+         (box-top (- (/ screen-height 2)
+                     (/ box-height 2))))
+    (make-rectangle box-left
+                    box-top
+                    box-width
+                    box-height)))
+
+(define (make-loginbox state::FabricClientState)
+  (let* ((client::FabricClient state:client)
+         (screen::Screen client:screen)
+         (rect (compute-login-box-rect screen)))
+    (FabricLoginBox screen "LoginBox"
+                    (Vector2f (get-left rect) (get-top rect))
+                    (Vector2f (get-width rect) (get-height rect)))))

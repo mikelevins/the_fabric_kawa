@@ -31,7 +31,8 @@
 ;;; CreateCharacterState
 ;;; ---------------------------------------------------------------------
 
-(define (%create-character-state-cleanup state::FabricClientState) #!void)
+(define (%create-character-state-cleanup state::FabricClientState)
+  (format #t "~%CreateCharacterState cleaned up"))
 
 (define (%create-character-state-initialize state::FabricClientState)
   (format #t "~%CreateCharacterState initialized")
@@ -52,6 +53,7 @@
   ((cleanup) (%create-character-state-cleanup (this)))
   ((initialize state-manager::AppStateManager app::FabricClient)
    (begin (invoke-special FabricClientState (this) 'initialize state-manager app)
+          (set! app:state (this))
           (%create-character-state-initialize (this))))
   ((isEnabled) (%create-character-state-enabled? (this)))
   ((isInitialized) (%create-character-state-initialized? (this)))

@@ -11,6 +11,7 @@
 (module-export
  FabricClient
  activate-state
+ make-client
  start-client
  stop-client)
 
@@ -38,7 +39,9 @@
 (import (class com.jme3.input.controls ActionListener AnalogListener
           KeyTrigger MouseAxisTrigger MouseButtonTrigger))
 (import (class com.jme3.math Vector3f))
+(import (class com.jme3.system AppSettings))
 (import (class gnu.mapping Symbol))
+(import (class org.lwjgl.input Mouse))
 (import (class tonegod.gui.core Screen))
 
 ;;; ---------------------------------------------------------------------
@@ -73,8 +76,31 @@
          (activate-state app 'transition)
          #!void))
 
+(define (make-client #!key
+                     (client::FabricClient (FabricClient))
+                     (settings::AppSettings (AppSettings #t))
+                     (screen-width 1920)
+                     (screen-height 1200)
+                     (title "The Fabric")
+                     (settings-image "Interface/icon.jpg")
+                     (show-fps #f)
+                     (show-settings #t)
+                     (show-statistics #f)
+                     (pause-on-lost-focus #f)
+                     (grab-mouse #f))
+  (*:setResolution settings screen-width screen-height)
+  (*:setTitle settings title)
+  (*:setSettingsDialogImage settings settings-image)
+  (*:setSettings client settings)
+  (*:setDisplayFps client show-fps)
+  (*:setShowSettings client show-settings)
+  (*:setDisplayStatView client show-statistics)
+  (*:setPauseOnLostFocus client pause-on-lost-focus)
+  (Mouse:setGrabbed grab-mouse)
+  client)
+
 (define (start-client)
-  (set! $client (FabricClient))
+  (set! $client (make-client))
   (*:start (as FabricClient $client)))
 
 (define (stop-client)
@@ -95,6 +121,7 @@
     (let* ((mgr::AppStateManager (*:getStateManager client))
            (current-state client:state))
       (unless (eqv? #!null current-state)
-        (*:detach mgr current-state))
+        (*:detach mgr current-state)
+        (*:cleanup (as FabricClientState current-state)))
       (*:attach mgr new-state)
       (*:initialize (as FabricClientState new-state) mgr client))))

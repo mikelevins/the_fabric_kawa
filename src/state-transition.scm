@@ -31,7 +31,8 @@
 ;;; TransitionState
 ;;; ---------------------------------------------------------------------
 
-(define (%transition-state-cleanup state::FabricClientState) #!void)
+(define (%transition-state-cleanup state::FabricClientState)
+  (format #t "~%TransitionState cleaned up"))
 
 (define (%transition-state-initialize state::FabricClientState)
   (format #t "~%TransitionState initialized")
@@ -52,6 +53,7 @@
   ((cleanup) (%transition-state-cleanup (this)))
   ((initialize state-manager::AppStateManager app::FabricClient)
    (begin (invoke-special FabricClientState (this) 'initialize state-manager app)
+          (set! app:state (this))
           (%transition-state-initialize (this))))
   ((isEnabled) (%transition-state-enabled? (this)))
   ((isInitialized) (%transition-state-initialized? (this)))

@@ -31,7 +31,8 @@
 ;;; PlayState
 ;;; ---------------------------------------------------------------------
 
-(define (%play-state-cleanup state::FabricClientState) #!void)
+(define (%play-state-cleanup state::FabricClientState)
+  (format #t "~%PlayState cleaned up"))
 
 (define (%play-state-initialize state::FabricClientState)
   (format #t "~%PlayState initialized")
@@ -52,6 +53,7 @@
   ((cleanup) (%play-state-cleanup (this)))
   ((initialize state-manager::AppStateManager app::FabricClient)
    (begin (invoke-special FabricClientState (this) 'initialize state-manager app)
+          (set! app:state (this))
           (%play-state-initialize (this))))
   ((isEnabled) (%play-state-enabled? (this)))
   ((isInitialized) (%play-state-initialized? (this)))
