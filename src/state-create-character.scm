@@ -18,6 +18,7 @@
 
 (require util-error)
 (require data-assets)
+(require view-faction-nameplate)
 (require state)
 (require client)
 
@@ -26,17 +27,34 @@
 ;;; ---------------------------------------------------------------------
 
 (import (class com.jme3.app.state AbstractAppState AppStateManager))
+(import (class com.jme3.scene Node))
+(import (class tonegod.gui.controls.text Label))
+(import (class tonegod.gui.core Screen))
 
 ;;; ---------------------------------------------------------------------
 ;;; CreateCharacterState
 ;;; ---------------------------------------------------------------------
 
-(define (%create-character-state-cleanup state::FabricClientState)
-  (format #t "~%CreateCharacterState cleaned up"))
+(define (%create-character-state-cleanup state::CreateCharacterState)
+  (let* ((client::FabricClient state:client)
+         (screen::Screen client:screen)
+         (gui-node::Node (*:getGuiNode client))
+         (nameplate::Label state:faction-nameplate))
+    (*:removeElement screen nameplate)
+    (*:removeControl gui-node screen))
+  #!void)
 
-(define (%create-character-state-initialize state::FabricClientState)
-  (format #t "~%CreateCharacterState initialized")
-  (set! state:state-initialized? #t))
+(define (%create-character-state-initialize state::CreateCharacterState)
+  (let* ((client::FabricClient state:client)
+         (gui-node::Node (*:getGuiNode client))
+         (screen::Screen client:screen)
+         (nameplate::Label (make-faction-nameplate screen)))
+    (set! state:faction-nameplate nameplate)
+    (*:setText nameplate "Faction: None Chosen")
+    (*:addElement screen nameplate)
+    (*:addControl gui-node screen)
+    (set! state:state-initialized? #t))
+  #!void)
 
 (define (%create-character-state-enabled? state::FabricClientState) #t)
 (define (%create-character-state-initialized? state::FabricClientState) state:state-initialized?)
@@ -49,6 +67,7 @@
 
 (define-simple-class CreateCharacterState (FabricClientState)
   ;; slots
+  (faction-nameplate init: #!null)
   ;; methods
   ((cleanup) (%create-character-state-cleanup (this)))
   ((initialize state-manager::AppStateManager app::FabricClient)

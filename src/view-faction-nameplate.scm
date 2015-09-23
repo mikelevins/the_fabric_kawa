@@ -33,17 +33,16 @@
 ;;; ---------------------------------------------------------------------
 
 (define (make-faction-nameplate screen::Screen)
-  (let* ((faction-picker-rect (compute-faction-picker-rect screen))
+  (let* ((faction-picker-rect (make-rectangle 16 16 512 40))
          (screen-width (*:getWidth screen))
          (Align BitmapFont:Align)
-         (nameplate-left (+ (get-left faction-picker-rect)
-                            (get-width faction-picker-rect)
-                            16))
+         (nameplate-left (get-left faction-picker-rect))
          (nameplate-top (get-top faction-picker-rect))
-         (nameplate-width (- screen-width (* 2 nameplate-left)))
-         (faction-nameplate (Label screen "FactionNameplate"
-                                   (Vector2f nameplate-left nameplate-top)
-                                   (Vector2f nameplate-width 40))))
+         (nameplate-width (get-width faction-picker-rect))
+         (nameplate-height (get-height faction-picker-rect))
+         (faction-nameplate::Label (Label screen "FactionNameplate"
+                                          (Vector2f nameplate-left nameplate-top)
+                                          (Vector2f nameplate-width nameplate-height))))
     (*:setText faction-nameplate "Faction: ")
     (*:setTextAlign faction-nameplate Align:Left)
     (*:setFont faction-nameplate "Interface/Fonts/Laconic30.fnt")
