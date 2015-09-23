@@ -28,6 +28,8 @@
 ;;; ---------------------------------------------------------------------
 
 (import (class com.jme3.app.state AbstractAppState AppStateManager))
+(import (class com.jme3.math Vector3f))
+(import (class com.jme3.renderer Camera))
 (import (class com.jme3.scene Geometry Node))
 
 ;;; ---------------------------------------------------------------------
@@ -36,15 +38,26 @@
 
 (define (%play-state-cleanup state::PlayState)
   (let* ((client::FabricClient state:client)
-         (root::Node (*:getRootNode client)))
-      (*:detachChild root state:sky)))
+         (root::Node (*:getRootNode client))
+         (camera::Camera (*:getCamera client)))
+    (*:setLocation camera (Vector3f 0.0 0.0 0.0))
+    (*:detachChild root state:sky)
+    (*:detachChild root state:celestial-body)))
 
 (define (%play-state-initialize state::PlayState)
   (let* ((client::FabricClient state:client)
+         (body (make-celestial-body "Jupiter.jpg"))
+         (body-loc (*:getLocalTranslation body))
          (sky (make-sky-box))
-         (root::Node (*:getRootNode client)))
+         (root::Node (*:getRootNode client))
+         (camera::Camera (*:getCamera client)))
+    (*:setLocation camera (Vector3f 0.0 0.0 20000.0))
+    (*:lookAtDirection camera (Vector3f 0.0 0.0 -1.0) (Vector3f 0.0 1.0 0.0))
+    (*:setFrustumFar camera 80000)
     (set! state:sky sky)
+    (set! state:celestial-body body)
     (*:attachChild root state:sky)
+    (*:attachChild root body)
     (set! state:state-initialized? #t)))
 
 (define (%play-state-enabled? state::FabricClientState) #t)
@@ -58,6 +71,7 @@
 
 (define-simple-class PlayState (FabricClientState)
   ;; slots
+  (celestial-body init: #!null)
   (sky::Geometry init: #!null)
   ;; methods
   ((cleanup) (%play-state-cleanup (this)))
