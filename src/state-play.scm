@@ -18,6 +18,8 @@
 
 (require util-error)
 (require data-assets)
+(require view-celestial-body)
+(require view-skybox)
 (require state)
 (require client)
 
@@ -26,17 +28,24 @@
 ;;; ---------------------------------------------------------------------
 
 (import (class com.jme3.app.state AbstractAppState AppStateManager))
+(import (class com.jme3.scene Geometry Node))
 
 ;;; ---------------------------------------------------------------------
 ;;; PlayState
 ;;; ---------------------------------------------------------------------
 
-(define (%play-state-cleanup state::FabricClientState)
-  (format #t "~%PlayState cleaned up"))
+(define (%play-state-cleanup state::PlayState)
+  (let* ((client::FabricClient state:client)
+         (root::Node (*:getRootNode client)))
+      (*:detachChild root state:sky)))
 
-(define (%play-state-initialize state::FabricClientState)
-  (format #t "~%PlayState initialized")
-  (set! state:state-initialized? #t))
+(define (%play-state-initialize state::PlayState)
+  (let* ((client::FabricClient state:client)
+         (sky (make-sky-box))
+         (root::Node (*:getRootNode client)))
+    (set! state:sky sky)
+    (*:attachChild root state:sky)
+    (set! state:state-initialized? #t)))
 
 (define (%play-state-enabled? state::FabricClientState) #t)
 (define (%play-state-initialized? state::FabricClientState) state:state-initialized?)
@@ -49,6 +58,7 @@
 
 (define-simple-class PlayState (FabricClientState)
   ;; slots
+  (sky::Geometry init: #!null)
   ;; methods
   ((cleanup) (%play-state-cleanup (this)))
   ((initialize state-manager::AppStateManager app::FabricClient)
