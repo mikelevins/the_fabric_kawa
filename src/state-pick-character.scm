@@ -44,9 +44,12 @@
 (define (%pick-character-state-detached state::FabricClientState manager::AppStateManager) #!void)
 
 (define (%pick-character-state-handle-analog-event state name value tpf)
-  (warn "%pick-character-state-handle-analog-event is not yet implemented"))
+  ;;; TODO: implement event handling
+  #!void)
+
 (define (%pick-character-state-handle-action-event state name key-pressed? tpf)
-  (warn "%pick-character-state-handle-action-event is not yet implemented"))
+  ;;; TODO: implement event handling
+  #!void)
 
 (define-simple-class PickCharacterState (FabricClientState)
   ;; slots

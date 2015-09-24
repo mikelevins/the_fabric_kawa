@@ -77,6 +77,9 @@
 (define (%login-state-detached state::LoginState manager::AppStateManager) #!void)
 
 (define (%login-state-handle-analog-event state name value tpf)
-  (warn "%login-state-handle-analog-event is not yet implemented"))
+  ;;; TODO: implement event handling
+  #!void)
+
 (define (%login-state-handle-action-event state name key-pressed? tpf)
-  (warn "%login-state-handle-action-event is not yet implemented"))
+  ;;; TODO: implement event handling
+  #!void)

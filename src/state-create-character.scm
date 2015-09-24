@@ -99,9 +99,12 @@
 (define (%create-character-state-detached state::FabricClientState manager::AppStateManager) #!void)
 
 (define (%create-character-state-handle-analog-event state name value tpf)
-  (warn "%create-character-state-handle-analog-event is not yet implemented"))
+  ;;; TODO: implement event handling
+  #!void)
+
 (define (%create-character-state-handle-action-event state name key-pressed? tpf)
-  (warn "%create-character-state-handle-action-event is not yet implemented"))
+  ;;; TODO: implement event handling
+  #!void)
 
 (define-simple-class CreateCharacterState (FabricClientState)
   ;; slots

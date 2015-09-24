@@ -66,9 +66,12 @@
 (define (%play-state-detached state::FabricClientState manager::AppStateManager) #!void)
 
 (define (%play-state-handle-analog-event state name value tpf)
-  (warn "%play-state-handle-analog-event is not yet implemented"))
+  ;;; TODO: implement event handling
+  #!void)
+
 (define (%play-state-handle-action-event state name key-pressed? tpf)
-  (warn "%play-state-handle-action-event is not yet implemented"))
+  ;;; TODO: implement event handling
+  #!void)
 
 (define-simple-class PlayState (FabricClientState)
   ;; slots
