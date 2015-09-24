@@ -16,3 +16,7 @@
 
 (require version)
 (require model-datastore)
+(require server)
+
+;;; (start-server)
+;;; (stop-server)

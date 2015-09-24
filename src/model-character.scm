@@ -42,15 +42,14 @@
   (weapon init-form: #!null)
   (armor init-form: #!null)
   (augment init-form: #!null))
-  
+
 (define (make-fabric-character fname::FabricName)
   (let* ((fchar (FabricCharacter)))
     (set! fchar:name fname)
     fchar))
 
 (define (fabric-character-namestring fchar::FabricCharacter)
-  (apply string-append (interpose " " (fabric-name-strings fchar:name))))
+  (apply string-append (interpose " " (fabric-name->strings fchar:name))))
 
 (define (set-fabric-name! fchar::FabricCharacter fname::FabricName)
   (set! fchar:name fname))
-

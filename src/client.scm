@@ -15,8 +15,6 @@
  start-client
  stop-client)
 
-
-
 ;;; ---------------------------------------------------------------------
 ;;; required modules
 ;;; ---------------------------------------------------------------------
@@ -71,9 +69,9 @@
   ((onAnalog name value tpf)(*:handleAnalogEvent (as FabricClientState state) name value tpf))
   ((onAction name key-pressed? tpf)(*:handleActionEvent (as FabricClientState state) name key-pressed? tpf))
   ;; init
-  ((simpleInitApp) (init-app (this))))
+  ((simpleInitApp) (init-client (this))))
 
-(define (init-app app::FabricClient)
+(define (init-client app::FabricClient)
   (begin (*:setEnabled (*:getFlyByCamera app) #f)
          (set! app:screen (Screen app))
          (activate-state app 'transition)

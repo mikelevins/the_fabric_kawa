@@ -16,6 +16,7 @@
  copy-list
  every?
  get-key
+ integer-array->list
  interpose
  list-fill
  position-if
@@ -53,12 +54,15 @@
 ;;; returns a list of the elements in _arr_ in the same order
 
 (define (array->list arr::Object[])
-  (let loop ((i 0)
-             (result '()))
-    (if (< i arr:length)
-        (loop (+ i 1)
-              (cons (arr i) result))
-        (reverse result))))
+  (if (or (eqv? #!null arr)
+          (< arr:length 1))
+      '()
+      (let loop ((i 0)
+                 (result '()))
+        (if (< i arr:length)
+            (loop (+ i 1)
+                  (cons (arr i) result))
+            (reverse result)))))
 
 ;;; (choose-any ls)
 ;;; ---------------------------------------------------------------------
@@ -92,6 +96,22 @@
               (loop (map cdr lists))
               #f)))))
 
+
+
+;;; (integer-array->list arr::Object[])
+;;; ---------------------------------------------------------------------
+;;; returns a list of the elements in _arr_ in the same order
+
+(define (integer-array->list arr::int[])
+  (if (or (eqv? #!null arr)
+          (< arr:length 1))
+      '()
+      (let loop ((i 0)
+                 (result '()))
+        (if (< i arr:length)
+            (loop (+ i 1)
+                  (cons (arr i) result))
+            (reverse result)))))
 
 ;;; (interpose cupola ls)
 ;;; ---------------------------------------------------------------------

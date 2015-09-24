@@ -13,14 +13,14 @@
  FabricName
  blank-fabric-name
  fabric-name->string
- fabric-name-bit-patterns
- fabric-name-bits
- fabric-name-bytes
- fabric-name-bytestrings
- fabric-name-strings
+ fabric-name->bit-patterns
+ fabric-name->bits
+ fabric-name->bytestrings
+ fabric-name->strings
  generate-fabric-name
  generate-mech-name
- random-fabric-name)
+ random-fabric-name
+ )
 
 ;;; ---------------------------------------------------------------------
 ;;; ABOUT
@@ -40,84 +40,70 @@
 (require data-names)
 
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; Java imports
 ;;; ---------------------------------------------------------------------
 
+;;; ---------------------------------------------------------------------
 ;;; CLASS FabricName
 ;;; ---------------------------------------------------------------------
-;;; the class of Fabric names
 
 (define-simple-class FabricName ()
-  (data type: gnu.math.IntNum)
-  ((getData) data)
-  ((setData d) (set! data d))
-  ((*init* num)(set! data num)))
+  (data type: int[])
+  ((*init* bytes::int[])(set! data bytes))
+  ((*init*) (set! data (apply int[] '(0 0 0 0 0 0 0 0)))))
 
-;;; (fabric-name-bytes nm :: FabricName)
-;;; ---------------------------------------------------------------------
-;;; returns a list of bytes corresponding to the integer value of the
-;;; Fabric name
-
-(define (fabric-name-bytes nm::FabricName)
-  (let* ((data-bytes (integer->bytes (*:getData nm)))
-         (data-count (length data-bytes))
-         (result-bytes (list-fill 8 0)))
-    (append data-bytes
-            (drop result-bytes data-count))))
-
-;;; (fabric-name-bits nm :: FabricName)
+;;; (fabric-name->bits nm :: FabricName)
 ;;; ---------------------------------------------------------------------
 ;;; returns a list of bits corresponding to the integer value of the
 ;;; Fabric name
 
-(define (fabric-name-bits nm::FabricName)
-  (let* ((bits (integer->bits (*:getData nm)))
+(define (fabric-name->bits nm::FabricName)
+  (let* ((bits (apply append (map byte->bits nm:data)))
          (bit-count (length bits)))
     (append bits
             (list-fill (- 64 bit-count) #f))))
 
-
-;;; (fabric-name-bytestrings nm)
+;;; (fabric-name->bytestrings nm)
 ;;; ---------------------------------------------------------------------
 ;;; returns a list of hexadecimal bytestrings corresponding
 ;;; to the Fabric name
 
-(define (fabric-name-bytestrings nm::FabricName)
-  (bytes->strings (fabric-name-bytes nm)))
+(define (fabric-name->bytestrings nm::FabricName)
+  (bytes->strings nm:data))
 
 
-;;; (fabric-name-bit-patterns nm)
+;;; (fabric-name->bit-patterns nm)
 ;;; ---------------------------------------------------------------------
 ;;; returns a string that displays the pattern of bits in the Fabric name
 
-(define (fabric-name-bit-patterns nm::FabricName)
+(define (fabric-name->bit-patterns nm::FabricName)
   (map (lambda (b)(format #f "~8,'0b" b))
-       (fabric-name-bytes nm)))
+       nm:data))
 
-;;; (fabric-name-strings nm :: FabricName)
+;;; (fabric-name->strings nm :: FabricName)
 ;;; ---------------------------------------------------------------------
 ;;; returns the text version of the Fabric name as a list of strings,
 ;;; with empty strings omitted
 
-(define (fabric-name-strings nm::FabricName)
-  (let* ((bytes (fabric-name-bytes nm))
+(define (fabric-name->strings nm::FabricName)
+  (let* ((bytes nm:data)
          (parts (map (lambda (b dom)(list-ref dom b))
                      bytes
                      (name-domains))))
     parts))
 
 (define (fabric-name->string nm::FabricName)
-  (let ((parts (fabric-name-strings nm)))
+  (let ((parts (fabric-name->strings nm)))
     (apply string-append
            (interpose " "
                       (filter (lambda (x)(not (string=? x "")))
                               parts)))))
 
 (define (blank-fabric-name)
-  (FabricName 0))
+  (FabricName (int[] 0 0 0 0 0 0 0 0)))
 
 (define (random-fabric-name)
-  (FabricName (apply bytes->integer (gen-bytes 8))))
+  (FabricName (apply int[] (gen-bytes 8))))
 
 ;;; (generate-fabric-name #!key (part-count 3))
 ;;; ---------------------------------------------------------------------
@@ -134,7 +120,7 @@
                                            result)))))
          (indexes (shuffle (append picked-indexes
                                    (list-fill (- 8 part-count) 0)))))
-    (FabricName (apply bytes->integer indexes))))
+    (FabricName (apply int[] indexes))))
 
 (define (generate-mech-name)
   (let* ((num-byte (+ 1 (random-integer 254)))
