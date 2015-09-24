@@ -42,6 +42,7 @@
 (define (%pick-character-state-initialized? state::FabricClientState) state:state-initialized?)
 (define (%pick-character-state-attached state::FabricClientState manager::AppStateManager) #!void)
 (define (%pick-character-state-detached state::FabricClientState manager::AppStateManager) #!void)
+
 (define (%pick-character-state-handle-analog-event state name value tpf)
   (warn "%pick-character-state-handle-analog-event is not yet implemented"))
 (define (%pick-character-state-handle-action-event state name key-pressed? tpf)

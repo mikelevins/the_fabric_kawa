@@ -42,6 +42,7 @@
 (define (%transition-state-initialized? state::FabricClientState) state:state-initialized?)
 (define (%transition-state-attached state::FabricClientState manager::AppStateManager) #!void)
 (define (%transition-state-detached state::FabricClientState manager::AppStateManager) #!void)
+
 (define (%transition-state-handle-analog-event state name value tpf)
   (warn "%transition-state-handle-analog-event is not yet implemented"))
 (define (%transition-state-handle-action-event state name key-pressed? tpf)

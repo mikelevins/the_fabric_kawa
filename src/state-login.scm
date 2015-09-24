@@ -75,6 +75,7 @@
 (define (%login-state-initialized? state::LoginState) state:state-initialized?)
 (define (%login-state-attached state::LoginState manager::AppStateManager) #!void)
 (define (%login-state-detached state::LoginState manager::AppStateManager) #!void)
+
 (define (%login-state-handle-analog-event state name value tpf)
   (warn "%login-state-handle-analog-event is not yet implemented"))
 (define (%login-state-handle-action-event state name key-pressed? tpf)

@@ -64,6 +64,7 @@
 (define (%play-state-initialized? state::FabricClientState) state:state-initialized?)
 (define (%play-state-attached state::FabricClientState manager::AppStateManager) #!void)
 (define (%play-state-detached state::FabricClientState manager::AppStateManager) #!void)
+
 (define (%play-state-handle-analog-event state name value tpf)
   (warn "%play-state-handle-analog-event is not yet implemented"))
 (define (%play-state-handle-action-event state name key-pressed? tpf)

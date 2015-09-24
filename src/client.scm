@@ -12,6 +12,7 @@
  FabricClient
  activate-state
  make-client
+ setup-inputs
  start-client
  stop-client)
 
@@ -32,8 +33,11 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
+(import (only (com jme3 input MouseInput) AXIS_X AXIS_Y))
+
 (import (class com.jme3.app SimpleApplication))
 (import (class com.jme3.app.state AbstractAppState AppStateManager))
+(import (class com.jme3.input InputManager KeyInput MouseInput))
 (import (class com.jme3.input.controls ActionListener AnalogListener
           KeyTrigger MouseAxisTrigger MouseButtonTrigger))
 (import (class com.jme3.math Vector3f))
@@ -74,6 +78,7 @@
 (define (init-client app::FabricClient)
   (begin (*:setEnabled (*:getFlyByCamera app) #f)
          (set! app:screen (Screen app))
+         (setup-inputs app)
          (activate-state app 'transition)
          #!void))
 
@@ -126,3 +131,29 @@
       (*:cleanup (as FabricClientState current-state)))
     (*:attach mgr new-state)
     (*:initialize (as FabricClientState new-state) mgr client)))
+
+
+;;; ---------------------------------------------------------------------
+;;; input handling
+;;; ---------------------------------------------------------------------
+
+(define (setup-inputs client::FabricClient)
+  (let* ((key-input::KeyInput (*:getKeyInput client))
+         (input-manager::InputManager (*:getInputManager client)))
+    (*:addMapping input-manager "KeyA" (KeyTrigger key-input:KEY_A))
+    (*:addMapping input-manager "KeyD" (KeyTrigger key-input:KEY_D))
+    (*:addMapping input-manager "KeyS" (KeyTrigger key-input:KEY_S))
+    (*:addMapping input-manager "KeySPACE" (KeyTrigger key-input:KEY_SPACE))
+    (*:addMapping input-manager "KeyW" (KeyTrigger key-input:KEY_W))
+    (*:addMapping input-manager "KeyX" (KeyTrigger key-input:KEY_X))
+    (*:addMapping input-manager "MouseButtonLeft" (MouseButtonTrigger MouseInput:BUTTON_LEFT))
+    (*:addMapping input-manager "MouseButtonRight" (MouseButtonTrigger MouseInput:BUTTON_RIGHT))
+    (*:addMapping input-manager "MouseDragDown" (MouseAxisTrigger AXIS_Y #t))
+    (*:addMapping input-manager "MouseDragUp" (MouseAxisTrigger AXIS_Y #f))
+    (*:addMapping input-manager "MouseDragLeft" (MouseAxisTrigger AXIS_X #t))
+    (*:addMapping input-manager "MouseDragRight" (MouseAxisTrigger AXIS_X #f))
+    (*:addListener input-manager client
+                   ;; motion controls
+                   "KeyA" "KeyD" "KeyW" "KeyS" "KeySPACE" "KeyX"
+                   "MouseButtonLeft" "MouseButtonRight"
+                   "MouseDragRight" "MouseDragLeft" "MouseDragUp" "MouseDragDown")))

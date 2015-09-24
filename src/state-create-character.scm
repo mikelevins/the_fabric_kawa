@@ -97,6 +97,7 @@
 (define (%create-character-state-initialized? state::FabricClientState) state:state-initialized?)
 (define (%create-character-state-attached state::FabricClientState manager::AppStateManager) #!void)
 (define (%create-character-state-detached state::FabricClientState manager::AppStateManager) #!void)
+
 (define (%create-character-state-handle-analog-event state name value tpf)
   (warn "%create-character-state-handle-analog-event is not yet implemented"))
 (define (%create-character-state-handle-action-event state name key-pressed? tpf)
