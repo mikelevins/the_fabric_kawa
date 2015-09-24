@@ -46,27 +46,3 @@
 ;;; (activate-state $client 'transition)
 ;;; (stop-client)
 
-
-;;; supported transit destinations:
-;; Callisto
-;; Dione
-;; Earth
-;; Enceladus
-;; Europa
-;; Ganymede
-;; Iapetus
-;; Io
-;; Jupiter
-;; Mars
-;; Mercury
-;; Neptune
-;; Pluto
-;; Rhea
-;; Saturn
-;; Sedna
-;; Tethys
-;; The Moon
-;; The Sun
-;; Titan
-;; Uranus
-;; Venus

@@ -19,6 +19,7 @@
 (require util-error)
 (require data-assets)
 (require view-faction-nameplate)
+(require view-faction-picker)
 (require state)
 (require client)
 
@@ -29,6 +30,7 @@
 (import (class com.jme3.app.state AbstractAppState AppStateManager))
 (import (class com.jme3.scene Node))
 (import (class tonegod.gui.controls.text Label))
+(import (class tonegod.gui.controls.windows Window))
 (import (class tonegod.gui.core Screen))
 
 ;;; ---------------------------------------------------------------------
@@ -39,8 +41,10 @@
   (let* ((client::FabricClient state:client)
          (screen::Screen client:screen)
          (gui-node::Node (*:getGuiNode client))
-         (nameplate::Label state:faction-nameplate))
+         (nameplate::Label state:faction-nameplate)
+         (picker::Window state:faction-picker))
     (*:removeElement screen nameplate)
+    (*:removeElement screen picker)
     (*:removeControl gui-node screen))
   #!void)
 
@@ -48,10 +52,13 @@
   (let* ((client::FabricClient state:client)
          (gui-node::Node (*:getGuiNode client))
          (screen::Screen client:screen)
-         (nameplate::Label (make-faction-nameplate screen)))
+         (nameplate::Label (make-faction-nameplate screen))
+         (faction-picker (make-faction-picker state screen)))
     (set! state:faction-nameplate nameplate)
+    (set! state:faction-picker faction-picker)
     (*:setText nameplate "Faction: None Chosen")
     (*:addElement screen nameplate)
+    (*:addElement screen faction-picker)
     (*:addControl gui-node screen)
     (set! state:state-initialized? #t))
   #!void)
@@ -68,6 +75,7 @@
 (define-simple-class CreateCharacterState (FabricClientState)
   ;; slots
   (faction-nameplate init: #!null)
+  (faction-picker init: #!null)
   ;; methods
   ((cleanup) (%create-character-state-cleanup (this)))
   ((initialize state-manager::AppStateManager app::FabricClient)

@@ -17,6 +17,7 @@
 
 (require state-create-character)
 (require model-rect)
+(require view-faction-picker)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -24,22 +25,23 @@
 
 (import (class com.jme3.font BitmapFont BitmapText))
 (import (class com.jme3.math ColorRGBA))
+(import (class com.jme3.math Vector2f))
 (import (class tonegod.gui.controls.text Label))
 (import (class tonegod.gui.core Screen))
-(import (class com.jme3.math Vector2f))
 
 ;;; ---------------------------------------------------------------------
 ;;; faction nameplate
 ;;; ---------------------------------------------------------------------
 
 (define (make-faction-nameplate screen::Screen)
-  (let* ((faction-picker-rect (make-rectangle 16 16 512 40))
+  (let* ((faction-picker-rect (compute-faction-picker-rect screen))
          (screen-width (*:getWidth screen))
          (Align BitmapFont:Align)
-         (nameplate-left (get-left faction-picker-rect))
+         (nameplate-left (+ 32 (get-left faction-picker-rect)
+                            (get-width faction-picker-rect)))
          (nameplate-top (get-top faction-picker-rect))
          (nameplate-width (get-width faction-picker-rect))
-         (nameplate-height (get-height faction-picker-rect))
+         (nameplate-height 64)
          (faction-nameplate::Label (Label screen "FactionNameplate"
                                           (Vector2f nameplate-left nameplate-top)
                                           (Vector2f nameplate-width nameplate-height))))
