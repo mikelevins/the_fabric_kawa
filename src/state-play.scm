@@ -10,7 +10,7 @@
 
 (module-export
  PlayState
- )
+ make-play-state)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -46,8 +46,6 @@
 
 (define (%play-state-initialize state::PlayState)
   (let* ((client::FabricClient state:client)
-         (body (make-celestial-body "Jupiter.jpg"))
-         (body-loc (*:getLocalTranslation body))
          (sky (make-sky-box))
          (root::Node (*:getRootNode client))
          (camera::Camera (*:getCamera client)))
@@ -55,9 +53,8 @@
     (*:lookAtDirection camera (Vector3f 0.0 0.0 -1.0) (Vector3f 0.0 1.0 0.0))
     (*:setFrustumFar camera 80000)
     (set! state:sky sky)
-    (set! state:celestial-body body)
     (*:attachChild root state:sky)
-    (*:attachChild root body)
+    (*:attachChild root state:celestial-body)
     (set! state:state-initialized? #t)))
 
 (define (%play-state-enabled? state::FabricClientState) #t)
@@ -94,4 +91,10 @@
   ((handleActionEvent name key-pressed? tpf)
    (%play-state-handle-action-event (this) name key-pressed? tpf)))
 
+(define (make-play-state #!key (location "The Sun"))
+  (let* ((txname (format #f "~A.jpg" location))
+         (body (make-celestial-body txname))
+         (state::PlayState (PlayState)))
+    (set! state:celestial-body body)
+    state))
 

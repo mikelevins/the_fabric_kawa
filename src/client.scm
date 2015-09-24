@@ -116,12 +116,13 @@
 ;;; state changes
 ;;; ---------------------------------------------------------------------
 
-(define (activate-state client::FabricClient state-name::Symbol)
+(define (activate-state client::FabricClient state-name::Symbol #!rest (initargs '()))
   (let* ((new-state (case state-name
                       ((login)(LoginState))
                       ((create-character)(CreateCharacterState))
                       ((pick-character)(PickCharacterState))
-                      ((play)(PlayState))
+                      ;; play initargs: location: location-name
+                      ((play)(apply make-play-state initargs))
                       ((transition)(TransitionState))
                       (else (error "Unknown state name: " state-name))))
          (mgr::AppStateManager (*:getStateManager client))
