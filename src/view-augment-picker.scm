@@ -1,16 +1,16 @@
 ;;;; ***********************************************************************
 ;;;;
-;;;; Name:          view-armor-picker.scm
+;;;; Name:          view-augment-picker.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
-;;;; Purpose:       the armor picker 
+;;;; Purpose:       the augment picker 
 ;;;; Author:        mikel evins
 ;;;; Copyright:     2014 by mikel evins
 ;;;;
 ;;;; ***********************************************************************
 
 (module-export
- compute-armor-picker-rect
- make-armor-picker)
+ compute-augment-picker-rect
+ make-augment-picker)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -33,21 +33,21 @@
 ;;; 
 ;;; ---------------------------------------------------------------------
 
-(define (compute-armor-picker-rect screen::Screen)
+(define (compute-augment-picker-rect screen::Screen)
   (let* ((faction-rect (compute-faction-picker-rect screen))
          (screen-width (*:getWidth screen))
          (screen-height (*:getHeight screen))
-         (picker-left (get-left faction-rect))
-         (picker-top (+ 16 (get-top faction-rect)(get-height faction-rect)))
-         (picker-width 256)
-         (picker-height (- screen-height picker-top 16)))
+         (picker-width (get-width faction-rect))
+         (picker-left (- screen-width (+ picker-width 16)))
+         (picker-top (get-top faction-rect))
+         (picker-height (get-height faction-rect)))
     (make-rectangle picker-left picker-top picker-width picker-height)))
 
-(define (make-armor-picker state::FabricClientState screen::Screen)
+(define (make-augment-picker state::FabricClientState screen::Screen)
   (let* ((state::CreateCharacterState (as CreateCharacterState state))
-         (rect (compute-armor-picker-rect screen))
-         (win (Window screen "ArmorPicker"
+         (rect (compute-augment-picker-rect screen))
+         (win (Window screen "AugmentPicker"
                       (Vector2f (get-left rect) (get-top rect))
                       (Vector2f (get-width rect) (get-height rect)))))
-    (*:setWindowTitle win "Choose your armor:")
+    (*:setWindowTitle win "Choose your augment:")
     win))

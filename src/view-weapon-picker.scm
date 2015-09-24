@@ -1,16 +1,16 @@
 ;;;; ***********************************************************************
 ;;;;
-;;;; Name:          view-armor-picker.scm
+;;;; Name:          view-weapon-picker.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
-;;;; Purpose:       the armor picker 
+;;;; Purpose:       the weapon picker 
 ;;;; Author:        mikel evins
 ;;;; Copyright:     2014 by mikel evins
 ;;;;
 ;;;; ***********************************************************************
 
 (module-export
- compute-armor-picker-rect
- make-armor-picker)
+ compute-weapon-picker-rect
+ make-weapon-picker)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -33,21 +33,21 @@
 ;;; 
 ;;; ---------------------------------------------------------------------
 
-(define (compute-armor-picker-rect screen::Screen)
+(define (compute-weapon-picker-rect screen::Screen)
   (let* ((faction-rect (compute-faction-picker-rect screen))
          (screen-width (*:getWidth screen))
          (screen-height (*:getHeight screen))
-         (picker-left (get-left faction-rect))
-         (picker-top (+ 16 (get-top faction-rect)(get-height faction-rect)))
          (picker-width 256)
+         (picker-left (- screen-width (+ picker-width 16)))
+         (picker-top (+ 16 (get-top faction-rect)(get-height faction-rect)))
          (picker-height (- screen-height picker-top 16)))
     (make-rectangle picker-left picker-top picker-width picker-height)))
 
-(define (make-armor-picker state::FabricClientState screen::Screen)
+(define (make-weapon-picker state::FabricClientState screen::Screen)
   (let* ((state::CreateCharacterState (as CreateCharacterState state))
-         (rect (compute-armor-picker-rect screen))
-         (win (Window screen "ArmorPicker"
+         (rect (compute-weapon-picker-rect screen))
+         (win (Window screen "WeaponPicker"
                       (Vector2f (get-left rect) (get-top rect))
                       (Vector2f (get-width rect) (get-height rect)))))
-    (*:setWindowTitle win "Choose your armor:")
+    (*:setWindowTitle win "Choose your weapon:")
     win))
