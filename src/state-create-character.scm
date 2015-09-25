@@ -18,6 +18,7 @@
 
 (require util-error)
 (require data-assets)
+(require model-character)
 (require view-faction-nameplate)
 (require view-faction-picker)
 (require view-armor-picker)
@@ -25,6 +26,7 @@
 (require view-weapon-picker)
 (require view-name-generator)
 (require view-character-acceptor)
+(require view-character-model)
 (require state)
 (require client)
 
@@ -73,7 +75,9 @@
          (weapon-picker (make-weapon-picker state screen))
          (augment-picker (make-augment-picker state screen))
          (name-generator (make-name-generator state screen))
-         (character-acceptor (make-character-acceptor state screen)))
+         (character-acceptor (make-character-acceptor state screen))
+         (char::FabricCharacter (make-fabric-character (blank-fabric-name)))
+         (model::Node (make-character-model char)))
     (set! state:faction-nameplate nameplate)
     (set! state:faction-picker faction-picker)
     (set! state:armor-picker armor-picker)
@@ -81,6 +85,8 @@
     (set! state:augment-picker augment-picker)
     (set! state:name-generator name-generator)
     (set! state:character-acceptor character-acceptor)
+    (set! state:character char)
+    (set! state:character-model model)
     (*:setText nameplate "Faction: None Chosen")
     (*:addElement screen nameplate)
     (*:addElement screen faction-picker)
@@ -108,6 +114,11 @@
 
 (define-simple-class CreateCharacterState (FabricClientState)
   ;; slots
+  (character init: #!null)
+  (character-model init: #!null)
+  (caretakers-button init: #!null)
+  (rogues-button init: #!null)
+  (abjurers-button init: #!null)
   (faction-nameplate init: #!null)
   (faction-picker init: #!null)
   (armor-picker init: #!null)

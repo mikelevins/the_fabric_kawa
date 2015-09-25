@@ -12,9 +12,10 @@
  FactionButtonGroup)
 
 (require util-color)
-(require client-state)
+(require state)
 (require state-create-character)
 (require model-character)
+(require view-character-model)
 
 (import (class com.jme3.math ColorRGBA))
 (import (class com.jme3.scene Node))
@@ -30,7 +31,7 @@
    (let* ((button-id (*:getUID value))
           (state::CreateCharacterState app-state)
           (character::FabricCharacter state:character)
-          (model::Node character:model)
+          (model::Node state:character-model)
           (caretakers-button::Button state:caretakers-button)
           (rogues-button::Button state:rogues-button)
           (abjurers-button::Button state:abjurers-button)
@@ -48,4 +49,4 @@
       (else (format #t "~%Unknown faction selected")))
      (let ((lit-color::ColorRGBA (faction-lit-color character:faction))
            (dim-color::ColorRGBA (faction-dim-color character:faction)))
-       (recolor-character-model! character lit-color dim-color)))))
+       (recolor-character-model! character model lit-color dim-color)))))

@@ -9,7 +9,8 @@
 ;;;; ***********************************************************************
 
 (module-export
- make-character-model)
+ make-character-model
+ recolor-character-model!)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -17,10 +18,12 @@
 
 (require util-error)
 (require util-color)
-(require client-class)
+(require client)
 (require data-assets)
 (require model-rect)
 (require model-character)
+(require model-namegen)
+(require view-character-model)
 (require view-rotatecontrol)
 
 ;;; ---------------------------------------------------------------------
@@ -94,3 +97,19 @@
     (*:addControl namecube rotator)
     model))
 
+(define (recolor-character-model! character::FabricCharacter model::Node
+                                  lit-color::ColorRGBA dim-color::ColorRGBA)
+  (let* ((namecube::Node (*:getChild model "NameCube"))
+         (cubes::SafeArrayList (*:getChildren namecube))
+         (name::FabricName character:name)
+         (name-bits (fabric-name->bits name))
+         (glow-color (ColorRGBA 1 1 1 0.6))
+         (cube-count (*:size cubes)))
+    (let loop ((i 0))
+      (if (< i cube-count)
+          (let* ((cube::Geometry (*:get cubes i))
+                 (mat::Material (*:getMaterial cube))
+                 (flag (list-ref name-bits i)))
+            (*:setColor mat "Color" (if flag lit-color dim-color))
+            (*:setColor mat "GlowColor" (if flag glow-color dim-color))
+            (loop (+ i 1)))))))
