@@ -74,6 +74,7 @@
     (*:removeElement screen character-nameplate)
     (*:removeControl gui-node screen)
     (*:setLocation camera (Vector3f 0.0 0.0 0.0))
+    (*:lookAtDirection camera (Vector3f 0.0 0.0 1.0) (Vector3f 0.0 1.0 0.0))
     (*:detachChild root-node model))
   #!void)
 
@@ -115,6 +116,7 @@
     (*:setText character-nameplate (fabric-name->string char:name))
     (*:addControl gui-node screen)
     (*:setLocation camera (Vector3f 0.0 0.0 20.0))
+    (*:lookAtDirection camera (Vector3f 0.0 0.0 -1.0) (Vector3f 0.0 1.0 0.0))
     (*:attachChild root-node model)
     (set! state:state-initialized? #t))
   #!void)

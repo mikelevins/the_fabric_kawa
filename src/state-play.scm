@@ -41,6 +41,7 @@
          (root::Node (*:getRootNode client))
          (camera::Camera (*:getCamera client)))
     (*:setLocation camera (Vector3f 0.0 0.0 0.0))
+    (*:lookAtDirection camera (Vector3f 0.0 0.0 1.0) (Vector3f 0.0 1.0 0.0))
     (*:detachChild root state:sky)
     (*:detachChild root state:celestial-body)))
 

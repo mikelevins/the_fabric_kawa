@@ -43,6 +43,7 @@
 (import (class com.jme3.math Vector3f))
 (import (class com.jme3.system AppSettings))
 (import (class gnu.mapping Symbol))
+(import (class java.lang Thread))
 (import (class org.lwjgl.input Mouse))
 (import (class tonegod.gui.core Screen))
 
@@ -119,16 +120,8 @@
 (define (%enqueue-state-change client::FabricClient change-proc)
   (*:enqueue client (runnable change-proc)))
 
-(define (activate-state client::FabricClient state-name::Symbol #!rest (initargs '()))
-  (let* ((new-state (case state-name
-                      ((login)(LoginState))
-                      ((create-character)(CreateCharacterState))
-                      ((pick-character)(PickCharacterState))
-                      ;; play initargs: location: location-name
-                      ((play)(apply make-play-state initargs))
-                      ((transition)(TransitionState))
-                      (else (error "Unknown state name: " state-name))))
-         (mgr::AppStateManager (*:getStateManager client))
+(define (%activate-supplied-state client::FabricClient new-state::FabricClientState)
+  (let* ((mgr::AppStateManager (*:getStateManager client))
          (current-state client:state))
     (%enqueue-state-change client
                            (lambda ()
@@ -136,7 +129,29 @@
                                (*:detach mgr current-state)
                                (*:cleanup (as FabricClientState current-state)))
                              (*:attach mgr new-state)
-                             (*:initialize (as FabricClientState new-state) mgr client)))))
+                             (*:initialize new-state mgr client)))))
+
+(define (activate-state client::FabricClient state-name::Symbol . initargs)
+  (let ((transition-state (TransitionState)))
+    (case state-name
+      ((login)(LoginState)(let* ((new-state (LoginState)))
+                            (%activate-supplied-state client transition-state)
+                            (Thread:sleep 500)
+                            (%activate-supplied-state client new-state)))
+      ((create-character)(let* ((new-state (CreateCharacterState)))
+                           (%activate-supplied-state client transition-state)
+                           (Thread:sleep 500)
+                           (%activate-supplied-state client new-state)))
+      ((pick-character)(let* ((new-state (PickCharacterState)))
+                         (%activate-supplied-state client transition-state)
+                         (Thread:sleep 500)
+                         (%activate-supplied-state client new-state)))
+      ((play)(let* ((new-state (apply make-play-state initargs)))
+               (%activate-supplied-state client transition-state)
+               (Thread:sleep 500)
+               (%activate-supplied-state client new-state)))
+      ((transition)(%activate-supplied-state client transition-state))
+      (else (error "Unknown state name: " state-name)))))
 
 
 ;;; ---------------------------------------------------------------------
