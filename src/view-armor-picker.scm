@@ -19,6 +19,7 @@
 (require state)
 (require state-create-character)
 (require model-rect)
+(require view-armor-button-group)
 (require view-faction-picker)
 
 ;;; ---------------------------------------------------------------------

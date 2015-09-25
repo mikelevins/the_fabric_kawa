@@ -1,6 +1,6 @@
 ;;;; ***********************************************************************
 ;;;;
-;;;; Name:          view-armors-button-group.scm
+;;;; Name:          view-armor-button-group.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
 ;;;; Purpose:       radio-button group for the armor picker
 ;;;; Author:        mikel evins
@@ -9,27 +9,25 @@
 ;;;; ***********************************************************************
 
 (module-export
- ArmorsButtonGroup)
+ ArmorButtonGroup)
 
-(require client-state)
+(require state)
 (require state-create-character)
 (require model-character)
 
 (import (class tonegod.gui.controls.buttons Button RadioButtonGroup))
 (import (class tonegod.gui.core Screen))
 
-(define-simple-class  ArmorsButtonGroup (RadioButtonGroup)
-  (app-state init-form: #!null)
+(define-simple-class  ArmorButtonGroup (RadioButtonGroup)
+  (state::CreateCharacterState init-form: #!null)
   ((*init* screen::Screen uid::String)
    (invoke-special RadioButtonGroup (this) '*init* screen uid))
   ((onSelect index::int value::Button)
-   (let* ((button-id (*:getUID value))
-          (state::CreateCharacterState app-state)
-          (character::FabricCharacter state:character))
+   (let* ((button-id (*:getUID value)))
      (cond
-      ((equal? "AbsorbButton" button-id)(set-character-armor! character 'absorb))
-      ((equal? "RegenerateButton" button-id)(set-character-armor! character 'regenerate))
-      ((equal? "PowerButton" button-id)(set-character-armor! character 'power))
-      ((equal? "EnergyButton" button-id)(set-character-armor! character 'energy))
+      ((equal? "AbsorbButton" button-id)(set-character-armor! state 'absorb))
+      ((equal? "RegenerateButton" button-id)(set-character-armor! state 'regenerate))
+      ((equal? "PowerButton" button-id)(set-character-armor! state 'power))
+      ((equal? "EnergyButton" button-id)(set-character-armor! state 'energy))
       (else (format #t "~%Unknown armor selected"))))))
 

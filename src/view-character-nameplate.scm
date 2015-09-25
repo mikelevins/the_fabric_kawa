@@ -17,6 +17,8 @@
 
 (require state-create-character)
 (require model-rect)
+(require view-name-generator)
+(require view-weapon-picker)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -34,7 +36,7 @@
 
 (define (make-character-nameplate screen::Screen)
   (let* ((weapon-picker-rect (compute-weapon-picker-rect screen))
-         (name-picker-rect (compute-name-picker-rect screen))
+         (name-picker-rect (compute-name-generator-rect screen))
          (Align BitmapFont:Align)
          (nameplate-left (+ (get-left weapon-picker-rect)
                             (get-width weapon-picker-rect)
