@@ -116,6 +116,9 @@
 ;;; state changes
 ;;; ---------------------------------------------------------------------
 
+(define (%enqueue-state-change client::FabricClient change-proc)
+  (*:enqueue client (runnable change-proc)))
+
 (define (activate-state client::FabricClient state-name::Symbol #!rest (initargs '()))
   (let* ((new-state (case state-name
                       ((login)(LoginState))
@@ -127,11 +130,13 @@
                       (else (error "Unknown state name: " state-name))))
          (mgr::AppStateManager (*:getStateManager client))
          (current-state client:state))
-    (unless (eqv? #!null current-state)
-      (*:detach mgr current-state)
-      (*:cleanup (as FabricClientState current-state)))
-    (*:attach mgr new-state)
-    (*:initialize (as FabricClientState new-state) mgr client)))
+    (%enqueue-state-change client
+                           (lambda ()
+                             (unless (eqv? #!null current-state)
+                               (*:detach mgr current-state)
+                               (*:cleanup (as FabricClientState current-state)))
+                             (*:attach mgr new-state)
+                             (*:initialize (as FabricClientState new-state) mgr client)))))
 
 
 ;;; ---------------------------------------------------------------------
