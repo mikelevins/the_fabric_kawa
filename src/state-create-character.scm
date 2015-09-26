@@ -11,7 +11,8 @@
 (module-export
  CreateCharacterState
  set-character-armor!
- set-character-augment!)
+ set-character-augment!
+ set-character-weapon!)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -26,6 +27,7 @@
 (require view-armor-picker)
 (require view-augment-model)
 (require view-augment-picker)
+(require view-weapon-model)
 (require view-weapon-picker)
 (require view-name-generator)
 (require view-character-acceptor)
@@ -142,8 +144,10 @@
   (character-model init: #!null)
   (character-armor init: #!null)
   (character-augment init: #!null)
+  (character-weapon init: #!null)
   (armor-model init: #!null)
   (augment-model init: #!null)
+  (weapon-model init: #!null)
   (caretakers-button init: #!null)
   (rogues-button init: #!null)
   (abjurers-button init: #!null)
@@ -188,6 +192,16 @@
         (character-model::Node state:character-model))
     (set! state:character-augment augment-name)
     (set! state:augment-model new-model)
+    (unless (eqv? #!null previous-model)
+      (*:detachChild character-model previous-model))
+    (*:attachChild character-model new-model)))
+
+(define (set-character-weapon! state::CreateCharacterState weapon-name::Symbol)
+  (let ((previous-model state:weapon-model)
+        (new-model::Node (make-weapon-model weapon-name))
+        (character-model::Node state:character-model))
+    (set! state:character-weapon weapon-name)
+    (set! state:weapon-model new-model)
     (unless (eqv? #!null previous-model)
       (*:detachChild character-model previous-model))
     (*:attachChild character-model new-model)))
