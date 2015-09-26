@@ -19,10 +19,10 @@
 
 (require util-error)
 (require data-assets)
-(require view-celestial-body)
 (require view-skybox)
 (require state)
 (require client)
+(require view-location)
 (require view-location-nameplate)
 (require view-action-bar)
 
@@ -52,8 +52,8 @@
     (*:setLocation camera (Vector3f 0.0 0.0 0.0))
     (*:lookAtDirection camera (Vector3f 0.0 0.0 1.0) (Vector3f 0.0 1.0 0.0))
     (*:detachChild root state:sky)
+    (*:detachChild root state:location)
     (*:detachChild root state:location-nameplate)
-    (*:detachChild root state:celestial-body)
     (*:removeElement screen state:action-bar)
     (*:removeControl gui-node screen)))
 
@@ -73,8 +73,8 @@
     (set! state:action-bar action-bar)
     (set! state:sky sky)
     (*:attachChild root state:sky)
+    (*:attachChild root state:location)
     (*:attachChild root state:location-nameplate)
-    (*:attachChild root state:celestial-body)
     (*:addElement screen action-bar)
     (*:addControl gui-node screen)
     (set-location-name! state state:location-name)
@@ -95,9 +95,9 @@
 
 (define-simple-class PlayState (FabricClientState)
   ;; slots
+  (location::Geometry init: #!null)
   (location-name::String init: #!null)
   (location-nameplate::Label init: #!null)
-  (celestial-body init: #!null)
   (sky::Geometry init: #!null)
   (action-bar::Panel init: #!null)
   ;; methods
@@ -117,14 +117,13 @@
   ((handleActionEvent name key-pressed? tpf)
    (%play-state-handle-action-event (this) name key-pressed? tpf)))
 
-(define (make-play-state #!key (location "The Sun"))
-  (let* ((txname (format #f "~A.jpg" location))
-         (body (make-celestial-body txname))
-         (state::PlayState (PlayState)))
-    (set! state:celestial-body body)
-    (set! state:location-name location)
-    state))
-
 (define (set-location-name! state::PlayState name::String)
   (set! state:location-name name)
   (*:setText state:location-nameplate name))
+
+(define (make-play-state #!key (location "The Sun"))
+  (let* ((loc (make-location location))
+         (state::PlayState (PlayState)))
+    (set! state:location loc)
+    (set! state:location-name location)
+    state))

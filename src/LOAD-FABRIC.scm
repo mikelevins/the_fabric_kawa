@@ -42,7 +42,7 @@
 ;;; (activate-state $client 'login)
 ;;; (activate-state $client 'create-character)
 ;;; (activate-state $client 'pick-character)
-;;; (activate-state $client 'play location: "Titan")
+;;; (activate-state $client 'play location: "Pluto")
 ;;; (activate-state $client 'transition)
 ;;; (stop-client)
 
