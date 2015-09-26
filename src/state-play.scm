@@ -10,7 +10,8 @@
 
 (module-export
  PlayState
- make-play-state)
+ make-play-state
+ set-location-name!)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -22,6 +23,7 @@
 (require view-skybox)
 (require state)
 (require client)
+(require view-location-nameplate)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -31,6 +33,8 @@
 (import (class com.jme3.math Vector3f))
 (import (class com.jme3.renderer Camera))
 (import (class com.jme3.scene Geometry Node))
+(import (class java.lang String))
+(import (class tonegod.gui.controls.text Label))
 
 ;;; ---------------------------------------------------------------------
 ;;; PlayState
@@ -43,19 +47,24 @@
     (*:setLocation camera (Vector3f 0.0 0.0 0.0))
     (*:lookAtDirection camera (Vector3f 0.0 0.0 1.0) (Vector3f 0.0 1.0 0.0))
     (*:detachChild root state:sky)
+    (*:detachChild root state:location-nameplate)
     (*:detachChild root state:celestial-body)))
 
 (define (%play-state-initialize state::PlayState)
   (let* ((client::FabricClient state:client)
+         (location-nameplate::Label (make-location-nameplate client:screen))
          (sky (make-sky-box))
          (root::Node (*:getRootNode client))
          (camera::Camera (*:getCamera client)))
     (*:setLocation camera (Vector3f 0.0 0.0 20000.0))
     (*:lookAtDirection camera (Vector3f 0.0 0.0 -1.0) (Vector3f 0.0 1.0 0.0))
     (*:setFrustumFar camera 80000)
+    (set! state:location-nameplate location-nameplate)
     (set! state:sky sky)
     (*:attachChild root state:sky)
+    (*:attachChild root state:location-nameplate)
     (*:attachChild root state:celestial-body)
+    (set-location-name! state state:location-name)
     (set! state:state-initialized? #t)))
 
 (define (%play-state-enabled? state::FabricClientState) #t)
@@ -73,6 +82,8 @@
 
 (define-simple-class PlayState (FabricClientState)
   ;; slots
+  (location-name::String init: #!null)
+  (location-nameplate::Label init: #!null)
   (celestial-body init: #!null)
   (sky::Geometry init: #!null)
   ;; methods
@@ -97,5 +108,9 @@
          (body (make-celestial-body txname))
          (state::PlayState (PlayState)))
     (set! state:celestial-body body)
+    (set! state:location-name location)
     state))
 
+(define (set-location-name! state::PlayState name::String)
+  (set! state:location-name name)
+  (*:setText state:location-nameplate name))
