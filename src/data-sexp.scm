@@ -13,12 +13,15 @@
  character->sexp-string
  name->sexp
  name->sexp-string
+ rectangle->sexp
+ rectangle->sexp-string
  sexp->character
  sexp->name
  sexp->object
  sexp->user
  sexp-string->character
  sexp-string->name
+ sexp-string->rectangle
  string->sexp
  user->sexp
  user->sexp-string
@@ -29,6 +32,7 @@
 ;;; ---------------------------------------------------------------------
 
 (require util-lists)
+(require model-rect)
 (require model-character)
 (require model-namegen)
 (require model-user)
@@ -62,6 +66,37 @@
     (if converter
         (converter sexp)
         (error "No reader defined for objects of type " type-tag))))
+
+;;; ---------------------------------------------------------------------
+;;; rectangles
+;;; ---------------------------------------------------------------------
+
+(define (rectangle->sexp rect)
+  `(rectangle left: ,(get-left rect)
+              top: ,(get-top rect)
+              width: ,(get-width rect)
+              height: ,(get-height rect)))
+
+(define (rectangle->sexp-string rect)
+  (sexp->string (rectangle->sexp rect)))
+
+(define (%read-rectangle-sexp sexp)
+  (let ((left (get-key sexp 'left: 0))
+        (top (get-key sexp 'top: 0))
+        (width (get-key sexp 'width: 0))
+        (height (get-key sexp 'height: 0)))
+    (make-rectangle left top width height)))
+
+(define (sexp->rectangle sexp::Pair)
+  (if (eq? 'rectangle (car sexp))
+      (%read-rectangle-sexp sexp)
+      (error "sexp->rectangle expected a list beginning with the symbol rectangle but found "
+             sexp)))
+
+(register-converter! 'rectangle sexp->rectangle)
+
+(define (sexp-string->rectangle str::String)
+  (sexp->rectangle (string->sexp str)))
 
 ;;; ---------------------------------------------------------------------
 ;;; FabricNames

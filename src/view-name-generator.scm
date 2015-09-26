@@ -44,11 +44,9 @@
          (armor-rect (compute-armor-picker-rect screen))
          (screen-width (*:getWidth screen))
          (screen-height (*:getHeight screen))
-         (picker-width (- (get-width faction-rect)
-                          (get-width armor-rect)
-                          16))
+         (picker-width 200)
          (picker-left (+ 16 (get-width armor-rect) 16))
-         (picker-height (get-height faction-rect))
+         (picker-height 100)
          (picker-top (- screen-height 16 picker-height)))
     (make-rectangle picker-left picker-top picker-width picker-height)))
 

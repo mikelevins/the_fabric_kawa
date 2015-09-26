@@ -59,8 +59,8 @@
 (define (make-save-character-button screen::Screen state::CreateCharacterState)
   (let* ((button-width 144)
          (button-height 36)
-         (button-left 116)
-         (button-top 88)
+         (button-left 40)
+         (button-top 40)
          (button::SaveCharacterButton (SaveCharacterButton screen "SaveCharacterButton"
                                                         (Vector2f button-left button-top)
                                                         (Vector2f button-width button-height))))

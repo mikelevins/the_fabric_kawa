@@ -87,8 +87,8 @@
   (let* ((rect (compute-name-generator-rect screen))
          (button-width 144)
          (button-height 36)
-         (button-left 16)
-         (button-top 48)
+         (button-left 40)
+         (button-top 40)
          (button::RandomNameButton (RandomNameButton screen "RandomNameButton"
                                                      (Vector2f button-left button-top)
                                                      (Vector2f button-width button-height))))

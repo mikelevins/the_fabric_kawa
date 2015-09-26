@@ -25,12 +25,14 @@
 (require model-namegen)
 (require model-user)
 (require model-player)
+(require model-rect)
 (require state)
 (require state-transition)
 (require state-login)
 (require state-create-character)
 (require state-pick-character)
 (require state-play)
+(require view-faction-picker)
 (require client)
 
 ;;; ---------------------------------------------------------------------
