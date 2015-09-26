@@ -14,10 +14,10 @@
  get-width
  get-height
  make-rectangle
- rectangle
+ <rectangle>
  rectangle?)
 
-(define-record-type rectangle 
+(define-record-type <rectangle> 
   (make-rectangle left top width height)
   rectangle?
   (left get-left)
