@@ -10,7 +10,8 @@
 
 (module-export
  CreateCharacterState
- set-character-armor!)
+ set-character-armor!
+ set-character-augment!)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -23,6 +24,7 @@
 (require view-faction-picker)
 (require view-armor-model)
 (require view-armor-picker)
+(require view-augment-model)
 (require view-augment-picker)
 (require view-weapon-picker)
 (require view-name-generator)
@@ -139,7 +141,9 @@
   (character init: #!null)
   (character-model init: #!null)
   (character-armor init: #!null)
+  (character-augment init: #!null)
   (armor-model init: #!null)
+  (augment-model init: #!null)
   (caretakers-button init: #!null)
   (rogues-button init: #!null)
   (abjurers-button init: #!null)
@@ -174,6 +178,16 @@
         (character-model::Node state:character-model))
     (set! state:character-armor armor-name)
     (set! state:armor-model new-model)
+    (unless (eqv? #!null previous-model)
+      (*:detachChild character-model previous-model))
+    (*:attachChild character-model new-model)))
+
+(define (set-character-augment! state::CreateCharacterState augment-name::Symbol)
+  (let ((previous-model state:augment-model)
+        (new-model::Node (make-augment-model augment-name))
+        (character-model::Node state:character-model))
+    (set! state:character-augment augment-name)
+    (set! state:augment-model new-model)
     (unless (eqv? #!null previous-model)
       (*:detachChild character-model previous-model))
     (*:attachChild character-model new-model)))

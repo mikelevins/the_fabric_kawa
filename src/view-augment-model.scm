@@ -17,7 +17,7 @@
 
 (require util-error)
 (require util-color)
-(require client-class)
+(require client)
 (require data-assets)
 (require model-rect)
 (require model-character)
