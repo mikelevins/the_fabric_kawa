@@ -21,6 +21,7 @@
 (require model-rect)
 (require view-faction-picker)
 (require view-armor-picker)
+(require view-save-character-button)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -52,6 +53,8 @@
          (rect (compute-character-acceptor-rect screen))
          (win (Window screen "CharacterAcceptor"
                       (Vector2f (get-left rect) (get-top rect))
-                      (Vector2f (get-width rect) (get-height rect)))))
-    (*:setWindowTitle win "Accept your character:")
+                      (Vector2f (get-width rect) (get-height rect))))
+         (save-button (make-save-character-button screen state)))
+    (*:setWindowTitle win "Save this character:")
+    (*:addChild win save-button)
     win))
