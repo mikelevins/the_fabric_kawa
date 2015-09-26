@@ -18,7 +18,7 @@
 (require state-create-character)
 (require model-rect)
 (require view-name-generator)
-(require view-weapon-picker)
+(require view-armor-picker)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -35,18 +35,18 @@
 ;;; ---------------------------------------------------------------------
 
 (define (make-character-nameplate screen::Screen)
-  (let* ((weapon-picker-rect (compute-weapon-picker-rect screen))
+  (let* ((armor-picker-rect (compute-armor-picker-rect screen))
          (name-picker-rect (compute-name-generator-rect screen))
          (Align BitmapFont:Align)
-         (nameplate-left (+ (get-left weapon-picker-rect)
-                            (get-width weapon-picker-rect)
+         (nameplate-left (+ (get-left armor-picker-rect)
+                            (get-width armor-picker-rect)
                             16))
          (nameplate-top (- (get-top name-picker-rect)
                            (+ 40 16)))
          (character-nameplate (Label screen "CharacterNameplate"
                                      (Vector2f nameplate-left nameplate-top)
                                      (Vector2f 1200 40))))
-    (*:setText character-nameplate "Name: ")
+    (*:setText character-nameplate "")
     (*:setTextAlign character-nameplate Align:Left)
     (*:setFont character-nameplate "Interface/Fonts/Laconic30.fnt")
     (*:setFontSize character-nameplate 30)

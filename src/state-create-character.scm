@@ -115,7 +115,7 @@
     (*:addElement screen name-generator)
     (*:addElement screen character-acceptor)
     (*:addElement screen character-nameplate)
-    (*:setText character-nameplate (fabric-name->string char:name))
+    (*:setText character-nameplate "")
     (*:addControl gui-node screen)
     (*:setLocation camera (Vector3f 0.0 0.0 20.0))
     (*:lookAtDirection camera (Vector3f 0.0 0.0 -1.0) (Vector3f 0.0 1.0 0.0))

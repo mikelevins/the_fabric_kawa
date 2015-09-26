@@ -17,8 +17,10 @@
 (require model-rect)
 (require model-namegen)
 (require model-character)
-(require client-state)
+(require state)
 (require state-create-character)
+(require view-character-model)
+(require view-name-generator)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -26,6 +28,7 @@
 
 (import (class com.jme3.input.event MouseButtonEvent MouseMotionEvent))
 (import (class com.jme3.math Vector2f))
+(import (class com.jme3.scene Node))
 (import (class tonegod.gui.controls.buttons Button))
 (import (class tonegod.gui.controls.text Label))
 (import (class tonegod.gui.controls.windows Window))
@@ -54,6 +57,7 @@
 
 (define (handle-generate-random-name state::CreateCharacterState)
   (let* ((character::FabricCharacter state:character)
+         (model::Node state:character-model)
          (nameplate::Label state:character-nameplate)
          (new-name (generate-fabric-name part-count: (+ 1 (random-integer 4))))
          (faction character:faction)
@@ -73,14 +77,14 @@
                           (else (default-character-color))))))
     (set! character:name new-name)
     (*:setText nameplate (fabric-character-namestring character))
-    (recolor-character-model! character lit-color dim-color)))
+    (recolor-character-model! character model lit-color dim-color)))
 
 ;;; (make-random-name-button screen::Screen)
 ;;; ---------------------------------------------------------------------
 ;;; returns a newly-constructed random-name button
 
 (define (make-random-name-button screen::Screen state::CreateCharacterState)
-  (let* ((rect (compute-name-picker-rect screen))
+  (let* ((rect (compute-name-generator-rect screen))
          (button-width 144)
          (button-height 36)
          (button-left 16)

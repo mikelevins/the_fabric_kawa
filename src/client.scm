@@ -37,10 +37,14 @@
 
 (import (class com.jme3.app SimpleApplication))
 (import (class com.jme3.app.state AbstractAppState AppStateManager))
+(import (class com.jme3.asset AssetManager))
 (import (class com.jme3.input InputManager KeyInput MouseInput))
 (import (class com.jme3.input.controls ActionListener AnalogListener
           KeyTrigger MouseAxisTrigger MouseButtonTrigger))
 (import (class com.jme3.math Vector3f))
+(import (class com.jme3.post FilterPostProcessor))
+(import (class com.jme3.post.filters BloomFilter))
+(import (class com.jme3.renderer ViewPort))
 (import (class com.jme3.system AppSettings))
 (import (class gnu.mapping Symbol))
 (import (class java.lang Thread))
@@ -76,10 +80,22 @@
   ;; init
   ((simpleInitApp) (init-client (this))))
 
+
+(define (setup-lighting app::FabricClient)
+  (let* ((asset-manager::AssetManager (get-asset-manager))
+         (bloom (BloomFilter BloomFilter:GlowMode:Objects))
+         (filter-processor::FilterPostProcessor (FilterPostProcessor asset-manager))
+         (viewport::ViewPort (*:getViewport app)))
+    (*:setDownSamplingFactor bloom 2.0)
+    (*:setBloomIntensity bloom 2.0)
+    (*:addFilter filter-processor bloom)
+    (*:addProcessor viewport filter-processor)))
+
 (define (init-client app::FabricClient)
   (begin (*:setEnabled (*:getFlyByCamera app) #f)
          (set! app:screen (Screen app))
          (setup-inputs app)
+         (setup-lighting app)
          (activate-state app 'transition)
          #!void))
 
