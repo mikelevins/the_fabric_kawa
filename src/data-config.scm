@@ -26,6 +26,9 @@
 (define-variable +default-configuration-path+
   "/usr/local/fabric/conf")
 
+(define-variable *client-configuration* #f)
+(define-variable *server-configuration* #f)
+
 (define (get-configuration-path)
   (let ((env-val (get-environment-variable "FABRIC_CONFIGURATION_PATH")))
     (or env-val
@@ -36,17 +39,20 @@
   (version init: #!null)
   (host init: #!null)
   (port init: #!null)
-  ((*init* a-version a-host a-port)
+  (default-username init: #!null)
+  ((*init* a-version a-host a-port uname)
    (set! version a-version)
    (set! host a-host)
-   (set! port a-port)))
+   (set! port a-port)
+   (set! default-username uname)))
 
 (define (make-client-configuration
          #!key
          (version (fabric-version-string))
          (host "localhost")
-         (port 6143))
-  (ClientConfiguration version host port))
+         (port 6143)
+         (default-username "fabric"))
+  (ClientConfiguration version host port default-username))
 
 (define (save-client-configuration conf::ClientConfiguration)
   (let* ((conf-path (get-configuration-path))
@@ -57,8 +63,10 @@
 (define (load-client-configuration)
   (let* ((conf-path (get-configuration-path))
          (load-path (string-append conf-path "/client.conf"))
-         (conf-sexp (read-file load-path)))
-    (s-expression->object conf-sexp)))
+         (conf-sexp (read-file load-path))
+         (conf (s-expression->object conf-sexp)))
+    (set! *client-configuration* conf)
+    conf))
 
 (define-simple-class ServerConfiguration ()
   ;; slots
@@ -83,8 +91,10 @@
 (define (load-server-configuration)
   (let* ((conf-path (get-configuration-path))
          (load-path (string-append conf-path "/server.conf"))
-         (conf-sexp (read-file load-path)))
-    (s-expression->object conf-sexp)))
+         (conf-sexp (read-file load-path))
+         (conf (s-expression->object conf-sexp)))
+    (set! *server-configuration* conf)
+    conf))
 
 ;;; (define $client-conf (make-client-configuration))
 ;;; (object->s-expression $client-conf)

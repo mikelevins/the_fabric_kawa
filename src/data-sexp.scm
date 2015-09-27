@@ -71,7 +71,8 @@
   `("ClientConfiguration"
     version: ,conf:version
     host: ,conf:host
-    port: ,conf:port))
+    port: ,conf:port
+    default-username: ,conf:default-username))
 
 (define (%read-client-configuration-sexp sexp)
   (let ((version (or (get-key sexp 'version: #f)
@@ -79,8 +80,10 @@
         (host (or (get-key sexp 'host: #f)
                   (error "Missing hostname in client configuration")))
         (port (or (get-key sexp 'port: #f)
-                  (error "Missing port number in client configuration"))))
-    (make-client-configuration version host port)))
+                  (error "Missing port number in client configuration")))
+        (uname (or (get-key sexp 'default-username: #f)
+                   (error "Missing port number in client configuration"))))
+    (make-client-configuration version host port uname)))
 
 (define-serialization ClientConfiguration %read-client-configuration-sexp %write-client-configuration-sexp)
 
