@@ -24,6 +24,7 @@
 (require data-config)
 (require data-names)
 (require data-sexp)
+(require data-users)
 (require model-character)
 (require model-namegen)
 (require model-user)

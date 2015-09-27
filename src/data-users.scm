@@ -1,0 +1,58 @@
+;;;; ***********************************************************************
+;;;;
+;;;; Name:          data-config.scm
+;;;; Project:       The Fabric: a far-future MMORPG
+;;;; Purpose:       storing user account data
+;;;; Author:        mikel evins
+;;;; Copyright:     2015 by mikel evins
+;;;;
+;;;; ***********************************************************************
+
+(module-export
+ get-user
+ get-users-path
+ load-user
+ save-user)
+
+(require data-config)
+(require data-file)
+
+(import (srfi :69 basic-hash-tables))
+(import (class java.lang String))
+
+(define users (make-parameter (make-hash-table equal?)))
+
+(define (save-user user::FabricUser)
+  (let ((username user:username))
+    (hash-table-set! (users) username user)
+    (let* ((users-path (get-users-path))
+           (save-path (string-append users-path "/" username ".sexp"))
+           (user-sexp (object->s-expression user)))
+      (write-sexp user-sexp save-path)
+      username)))
+
+(define (load-user username::String)
+  (let* ((users-path (get-users-path))
+         (load-path (string-append users-path "/" username ".sexp")))
+    (if (file-exists? load-path)
+        (let* ((user-sexp (read-file load-path))
+               (user (s-expression->object user-sexp)))
+          (hash-table-set! (users) username user)
+          user)
+        (error (format #f "No such user: ~A" username)))))
+
+(define (get-user username::String)
+  (let ((found (hash-table-ref/default (users) username #f)))
+    (or found
+        (load-user username))))
+
+(define (get-users-path)
+  (let ((conf-path (get-configuration-path)))
+    (string-append conf-path "/users")))
+
+;;; (define $pwdigest (text->digest "foobar" (compute-random-salt)))
+;;; (define $pw (car $pwdigest))
+;;; (define $pwsalt (cdr $pwdigest))
+;;; (define $mikel (make-fabric-user username: "mikel" password-hash: $pw password-salt: $pwsalt))
+;;; (save-user $mikel)
+;;; (define $mikel2 (get-user "mikel"))

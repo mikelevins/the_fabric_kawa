@@ -179,7 +179,7 @@
 (define (%write-fabric-user-sexp user::FabricUser)
   (let* ((username user:username)
          (pwhash user:password-hash)
-         (pwsalt (integer-array->list user:password-salt))
+         (pwsalt (byte-array->list user:password-salt))
          (chars (map object->s-expression user:characters)))
     `("FabricUser" username: ,username
       password-hash: ,pwhash
@@ -195,7 +195,7 @@
          (pwsalt (if password-salt-sexp
                      (if (eqv? #!null password-salt-sexp)
                          #!null
-                         (apply int[] password-salt-sexp))
+                         (apply byte[] password-salt-sexp))
                      #!null))
          (characters-sexp (get-key sexp 'characters: #f))
          (characters (if characters-sexp

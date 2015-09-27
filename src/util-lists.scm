@@ -12,6 +12,7 @@
 (module-export
  any-n
  array->list
+ byte-array->list
  choose-any
  copy-list
  every?
@@ -64,6 +65,21 @@
                   (cons (arr i) result))
             (reverse result)))))
 
+;;; (byte-array->list arr::byte[])
+;;; ---------------------------------------------------------------------
+;;; returns a list of the elements in _arr_ in the same order
+
+(define (byte-array->list arr::byte[])
+  (if (or (eqv? #!null arr)
+          (< arr:length 1))
+      '()
+      (let loop ((i 0)
+                 (result '()))
+        (if (< i arr:length)
+            (loop (+ i 1)
+                  (cons (arr i) result))
+            (reverse result)))))
+
 ;;; (choose-any ls)
 ;;; ---------------------------------------------------------------------
 ;;; returns an arbitrary element of ls
@@ -95,7 +111,6 @@
           (if (apply test args)
               (loop (map cdr lists))
               #f)))))
-
 
 
 ;;; (integer-array->list arr::Object[])

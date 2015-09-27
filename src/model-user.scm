@@ -32,7 +32,7 @@
 (define-simple-class FabricUser ()
   (username::String init: #!null)
   (password-hash::String init: #!null)
-  (password-salt::int[] init: #!null)
+  (password-salt::byte[] init: #!null)
   (characters init: '()))
 
 (define (make-fabric-user #!key (username #!null) (password-hash #!null) (password-salt #!null))
