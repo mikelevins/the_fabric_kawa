@@ -12,6 +12,7 @@
 (module-export
  FabricName
  blank-fabric-name
+ fabric-name=?
  fabric-name->string
  fabric-name->bit-patterns
  fabric-name->bits
@@ -51,6 +52,9 @@
   (data type: int[])
   ((*init* bytes::int[])(set! data bytes))
   ((*init*) (set! data (apply int[] '(0 0 0 0 0 0 0 0)))))
+
+(define (fabric-name=? fname1::FabricName fname2::FabricName)
+  (equal? fname1:data fname2:data))
 
 ;;; (fabric-name->bits nm :: FabricName)
 ;;; ---------------------------------------------------------------------

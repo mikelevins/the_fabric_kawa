@@ -17,9 +17,11 @@
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
+(require 'list-lib)
 (require util-error)
 (require util-lists)
 (require model-character)
+(require model-namegen)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -45,7 +47,9 @@
     user))
 
 (define (user-add-character! user::FabricUser character::FabricCharacter)
-  (unless (member character user:characters)
-    (set! user:characters
-          (cons character
-                user:characters))))
+  (let ((already (filter (lambda (ch::FabricCharacter)(fabric-name=? character:name ch:name))
+                         user:characters)))
+    (if (null? already)
+        (set! user:characters
+              (cons character user:characters))
+        character)))

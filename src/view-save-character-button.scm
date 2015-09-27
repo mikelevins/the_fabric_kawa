@@ -59,8 +59,14 @@
          (user::FabricUser client:user))
     (if (eqv? #!null user)
         (alert screen (format #f "No user chosen; you must log in first!"))
-        (begin (user-add-character! user character)
-               (save-user user)))))
+        (let ((already (filter (lambda (ch::FabricCharacter)(fabric-name=? character:name ch:name))
+                               user:characters)))
+          (if (null? already)
+              (begin (user-add-character! user character)
+                     (save-user user))
+              (begin
+                (alert screen (format #f "You already have a character named ~A"
+                                      (fabric-name->string character:name)))))))))
 
 ;;; (make-save-character-button screen::Screen)
 ;;; ---------------------------------------------------------------------
