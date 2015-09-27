@@ -35,6 +35,7 @@
 (require state-create-character)
 (require state-pick-character)
 (require state-play)
+(require view-alert)
 (require view-faction-picker)
 (require client)
 

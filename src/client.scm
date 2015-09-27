@@ -11,6 +11,7 @@
 (module-export
  FabricClient
  activate-state
+ alert
  make-client
  setup-inputs
  start-client
@@ -29,6 +30,7 @@
 (require state-pick-character)
 (require state-play)
 (require state-transition)
+(require view-alert)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -196,3 +198,8 @@
                    "KeyA" "KeyD" "KeyW" "KeyS" "KeySPACE" "KeyX"
                    "MouseButtonLeft" "MouseButtonRight"
                    "MouseDragRight" "MouseDragLeft" "MouseDragUp" "MouseDragDown")))
+
+;;; ---------------------------------------------------------------------
+;;; UI
+;;; ---------------------------------------------------------------------
+

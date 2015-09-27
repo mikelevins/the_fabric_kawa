@@ -22,6 +22,7 @@
 (require model-rect)
 (require state)
 (require client)
+(require view-alert)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -45,9 +46,10 @@
   ((onButtonLoginPressed evt::MouseButtonEvent toggle::boolean)
    ;;; TODO: make this button log in to the server
    (let* ((username::String (*:getTextUserName (this)))
-          (user::FabricUser (get-user username)))
+          (user::FabricUser (get-user username))
+          (screen::Screen client:screen))
      (if (eqv? #!null user)
-         (warn "No such user ~A" username)
+         (alert screen (format #f "No such user ~A" username))
          (let* ((pw::String (*:getTextPassword (this)))
                 (pwdigest (text->digest pw (compute-random-salt)))
                 (pwhash (car pwdigest))

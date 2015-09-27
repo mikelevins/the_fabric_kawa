@@ -12,13 +12,16 @@
  make-save-character-button
  SaveCharacterButton)
 
+(require util-error)
 (require util-color)
 (require util-random)
 (require model-rect)
 (require model-namegen)
 (require model-character)
+(require client)
 (require state)
 (require state-create-character)
+(require view-alert)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -50,8 +53,14 @@
 ;;; ---------------------------------------------------------------------
 
 (define (handle-save-current-character state::CreateCharacterState)
-  (let* ((character::FabricCharacter state:character))
-    (format #t "~%handle-save-current-character is not yet implemented")))
+  (let* ((character::FabricCharacter state:character)
+         (client::FabricClient state:client)
+         (screen::Screen client:screen)
+         (user::FabricUser client:user))
+    (if (eqv? #!null user)
+        (alert screen (format #f "No user chosen; you must log in first!"))
+        (begin (user-add-character! user character)
+               (save-user user)))))
 
 ;;; (make-save-character-button screen::Screen)
 ;;; ---------------------------------------------------------------------

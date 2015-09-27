@@ -10,7 +10,8 @@
 
 (module-export
  FabricUser
- make-fabric-user)
+ make-fabric-user
+ user-add-character!)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -18,6 +19,7 @@
 
 (require util-error)
 (require util-lists)
+(require model-character)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -41,3 +43,9 @@
     (set! user:password-hash password-hash)
     (set! user:password-salt password-salt)
     user))
+
+(define (user-add-character! user::FabricUser character::FabricCharacter)
+  (unless (member character user:characters)
+    (set! user:characters
+          (cons character
+                user:characters))))
