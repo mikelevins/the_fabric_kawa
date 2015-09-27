@@ -18,6 +18,7 @@
 ;;; ---------------------------------------------------------------------
 
 (require util-lists)
+(require data-config)
 (require model-rect)
 (require model-character)
 (require model-namegen)
@@ -61,6 +62,42 @@
                   (error (format #f "No serializer defined for ~S" class-name))))
             (error (format #f "s-expression is not a serialized object"))))
       (error (format #f "s-expression is not a serialized object"))))
+
+;;; ---------------------------------------------------------------------
+;;; configuration data
+;;; ---------------------------------------------------------------------
+
+(define (%write-client-configuration-sexp conf::ClientConfiguration)
+  `("ClientConfiguration"
+    version: ,conf:version
+    host: ,conf:host
+    port: ,conf:port))
+
+(define (%read-client-configuration-sexp sexp)
+  (let ((version (or (get-key sexp 'version: #f)
+                     (error "Missing version number in client configuration")))
+        (host (or (get-key sexp 'host: #f)
+                  (error "Missing hostname in client configuration")))
+        (port (or (get-key sexp 'port: #f)
+                  (error "Missing port number in client configuration"))))
+    (make-client-configuration version host port)))
+
+(define-serialization ClientConfiguration %read-client-configuration-sexp %write-client-configuration-sexp)
+
+
+(define (%write-server-configuration-sexp conf::ServerConfiguration)
+  `("ServerConfiguration"
+    version: ,conf:version
+    port: ,conf:port))
+
+(define (%read-server-configuration-sexp sexp)
+  (let ((version (or (get-key sexp 'version: #f)
+                     (error "Missing version number in server configuration")))
+        (port (or (get-key sexp 'port: #f)
+                  (error "Missing port number in server configuration"))))
+    (make-server-configuration version port)))
+
+(define-serialization ServerConfiguration %read-server-configuration-sexp %write-server-configuration-sexp)
 
 ;;; ---------------------------------------------------------------------
 ;;; rectangles

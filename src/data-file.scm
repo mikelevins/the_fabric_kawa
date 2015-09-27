@@ -23,7 +23,6 @@
       (lambda (out)
         (format out "~S" sexp))))
 
-
 (define (read-file path::String)
   (call-with-input-file path
       (lambda (in)

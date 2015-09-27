@@ -21,6 +21,7 @@
 (require util-lists)
 (require util-crypt)
 (require data-file)
+(require data-config)
 (require data-names)
 (require data-sexp)
 (require model-character)
@@ -34,7 +35,6 @@
 (require state-pick-character)
 (require state-play)
 (require view-faction-picker)
-(require client-store)
 (require client)
 
 ;;; ---------------------------------------------------------------------
