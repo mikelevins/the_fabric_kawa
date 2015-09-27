@@ -39,12 +39,13 @@
                (user (s-expression->object user-sexp)))
           (hash-table-set! (users) username user)
           user)
-        (error (format #f "No such user: ~A" username)))))
+        #!null)))
 
 (define (get-user username::String)
-  (let ((found (hash-table-ref/default (users) username #f)))
-    (or found
-        (load-user username))))
+  (let ((found (hash-table-ref/default (users) username #!null)))
+    (if (eqv? #!null found)
+        (load-user username)
+        found)))
 
 (define (get-users-path)
   (let ((conf-path (get-configuration-path)))
@@ -53,6 +54,6 @@
 ;;; (define $pwdigest (text->digest "foobar" (compute-random-salt)))
 ;;; (define $pw (car $pwdigest))
 ;;; (define $pwsalt (cdr $pwdigest))
-;;; (define $mikel (make-fabric-user username: "mikel" password-hash: $pw password-salt: $pwsalt))
-;;; (save-user $mikel)
-;;; (define $mikel2 (get-user "mikel"))
+;;; (define $fabric (make-fabric-user username: "fabric" password-hash: $pw password-salt: $pwsalt))
+;;; (save-user $fabric)
+;;; (define $fabric2 (get-user "fabric"))

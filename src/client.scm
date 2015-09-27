@@ -22,6 +22,7 @@
 
 (require util-error)
 (require data-assets)
+(require data-config)
 (require state)
 (require state-login)
 (require state-create-character)
@@ -92,7 +93,8 @@
     (*:addProcessor viewport filter-processor)))
 
 (define (init-client app::FabricClient)
-  (begin (*:setEnabled (*:getFlyByCamera app) #f)
+  (begin (load-client-configuration)
+         (*:setEnabled (*:getFlyByCamera app) #f)
          (set! app:screen (Screen app))
          (setup-inputs app)
          (setup-lighting app)
