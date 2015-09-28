@@ -40,11 +40,14 @@
   (let* ((client::FabricClient state:client)
          (screen::Screen client:screen)
          (picker::Window state:picker)
-         (gui-node::Node (*:getGuiNode client)))
+         (gui-node::Node (*:getGuiNode client))
+         (root-node::Node (*:getRootNode client))
+         (character-model::Node state:character-model))
+    (unless (eqv? #!null character-model)
+      (*:detachChild root-node character-model))
     (*:removeElement screen picker)
     (*:removeControl gui-node screen)
-    (set! state:picker-buttons '())
-    (set! state:picker #!null)))
+    (set! state:picker-buttons '())))
 
 (define (%pick-character-state-initialize state::PickCharacterState)
   (let* ((client::FabricClient state:client)
@@ -71,6 +74,8 @@
 
 (define-simple-class PickCharacterState (FabricClientState)
   ;; slots
+  (character::FabricCharacter init: #!null)
+  (character-model::Node init: #!null)
   (picker init: #!null)
   (picker-buttons init: '())
   ;; methods

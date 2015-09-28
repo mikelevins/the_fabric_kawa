@@ -9,6 +9,7 @@
 ;;;; ***********************************************************************
 
 (module-export
+ blank-character-model
  make-character-model
  recolor-character-model!)
 
@@ -23,13 +24,17 @@
 (require model-rect)
 (require model-character)
 (require model-namegen)
+(require view-armor-model)
+(require view-augment-model)
 (require view-character-model)
+(require view-weapon-model)
 (require view-rotatecontrol)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
+(import (class gnu.mapping Symbol))
 (import (class com.jme3.material Material RenderState))
 (import (class com.jme3.math ColorRGBA))
 (import (class com.jme3.renderer.queue RenderQueue))
@@ -64,13 +69,28 @@
     new-geom))
 
 
-;;; (make-character-model)
-;;; ---------------------------------------------------------------------
-;;; constructs the geometric node that serves as the image of a player
-;;; or non-player character avatar in Fabric scenes. the node is
-;;; constructed from 64 translucent, tinted cubes arranged in a cube.
+(define (recolor-character-model! character::FabricCharacter model::Node
+                                  lit-color::ColorRGBA dim-color::ColorRGBA)
+  (let* ((namecube::Node (*:getChild model "NameCube"))
+         (cubes::SafeArrayList (*:getChildren namecube))
+         (name::FabricName character:name)
+         (name-bits (fabric-name->bits name))
+         (glow-color (ColorRGBA 1 1 1 0.6))
+         (cube-count (*:size cubes)))
+    (let loop ((i 0))
+      (if (< i cube-count)
+          (let* ((cube::Geometry (*:get cubes i))
+                 (mat::Material (*:getMaterial cube))
+                 (flag (list-ref name-bits i)))
+            (*:setColor mat "Color" (if flag lit-color dim-color))
+            (*:setColor mat "GlowColor" (if flag glow-color dim-color))
+            (loop (+ i 1)))))))
 
-(define (make-character-model character::FabricCharacter)
+;;; (blank-character-model)
+;;; ---------------------------------------------------------------------
+;;; constructs an unnamed, undecorated character-model
+
+(define (blank-character-model)
   (let ((i 0)
         (indexes '(-1.5 -0.5 0.5 1.5))
         (cubes '())
@@ -97,19 +117,35 @@
     (*:addControl namecube rotator)
     model))
 
-(define (recolor-character-model! character::FabricCharacter model::Node
-                                  lit-color::ColorRGBA dim-color::ColorRGBA)
-  (let* ((namecube::Node (*:getChild model "NameCube"))
-         (cubes::SafeArrayList (*:getChildren namecube))
+
+;;; (make-character-model character)
+;;; ---------------------------------------------------------------------
+;;; assembles a character model that reflects a character's name and
+;;; attributes
+
+(define (make-character-model character::FabricCharacter)
+  (let* ((model (blank-character-model))
          (name::FabricName character:name)
-         (name-bits (fabric-name->bits name))
-         (glow-color (ColorRGBA 1 1 1 0.6))
-         (cube-count (*:size cubes)))
-    (let loop ((i 0))
-      (if (< i cube-count)
-          (let* ((cube::Geometry (*:get cubes i))
-                 (mat::Material (*:getMaterial cube))
-                 (flag (list-ref name-bits i)))
-            (*:setColor mat "Color" (if flag lit-color dim-color))
-            (*:setColor mat "GlowColor" (if flag glow-color dim-color))
-            (loop (+ i 1)))))))
+         (faction::Symbol character:faction)
+         (armor::Symbol character:armor)
+         (augment::Symbol character:augment)
+         (weapon::Symbol character:weapon)
+         (lit-color::ColorRGBA (if (eqv? #!null faction)
+                                   (default-glow-color)
+                                   (faction-lit-color faction)))
+         (dim-color::ColorRGBA (if (eqv? #!null faction)
+                                   (default-character-color)
+                                   (faction-dim-color faction)))
+         (armor-model::Node (make-armor-model armor))
+         (weapon-model::Node (make-weapon-model weapon))
+         (augment-model::Node (make-augment-model augment)))
+    (recolor-character-model! character model lit-color dim-color)
+    (unless (eqv? #!null armor-model)
+      (*:attachChild model armor-model))
+    (unless (eqv? #!null weapon-model)
+      (*:attachChild model weapon-model))
+    (unless (eqv? #!null augment-model)
+      (*:attachChild model augment-model))
+    model))
+
+

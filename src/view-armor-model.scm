@@ -58,7 +58,7 @@
   (let* ((asset-manager (get-asset-manager))
          (sphere-mat::Material (Material asset-manager "Common/MatDefs/Misc/Unshaded.j3md"))
          (sphere-color (ColorRGBA 1 1 0.8 0.07))
-         (sphere-glow-color (ColorRGBA 1 1 0.8 0.7)))
+         (sphere-glow-color (ColorRGBA 1 1 0.8 0.6)))
     (*:setColor sphere-mat "Color" sphere-color)
     (*:setColor sphere-mat "GlowColor" sphere-glow-color)
     (let* ((blendMode RenderState:BlendMode))

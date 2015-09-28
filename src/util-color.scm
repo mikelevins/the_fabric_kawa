@@ -28,7 +28,7 @@
   (make-parameter (ColorRGBA 0.25 0.25 0.25 0.25)))
 
 (define default-glow-color
-  (make-parameter (ColorRGBA 1 1 1 0.5)))
+  (make-parameter (ColorRGBA 0.75 0.75 0.75 0.5)))
 
 
 ;;; (brighten color::ColorRGBA)

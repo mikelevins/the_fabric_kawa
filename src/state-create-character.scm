@@ -96,7 +96,7 @@
          (character-acceptor (make-character-acceptor state screen))
          (char::FabricCharacter (make-fabric-character (blank-fabric-name)))
          (character-nameplate::Label (make-character-nameplate screen))
-         (model::Node (make-character-model char))
+         (model::Node (blank-character-model))
          (root-node::Node (*:getRootNode client)))
     (set! state:faction-nameplate faction-nameplate)
     (set! state:faction-picker faction-picker)

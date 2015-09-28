@@ -24,6 +24,7 @@
 (require model-rect)
 (require model-user)
 (require view-character-picker-group)
+(require view-character-picker-button)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -59,9 +60,11 @@
     (map (lambda (char::FabricCharacter i)
            (let* ((name::FabricName char:name)
                   (namestring::String (fabric-name->string name))
-                  (btn::RadioButton (RadioButton screen (format #f "~A Button" namestring)
-                                                 (compute-character-picker-button-origin screen i)
-                                                 (compute-character-picker-button-size screen))))
+                  (btn::CharacterPickerButton
+                   (CharacterPickerButton state char
+                                          screen (format #f "~A Button" namestring)
+                                          (compute-character-picker-button-origin screen i)
+                                          (compute-character-picker-button-size screen))))
              (*:setLabelText btn namestring)
              (*:setTextAlign btn align:Right)
              (*:setButtonIcon btn 32 32 #!null)
@@ -76,7 +79,7 @@
          (win::Window (Window screen "CharacterPicker"
                               (Vector2f (get-left rect)(get-top rect))
                               (Vector2f (get-width rect)(get-height rect))))
-         (character-group (CharacterPickerGroup screen "CharacterGroup"))
+         (character-group::CharacterPickerGroup (CharacterPickerGroup state screen "CharacterGroup"))
          (picker-buttons (make-character-picker-buttons state screen)))
     (for-each (lambda (pb)
                 (add-character-picker-button! state pb)
