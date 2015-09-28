@@ -10,7 +10,7 @@
 
 (module-export
  PickCharacterState
- )
+ add-character-picker-button!)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -28,7 +28,8 @@
 
 (import (class com.jme3.app.state AbstractAppState AppStateManager))
 (import (class com.jme3.scene Node))
-(import (class tonegod.gui.controls.windows Panel))
+(import (class tonegod.gui.controls.buttons RadioButton))
+(import (class tonegod.gui.controls.windows Window))
 (import (class tonegod.gui.core Screen))
 
 ;;; ---------------------------------------------------------------------
@@ -38,15 +39,17 @@
 (define (%pick-character-state-cleanup state::PickCharacterState)
   (let* ((client::FabricClient state:client)
          (screen::Screen client:screen)
-         (picker::Panel state:picker)
+         (picker::Window state:picker)
          (gui-node::Node (*:getGuiNode client)))
     (*:removeElement screen picker)
-    (*:removeControl gui-node screen)))
+    (*:removeControl gui-node screen)
+    (set! state:picker-buttons '())
+    (set! state:picker #!null)))
 
 (define (%pick-character-state-initialize state::PickCharacterState)
   (let* ((client::FabricClient state:client)
          (screen::Screen client:screen)
-         (picker::Panel (make-character-picker state screen))
+         (picker::Window (make-character-picker state screen))
          (gui-node::Node (*:getGuiNode client)))
     (set! state:picker picker)
     (*:addElement screen picker)
@@ -69,6 +72,7 @@
 (define-simple-class PickCharacterState (FabricClientState)
   ;; slots
   (picker init: #!null)
+  (picker-buttons init: '())
   ;; methods
   ((cleanup) (%pick-character-state-cleanup (this)))
   ((initialize state-manager::AppStateManager app::FabricClient)
@@ -86,4 +90,7 @@
   ((handleActionEvent name key-pressed? tpf)
    (%pick-character-state-handle-action-event (this) name key-pressed? tpf)))
 
+(define (add-character-picker-button! state::PickCharacterState button::RadioButton)
+  (set! state:picker-buttons
+        (cons button state:picker-buttons)))
 

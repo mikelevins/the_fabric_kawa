@@ -16,9 +16,13 @@
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
+(require 'list-lib)
+(require client)
 (require state)
 (require state-pick-character)
+(require model-namegen)
 (require model-rect)
+(require model-user)
 (require view-character-picker-group)
 
 ;;; ---------------------------------------------------------------------
@@ -28,7 +32,7 @@
 (import (class com.jme3.font BitmapFont))
 (import (class com.jme3.math ColorRGBA Vector2f))
 (import (class tonegod.gui.controls.buttons Button RadioButton))
-(import (class tonegod.gui.controls.windows Panel))
+(import (class tonegod.gui.controls.windows Window))
 (import (class tonegod.gui.core Screen))
 
 ;;; ---------------------------------------------------------------------
@@ -39,18 +43,46 @@
   (let* ((screen-height (*:getHeight screen)))
     (make-rectangle 16 16 512 (- screen-height 32))))
 
+(define (compute-character-picker-button-origin screen i)
+  (Vector2f 32 (+ 64 (* i (+ 32 40)))))
+
+(define (compute-character-picker-button-size screen)
+  (Vector2f 16 16))
+
 (define (make-character-picker-buttons state::PickCharacterState screen::Screen)
-  '())
+  (let* ((align BitmapFont:Align)
+         (client::FabricClient state:client)
+         (user::FabricUser client:user)
+         (characters (if (eqv? #!null user)
+                         '()
+                         user:characters)))
+    (map (lambda (char::FabricCharacter i)
+           (let* ((name::FabricName char:name)
+                  (namestring::String (fabric-name->string name))
+                  (btn::RadioButton (RadioButton screen (format #f "~A Button" namestring)
+                                                 (compute-character-picker-button-origin screen i)
+                                                 (compute-character-picker-button-size screen))))
+             (*:setLabelText btn namestring)
+             (*:setTextAlign btn align:Right)
+             (*:setButtonIcon btn 32 32 #!null)
+             btn))
+         characters
+         (iota (length characters)))))
 
 (define (make-character-picker state::PickCharacterState screen::Screen)
   (let* ((rect (compute-character-picker-rect screen))
          (align BitmapFont:Align)
          (valign BitmapFont:VAlign)
-         (win::Panel (Panel screen "CharacterPicker"
-                            (Vector2f (get-left rect)(get-top rect))
-                            (Vector2f (get-width rect)(get-height rect))))
+         (win::Window (Window screen "CharacterPicker"
+                              (Vector2f (get-left rect)(get-top rect))
+                              (Vector2f (get-width rect)(get-height rect))))
          (character-group (CharacterPickerGroup screen "CharacterGroup"))
          (picker-buttons (make-character-picker-buttons state screen)))
-    
+    (for-each (lambda (pb)
+                (add-character-picker-button! state pb)
+                (*:addButton character-group pb)
+                (*:addChild win pb))
+              picker-buttons)
     (set! character-group:state state)
+    (*:setWindowTitle win "Pick a character")
     win))
