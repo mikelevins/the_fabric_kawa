@@ -1,6 +1,6 @@
 ;;;; ***********************************************************************
 ;;;;
-;;;; Name:          view-faction-picker.scm
+;;;; Name:          view-faction-button-group.scm
 ;;;; Project:       The Fabric: a far-future MMORPG
 ;;;; Purpose:       a UI element for picking the faction of a newly-created character
 ;;;; Author:        mikel evins
