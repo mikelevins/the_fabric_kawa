@@ -20,23 +20,38 @@
 (require data-assets)
 (require state)
 (require client)
+(require view-character-picker)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
 (import (class com.jme3.app.state AbstractAppState AppStateManager))
+(import (class com.jme3.scene Node))
+(import (class tonegod.gui.controls.windows Panel))
+(import (class tonegod.gui.core Screen))
 
 ;;; ---------------------------------------------------------------------
 ;;; PickCharacterState
 ;;; ---------------------------------------------------------------------
 
-(define (%pick-character-state-cleanup state::FabricClientState)
-  (format #t "~%PickCharacterState cleaned up"))
+(define (%pick-character-state-cleanup state::PickCharacterState)
+  (let* ((client::FabricClient state:client)
+         (screen::Screen client:screen)
+         (picker::Panel state:picker)
+         (gui-node::Node (*:getGuiNode client)))
+    (*:removeElement screen picker)
+    (*:removeControl gui-node screen)))
 
-(define (%pick-character-state-initialize state::FabricClientState)
-  (format #t "~%PickCharacterState initialized")
-  (set! state:state-initialized? #t))
+(define (%pick-character-state-initialize state::PickCharacterState)
+  (let* ((client::FabricClient state:client)
+         (screen::Screen client:screen)
+         (picker::Panel (make-character-picker state screen))
+         (gui-node::Node (*:getGuiNode client)))
+    (set! state:picker picker)
+    (*:addElement screen picker)
+    (*:addControl gui-node screen)
+    (set! state:state-initialized? #t)))
 
 (define (%pick-character-state-enabled? state::FabricClientState) #t)
 (define (%pick-character-state-initialized? state::FabricClientState) state:state-initialized?)
@@ -53,6 +68,7 @@
 
 (define-simple-class PickCharacterState (FabricClientState)
   ;; slots
+  (picker init: #!null)
   ;; methods
   ((cleanup) (%pick-character-state-cleanup (this)))
   ((initialize state-manager::AppStateManager app::FabricClient)
