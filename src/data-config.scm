@@ -11,6 +11,7 @@
 (module-export
  ClientConfiguration
  ServerConfiguration
+ default-client-configuration
  get-configuration-path
  load-client-configuration
  load-server-configuration
@@ -54,6 +55,13 @@
          (default-username "fabric"))
   (ClientConfiguration version host port default-username))
 
+(define (default-client-configuration)
+  (make-client-configuration
+   version: (fabric-version-string)
+   host: "localhost"
+   port: 6143
+   default-username: "fabric"))
+
 (define (save-client-configuration conf::ClientConfiguration)
   (let* ((conf-path (get-configuration-path))
          (save-path (string-append conf-path "/client.conf"))
@@ -62,11 +70,16 @@
 
 (define (load-client-configuration)
   (let* ((conf-path (get-configuration-path))
-         (load-path (string-append conf-path "/client.conf"))
-         (conf-sexp (read-file load-path))
-         (conf (s-expression->object conf-sexp)))
-    (set! *client-configuration* conf)
-    conf))
+         (load-path (string-append conf-path "/client.conf")))
+    (if (file-exists? load-path)
+        (let* ((conf-sexp (read-file load-path default: #f))
+               (conf (if conf-sexp
+                         (s-expression->object conf-sexp)
+                         (default-client-configuration))))
+          (set! *client-configuration* conf)
+          conf)
+        (begin (set! *client-configuration* (default-client-configuration))
+               *client-configuration*))))
 
 (define-simple-class ServerConfiguration ()
   ;; slots

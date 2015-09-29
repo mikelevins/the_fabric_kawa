@@ -12,8 +12,6 @@
  read-file
  write-sexp)
 
-(require data-sexp)
-
 (import (class gnu.lists Pair))
 (import (class java.io File))
 (import (class java.lang String))
@@ -23,9 +21,12 @@
       (lambda (out)
         (format out "~S" sexp))))
 
-(define (read-file path::String)
+(define (read-file path::String #!key (default #f))
   (call-with-input-file path
       (lambda (in)
-        (read in))))
+        (let ((file-data (read in)))
+          (if (eqv? #!eof file-data)
+              default
+              file-data)))))
 
 
