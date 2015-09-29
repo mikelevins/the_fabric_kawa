@@ -48,9 +48,13 @@
 
 (import (class com.jme3.asset AssetManager))
 (import (class com.jme3.material Material))
-(import (class com.jme3.math Quaternion Vector3f))
-(import (class com.jme3.scene Geometry))
-(import (class com.jme3.scene.shape Sphere))
+(import (class com.jme3.material RenderState))
+(import (class com.jme3.math ColorRGBA Quaternion Vector3f))
+(import (class com.jme3.renderer.queue RenderQueue))
+(import (class com.jme3.scene Geometry Node))
+(import (class com.jme3.scene.shape Box Cylinder Sphere))
+(import (class com.jme3.texture Texture))
+(import (class java.lang Class))
 
 ;;; ---------------------------------------------------------------------
 ;;; helpers
@@ -76,6 +80,23 @@
     (*:setMaterial body-pivot body-mat)
     (*:addControl body-pivot body-rotator)
     body-pivot))
+
+(define (make-rings texture-name radius rotation-rate)
+  (let* ((asset-manager::AssetManager (get-asset-manager))
+         (rings::Cylinder (Cylinder 128 128 radius 20))
+         (rings-mat::Material (Material asset-manager "Common/MatDefs/Misc/Unshaded.j3md"))
+         (rings-pivot::Geometry (Geometry texture-name rings))
+         (rings-rotator::RotateControl (RotateControl 0.0 0.0 rotation-rate))
+         (rotation (Quaternion))
+         (pitch-axis (Vector3f 1 0 0)))
+    (*:fromAngleAxis rotation (* -1 (/ PI 2)) pitch-axis)
+    (*:setLocalRotation rings-pivot rotation)
+    (*:setLocalTranslation rings-pivot 0 0 0)
+    (*:setColor rings-mat "Color" (ColorRGBA 0.5 0.5 0.0 0.5))
+    (*:setColor rings-mat "GlowColor" (ColorRGBA 0.5 0.5 0.0 0.5))
+    (*:setMaterial rings-pivot rings-mat)
+    (*:addControl rings-pivot rings-rotator)
+    rings-pivot))
 
 ;;; ---------------------------------------------------------------------
 ;;; building locations
@@ -124,7 +145,14 @@
   (make-celestial-body "Rhea" 1024 0.025))
 
 (define (make-saturn)
-  (make-celestial-body "Saturn" 4096 0.025))
+  (let* ((body::Geometry (make-celestial-body "Saturn" 3072 0.05))
+         (rings::Geometry (make-rings "Saturn's Rings" 9216 0.05))
+         (pivot::Node (Node "Saturn")))
+    (*:setLocalTranslation body 0 0 0)
+    (*:setLocalTranslation rings 0 0 0)
+    (*:attachChild pivot body)
+    (*:attachChild pivot rings)
+    pivot))
 
 (define (make-sedna)
   (make-celestial-body "Sedna" 1024 0.025))
