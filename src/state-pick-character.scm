@@ -27,6 +27,8 @@
 ;;; ---------------------------------------------------------------------
 
 (import (class com.jme3.app.state AbstractAppState AppStateManager))
+(import (class com.jme3.math Vector3f))
+(import (class com.jme3.renderer Camera))
 (import (class com.jme3.scene Node))
 (import (class tonegod.gui.controls.buttons RadioButton))
 (import (class tonegod.gui.controls.windows Window))
@@ -53,8 +55,11 @@
   (let* ((client::FabricClient state:client)
          (screen::Screen client:screen)
          (picker::Window (make-character-picker state screen))
+         (camera::Camera (*:getCamera client))
          (gui-node::Node (*:getGuiNode client)))
     (set! state:picker picker)
+    (*:setLocation camera (Vector3f 0.0 0.0 20.0))
+    (*:lookAtDirection camera (Vector3f 0.0 0.0 -1.0) (Vector3f 0.0 1.0 0.0))
     (*:addElement screen picker)
     (*:addControl gui-node screen)
     (set! state:state-initialized? #t)))
