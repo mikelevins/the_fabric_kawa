@@ -81,7 +81,7 @@
     (*:addControl body-pivot body-rotator)
     body-pivot))
 
-(define (make-rings texture-name radius rotation-rate)
+(define (make-saturns-rings texture-name radius rotation-rate)
   (let* ((asset-manager::AssetManager (get-asset-manager))
          (rings::Quad (Quad (* 2 radius)(* 2 radius)))
          (rings-mat::Material (Material asset-manager "Common/MatDefs/Misc/Unshaded.j3md"))
@@ -148,7 +148,7 @@
 
 (define (make-saturn)
   (let* ((body::Geometry (make-celestial-body "Saturn" 3072 0.05))
-         (rings::Geometry (make-rings "Saturn's Rings" 12288 0.05))
+         (rings::Geometry (make-saturns-rings "Saturn's Rings" 12288 0.05))
          (pivot::Node (Node "Saturn")))
     (*:attachChild pivot body)
     (*:attachChild pivot rings)
