@@ -66,7 +66,7 @@
          (sky (make-sky-box))
          (root::Node (*:getRootNode client))
          (camera::Camera (*:getCamera client)))
-    (*:setLocation camera (Vector3f 0.0 4000.0 25000.0))
+    (*:setLocation camera (Vector3f 0.0 2000.0 25000.0))
     (*:lookAtDirection camera (Vector3f 0.0 0.0 -1.0) (Vector3f 0.0 1.0 0.0))
     (*:setFrustumFar camera 100000)
     (set! state:location-nameplate location-nameplate)
