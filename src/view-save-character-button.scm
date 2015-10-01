@@ -54,9 +54,9 @@
 
 (define (handle-save-current-character state::CreateCharacterState)
   (let* ((character::FabricCharacter state:character)
-         (client::FabricClient state:client)
+         (client::FabricClient (the-client))
          (screen::Screen client:screen)
-         (user::FabricUser client:user))
+         (user::FabricUser (the-user)))
     (if (eqv? #!null user)
         (alert screen (format #f "No user chosen; you must log in first!"))
         (if (eqv? #!null character)

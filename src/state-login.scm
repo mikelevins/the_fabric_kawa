@@ -56,14 +56,14 @@
    (%login-state-handle-action-event (this) name key-pressed? tpf)))
 
 (define (%login-state-cleanup state::LoginState)
-  (let* ((client::FabricClient state:client)
+  (let* ((client::FabricClient (the-client))
          (screen::Screen client:screen)
          (gui-node::Node (*:getGuiNode client)))
     (*:removeElement screen state:loginbox)
     (*:removeControl gui-node screen)))
 
 (define (%login-state-initialize state::LoginState)
-  (let* ((client::FabricClient state:client)
+  (let* ((client::FabricClient (the-client))
          (screen::Screen client:screen)
          (loginbox::FabricLoginBox (make-loginbox state))
          (gui-node::Node (*:getGuiNode client))

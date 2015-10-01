@@ -43,13 +43,12 @@
 
 (define-simple-class FabricClientState (AbstractAppState)
   ;; slots
-  (client init: #!null)
   (state-initialized? init: #f)
   ;; methods
   ((cleanup) (%state-cleanup (this)))
   ((initialize state-manager::AppStateManager app::FabricClient)
    (begin (invoke-special AbstractAppState (this) 'initialize state-manager app)
-          (set! client app)
+          (the-client app)
           (%state-initialize (this))))
   ((isEnabled) (%state-enabled? (this)))
   ((isInitialized) (%state-initialized? (this)))

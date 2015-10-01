@@ -40,13 +40,13 @@
 ;;; log in to the remote Fabric server in order to play
 
 (define-simple-class FabricLoginBox (LoginBox)
-  (client::FabricClient init: #!null)
   ((*init* screen::Screen uid::String position::Vector2f size::Vector2f)
    (invoke-special LoginBox (this) '*init* screen uid position size))
   ((onButtonLoginPressed evt::MouseButtonEvent toggle::boolean)
    ;;; TODO: make this button log in to the server
    (let* ((username::String (*:getTextUserName (this)))
           (user::FabricUser (get-user username))
+          (client::FabricClient (the-client))
           (screen::Screen client:screen))
      (if (eqv? #!null user)
          (alert screen (format #f "No such user ~A" username))
@@ -54,10 +54,10 @@
                 (pwdigest (text->digest pw (compute-random-salt)))
                 (pwhash (car pwdigest))
                 (pwsalt (cdr pwdigest)))
-           (set! client:user user)
-           (set! client:username username)
-           (set! client:password-hash pwhash)
-           (set! client:password-salt pwsalt)))))
+           (the-user user)
+           (the-username username)
+           (the-password-hash pwhash)
+           (the-password-salt pwsalt)))))
   ((onButtonCancelPressed evt::MouseButtonEvent toggle::boolean)
    (*:stop app)))
 
@@ -76,11 +76,10 @@
                     box-height)))
 
 (define (make-loginbox state::FabricClientState)
-  (let* ((client::FabricClient state:client)
+  (let* ((client::FabricClient (the-client))
          (screen::Screen client:screen)
          (rect (compute-login-box-rect screen))
          (box (FabricLoginBox screen "LoginBox"
                               (Vector2f (get-left rect) (get-top rect))
                               (Vector2f (get-width rect) (get-height rect)))))
-    (set! box:client client)
     box))

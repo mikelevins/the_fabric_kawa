@@ -54,7 +54,7 @@
 ;;; ---------------------------------------------------------------------
 
 (define (%create-character-state-cleanup state::CreateCharacterState)
-  (let* ((client::FabricClient state:client)
+  (let* ((client::FabricClient (the-client))
          (screen::Screen client:screen)
          (gui-node::Node (*:getGuiNode client))
          (camera::Camera (*:getCamera client))
@@ -83,7 +83,7 @@
   #!void)
 
 (define (%create-character-state-initialize state::CreateCharacterState)
-  (let* ((client::FabricClient state:client)
+  (let* ((client::FabricClient (the-client))
          (gui-node::Node (*:getGuiNode client))
          (screen::Screen client:screen)
          (camera::Camera (*:getCamera client))

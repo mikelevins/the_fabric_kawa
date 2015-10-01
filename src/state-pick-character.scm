@@ -39,7 +39,7 @@
 ;;; ---------------------------------------------------------------------
 
 (define (%pick-character-state-cleanup state::PickCharacterState)
-  (let* ((client::FabricClient state:client)
+  (let* ((client::FabricClient (the-client))
          (screen::Screen client:screen)
          (picker::Window state:picker)
          (gui-node::Node (*:getGuiNode client))
@@ -52,7 +52,7 @@
     (set! state:picker-buttons '())))
 
 (define (%pick-character-state-initialize state::PickCharacterState)
-  (let* ((client::FabricClient state:client)
+  (let* ((client::FabricClient (the-client))
          (screen::Screen client:screen)
          (picker::Window (make-character-picker state screen))
          (camera::Camera (*:getCamera client))

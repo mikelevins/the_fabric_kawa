@@ -44,7 +44,7 @@
 ;;; ---------------------------------------------------------------------
 
 (define (%play-state-cleanup state::PlayState)
-  (let* ((client::FabricClient state:client)
+  (let* ((client::FabricClient (the-client))
          (screen::Screen client:screen)
          (gui-node::Node (*:getGuiNode client))
          (root::Node (*:getRootNode client))
@@ -58,8 +58,8 @@
     (*:removeControl gui-node screen)))
 
 (define (%play-state-initialize state::PlayState)
-  (let* ((client::FabricClient state:client)
-         (user::FabricUser client:user))
+  (let* ((client::FabricClient (the-client))
+         (user::FabricUser (the-user)))
     (if (eqv? #!null user)
         (begin (format #t "~%Tried to start the play state without logging in or choosing a character")
                (activate-state (the-client) 'login))
@@ -99,7 +99,6 @@
 
 (define-simple-class PlayState (FabricClientState)
   ;; slots
-  (user::FabricUser init: #!null)
   (character::FabricCharacter init: #!null)
   (character-model::Node init: #!null)
   (location::Spatial init: #!null)

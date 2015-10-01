@@ -18,6 +18,9 @@
  stop-client
  the-client
  the-user
+ the-username
+ the-password-hash
+ the-password-salt
  the-character)
 
 
@@ -65,6 +68,9 @@
 
 (define the-client (make-parameter #!null))
 (define the-user (make-parameter #!null))
+(define the-username (make-parameter #!null))
+(define the-password-hash (make-parameter #!null))
+(define the-password-salt (make-parameter #!null))
 (define the-character (make-parameter #!null))
 
 ;;; ---------------------------------------------------------------------
@@ -75,10 +81,6 @@
   ;; slots
   (app-settings init: #!null)
   (state init: #!null)
-  (user init: #!null)
-  (username init: #!null)
-  (password-hash init: #!null)
-  (password-salt init: #!null)
   (screen init: #!null)
   (speed init: #!null)
   (direction type: Vector3f init-form: (Vector3f))

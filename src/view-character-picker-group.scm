@@ -31,7 +31,7 @@
    (invoke-special RadioButtonGroup (this) '*init* screen uid)
    (set! state a-state))
   ((onSelect index::int button::CharacterPickerButton)
-   (let* ((client::FabricClient state:client)
+   (let* ((client::FabricClient (the-client))
           (character::FabricCharacter button:character)
           (new-character-model::Node (make-character-model character))
           (root-node::Node (*:getRootNode client))
