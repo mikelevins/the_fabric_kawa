@@ -15,7 +15,12 @@
  make-client
  setup-inputs
  start-client
- stop-client)
+ stop-client
+ the-client
+ the-user
+ the-character)
+
+
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -55,10 +60,16 @@
 (import (class tonegod.gui.core Screen))
 
 ;;; ---------------------------------------------------------------------
-;;; FabricClient
+;;; Client parameters
 ;;; ---------------------------------------------------------------------
 
-(define-variable $client #!null)
+(define the-client (make-parameter #!null))
+(define the-user (make-parameter #!null))
+(define the-character (make-parameter #!null))
+
+;;; ---------------------------------------------------------------------
+;;; FabricClient
+;;; ---------------------------------------------------------------------
 
 (define-simple-class FabricClient (SimpleApplication AnalogListener ActionListener)
   ;; slots
@@ -127,11 +138,11 @@
   client)
 
 (define (start-client)
-  (set! $client (make-client))
-  (*:start (as FabricClient $client)))
+  (the-client (make-client))
+  (*:start (as FabricClient (the-client))))
 
 (define (stop-client)
-  (*:stop (as FabricClient $client)))
+  (*:stop (as FabricClient (the-client))))
 
 ;;; ---------------------------------------------------------------------
 ;;; state changes
