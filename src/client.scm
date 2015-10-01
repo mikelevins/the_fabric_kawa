@@ -16,12 +16,7 @@
  setup-inputs
  start-client
  stop-client
- the-client
- the-user
- the-username
- the-password-hash
- the-password-salt
- the-character)
+ the-client)
 
 
 
@@ -67,11 +62,6 @@
 ;;; ---------------------------------------------------------------------
 
 (define the-client (make-parameter #!null))
-(define the-user (make-parameter #!null))
-(define the-username (make-parameter #!null))
-(define the-password-hash (make-parameter #!null))
-(define the-password-salt (make-parameter #!null))
-(define the-character (make-parameter #!null))
 
 ;;; ---------------------------------------------------------------------
 ;;; FabricClient
@@ -79,6 +69,11 @@
 
 (define-simple-class FabricClient (SimpleApplication AnalogListener ActionListener)
   ;; slots
+  (user::FabricUser init: #!null)
+  (username::String init: #!null)
+  (password-hash::String init: #!null)
+  (password-salt::byte[] init: #!null)
+  (character::FabricCharacter init: #!null)
   (app-settings init: #!null)
   (state init: #!null)
   (screen init: #!null)
@@ -164,6 +159,8 @@
                              (*:attach mgr new-state)
                              (*:initialize new-state mgr client)))))
 
+
+
 (define (activate-state client::FabricClient state-name::Symbol . initargs)
   (let ((transition-state (TransitionState)))
     (case state-name
@@ -171,18 +168,27 @@
                             (%activate-supplied-state client transition-state)
                             (Thread:sleep 500)
                             (%activate-supplied-state client new-state)))
-      ((create-character)(let* ((new-state (CreateCharacterState)))
-                           (%activate-supplied-state client transition-state)
-                           (Thread:sleep 500)
-                           (%activate-supplied-state client new-state)))
-      ((pick-character)(let* ((new-state (PickCharacterState)))
-                         (%activate-supplied-state client transition-state)
-                         (Thread:sleep 500)
-                         (%activate-supplied-state client new-state)))
-      ((play)(let* ((new-state (apply make-play-state initargs)))
-               (%activate-supplied-state client transition-state)
-               (Thread:sleep 500)
-               (%activate-supplied-state client new-state)))
+      ((create-character)(if (eqv? #!null client:user)
+                             (begin (format #t "~%Tried to start the character creator without logging in")
+                                    (activate-state (the-client) 'login))
+                             (let* ((new-state (CreateCharacterState)))
+                               (%activate-supplied-state client transition-state)
+                               (Thread:sleep 500)
+                               (%activate-supplied-state client new-state))))
+      ((pick-character)(if (eqv? #!null client:user)
+                           (begin (format #t "~%Tried to start the character picker without logging in")
+                                  (activate-state (the-client) 'login))
+                           (let* ((new-state (PickCharacterState)))
+                             (%activate-supplied-state client transition-state)
+                             (Thread:sleep 500)
+                             (%activate-supplied-state client new-state))))
+      ((play)(if (eqv? #!null client:character)
+                 (begin (format #t "~%Tried to start the play state without choosing a character")
+                        (activate-state (the-client) 'login))
+                 (let* ((new-state (apply make-play-state initargs)))
+                   (%activate-supplied-state client transition-state)
+                   (Thread:sleep 500)
+                   (%activate-supplied-state client new-state))))
       ((transition)(%activate-supplied-state client transition-state))
       (else (error "Unknown state name: " state-name)))))
 

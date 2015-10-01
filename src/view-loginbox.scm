@@ -19,6 +19,7 @@
 
 (require util-error)
 (require util-crypt)
+(require data-users)
 (require model-rect)
 (require state)
 (require client)
@@ -54,10 +55,10 @@
                 (pwdigest (text->digest pw (compute-random-salt)))
                 (pwhash (car pwdigest))
                 (pwsalt (cdr pwdigest)))
-           (the-user user)
-           (the-username username)
-           (the-password-hash pwhash)
-           (the-password-salt pwsalt)))))
+           (set! client:user user)
+           (set! client:username username)
+           (set! client:password-hash pwhash)
+           (set! client:password-salt pwsalt)))))
   ((onButtonCancelPressed evt::MouseButtonEvent toggle::boolean)
    (*:stop app)))
 

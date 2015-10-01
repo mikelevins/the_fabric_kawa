@@ -16,6 +16,7 @@
 
 (require data-config)
 (require data-file)
+(require client)
 
 (import (srfi :69 basic-hash-tables))
 (import (class java.lang String))
@@ -35,9 +36,11 @@
   (let* ((users-path (get-users-path))
          (load-path (string-append users-path "/" username ".sexp")))
     (if (file-exists? load-path)
-        (let* ((user-sexp (read-file load-path))
+        (let* ((client::FabricClient (the-client))
+               (user-sexp (read-file load-path))
                (user (s-expression->object user-sexp)))
           (hash-table-set! (users) username user)
+          (set! client:user user)
           user)
         #!null)))
 

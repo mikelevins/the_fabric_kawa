@@ -21,6 +21,7 @@
 (require util-error)
 (require data-assets)
 (require model-character)
+(require model-namegen)
 (require view-faction-nameplate)
 (require view-faction-picker)
 (require view-armor-model)
