@@ -42,8 +42,9 @@
 
 (define-simple-class SaveCharacterButton (Button)
   (state::CreateCharacterState init-form: #!null)
-  ((*init* screen::Screen uid::String position::Vector2f size::Vector2f)
-   (invoke-special Button (this) '*init* screen uid position size))
+  ((*init* a-state::CreateCharacterState screen::Screen uid::String position::Vector2f size::Vector2f)
+   (invoke-special Button (this) '*init* screen uid position size)
+   (set! state a-state))
   ((onButtonMouseLeftDown evt::MouseButtonEvent toggled::boolean) #!void)
   ((onButtonMouseRightDown evt::MouseButtonEvent toggled::boolean) #!void)
   ((onButtonMouseLeftUp evt::MouseButtonEvent toggled::boolean)(handle-save-current-character state))
@@ -82,10 +83,9 @@
          (button-height 36)
          (button-left 40)
          (button-top 40)
-         (button::SaveCharacterButton (SaveCharacterButton screen "SaveCharacterButton"
-                                                        (Vector2f button-left button-top)
-                                                        (Vector2f button-width button-height))))
+         (button::SaveCharacterButton (SaveCharacterButton state screen "SaveCharacterButton"
+                                                           (Vector2f button-left button-top)
+                                                           (Vector2f button-width button-height))))
     (*:setText button "Save Character")
-    (set! button:state state)
     button))
 

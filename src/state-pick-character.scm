@@ -21,6 +21,7 @@
 (require state)
 (require client)
 (require view-character-picker)
+(require view-character-pick-acceptor)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -55,6 +56,7 @@
   (let* ((client::FabricClient (the-client))
          (screen::Screen client:screen)
          (picker::Window (make-character-picker state screen))
+         (acceptor::Window (make-character-pick-acceptor state screen))
          (camera::Camera (*:getCamera client))
          (gui-node::Node (*:getGuiNode client)))
     (set! state:picker picker)

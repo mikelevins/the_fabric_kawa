@@ -36,6 +36,7 @@
           (new-character-model::Node (make-character-model character))
           (root-node::Node (*:getRootNode client))
           (old-character-model::Node state:character-model))
+     (set! state:character character)
      (unless (eqv? #!null old-character-model)
        (*:enqueue client (runnable (lambda () (*:detachChild root-node old-character-model)))))
      (unless (eqv? #!null new-character-model)

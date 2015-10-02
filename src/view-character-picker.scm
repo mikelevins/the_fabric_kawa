@@ -25,6 +25,7 @@
 (require model-user)
 (require view-character-picker-group)
 (require view-character-picker-button)
+(require view-character-pick-acceptor)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -80,12 +81,14 @@
                               (Vector2f (get-left rect)(get-top rect))
                               (Vector2f (get-width rect)(get-height rect))))
          (character-group::CharacterPickerGroup (CharacterPickerGroup state screen "CharacterGroup"))
-         (picker-buttons (make-character-picker-buttons state screen)))
+         (picker-buttons (make-character-picker-buttons state screen))
+         (acceptor (make-character-pick-acceptor state screen)))
     (for-each (lambda (pb)
                 (add-character-picker-button! state pb)
                 (*:addButton character-group pb)
                 (*:addChild win pb))
               picker-buttons)
     (set! character-group:state state)
+    (*:addChild win acceptor)
     (*:setWindowTitle win "Pick a character")
     win))
