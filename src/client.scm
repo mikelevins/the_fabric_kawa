@@ -27,6 +27,8 @@
 (require util-error)
 (require data-assets)
 (require data-config)
+(require data-users)
+(require model-user)
 (require state)
 (require state-login)
 (require state-create-character)
@@ -136,7 +138,12 @@
 
 (define (start-client)
   (the-client (make-client))
-  (*:start (as FabricClient (the-client))))
+  (let* ((user::FabricUser (get-user "fabric"))
+         (characters user:characters)
+         (character::FabricCharacter (car characters))
+         (client::FabricClient (the-client)))
+    (set! client:character character)
+    (*:start (as FabricClient (the-client)))))
 
 (define (stop-client)
   (*:stop (as FabricClient (the-client))))
