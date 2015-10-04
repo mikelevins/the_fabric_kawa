@@ -21,5 +21,6 @@
 
 (define-simple-class ActivatePickCharacterMessage (FabricMessage) (@Serializable)
   (name type: String init: "ActivatePickCharacterMessage")
-  (user type: FabricUser init: #!null))
+  (user type: FabricUser init: #!null)
+  ((*init*) #!void))
 

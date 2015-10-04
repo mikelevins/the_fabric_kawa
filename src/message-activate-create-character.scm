@@ -21,5 +21,6 @@
 
 (define-simple-class ActivateCreateCharacterMessage (FabricMessage) (@Serializable)
   (name type: String init: "ActivateCreateCharacterMessage")
-  (user type: FabricUser init: #!null))
+  (user type: FabricUser init: #!null)
+  ((*init*) #!void))
 

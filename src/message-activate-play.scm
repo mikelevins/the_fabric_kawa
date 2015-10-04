@@ -23,5 +23,6 @@
   (name type: String init: "ActivatePlayMessage")
   (user type: FabricUser init: #!null)
   (character type: FabricCharacter init: #!null)
-  (location type: String init: #!null))
+  (location type: String init: #!null)
+  ((*init*) #!void))
 

@@ -18,5 +18,6 @@
 (import (class java.lang String))
 
 (define-simple-class ActivateLoginMessage (FabricMessage) (@Serializable)
-  (name type: String init: "ActivateLoginMessage"))
+  (name type: String init: "ActivateLoginMessage")
+  ((*init*) #!void))
 

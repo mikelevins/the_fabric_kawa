@@ -17,4 +17,5 @@
 
 (define-simple-class FabricMessage (AbstractMessage) (@Serializable)
   (name type: String init: "FabricMessage")
+  ((*init*) #!void)
   ((toString) (format #f "[~A]" name)))
