@@ -18,12 +18,11 @@
  stop-client
  the-client)
 
-
-
 ;;; ---------------------------------------------------------------------
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
+(require parameters)
 (require util-error)
 (require data-assets)
 (require data-config)
@@ -60,14 +59,10 @@
 (import (class tonegod.gui.core Screen))
 
 ;;; ---------------------------------------------------------------------
-;;; Client parameters
+;;; FabricClient
 ;;; ---------------------------------------------------------------------
 
 (define the-client (make-parameter #!null))
-
-;;; ---------------------------------------------------------------------
-;;; FabricClient
-;;; ---------------------------------------------------------------------
 
 (define-simple-class FabricClient (SimpleApplication AnalogListener ActionListener)
   ;; slots

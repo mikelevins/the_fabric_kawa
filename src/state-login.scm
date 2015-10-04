@@ -67,7 +67,7 @@
          (screen::Screen client:screen)
          (loginbox::FabricLoginBox (make-loginbox state))
          (gui-node::Node (*:getGuiNode client))
-         (conf::ClientConfiguration *client-configuration*)
+         (conf::ClientConfiguration (client-configuration))
          (username::String conf:default-username))
     (*:setTextUserName loginbox username)
     (set! state:loginbox loginbox)

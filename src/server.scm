@@ -33,8 +33,6 @@
 ;;; FabricServer
 ;;; ---------------------------------------------------------------------
 
-(define-variable $server #!null)
-
 (define-simple-class FabricServer (SimpleApplication)
   ;; init
   ((simpleInitApp) (init-server (this))))

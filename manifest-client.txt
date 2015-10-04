@@ -1,4 +1,4 @@
-Main-Class: Fabric
+Main-Class: TheFabric
 Class-Path: .
 
 

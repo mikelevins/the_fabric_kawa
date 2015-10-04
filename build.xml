@@ -25,12 +25,11 @@
     <pathelement location="../the_fabric_libraries/stack-alloc-3.0.0.jar"/>
     <pathelement location="../the_fabric_libraries/vecmath-3.0.0.jar"/>
     <pathelement location="../the_fabric_libraries/xmlpull-xpp3-3.0.0.jar"/>
-    <pathelement location="../the_fabric_libraries/kawa-2.0.jar"/>
+    <pathelement location="../the_fabric_libraries/kawa-2.0.1.jar"/>
     <pathelement location="../the_fabric_libraries/tonegod.gui.jar"/>
     <pathelement location="./src"/>
     <pathelement location="."/>
   </path>
-
 
   <!--client -->
   <target name="client" depends="compile-client">
@@ -38,7 +37,7 @@
          basedir="./src"
          includes="**/*.class"
          manifest="manifest-client.txt">
-      <zipfileset src="../the_fabric_libraries/kawa-2.0.jar"/>
+      <zipfileset src="../the_fabric_libraries/kawa-2.0.1.jar"/>
       <zipfileset src="../the_fabric_libraries/j-ogg-oggd-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/j-ogg-vorbisd-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/jME3-blender.jar"/>
@@ -72,7 +71,7 @@
          basedir="./src"
          includes="**/*.class"
          manifest="manifest-server.txt">
-      <zipfileset src="../the_fabric_libraries/kawa-2.0.jar"/>
+      <zipfileset src="../the_fabric_libraries/kawa-2.0.1.jar"/>
       <zipfileset src="../the_fabric_libraries/j-ogg-oggd-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/j-ogg-vorbisd-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/jME3-core-3.0.0.jar"/>
@@ -97,7 +96,7 @@
          basedir="./src"
          includes="**/*.class"
          manifest="manifest-server.txt">
-      <zipfileset src="../the_fabric_libraries/kawa-2.0.jar"/>
+      <zipfileset src="../the_fabric_libraries/kawa-2.0.1.jar"/>
       <zipfileset src="../the_fabric_libraries/j-ogg-oggd-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/j-ogg-vorbisd-3.0.0.jar"/>
       <zipfileset src="../the_fabric_libraries/jME3-blender.jar"/>
@@ -126,120 +125,15 @@
           fork="true">
       <classpath refid="library.class.path"/>
       <arg line="-C
-                 Fabric.scm
-                 client-main.scm
-                 client-state-create-character.scm
-                 client-state-login.scm
-                 client-state-pick-character.scm
-                 client-state-play.scm
-                 client-state-transit.scm
-                 client-state-workshop.scm
-                 client-states.scm
-                 data-assets.scm
-                 data-names.scm
-                 data-nodes.scm
-                 init-config-local.scm
+                 parameters.scm
+                 message.scm
+                 data-sexp.scm
                  model-character.scm
-                 model-id.scm
-                 model-namegen.scm
-                 model-rect.scm
-                 model-statepool.scm
-                 syntax-classes.scm
-                 syntax-time.scm
-                 util-bytes.scm
-                 util-crypt.scm
-                 util-error.scm
-                 util-functions.scm
-                 util-java.scm
-                 util-lists.scm
-                 util-random.scm
-                 util-sort.scm
-                 version.scm
-                 view-accept-character.scm
-                 view-actionbar.scm
-                 view-armors-button-group.scm
-                 view-augments-button-group.scm
-                 view-celestial-body.scm
-                 view-character-nameplate.scm
-                 view-chatbox.scm
-                 view-faction-button-group.scm
-                 view-faction-nameplate.scm
-                 view-loginbox.scm
-                 view-name-selector.scm
-                 view-node-nameplate.scm
-                 view-pickarmor.scm
-                 view-pickaugment.scm
-                 view-pickcharacter.scm
-                 view-pickfaction.scm
-                 view-pickname.scm
-                 view-pickweapon.scm
-                 view-random-name-button.scm
-                 view-rotatecontrol.scm
-                 view-skybox.scm
-                 view-weapons-button-group.scm"/>
-    </java>
-  </target>
-
-  <!--compile client -->
-  <target name="compile-lisp-client-classes">
-    <java taskname="kawa"
-          classname="kawa.repl"
-          failOnError="true"
-          dir="./src"
-          fork="true">
-      <classpath refid="library.class.path"/>
-      <arg line="-C
-                 Fabric.scm
-                 client-main.scm
-                 client-state-create-character.scm
-                 client-state-login.scm
-                 client-state-pick-character.scm
-                 client-state-play.scm
-                 client-state-transit.scm
-                 client-state-workshop.scm
-                 client-states.scm
-                 data-assets.scm
-                 data-names.scm
-                 data-nodes.scm
-                 init-config-local.scm
-                 model-character.scm
-                 model-id.scm
-                 model-namegen.scm
-                 model-rect.scm
-                 model-statepool.scm
-                 syntax-classes.scm
-                 syntax-time.scm
-                 util-bytes.scm
-                 util-crypt.scm
-                 util-error.scm
-                 util-functions.scm
-                 util-java.scm
-                 util-lists.scm
-                 util-random.scm
-                 util-sort.scm
-                 version.scm
-                 view-accept-character.scm
-                 view-actionbar.scm
-                 view-armors-button-group.scm
-                 view-augments-button-group.scm
-                 view-celestial-body.scm
-                 view-character-nameplate.scm
-                 view-chatbox.scm
-                 view-faction-button-group.scm
-                 view-faction-nameplate.scm
-                 view-loginbox.scm
-                 view-name-selector.scm
-                 view-node-nameplate.scm
-                 view-pickarmor.scm
-                 view-pickaugment.scm
-                 view-pickcharacter.scm
-                 view-pickfaction.scm
-                 view-pickname.scm
-                 view-pickweapon.scm
-                 view-random-name-button.scm
-                 view-rotatecontrol.scm
-                 view-skybox.scm
-                 view-weapons-button-group.scm"/>
+                 model-user.scm
+                 state.scm
+                 client.scm
+                 TheFabric.scm
+                 "/>
     </java>
   </target>
 

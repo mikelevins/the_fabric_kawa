@@ -37,6 +37,7 @@
 (require state-play)
 (require view-alert)
 (require view-faction-picker)
+(require message)
 (require client)
 
 ;;; ---------------------------------------------------------------------

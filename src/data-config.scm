@@ -11,29 +11,32 @@
 (module-export
  ClientConfiguration
  ServerConfiguration
+ client-configuration
  default-client-configuration
+ default-configuration-path
  get-configuration-path
  load-client-configuration
  load-server-configuration
  make-client-configuration
  make-server-configuration
  save-client-configuration
- save-server-configuration)
+ save-server-configuration
+ server-configuration)
 
 (require version)
 (require data-sexp)
 (require data-file)
 
-(define-variable +default-configuration-path+
+(define (default-configuration-path)
   "/usr/local/fabric/conf")
 
-(define-variable *client-configuration* #f)
-(define-variable *server-configuration* #f)
+(define client-configuration (make-parameter '()))
+(define server-configuration (make-parameter '()))
 
 (define (get-configuration-path)
   (let ((env-val (get-environment-variable "FABRIC_CONFIGURATION_PATH")))
     (or env-val
-        +default-configuration-path+)))
+        (default-configuration-path))))
 
 (define-simple-class ClientConfiguration ()
   ;; slots
@@ -76,10 +79,10 @@
                (conf (if conf-sexp
                          (s-expression->object conf-sexp)
                          (default-client-configuration))))
-          (set! *client-configuration* conf)
+          (client-configuration conf)
           conf)
-        (begin (set! *client-configuration* (default-client-configuration))
-               *client-configuration*))))
+        (begin (client-configuration (default-client-configuration))
+               (client-configuration)))))
 
 (define-simple-class ServerConfiguration ()
   ;; slots
@@ -106,7 +109,7 @@
          (load-path (string-append conf-path "/server.conf"))
          (conf-sexp (read-file load-path))
          (conf (s-expression->object conf-sexp)))
-    (set! *server-configuration* conf)
+    (server-configuration conf)
     conf))
 
 ;;; (define $client-conf (make-client-configuration))
