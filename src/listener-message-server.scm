@@ -11,7 +11,7 @@
 (module-export
  FabricServerMessageListener)
 
-(import (class com.jme3.network AbstractMessage HostedConnection Message MessageListener Server))
+(import (class com.jme3.network HostedConnection Message MessageListener))
 (import (class java.lang String))
 
 (define-simple-class FabricServerMessageListener (MessageListener)

@@ -34,6 +34,7 @@
 (require state-pick-character)
 (require state-play)
 (require state-transition)
+(require listener-message-client)
 (require view-alert)
 
 ;;; ---------------------------------------------------------------------
@@ -78,6 +79,7 @@
   (direction type: Vector3f init-form: (Vector3f))
   (left-button? init-form: #f)
   (right-button? init-form: #f)
+  (message-listener::FabricClientMessageListener init: #!null)
   ;; accessors
   ((getKeyInput) keyInput)
   ((getCameraDirection) (*:getDirection cam))
@@ -101,6 +103,7 @@
 
 (define (init-client app::FabricClient)
   (begin (load-client-configuration)
+         (set! app:message-listener (FabricClientMessageListener))
          (*:setEnabled (*:getFlyByCamera app) #f)
          (set! app:screen (Screen app))
          (setup-inputs app)
