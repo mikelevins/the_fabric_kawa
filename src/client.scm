@@ -12,6 +12,7 @@
  FabricClient
  activate-state
  alert
+ client-handle-message
  make-client
  setup-inputs
  start-client
@@ -22,7 +23,6 @@
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
-(require parameters)
 (require util-error)
 (require data-assets)
 (require data-config)
@@ -35,6 +35,12 @@
 (require state-play)
 (require state-transition)
 (require listener-message-client)
+(require message)
+(require message-activate-pick-character)
+(require message-activate-create-character)
+(require message-activate-pick-location)
+(require message-activate-login)
+(require message-activate-play)
 (require view-alert)
 
 ;;; ---------------------------------------------------------------------
@@ -50,6 +56,7 @@
 (import (class com.jme3.input.controls ActionListener AnalogListener
           KeyTrigger MouseAxisTrigger MouseButtonTrigger))
 (import (class com.jme3.math Vector3f))
+(import (class com.jme3.network Client Message))
 (import (class com.jme3.post FilterPostProcessor))
 (import (class com.jme3.post.filters BloomFilter))
 (import (class com.jme3.renderer ViewPort))
@@ -103,7 +110,7 @@
 
 (define (init-client app::FabricClient)
   (begin (load-client-configuration)
-         (set! app:message-listener (FabricClientMessageListener))
+         (set! app:message-listener (FabricClientMessageListener app))
          (*:setEnabled (*:getFlyByCamera app) #f)
          (set! app:screen (Screen app))
          (setup-inputs app)
@@ -224,6 +231,24 @@
                    "MouseDragRight" "MouseDragLeft" "MouseDragUp" "MouseDragDown")))
 
 ;;; ---------------------------------------------------------------------
-;;; UI
+;;; message handling
 ;;; ---------------------------------------------------------------------
 
+(define (client-handle-message client::FabricClient source::Client message::Message)
+  (cond
+   ((ActivateLoginMessage? message)(activate-state client 'login))
+   ((ActivatePickCharacterMessage? message)
+    (let ((the-message::ActivatePickCharacterMessage message))
+      (activate-state client 'pick-character user: the-message:user)))
+   ((ActivateCreateCharacterMessage? message)
+    (let ((the-message::ActivateCreateCharacterMessage message))
+      (activate-state client 'create-character user: the-message:user)))
+   ((ActivatePickLocationMessage? message)
+    (let ((the-message::ActivatePickLocationMessage message))
+      (activate-state client 'pick-location user: the-message:user)))
+   ((ActivatePlayMessage? message)
+    (let ((the-message::ActivatePlayMessage message))
+      (activate-state client 'play user: the-message:user
+                      character: the-message:character location: the-message:location)))
+   (else (warn "~%received an unrecognized message: ~S from source: ~S"
+               message source))))

@@ -21,6 +21,6 @@
 
 (define-simple-class ActivatePickLocationMessage (FabricMessage) (@Serializable)
   (name type: String init: "ActivatePickLocationMessage")
-  (location type: String init: #!null)
+  (user type: FabricUser init: #!null)
   ((*init*) #!void))
 

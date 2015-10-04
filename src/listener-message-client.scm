@@ -11,10 +11,14 @@
 (module-export
  FabricClientMessageListener)
 
+(require client)
+
 (import (class com.jme3.network AbstractMessage Client Message MessageListener))
 (import (class java.lang String))
 
 (define-simple-class FabricClientMessageListener (MessageListener)
+  (client::FabricClient init: #!null)
+  ((*init* a-client::FabricClient)(set! client a-client))
   ((messageReceived source::Client message::Message)
-   (format #t "~%Client ~S received a message: ~S" source message)))
+   (client-handle-message client source message)))
 
