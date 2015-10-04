@@ -12,6 +12,7 @@
  make-save-character-button
  SaveCharacterButton)
 
+(require 'list-lib)
 (require util-error)
 (require util-color)
 (require util-random)

@@ -125,7 +125,6 @@
           fork="true">
       <classpath refid="library.class.path"/>
       <arg line="-C
-                 parameters.scm
                  message.scm
                  data-sexp.scm
                  model-character.scm

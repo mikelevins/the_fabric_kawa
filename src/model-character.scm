@@ -26,6 +26,7 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
+(import (class com.jme3.network.serializing Serializable))
 (import (class com.jme3.material Material))
 (import (class com.jme3.math ColorRGBA))
 (import (class com.jme3.scene Geometry Node Spatial))
@@ -36,7 +37,7 @@
 ;;; FabricCharacter
 ;;; ---------------------------------------------------------------------
 
-(define-simple-class FabricCharacter ()
+(define-simple-class FabricCharacter ()(@Serializable)
   (name::FabricName init: #!null)
   (faction init-form: #!null)
   (weapon init-form: #!null)

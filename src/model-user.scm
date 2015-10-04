@@ -27,13 +27,14 @@
 ;;; Java imports
 ;;; ---------------------------------------------------------------------
 
+(import (class com.jme3.network.serializing Serializable))
 (import (class java.lang String))
 
 ;;; ---------------------------------------------------------------------
 ;;; FabricCharacter
 ;;; ---------------------------------------------------------------------
 
-(define-simple-class FabricUser ()
+(define-simple-class FabricUser ()(@Serializable)
   (username::String init: #!null)
   (password-hash::String init: #!null)
   (password-salt::byte[] init: #!null)

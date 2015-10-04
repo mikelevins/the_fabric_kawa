@@ -24,6 +24,7 @@
  server-configuration)
 
 (require version)
+(require data-config)
 (require data-sexp)
 (require data-file)
 

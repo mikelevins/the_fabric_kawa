@@ -38,6 +38,11 @@
 (require view-alert)
 (require view-faction-picker)
 (require message)
+(require message-activate-login)
+(require message-activate-create-character)
+(require message-activate-pick-character)
+(require message-activate-pick-location)
+(require message-activate-play)
 (require client)
 
 ;;; ---------------------------------------------------------------------
