@@ -37,6 +37,8 @@
 (require state-play)
 (require view-alert)
 (require view-faction-picker)
+(require listener-message-client)
+(require listener-message-server)
 (require message)
 (require message-activate-login)
 (require message-activate-create-character)
