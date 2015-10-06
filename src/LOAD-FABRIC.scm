@@ -46,6 +46,7 @@
 (require message-activate-pick-character)
 (require message-activate-pick-location)
 (require message-activate-play)
+(require view-client-error)
 (require client)
 
 ;;; ---------------------------------------------------------------------
