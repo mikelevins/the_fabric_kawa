@@ -14,6 +14,7 @@
 
 (require message)
 (require model-user)
+(require model-character)
 
 (import (class com.jme3.network AbstractMessage))
 (import (class com.jme3.network.serializing Serializable))
@@ -22,5 +23,6 @@
 (define-simple-class ActivatePickLocationMessage (FabricMessage) (@Serializable)
   (name type: String init: "ActivatePickLocationMessage")
   (user type: FabricUser init: #!null)
+  (character type: FabricCharacter init: #!null)
   ((*init*) #!void))
 

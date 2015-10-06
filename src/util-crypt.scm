@@ -20,8 +20,8 @@
 ;;; including cryptographic hashing for passwords and other sensitive
 ;;; data.
 
-(require "util-lists.scm")
-(require "util-random.scm")
+(require util-lists)
+(require util-random)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
