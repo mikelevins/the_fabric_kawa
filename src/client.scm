@@ -157,52 +157,36 @@
 ;;; state changes
 ;;; ---------------------------------------------------------------------
 
-(define (%enqueue-state-change client::FabricClient change-proc)
-  (*:enqueue client (runnable change-proc)))
+(define (%enqueue-state-change client::FabricClient new-state::FabricClientState)
+  (let*((mgr::AppStateManager (*:getStateManager client))
+        (old-state::FabricClientState client:state))
+    (*:enqueue client
+               (runnable (lambda ()
+                           (unless (eqv? #!null old-state)
+                             (*:detach mgr old-state)
+                             (*:cleanup old-state))
+                           (*:attach mgr new-state)
+                           (*:initialize new-state mgr client))))))
+
+(define (%activate-transition-state client::FabricClient)
+  (let ((transition-state::TransitionState (TransitionState)))
+    (%enqueue-state-change client transition-state)))
 
 (define (%activate-supplied-state client::FabricClient new-state::FabricClientState)
-  (let* ((mgr::AppStateManager (*:getStateManager client))
-         (current-state client:state))
-    (%enqueue-state-change client
-                           (lambda ()
-                             (unless (eqv? #!null current-state)
-                               (*:detach mgr current-state)
-                               (*:cleanup (as FabricClientState current-state)))
-                             (*:attach mgr new-state)
-                             (*:initialize new-state mgr client)))))
-
-
+  (%activate-transition-state client)
+  (Thread:sleep 500)
+  (%enqueue-state-change client new-state))
 
 (define (activate-state client::FabricClient state-name::Symbol . initargs)
-  (let ((transition-state (TransitionState)))
-    (case state-name
-      ((login)(LoginState)(let* ((new-state (LoginState)))
-                            (%activate-supplied-state client transition-state)
-                            (Thread:sleep 500)
-                            (%activate-supplied-state client new-state)))
-      ((create-character)(if (eqv? #!null client:user)
-                             (begin (format #t "~%Tried to start the character creator without logging in")
-                                    (activate-state (the-client) 'login))
-                             (let* ((new-state (CreateCharacterState)))
-                               (%activate-supplied-state client transition-state)
-                               (Thread:sleep 500)
-                               (%activate-supplied-state client new-state))))
-      ((pick-character)(if (eqv? #!null client:user)
-                           (begin (format #t "~%Tried to start the character picker without logging in")
-                                  (activate-state (the-client) 'login))
-                           (let* ((new-state (PickCharacterState)))
-                             (%activate-supplied-state client transition-state)
-                             (Thread:sleep 500)
-                             (%activate-supplied-state client new-state))))
-      ((play)(if (eqv? #!null client:character)
-                 (begin (format #t "~%Tried to start the play state without choosing a character")
-                        (activate-state (the-client) 'login))
-                 (let* ((new-state (apply make-play-state initargs)))
-                   (%activate-supplied-state client transition-state)
-                   (Thread:sleep 500)
-                   (%activate-supplied-state client new-state))))
-      ((transition)(%activate-supplied-state client transition-state))
-      (else (error "Unknown state name: " state-name)))))
+  (if (eqv? state-name 'transition)
+      (%activate-transition-state client)
+      (let ((new-state (case state-name
+                         ((login)(LoginState))
+                         ((create-character)(CreateCharacterState))
+                         ((pick-character)(PickCharacterState))
+                         ((play)(apply make-play-state initargs))
+                         (else (error "Unknown state name: " state-name)))))
+        (%activate-supplied-state client new-state))))
 
 
 ;;; ---------------------------------------------------------------------
