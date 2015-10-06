@@ -9,6 +9,7 @@
 ;;;; ***********************************************************************
 
 (module-export
+ client-error
  client-warn
  compute-client-warning-rect
  compute-error-cancel-button-rect
@@ -19,6 +20,8 @@
 
 (require client)
 (require model-rect)
+(require view-error-okay-button)
+(require view-error-cancel-button)
 (require view-warning-button)
 
 (import (class com.jme3.font BitmapFont))
@@ -86,17 +89,51 @@
 (define (compute-error-okay-button-rect rect)
   (let* ((width 128)
          (height 40)
-         (left (- (/ (get-width rect) 2)
-                  (/ width 2)))
+         (left (- (get-width rect)
+                  (+ width 16)))
          (top (- (get-height rect)
                  (+ height 16))))
     (make-rectangle left top width height)))
 
 (define (compute-error-cancel-button-rect rect)
-  (let* ((width 128)
+  (let* ((okay-rect (compute-error-okay-button-rect rect))
+         (width 128)
          (height 40)
-         (left (- (/ (get-width rect) 2)
-                  (/ width 2)))
+         (left (- (get-left okay-rect) width 16))
          (top (- (get-height rect)
                  (+ height 16))))
     (make-rectangle left top width height)))
+
+;;; (client-error error-message okay-message cancel-message okay-proc cancel-proc)
+;;; ---------------------------------------------------------------------
+;;; okay proc and cancel proc are called like this:
+;;; (okay-proc client screen panel)
+;;; (cancel-proc client screen panel)
+
+(define (client-error error-message::String okay-message::String cancel-message::String
+                      okay-proc cancel-proc)
+  (let* ((client::FabricClient (the-client))
+         (screen::Screen client:screen)
+         (align BitmapFont:Align)
+         (panel-rect (compute-client-warning-rect screen))
+         (panel (Panel screen "ErrorDialog"
+                       (Vector2f (get-left panel-rect)(get-top panel-rect))
+                       (Vector2f (get-width panel-rect)(get-height panel-rect))))
+         (okay-button-rect (compute-error-okay-button-rect panel-rect))
+         (okay-button (ErrorOkayButton client screen panel okay-message okay-proc
+                                       (Vector2f (get-left okay-button-rect)(get-top okay-button-rect))
+                                       (Vector2f (get-width okay-button-rect)(get-height okay-button-rect))))
+         (cancel-button-rect (compute-error-cancel-button-rect panel-rect))
+         (cancel-button (ErrorCancelButton client screen panel cancel-message cancel-proc
+                                       (Vector2f (get-left cancel-button-rect)(get-top cancel-button-rect))
+                                       (Vector2f (get-width cancel-button-rect)(get-height cancel-button-rect))))
+         (label-rect (compute-warning-label-rect panel-rect))
+         (label (Label screen "ErrorLabel"
+                       (Vector2f (get-left label-rect)(get-top label-rect))
+                       (Vector2f (get-width label-rect)(get-height label-rect)))))
+    (*:setText label error-message)
+    (*:setTextAlign label align:Center)
+    (*:addChild panel label)
+    (*:addChild panel okay-button)
+    (*:addChild panel cancel-button)
+    (*:enqueue client (runnable (lambda ()(*:addElement screen panel))))))

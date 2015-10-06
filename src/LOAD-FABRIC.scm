@@ -63,3 +63,13 @@
 ;;; (activate-transition-state (the-client))
 ;;; (stop-client)
 
+;;; (client-warn "This is a test warning")
+
+#|
+(client-error "This is a test error"
+              "keep going"
+              "back to login"
+              (lambda (client screen panel) #!void)
+              (lambda (client screen panel) (activate-login-state client)))
+|#
+
