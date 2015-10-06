@@ -110,8 +110,9 @@
 ;;; (okay-proc client screen panel)
 ;;; (cancel-proc client screen panel)
 
-(define (client-error error-message::String okay-message::String cancel-message::String
-                      okay-proc cancel-proc)
+(define (client-error error-message::String
+                      okay-message::String okay-proc
+                      cancel-message::String cancel-proc)
   (let* ((client::FabricClient (the-client))
          (screen::Screen client:screen)
          (align BitmapFont:Align)
