@@ -13,6 +13,7 @@
  activate-create-character-state
  activate-login-state
  activate-pick-character-state
+ activate-pick-location-state
  activate-play-state
  activate-transition-state
  alert
@@ -36,6 +37,7 @@
 (require state-login)
 (require state-create-character)
 (require state-pick-character)
+(require state-pick-location)
 (require state-play)
 (require state-transition)
 (require listener-message-client)
@@ -217,6 +219,10 @@
   (let ((new-state::PickCharacterState (PickCharacterState user)))
     (%activate-supplied-state client new-state)))
 
+(define (activate-pick-location-state client::FabricClient user::FabricUser character::FabricCharacter)
+  (let ((new-state::PickLocationState (PickLocationState user character)))
+    (%activate-supplied-state client new-state)))
+
 (define (activate-play-state client::FabricClient user::FabricUser
                              character::FabricCharacter location::String)
   (let ((new-state::PlayState (PlayState user character location)))
@@ -235,11 +241,9 @@
    ((ActivateCreateCharacterMessage? message)
     (let ((the-message::ActivateCreateCharacterMessage message))
       (activate-create-character-state client the-message:user)))
-   #|((ActivatePickLocationMessage? message)
+   ((ActivatePickLocationMessage? message)
     (let ((the-message::ActivatePickLocationMessage message))
-      (activate-state client 'pick-location
-                      user: the-message:user
-                      character: the-message:character)))|#
+      (activate-pick-location-state client the-message:user the-message:character)))
    ((ActivatePlayMessage? message)
     (let ((the-message::ActivatePlayMessage message))
       (activate-play-state client the-message:user the-message:character the-message:location)))
