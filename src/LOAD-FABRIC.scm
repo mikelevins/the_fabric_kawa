@@ -56,8 +56,8 @@
 ;;; (activate-login-state (the-client))
 ;;; (activate-create-character-state (the-client)(default-user))
 ;;; (activate-pick-character-state (the-client)(default-user))
-;;; (activate-pick-location-state (the-client)(default-user)(default-character (default-user)))
-;;; (activate-play-state (the-client)(default-user)(default-character (default-user)) "Neptune")
+;;; NOT YET IMPLEMENTED (activate-pick-location-state (the-client)(default-user)(default-character))
+;;; (activate-play-state (the-client)(default-user)(default-character) "Neptune")
 ;;; (activate-transition-state (the-client))
 ;;; (stop-client)
 

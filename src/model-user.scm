@@ -10,6 +10,7 @@
 
 (module-export
  FabricUser
+ default-user
  make-fabric-user
  user-add-character!)
 
@@ -54,3 +55,11 @@
         (set! user:characters
               (cons character user:characters))
         character)))
+
+;;; a default user account used for testing purposes
+(define (default-user)
+  (let ((user::FabricUser (make-fabric-user username: "fabric"
+                                            password-hash: "rAjb1fZLVAsp6TajTiC5PMeUs2M="
+                                            password-salt: (byte[] -62 -53 39 -116 -1 -14 -46 21))))
+    (set! user:characters (list (default-character)(default-character)(default-character)))
+    user))

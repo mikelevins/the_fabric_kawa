@@ -10,6 +10,7 @@
 
 (module-export
  FabricCharacter
+ default-character
  fabric-character-namestring
  make-fabric-character
  set-fabric-name!)
@@ -54,3 +55,13 @@
 
 (define (set-fabric-name! fchar::FabricCharacter fname::FabricName)
   (set! fchar:name fname))
+
+;;; a default character used for testing purposes
+(define (default-character)
+  (let* ((fname::FabricName (generate-fabric-name))
+         (character (make-fabric-character fname)))
+    (set! character:faction (choose-any '(caretakers abjurers rogues)))
+    (set! character:armor (choose-any '(absorb regenerate power energy)))
+    (set! character:weapon (choose-any '(cannon impulse malware bots)))
+    (set! character:augment (choose-any '(force optics portals turrets)))
+    character))
