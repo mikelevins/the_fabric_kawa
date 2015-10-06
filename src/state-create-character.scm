@@ -18,7 +18,6 @@
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
-(require util-error)
 (require data-assets)
 (require model-character)
 (require model-namegen)

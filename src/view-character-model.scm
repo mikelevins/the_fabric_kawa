@@ -17,7 +17,6 @@
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
-(require util-error)
 (require util-color)
 (require client)
 (require data-assets)

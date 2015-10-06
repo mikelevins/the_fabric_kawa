@@ -16,7 +16,6 @@
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
-(require util-error)
 (require data-assets)
 (require data-config)
 (require state)

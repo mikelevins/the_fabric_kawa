@@ -17,7 +17,6 @@
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
-(require util-error)
 (require util-crypt)
 (require data-users)
 (require model-rect)

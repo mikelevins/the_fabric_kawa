@@ -32,7 +32,6 @@
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
-(require util-error)
 (require data-assets)
 (require data-config)
 (require data-users)
@@ -311,5 +310,5 @@
    ((ActivatePlayMessage? message)
     (let ((the-message::ActivatePlayMessage message))
       (activate-play-state client the-message:user the-message:character the-message:location)))
-   (else (warn "~%received an unrecognized message: ~S from source: ~S"
-               message source))))
+   (else (client-warn (format #f "~%received an unrecognized message: ~S from source: ~S"
+                              message source)))))

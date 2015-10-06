@@ -16,7 +16,6 @@
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
-(require util-error)
 (require data-assets)
 (require view-skybox)
 (require state)

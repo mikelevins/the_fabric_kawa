@@ -19,7 +19,6 @@
 ;;; ---------------------------------------------------------------------
 
 (require 'list-lib)
-(require util-error)
 (require util-lists)
 (require model-character)
 (require model-namegen)

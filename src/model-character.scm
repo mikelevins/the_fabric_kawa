@@ -19,7 +19,6 @@
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
-(require util-error)
 (require util-lists)
 (require model-namegen)
 
