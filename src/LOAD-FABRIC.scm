@@ -53,10 +53,11 @@
 ;;; evaluate these expressions to create and run the Fabric client
 
 ;;; (start-client)
-;;; (activate-state (the-client) 'login)
-;;; (activate-state (the-client) 'create-character)
-;;; (activate-state (the-client) 'pick-character)
-;;; (activate-state (the-client) 'play location: "Neptune")
-;;; (activate-state (the-client) 'transition)
+;;; (activate-login-state (the-client))
+;;; (activate-create-character-state (the-client)(default-user))
+;;; (activate-pick-character-state (the-client)(default-user))
+;;; (activate-pick-location-state (the-client)(default-user)(default-character (default-user)))
+;;; (activate-play-state (the-client)(default-user)(default-character (default-user)) "Neptune")
+;;; (activate-transition-state (the-client))
 ;;; (stop-client)
 

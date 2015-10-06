@@ -10,7 +10,6 @@
 
 (module-export
  PlayState
- make-play-state
  set-location-name!)
 
 ;;; ---------------------------------------------------------------------
@@ -96,14 +95,19 @@
 
 (define-simple-class PlayState (FabricClientState)
   ;; slots
+  (user::FabricUser init: #!null)
   (character::FabricCharacter init: #!null)
+  (location-name::String init: #!null)
   (character-model::Node init: #!null)
   (location::Spatial init: #!null)
-  (location-name::String init: #!null)
   (location-nameplate::Label init: #!null)
   (sky::Geometry init: #!null)
   (action-bar::Panel init: #!null)
   ;; methods
+  ((*init* a-user::FabricUser a-character::FabricCharacter a-location-name::String)
+   (set! user a-user)
+   (set! character a-character)
+   (set! location-name a-location-name))
   ((cleanup) (%play-state-cleanup (this)))
   ((initialize state-manager::AppStateManager app::FabricClient)
    (begin (invoke-special FabricClientState (this) 'initialize state-manager app)
@@ -123,10 +127,3 @@
 (define (set-location-name! state::PlayState name::String)
   (set! state:location-name name)
   (*:setText state:location-nameplate name))
-
-(define (make-play-state #!key (location "The Sun"))
-  (let* ((loc (make-location location))
-         (state::PlayState (PlayState)))
-    (set! state:location loc)
-    (set! state:location-name location)
-    state))

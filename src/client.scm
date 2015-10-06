@@ -10,7 +10,11 @@
 
 (module-export
  FabricClient
- activate-state
+ activate-create-character-state
+ activate-login-state
+ activate-pick-character-state
+ activate-play-state
+ activate-transition-state
  alert
  client-handle-message
  make-client
@@ -115,7 +119,7 @@
          (set! app:screen (Screen app))
          (setup-inputs app)
          (setup-lighting app)
-         (activate-state app 'transition)
+         (activate-transition-state app)
          #!void))
 
 (define (make-client #!key
@@ -154,42 +158,6 @@
   (*:stop (as FabricClient (the-client))))
 
 ;;; ---------------------------------------------------------------------
-;;; state changes
-;;; ---------------------------------------------------------------------
-
-(define (%enqueue-state-change client::FabricClient new-state::FabricClientState)
-  (let*((mgr::AppStateManager (*:getStateManager client))
-        (old-state::FabricClientState client:state))
-    (*:enqueue client
-               (runnable (lambda ()
-                           (unless (eqv? #!null old-state)
-                             (*:detach mgr old-state)
-                             (*:cleanup old-state))
-                           (*:attach mgr new-state)
-                           (*:initialize new-state mgr client))))))
-
-(define (%activate-transition-state client::FabricClient)
-  (let ((transition-state::TransitionState (TransitionState)))
-    (%enqueue-state-change client transition-state)))
-
-(define (%activate-supplied-state client::FabricClient new-state::FabricClientState)
-  (%activate-transition-state client)
-  (Thread:sleep 500)
-  (%enqueue-state-change client new-state))
-
-(define (activate-state client::FabricClient state-name::Symbol . initargs)
-  (if (eqv? state-name 'transition)
-      (%activate-transition-state client)
-      (let ((new-state (case state-name
-                         ((login)(LoginState))
-                         ((create-character)(CreateCharacterState))
-                         ((pick-character)(PickCharacterState))
-                         ((play)(apply make-play-state initargs))
-                         (else (error "Unknown state name: " state-name)))))
-        (%activate-supplied-state client new-state))))
-
-
-;;; ---------------------------------------------------------------------
 ;;; input handling
 ;;; ---------------------------------------------------------------------
 
@@ -215,24 +183,65 @@
                    "MouseDragRight" "MouseDragLeft" "MouseDragUp" "MouseDragDown")))
 
 ;;; ---------------------------------------------------------------------
+;;; state changes
+;;; ---------------------------------------------------------------------
+
+(define (%enqueue-state-change client::FabricClient new-state::FabricClientState)
+  (let*((mgr::AppStateManager (*:getStateManager client))
+        (old-state::FabricClientState client:state))
+    (*:enqueue client
+               (runnable (lambda ()
+                           (unless (eqv? #!null old-state)
+                             (*:detach mgr old-state)
+                             (*:cleanup old-state))
+                           (*:attach mgr new-state)
+                           (*:initialize new-state mgr client))))))
+
+(define (activate-transition-state client::FabricClient)
+  (let ((transition-state::TransitionState (TransitionState)))
+    (%enqueue-state-change client transition-state)))
+
+(define (%activate-supplied-state client::FabricClient new-state::FabricClientState)
+  (activate-transition-state client)
+  (Thread:sleep 500)
+  (%enqueue-state-change client new-state))
+
+(define (activate-login-state client::FabricClient)
+  (%activate-supplied-state client (LoginState)))
+
+(define (activate-create-character-state client::FabricClient user::FabricUser)
+  (let ((new-state::CreateCharacterState (CreateCharacterState user)))
+    (%activate-supplied-state client new-state)))
+
+(define (activate-pick-character-state client::FabricClient user::FabricUser)
+  (let ((new-state::PickCharacterState (PickCharacterState user)))
+    (%activate-supplied-state client new-state)))
+
+(define (activate-play-state client::FabricClient user::FabricUser
+                             character::FabricCharacter location::String)
+  (let ((new-state::PlayState (PlayState user character location)))
+    (%activate-supplied-state client new-state)))
+
+;;; ---------------------------------------------------------------------
 ;;; message handling
 ;;; ---------------------------------------------------------------------
 
 (define (client-handle-message client::FabricClient source::Client message::Message)
   (cond
-   ((ActivateLoginMessage? message)(activate-state client 'login))
+   ((ActivateLoginMessage? message)(activate-login-state client))
    ((ActivatePickCharacterMessage? message)
     (let ((the-message::ActivatePickCharacterMessage message))
-      (activate-state client 'pick-character user: the-message:user)))
+      (activate-pick-character-state client the-message:user)))
    ((ActivateCreateCharacterMessage? message)
     (let ((the-message::ActivateCreateCharacterMessage message))
-      (activate-state client 'create-character user: the-message:user)))
-   ((ActivatePickLocationMessage? message)
+      (activate-create-character-state client the-message:user)))
+   #|((ActivatePickLocationMessage? message)
     (let ((the-message::ActivatePickLocationMessage message))
-      (activate-state client 'pick-location user: the-message:user)))
+      (activate-state client 'pick-location
+                      user: the-message:user
+                      character: the-message:character)))|#
    ((ActivatePlayMessage? message)
     (let ((the-message::ActivatePlayMessage message))
-      (activate-state client 'play user: the-message:user
-                      character: the-message:character location: the-message:location)))
+      (activate-play-state client the-message:user the-message:character the-message:location)))
    (else (warn "~%received an unrecognized message: ~S from source: ~S"
                message source))))

@@ -141,6 +141,7 @@
 
 (define-simple-class CreateCharacterState (FabricClientState)
   ;; slots
+  (user init: #!null)
   (character init: #!null)
   (character-model init: #!null)
   (character-armor init: #!null)
@@ -161,6 +162,7 @@
   (character-acceptor init: #!null)
   (character-nameplate init: #!null)
   ;; methods
+  ((*init* a-user::FabricUser)(set! user a-user))
   ((cleanup) (%create-character-state-cleanup (this)))
   ((initialize state-manager::AppStateManager app::FabricClient)
    (begin (invoke-special FabricClientState (this) 'initialize state-manager app)

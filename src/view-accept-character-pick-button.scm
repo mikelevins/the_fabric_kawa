@@ -50,9 +50,9 @@
          (user::FabricUser client:user))
     (if (eqv? #!null user)
         (begin (format #t "No user chosen; you must log in first!")
-               (activate-state client 'login))
+               (activate-login-state client))
         (begin (set! client:character state:character)
-               (activate-state client 'play "Jupiter")))))
+               (activate-play-state client user character "Jupiter")))))
 
 (define (make-accept-character-pick-button  screen::Screen state::PickCharacterState)
   (let* ((button-width 144)
