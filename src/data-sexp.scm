@@ -10,6 +10,7 @@
 
 (module-export
  define-serialization
+ get-serializer
  object->s-expression
  s-expression->object)
 
@@ -44,10 +45,16 @@
     (hash-table-set! (serializer-table) class-name writer)
     (hash-table-set! (deserializer-table) class-name reader)))
 
+(define (get-serializer obj)
+  (let* ((the-class (*:getClass obj))
+         (class-name (*:getName the-class))
+         (serializer (hash-table-ref/default (serializer-table) class-name #f)))
+    (or serializer #f)))
+
 (define (object->s-expression obj)
   (let* ((the-class (*:getClass obj))
          (class-name (*:getName the-class))
-         (writer (hash-table-ref/default (serializer-table) class-name #f)))
+         (writer (get-serializer obj)))
     (if writer
         (writer obj)
         (error (format #f "No serializer defined for ~S" class-name)))))

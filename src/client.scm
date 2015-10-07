@@ -19,6 +19,7 @@
  client-handle-message
  make-client
  setup-inputs
+ show
  start-client
  stop-client
  the-client)
@@ -250,3 +251,14 @@
       (activate-play-state client the-message:user the-message:character the-message:location)))
    (else (client-warn (format #f "~%received an unrecognized message: ~S from source: ~S"
                               message source)))))
+
+
+;;; ---------------------------------------------------------------------
+;;; debugging tools
+;;; ---------------------------------------------------------------------
+
+(define (show thing)
+  (let ((serializer (get-serializer thing)))
+    (if serializer
+        (format #t "~A" (serializer thing))
+        (format #t "~S" thing))))
