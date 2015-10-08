@@ -81,19 +81,25 @@
     (*:addControl body-pivot body-rotator)
     body-pivot))
 
-(define (make-uranus-rings texture-name radius rotation-rate)
+(define (make-planetary-ring name texture-name radius rotation-rate #!key (bottom #f))
   (let* ((asset-manager::AssetManager (get-asset-manager))
          (rings::Quad (Quad (* 2 radius)(* 2 radius)))
          (rings-mat::Material (Material asset-manager "Common/MatDefs/Misc/Unshaded.j3md"))
-         (rings-texture (*:loadTexture asset-manager "Textures/uranus_ring_alpha.png"))
+         (rings-texture (*:loadTexture asset-manager (format #f "Textures/~A" texture-name)))
          (bucket RenderQueue:Bucket)
          (blendMode RenderState:BlendMode)
-         (rings-pivot::Geometry (Geometry texture-name rings))
+         (rings-pivot::Geometry (Geometry name rings))
          (rotation (Quaternion))
-         (pitch-axis (Vector3f 1 0 0)))
-    (*:fromAngleAxis rotation (* -1 (/ PI 2)) pitch-axis)
+         (pitch-axis (Vector3f 1 0 0))
+         (rotation-radians (if bottom
+                               (* 1 (/ PI 2))
+                               (* -1 (/ PI 2)))))
+    (*:fromAngleAxis rotation rotation-radians pitch-axis)
     (*:setLocalRotation rings-pivot rotation)
-    (*:setLocalTranslation rings-pivot (* -1 radius) 0.0 radius)
+    (*:setLocalTranslation rings-pivot
+                           (* -1 radius)
+                           0.0
+                           (if bottom (* -1 radius) radius))
     (*:setTexture rings-mat "ColorMap" rings-texture)
     (*:setBlendMode (*:getAdditionalRenderState rings-mat) blendMode:Alpha)
     (*:setQueueBucket rings-pivot bucket:Transparent)
@@ -177,7 +183,7 @@
 
 (define (make-neptune)
   (let* ((body::Geometry (make-celestial-body "Neptune" 3072 0.08))
-         (rings::Geometry (make-neptunes-rings "Neptune's Rings" 12288 0.05))
+         (rings::Geometry (make-neptunes-rings "Neptune's Ring" 12288 0.05))
          (pivot::Node (Node "Neptune")))
     (*:attachChild pivot body)
     (*:attachChild pivot rings)
@@ -214,10 +220,14 @@
 
 (define (make-uranus)
   (let* ((body::Geometry (make-celestial-body "Uranus" 3072 0.08))
-         (rings::Geometry (make-uranus-rings "Uranus' Rings" 12288 0.05))
+         (ring-top::Geometry (make-planetary-ring "Uranus' Ring Top"
+                                                  "neptune_ring_alpha.png" 12288 0.05))
+         (ring-bottom::Geometry (make-planetary-ring "Uranus' Ring Bottom"
+                                                     "neptune_ring_alpha.png" 12288 0.05 bottom: #t))
          (pivot::Node (Node "Uranus")))
     (*:attachChild pivot body)
-    (*:attachChild pivot rings)
+    (*:attachChild pivot ring-top)
+    (*:attachChild pivot ring-bottom)
     pivot))
 
 (define (make-venus)
