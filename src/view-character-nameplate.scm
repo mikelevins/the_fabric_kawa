@@ -19,6 +19,7 @@
 (require model-rect)
 (require view-name-generator)
 (require view-armor-picker)
+(require view-action-bar)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -35,14 +36,10 @@
 ;;; ---------------------------------------------------------------------
 
 (define (make-character-nameplate screen::Screen)
-  (let* ((armor-picker-rect (compute-armor-picker-rect screen))
-         (name-picker-rect (compute-name-generator-rect screen))
+  (let* ((rect (compute-action-bar-rect screen))
          (Align BitmapFont:Align)
-         (nameplate-left (+ (get-left armor-picker-rect)
-                            (get-width armor-picker-rect)
-                            16))
-         (nameplate-top (- (get-top name-picker-rect)
-                           (+ 40 16)))
+         (nameplate-left (get-left rect))
+         (nameplate-top (+ (get-height rect) 16))
          (character-nameplate (Label screen "CharacterNameplate"
                                      (Vector2f nameplate-left nameplate-top)
                                      (Vector2f 1200 40))))

@@ -19,10 +19,12 @@
 (require view-skybox)
 (require state)
 (require client)
+(require model-namegen)
 (require view-location)
 (require view-location-nameplate)
 (require view-action-bar)
 (require view-character-model)
+(require view-character-nameplate)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -60,6 +62,10 @@
   (let* ((client::FabricClient (the-client))
          (user::FabricUser client:current-user)
          (character::FabricCharacter (current-character))
+         (character-name (if (eqv? #!null character)
+                             ""
+                             (fabric-name->string character:name)))
+         (character-nameplate::Label (make-character-nameplate client:screen))
          (model::Node (make-character-model character))
          (gui-node::Node (*:getGuiNode client))
          (screen::Screen client:screen)
@@ -78,15 +84,17 @@
     (set! state:action-bar action-bar)
     (set! state:sky sky)
     (set! state:character-model model)
+    (set! state:character-nameplate character-nameplate)
     (*:attachChild root state:sky)
     (*:attachChild root state:location)
     (*:attachChild root state:location-nameplate)
     (*:attachChild root state:character-model)
+    (*:attachChild root state:character-nameplate)
     (*:addElement screen action-bar)
     (*:addControl gui-node screen)
     (*:setText location-nameplate (current-location))
+    (*:setText character-nameplate character-name)
     (set! state:state-initialized? #t)))
-
 
 (define (%play-state-enabled? state::FabricClientState) #t)
 (define (%play-state-initialized? state::FabricClientState) state:state-initialized?)
@@ -104,6 +112,7 @@
 (define-simple-class PlayState (FabricClientState)
   ;; slots
   (character-model::Node init: #!null)
+  (character-nameplate::Label init: #!null)
   (location::Spatial init: #!null)
   (location-nameplate::Label init: #!null)
   (sky::Geometry init: #!null)
