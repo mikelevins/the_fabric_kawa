@@ -106,44 +106,6 @@
     (*:setMaterial rings-pivot rings-mat)
     rings-pivot))
 
-(define (make-neptunes-rings texture-name radius rotation-rate)
-  (let* ((asset-manager::AssetManager (get-asset-manager))
-         (rings::Quad (Quad (* 2 radius)(* 2 radius)))
-         (rings-mat::Material (Material asset-manager "Common/MatDefs/Misc/Unshaded.j3md"))
-         (rings-texture (*:loadTexture asset-manager "Textures/neptune_ring_alpha.png"))
-         (bucket RenderQueue:Bucket)
-         (blendMode RenderState:BlendMode)
-         (rings-pivot::Geometry (Geometry texture-name rings))
-         (rotation (Quaternion))
-         (pitch-axis (Vector3f 1 0 0)))
-    (*:fromAngleAxis rotation (* -1 (/ PI 2)) pitch-axis)
-    (*:setLocalRotation rings-pivot rotation)
-    (*:setLocalTranslation rings-pivot (* -1 radius) 0.0 radius)
-    (*:setTexture rings-mat "ColorMap" rings-texture)
-    (*:setBlendMode (*:getAdditionalRenderState rings-mat) blendMode:Alpha)
-    (*:setQueueBucket rings-pivot bucket:Transparent)
-    (*:setMaterial rings-pivot rings-mat)
-    rings-pivot))
-
-(define (make-saturns-rings texture-name radius rotation-rate)
-  (let* ((asset-manager::AssetManager (get-asset-manager))
-         (rings::Quad (Quad (* 2 radius)(* 2 radius)))
-         (rings-mat::Material (Material asset-manager "Common/MatDefs/Misc/Unshaded.j3md"))
-         (rings-texture (*:loadTexture asset-manager "Textures/saturn_ring_alpha.png"))
-         (bucket RenderQueue:Bucket)
-         (blendMode RenderState:BlendMode)
-         (rings-pivot::Geometry (Geometry texture-name rings))
-         (rotation (Quaternion))
-         (pitch-axis (Vector3f 1 0 0)))
-    (*:fromAngleAxis rotation (* -1 (/ PI 2)) pitch-axis)
-    (*:setLocalRotation rings-pivot rotation)
-    (*:setLocalTranslation rings-pivot (* -1 radius) 0.0 radius)
-    (*:setTexture rings-mat "ColorMap" rings-texture)
-    (*:setBlendMode (*:getAdditionalRenderState rings-mat) blendMode:Alpha)
-    (*:setQueueBucket rings-pivot bucket:Transparent)
-    (*:setMaterial rings-pivot rings-mat)
-    rings-pivot))
-
 ;;; ---------------------------------------------------------------------
 ;;; building locations
 ;;; ---------------------------------------------------------------------
@@ -183,10 +145,14 @@
 
 (define (make-neptune)
   (let* ((body::Geometry (make-celestial-body "Neptune" 3072 0.08))
-         (rings::Geometry (make-neptunes-rings "Neptune's Ring" 12288 0.05))
+         (ring-top::Geometry (make-planetary-ring "Neptune's Ring Top"
+                                                  "neptune_ring_alpha.png" 12288 0.05))
+         (ring-bottom::Geometry (make-planetary-ring "Neptune's Ring Bottom"
+                                                     "neptune_ring_alpha.png" 12288 0.05 bottom: #t))
          (pivot::Node (Node "Neptune")))
     (*:attachChild pivot body)
-    (*:attachChild pivot rings)
+    (*:attachChild pivot ring-top)
+    (*:attachChild pivot ring-bottom)
     pivot))
 
 (define (make-pluto)
@@ -197,10 +163,14 @@
 
 (define (make-saturn)
   (let* ((body::Geometry (make-celestial-body "Saturn" 3072 0.05))
-         (rings::Geometry (make-saturns-rings "Saturn's Rings" 12288 0.05))
+         (ring-top::Geometry (make-planetary-ring "Saturn's Ring Top"
+                                                  "saturn_ring_alpha.png" 12288 0.05))
+         (ring-bottom::Geometry (make-planetary-ring "Saturn's Ring Bottom"
+                                                     "saturn_ring_alpha.png" 12288 0.05 bottom: #t))
          (pivot::Node (Node "Saturn")))
     (*:attachChild pivot body)
-    (*:attachChild pivot rings)
+    (*:attachChild pivot ring-top)
+    (*:attachChild pivot ring-bottom)
     pivot))
 
 (define (make-sedna)
@@ -221,9 +191,9 @@
 (define (make-uranus)
   (let* ((body::Geometry (make-celestial-body "Uranus" 3072 0.08))
          (ring-top::Geometry (make-planetary-ring "Uranus' Ring Top"
-                                                  "neptune_ring_alpha.png" 12288 0.05))
+                                                  "uranus_ring_alpha.png" 12288 0.05))
          (ring-bottom::Geometry (make-planetary-ring "Uranus' Ring Bottom"
-                                                     "neptune_ring_alpha.png" 12288 0.05 bottom: #t))
+                                                     "uranus_ring_alpha.png" 12288 0.05 bottom: #t))
          (pivot::Node (Node "Uranus")))
     (*:attachChild pivot body)
     (*:attachChild pivot ring-top)
