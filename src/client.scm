@@ -29,6 +29,7 @@
  show
  start-client
  stop-client
+ teleport
  the-client)
 
 ;;; ---------------------------------------------------------------------
@@ -311,3 +312,7 @@
 
 (define (stop-client)
   (*:stop (as FabricClient (the-client))))
+
+(define (teleport location::String)
+  (set-current-location! location)
+  (activate-play-state))
