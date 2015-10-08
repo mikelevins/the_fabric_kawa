@@ -165,7 +165,7 @@
          (volvox (make-volvox))
          (volvox-centroid (Node "Volvox Centroid"))
          (volvox-rotator (RotateControl 0.0 0.0 0.15))
-         (volvox-centroid-rotator (RotateControl 0.0 0.0 0.015)))
+         (volvox-centroid-rotator (RotateControl 0.0 0.0 0.0015)))
     (*:setLocalTranslation volvox-centroid 0.0 0.0 0.0)
     (*:setLocalTranslation volvox 8000 0.0 0.0)
     (*:addControl volvox-centroid volvox-centroid-rotator)
