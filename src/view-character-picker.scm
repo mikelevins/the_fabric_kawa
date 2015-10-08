@@ -54,7 +54,7 @@
 (define (make-character-picker-buttons state::PickCharacterState screen::Screen)
   (let* ((align BitmapFont:Align)
          (client::FabricClient (the-client))
-         (user::FabricUser client:user)
+         (user::FabricUser client:current-user)
          (characters (if (eqv? #!null user)
                          '()
                          user:characters)))

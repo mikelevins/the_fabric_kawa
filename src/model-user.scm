@@ -10,7 +10,6 @@
 
 (module-export
  FabricUser
- default-user
  make-fabric-user
  user-add-character!)
 
@@ -40,11 +39,14 @@
   (password-salt::byte[] init: #!null)
   (characters init: '()))
 
-(define (make-fabric-user #!key (username #!null) (password-hash #!null) (password-salt #!null))
+(define (make-fabric-user #!key (username #!null)
+                          (password-hash #!null) (password-salt #!null)
+                          (characters '()))
   (let ((user::FabricUser (FabricUser)))
     (set! user:username username)
     (set! user:password-hash password-hash)
     (set! user:password-salt password-salt)
+    (set! user:characters characters)
     user))
 
 (define (user-add-character! user::FabricUser character::FabricCharacter)
@@ -54,11 +56,3 @@
         (set! user:characters
               (cons character user:characters))
         character)))
-
-;;; a default user account used for testing purposes
-(define (default-user)
-  (let ((user::FabricUser (make-fabric-user username: "fabric"
-                                            password-hash: "rAjb1fZLVAsp6TajTiC5PMeUs2M="
-                                            password-salt: (byte[] -62 -53 39 -116 -1 -14 -46 21))))
-    (set! user:characters (list (default-character)(default-character)(default-character)))
-    user))

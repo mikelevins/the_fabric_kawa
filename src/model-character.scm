@@ -10,9 +10,9 @@
 
 (module-export
  FabricCharacter
- default-character
  fabric-character-namestring
  make-fabric-character
+ make-random-character
  set-fabric-name!)
 
 ;;; ---------------------------------------------------------------------
@@ -55,8 +55,8 @@
 (define (set-fabric-name! fchar::FabricCharacter fname::FabricName)
   (set! fchar:name fname))
 
-;;; a default character used for testing purposes
-(define (default-character)
+;;; a random character used for testing purposes
+(define (make-random-character)
   (let* ((fname::FabricName (generate-fabric-name))
          (character (make-fabric-character fname)))
     (set! character:faction (choose-any '(caretakers abjurers rogues)))

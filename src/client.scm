@@ -17,7 +17,14 @@
  activate-play-state
  activate-transition-state
  client-handle-message
+ current-character
+ current-location
+ current-user
+ init-defaults
  make-client
+ set-current-user!
+ set-current-character!
+ set-current-location!
  setup-inputs
  show
  start-client
@@ -31,6 +38,7 @@
 (require data-assets)
 (require data-config)
 (require data-users)
+(require model-character)
 (require model-rect)
 (require model-user)
 (require state)
@@ -68,7 +76,7 @@
 (import (class com.jme3.renderer ViewPort))
 (import (class com.jme3.system AppSettings))
 (import (class gnu.mapping Symbol))
-(import (class java.lang Thread))
+(import (class java.lang String Thread))
 (import (class org.lwjgl.input Mouse))
 (import (class tonegod.gui.core Screen))
 
@@ -80,11 +88,12 @@
 
 (define-simple-class FabricClient (SimpleApplication AnalogListener ActionListener)
   ;; slots
-  (user::FabricUser init: #!null)
+  (current-user::FabricUser init: #!null)
+  (current-character::FabricCharacter init: #!null)
+  (current-location::String init: #!null)
   (username::String init: #!null)
   (password-hash::String init: #!null)
   (password-salt::byte[] init: #!null)
-  (character::FabricCharacter init: #!null)
   (app-settings init: #!null)
   (state init: #!null)
   (screen init: #!null)
@@ -121,7 +130,7 @@
          (set! app:screen (Screen app))
          (setup-inputs app)
          (setup-lighting app)
-         (activate-transition-state app)
+         (activate-transition-state)
          #!void))
 
 (define (make-client #!key
@@ -147,17 +156,33 @@
   (Mouse:setGrabbed grab-mouse)
   client)
 
-(define (start-client)
-  (the-client (make-client))
-  (let* ((user::FabricUser (get-user "fabric"))
-         (characters user:characters)
-         (character::FabricCharacter (car characters))
-         (client::FabricClient (the-client)))
-    (set! client:character character)
-    (*:start (as FabricClient (the-client)))))
+;;; ---------------------------------------------------------------------
+;;; client state
+;;; ---------------------------------------------------------------------
 
-(define (stop-client)
-  (*:stop (as FabricClient (the-client))))
+(define (current-user)
+  (let ((client::FabricClient (the-client)))
+    client:current-user))
+
+(define (set-current-user! user::FabricUser)
+  (let ((client (the-client)))
+    (set! client:current-user user)))
+
+(define (current-character)
+  (let ((client::FabricClient (the-client)))
+    client:current-character))
+
+(define (set-current-character! character::FabricCharacter)
+  (let ((client (the-client)))
+    (set! client:current-character character)))
+
+(define (current-location)
+  (let ((client::FabricClient (the-client)))
+    client:current-location))
+
+(define (set-current-location! location::String)
+  (let ((client (the-client)))
+    (set! client:current-location location)))
 
 ;;; ---------------------------------------------------------------------
 ;;; input handling
@@ -185,7 +210,6 @@
                    "MouseDragRight" "MouseDragLeft" "MouseDragUp" "MouseDragDown")))
 
 
-
 ;;; ---------------------------------------------------------------------
 ;;; state changes
 ;;; ---------------------------------------------------------------------
@@ -201,34 +225,34 @@
                            (*:attach mgr new-state)
                            (*:initialize new-state mgr client))))))
 
-(define (activate-transition-state client::FabricClient)
-  (let ((transition-state::TransitionState (TransitionState)))
+(define (activate-transition-state)
+  (let ((client::FabricClient (the-client))
+        (transition-state::TransitionState (TransitionState)))
     (%enqueue-state-change client transition-state)))
 
 (define (%activate-supplied-state client::FabricClient new-state::FabricClientState)
-  (activate-transition-state client)
+  (activate-transition-state)
   (Thread:sleep 500)
   (%enqueue-state-change client new-state))
 
-(define (activate-login-state client::FabricClient)
-  (%activate-supplied-state client (LoginState)))
+(define (activate-login-state)
+  (%activate-supplied-state (the-client) (LoginState)))
 
-(define (activate-create-character-state client::FabricClient user::FabricUser)
-  (let ((new-state::CreateCharacterState (CreateCharacterState user)))
-    (%activate-supplied-state client new-state)))
+(define (activate-create-character-state)
+  (let ((new-state::CreateCharacterState (CreateCharacterState)))
+    (%activate-supplied-state (the-client) new-state)))
 
-(define (activate-pick-character-state client::FabricClient user::FabricUser)
-  (let ((new-state::PickCharacterState (PickCharacterState user)))
-    (%activate-supplied-state client new-state)))
+(define (activate-pick-character-state)
+  (let ((new-state::PickCharacterState (PickCharacterState)))
+    (%activate-supplied-state (the-client) new-state)))
 
-(define (activate-pick-location-state client::FabricClient user::FabricUser character::FabricCharacter)
-  (let ((new-state::PickLocationState (PickLocationState user character)))
-    (%activate-supplied-state client new-state)))
+(define (activate-pick-location-state)
+  (let ((new-state::PickLocationState (PickLocationState)))
+    (%activate-supplied-state (the-client) new-state)))
 
-(define (activate-play-state client::FabricClient user::FabricUser
-                             character::FabricCharacter location::String)
-  (let ((new-state::PlayState (PlayState user character location)))
-    (%activate-supplied-state client new-state)))
+(define (activate-play-state)
+  (let ((new-state::PlayState (PlayState)))
+    (%activate-supplied-state (the-client) new-state)))
 
 ;;; ---------------------------------------------------------------------
 ;;; message handling
@@ -236,25 +260,30 @@
 
 (define (client-handle-message client::FabricClient source::Client message::Message)
   (cond
-   ((ActivateLoginMessage? message)(activate-login-state client))
+   ((ActivateLoginMessage? message)(activate-login-state))
    ((ActivatePickCharacterMessage? message)
     (let ((the-message::ActivatePickCharacterMessage message))
-      (activate-pick-character-state client the-message:user)))
+      (activate-pick-character-state)))
    ((ActivateCreateCharacterMessage? message)
     (let ((the-message::ActivateCreateCharacterMessage message))
-      (activate-create-character-state client the-message:user)))
+      (activate-create-character-state)))
    ((ActivatePickLocationMessage? message)
     (let ((the-message::ActivatePickLocationMessage message))
-      (activate-pick-location-state client the-message:user the-message:character)))
+      (set-current-user! the-message:user)
+      (set-current-character! the-message:character)
+      (activate-pick-location-state)))
    ((ActivatePlayMessage? message)
     (let ((the-message::ActivatePlayMessage message))
-      (activate-play-state client the-message:user the-message:character the-message:location)))
+      (set-current-user! the-message:user)
+      (set-current-character! the-message:character)
+      (set-current-location! the-message:location)
+      (activate-play-state)))
    (else (client-warn (format #f "~%received an unrecognized message: ~S from source: ~S"
                               message source)))))
 
 
 ;;; ---------------------------------------------------------------------
-;;; debugging tools
+;;; interactive tools
 ;;; ---------------------------------------------------------------------
 
 (define (show thing)
@@ -262,3 +291,22 @@
     (if serializer
         (format #t "~A" (serializer thing))
         (format #t "~S" thing))))
+
+(define (init-defaults location)
+  (let* ((chars (list (make-random-character)
+                      (make-random-character)
+                      (make-random-character)))
+         (nm "fabric")
+         (pw "xhijy9DwOe/QM77n+KK1nDVZyPA=")
+         (salt (byte[] -2 -41 58 24 120 42 -67 59))
+         (user (make-fabric-user username: nm password-hash: pw password-salt: salt characters: chars)))
+    (set-current-user! user)
+    (set-current-character! (car chars))
+    (set-current-location! location)))
+
+(define (start-client)
+  (the-client (make-client))
+  (*:start (as FabricClient (the-client))))
+
+(define (stop-client)
+  (*:stop (as FabricClient (the-client))))

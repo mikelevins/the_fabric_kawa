@@ -52,12 +52,8 @@
 
 (define-simple-class PickLocationState (FabricClientState)
   ;; slots
-  (user::FabricUser init: #!null)
   (character::FabricCharacter init: #!null)
   ;; methods
-  ((*init* a-user::FabricUser a-character::FabricCharacter)
-   (set! user a-user)
-   (set! character a-character))
   ((cleanup) (%pick-location-state-cleanup (this)))
   ((initialize state-manager::AppStateManager app::FabricClient)
    (begin (invoke-special FabricClientState (this) 'initialize state-manager app)

@@ -9,8 +9,7 @@
 ;;;; ***********************************************************************
 
 (module-export
- PlayState
- set-location-name!)
+ PlayState)
 
 ;;; ---------------------------------------------------------------------
 ;;; required modules
@@ -59,13 +58,13 @@
 
 (define (%play-state-initialize state::PlayState)
   (let* ((client::FabricClient (the-client))
-         (user::FabricUser client:user)
-         (character::FabricCharacter client:character)
+         (user::FabricUser client:current-user)
+         (character::FabricCharacter (current-character))
          (model::Node (make-character-model character))
          (gui-node::Node (*:getGuiNode client))
          (screen::Screen client:screen)
          (location-nameplate::Label (make-location-nameplate client:screen))
-         (location::Spatial (make-location state:location-name))
+         (location::Spatial (make-location (current-location)))
          (action-bar::Panel (make-action-bar state client:screen))
          (sky (make-sky-box))
          (root::Node (*:getRootNode client))
@@ -85,8 +84,9 @@
     (*:attachChild root state:character-model)
     (*:addElement screen action-bar)
     (*:addControl gui-node screen)
-    (set-location-name! state state:location-name)
+    (*:setText location-nameplate (current-location))
     (set! state:state-initialized? #t)))
+
 
 (define (%play-state-enabled? state::FabricClientState) #t)
 (define (%play-state-initialized? state::FabricClientState) state:state-initialized?)
@@ -103,19 +103,12 @@
 
 (define-simple-class PlayState (FabricClientState)
   ;; slots
-  (user::FabricUser init: #!null)
-  (character::FabricCharacter init: #!null)
-  (location-name::String init: #!null)
   (character-model::Node init: #!null)
   (location::Spatial init: #!null)
   (location-nameplate::Label init: #!null)
   (sky::Geometry init: #!null)
   (action-bar::Panel init: #!null)
   ;; methods
-  ((*init* a-user::FabricUser a-character::FabricCharacter a-location-name::String)
-   (set! user a-user)
-   (set! character a-character)
-   (set! location-name a-location-name))
   ((cleanup) (%play-state-cleanup (this)))
   ((initialize state-manager::AppStateManager app::FabricClient)
    (begin (invoke-special FabricClientState (this) 'initialize state-manager app)
@@ -132,6 +125,3 @@
   ((handleActionEvent name key-pressed? tpf)
    (%play-state-handle-action-event (this) name key-pressed? tpf)))
 
-(define (set-location-name! state::PlayState name::String)
-  (set! state:location-name name)
-  (*:setText state:location-nameplate name))

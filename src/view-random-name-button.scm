@@ -21,6 +21,7 @@
 (require state-create-character)
 (require view-character-model)
 (require view-name-generator)
+(require client)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -56,7 +57,7 @@
 ;;; replace the appstate's character name with a newly-generated one
 
 (define (handle-generate-random-name state::CreateCharacterState)
-  (let* ((character::FabricCharacter state:character)
+  (let* ((character::FabricCharacter (current-character))
          (model::Node state:character-model)
          (nameplate::Label state:character-nameplate)
          (new-name (generate-fabric-name part-count: (+ 1 (random-integer 4))))

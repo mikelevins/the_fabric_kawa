@@ -80,13 +80,11 @@
 
 (define-simple-class PickCharacterState (FabricClientState)
   ;; slots
-  (user::FabricUser init: #!null)
-  (character::FabricCharacter init: #!null)
+  (picked-character::FabricCharacter init: #!null)
   (character-model::Node init: #!null)
   (picker init: #!null)
   (picker-buttons init: '())
   ;; methods
-  ((*init* a-user::FabricUser)(set! user a-user))
   ((cleanup) (%pick-character-state-cleanup (this)))
   ((initialize state-manager::AppStateManager app::FabricClient)
    (begin (invoke-special FabricClientState (this) 'initialize state-manager app)

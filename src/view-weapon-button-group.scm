@@ -14,6 +14,7 @@
 (require state)
 (require model-character)
 (require state-create-character)
+(require client)
 
 (import (class tonegod.gui.controls.buttons Button RadioButtonGroup))
 (import (class tonegod.gui.core Screen))
@@ -24,7 +25,7 @@
    (invoke-special RadioButtonGroup (this) '*init* screen uid))
   ((onSelect index::int value::Button)
    (let* ((button-id (*:getUID value))
-          (character::FabricCharacter state:character))
+          (character::FabricCharacter (current-character)))
      (cond
       ((equal? "CannonButton" button-id)(set-character-weapon! state 'cannon))
       ((equal? "ImpulseButton" button-id)(set-character-weapon! state 'impulse))

@@ -138,3 +138,13 @@
     (*:addChild panel okay-button)
     (*:addChild panel cancel-button)
     (*:enqueue client (runnable (lambda ()(*:addElement screen panel))))))
+
+
+#|
+(client-warn "This is a test warning")
+
+(client-error "This is a test error"
+              "keep going" (lambda (client screen panel) #!void)
+              "back to login" (lambda (client screen panel) (activate-login-state client)))
+|#
+

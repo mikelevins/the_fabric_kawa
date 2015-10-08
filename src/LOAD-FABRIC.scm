@@ -55,20 +55,11 @@
 ;;; evaluate these expressions to create and run the Fabric client
 
 ;;; (start-client)
-;;; (activate-login-state (the-client))
-;;; (activate-create-character-state (the-client)(default-user))
-;;; (activate-pick-character-state (the-client)(default-user))
-;;; (activate-pick-location-state (the-client)(default-user)(default-character))
-;;; (activate-play-state (the-client)(default-user)(default-character) "Neptune")
-;;; (activate-transition-state (the-client))
+;;; (init-defaults "Jupiter")
+;;; (activate-login-state)
+;;; (activate-create-character-state)
+;;; (activate-pick-character-state)
+;;; (activate-pick-location-state)
+;;; (activate-play-state)
 ;;; (stop-client)
-
-
-#|
-(client-warn "This is a test warning")
-
-(client-error "This is a test error"
-              "keep going" (lambda (client screen panel) #!void)
-              "back to login" (lambda (client screen panel) (activate-login-state client)))
-|#
 

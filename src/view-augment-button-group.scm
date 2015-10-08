@@ -25,7 +25,7 @@
   ((onSelect index::int value::Button)
    (let* ((button-id (*:getUID value))
           (state::CreateCharacterState state)
-          (character::FabricCharacter state:character))
+          (character::FabricCharacter (current-character)))
      (cond
       ((equal? "ForceButton" button-id)(set-character-augment! state 'force))
       ((equal? "OpticsButton" button-id)(set-character-augment! state 'optics))

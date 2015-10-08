@@ -16,6 +16,7 @@
 (require state-create-character)
 (require model-character)
 (require view-character-model)
+(require client)
 
 (import (class com.jme3.math ColorRGBA))
 (import (class com.jme3.scene Node))
@@ -30,7 +31,7 @@
   ((onSelect index::int value::Button)
    (let* ((button-id (*:getUID value))
           (state::CreateCharacterState app-state)
-          (character::FabricCharacter state:character)
+          (character::FabricCharacter (current-character))
           (model::Node state:character-model)
           (caretakers-button::Button state:caretakers-button)
           (rogues-button::Button state:rogues-button)
