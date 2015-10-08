@@ -54,12 +54,12 @@
 ;;; ---------------------------------------------------------------------
 ;;; evaluate these expressions to create and run the Fabric client
 
-;;; (start-client "Saturn")
+;;; (start-client "Uranus")
 ;;; (activate-login-state)
 ;;; (activate-create-character-state)
 ;;; (activate-pick-character-state)
 ;;; (activate-pick-location-state)
 ;;; (activate-play-state)
-;;; (teleport "Venus")
+;;; (teleport "Earth")
 ;;; (stop-client)
 
