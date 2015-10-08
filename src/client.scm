@@ -304,9 +304,10 @@
     (set-current-character! (car chars))
     (set-current-location! location)))
 
-(define (start-client)
+(define (start-client location::String)
   (the-client (make-client))
-  (*:start (as FabricClient (the-client))))
+  (*:start (as FabricClient (the-client)))
+  (init-defaults location))
 
 (define (stop-client)
   (*:stop (as FabricClient (the-client))))

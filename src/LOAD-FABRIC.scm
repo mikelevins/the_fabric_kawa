@@ -54,8 +54,7 @@
 ;;; ---------------------------------------------------------------------
 ;;; evaluate these expressions to create and run the Fabric client
 
-;;; (start-client)
-;;; (init-defaults "Jupiter")
+;;; (start-client "Neptune")
 ;;; (activate-login-state)
 ;;; (activate-create-character-state)
 ;;; (activate-pick-character-state)
