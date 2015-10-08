@@ -31,13 +31,17 @@
 ;;; ---------------------------------------------------------------------
 
 (import (class com.jme3.app.state AbstractAppState AppStateManager))
+(import (class com.jme3.input FlyByCamera))
 (import (class com.jme3.math Vector3f))
 (import (class com.jme3.renderer Camera))
-(import (class com.jme3.scene Geometry Node Spatial))
+(import (class com.jme3.scene CameraNode Geometry Node Spatial))
+(import (class com.jme3.scene.control CameraControl))
 (import (class java.lang String))
 (import (class tonegod.gui.controls.text Label))
 (import (class tonegod.gui.controls.windows Panel))
 (import (class tonegod.gui.core Screen))
+
+(define ControlDirection CameraControl:ControlDirection)
 
 ;;; ---------------------------------------------------------------------
 ;;; PlayState
@@ -48,7 +52,9 @@
          (screen::Screen client:screen)
          (gui-node::Node (*:getGuiNode client))
          (root::Node (*:getRootNode client))
-         (camera::Camera (*:getCamera client)))
+         (camera::Camera (*:getCamera client))
+         (flycam::FlyByCamera (*:getFlyByCamera client)))
+    (*:setEnabled flycam #t)
     (*:setLocation camera (Vector3f 0.0 0.0 0.0))
     (*:lookAtDirection camera (Vector3f 0.0 0.0 1.0) (Vector3f 0.0 1.0 0.0))
     (*:detachChild root state:sky)
@@ -74,9 +80,14 @@
          (action-bar::Panel (make-action-bar state client:screen))
          (sky (make-sky-box))
          (root::Node (*:getRootNode client))
-         (camera::Camera (*:getCamera client)))
-    (*:setLocation camera (Vector3f 0.0 2000.0 25000.0))
-    (*:lookAtDirection camera (Vector3f 0.0 0.0 -1.0) (Vector3f 0.0 1.0 0.0))
+         (flycam::FlyByCamera (*:getFlyByCamera client))
+         (camera::Camera (*:getCamera client))
+         (camera-node::CameraNode (CameraNode "CameraNode" camera)))
+    (*:setEnabled flycam #f)
+    (*:setControlDir camera-node ControlDirection:SpatialToCamera)
+    (*:attachChild model camera-node)
+    (*:setLocalTranslation camera-node (Vector3f 0 0 30))
+    (*:lookAt camera-node (*:getLocalTranslation model) Vector3f:UNIT_Y)
     (*:setFrustumFar camera 100000)
     (*:setLocalTranslation model (Vector3f 0.0 1995.0 24970.0))
     (set! state:location location)
