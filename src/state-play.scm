@@ -15,16 +15,17 @@
 ;;; required modules
 ;;; ---------------------------------------------------------------------
 
-(require data-assets)
-(require view-skybox)
-(require state)
 (require client)
+(require data-assets)
 (require model-namegen)
-(require view-location)
-(require view-location-nameplate)
+(require state)
 (require view-action-bar)
+(require view-camera-movement)
 (require view-character-model)
 (require view-character-nameplate)
+(require view-location)
+(require view-location-nameplate)
+(require view-skybox)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -86,7 +87,7 @@
     (*:setEnabled flycam #f)
     (*:setControlDir camera-node ControlDirection:SpatialToCamera)
     (*:attachChild model camera-node)
-    (*:setLocalTranslation camera-node (Vector3f 0 0 30))
+    (*:setLocalTranslation camera-node (Vector3f 0 0 40))
     (*:lookAt camera-node (*:getLocalTranslation model) Vector3f:UNIT_Y)
     (*:setFrustumFar camera 100000)
     (*:setLocalTranslation model (Vector3f 0.0 1995.0 24970.0))
@@ -112,13 +113,33 @@
 (define (%play-state-attached state::FabricClientState manager::AppStateManager) #!void)
 (define (%play-state-detached state::FabricClientState manager::AppStateManager) #!void)
 
-(define (%play-state-handle-analog-event state name value tpf)
-  ;;; TODO: implement event handling
-  #!void)
+(define (%play-state-handle-analog-event state::PlayState name value tpf)
+  (let* ((client::FabricClient (the-client))
+         (speed state:speed)
+         (pchar::FabricCharacter (current-character))
+         (node state:character-model)
+         (right-button-down? client:right-button?))
+    (cond
+     ((*:equals name "KeyW") (move-node-forward! client node (* speed tpf)))
+     ((*:equals name "MouseButtonLeft") (when right-button-down?
+                                          (move-node-forward! client node (* speed tpf))))
+     ((*:equals name "KeyS")(move-node-backward! client node (* 0.6 speed tpf)))
+     ((*:equals name "KeyD")(move-node-right! client node (* speed tpf)))
+     ((*:equals name "KeyA")(move-node-left! client node (* speed tpf)))
+     ((*:equals name "KeySPACE")(move-node-up! client node (* speed tpf)))
+     ((*:equals name "KeyX")(move-node-down! client node (* speed tpf)))
+     ((*:equals name "MouseDragRight")(when right-button-down? (rotate-node-right! node (* 8.0 tpf))))
+     ((*:equals name "MouseDragLeft")(when right-button-down? (rotate-node-left! node (* 8.0 tpf))))
+     ((*:equals name "MouseDragUp")(when right-button-down? (rotate-node-down! node (* 4.0 tpf))))
+     ((*:equals name "MouseDragDown")(when right-button-down? (rotate-node-up! node (* 4.0 tpf))))
+     (else #f))))
 
 (define (%play-state-handle-action-event state name key-pressed? tpf)
-  ;;; TODO: implement event handling
-  #!void)
+  (let ((client::FabricClient (the-client)))
+    (cond
+     ((*:equals name "MouseButtonLeft")(set! client:left-button? key-pressed?))
+     ((*:equals name "MouseButtonRight")(set! client:right-button? key-pressed?))
+     (else #f))))
 
 (define-simple-class PlayState (FabricClientState)
   ;; slots
@@ -128,6 +149,7 @@
   (location-nameplate::Label init: #!null)
   (sky::Geometry init: #!null)
   (action-bar::Panel init: #!null)
+  (speed type: float init-form: 3000.0)
   ;; methods
   ((cleanup) (%play-state-cleanup (this)))
   ((initialize state-manager::AppStateManager app::FabricClient)
