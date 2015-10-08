@@ -17,6 +17,8 @@
  move-node-right!
  move-node-up!
  normalize-camera!
+ roll-node-left!
+ roll-node-right!
  rotate-node-down!
  rotate-node-left!
  rotate-node-right!
@@ -116,6 +118,21 @@
 (define (rotate-node-left! node :: Node amount :: float)
   (*:rotate node 0 (* 1 amount) 0))
 
+
+;;; (roll-node-right! node :: Node amount :: float)
+;;; ---------------------------------------------------------------------
+;;; rolls _node_ to the right an angle of _amount_ 
+
+(define (roll-node-right! node :: Node amount :: float)
+  (*:rotate node 0 0 (* -1 amount)))
+
+
+;;; (roll-node-left! node :: Node amount :: float)
+;;; ---------------------------------------------------------------------
+;;; rolls _node_ to the left an angle of _amount_ 
+
+(define (roll-node-left! node :: Node amount :: float)
+  (*:rotate node 0 0 (* 1 amount)))
 
 ;;; (rotate-node-up! node :: Node amount :: float)
 ;;; ---------------------------------------------------------------------

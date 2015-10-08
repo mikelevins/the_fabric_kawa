@@ -195,6 +195,8 @@
     (*:addMapping input-manager "KeyA" (KeyTrigger key-input:KEY_A))
     (*:addMapping input-manager "KeyD" (KeyTrigger key-input:KEY_D))
     (*:addMapping input-manager "KeyS" (KeyTrigger key-input:KEY_S))
+    (*:addMapping input-manager "KeyQ" (KeyTrigger key-input:KEY_Q))
+    (*:addMapping input-manager "KeyE" (KeyTrigger key-input:KEY_E))
     (*:addMapping input-manager "KeySPACE" (KeyTrigger key-input:KEY_SPACE))
     (*:addMapping input-manager "KeyW" (KeyTrigger key-input:KEY_W))
     (*:addMapping input-manager "KeyX" (KeyTrigger key-input:KEY_X))
@@ -206,7 +208,7 @@
     (*:addMapping input-manager "MouseDragRight" (MouseAxisTrigger AXIS_X #f))
     (*:addListener input-manager client
                    ;; motion controls
-                   "KeyA" "KeyD" "KeyW" "KeyS" "KeySPACE" "KeyX"
+                   "KeyA" "KeyD" "KeyW" "KeyS" "KeyQ" "KeyE" "KeySPACE" "KeyX"
                    "MouseButtonLeft" "MouseButtonRight"
                    "MouseDragRight" "MouseDragLeft" "MouseDragUp" "MouseDragDown")))
 
