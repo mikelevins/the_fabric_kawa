@@ -141,7 +141,7 @@
                      (screen-height 1200)
                      (title "The Fabric")
                      (settings-image "Interface/icon.jpg")
-                     (show-fps #f)
+                     (show-fps #t)
                      (show-settings #t)
                      (show-statistics #f)
                      (pause-on-lost-focus #f)

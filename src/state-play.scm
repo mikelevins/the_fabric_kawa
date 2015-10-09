@@ -151,7 +151,7 @@
   (location-nameplate::Label init: #!null)
   (sky::Geometry init: #!null)
   (action-bar::Panel init: #!null)
-  (speed type: float init-form: 2000.0)
+  (speed type: float init-form: 1000.0)
   ;; methods
   ((cleanup) (%play-state-cleanup (this)))
   ((initialize state-manager::AppStateManager app::FabricClient)

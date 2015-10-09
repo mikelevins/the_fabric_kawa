@@ -136,11 +136,11 @@
   (make-celestial-body "Io" 1024 0.025))
 
 (define (make-jupiter)
-  (let* ((jupiter (make-celestial-body "Jupiter" 8192 0.010))
+  (let* ((jupiter (make-celestial-body "Jupiter" 8192 0.0075))
          (jupiter-pivot::Node (Node "Jupiter"))
          (volvox (make-volvox))
          (volvox-centroid (Node "Volvox Centroid"))
-         (volvox-rotator (RotateControl 0.0 0.0 0.0))
+         (volvox-rotator (RotateControl 0.0 -0.009 0.0))
          (volvox-centroid-rotator (RotateControl 0.0 0.0 0.0)))
     (*:setLocalTranslation volvox-centroid 0.0 0.0 0.0)
     (*:setLocalTranslation volvox 8000 0.0 16000.0)
