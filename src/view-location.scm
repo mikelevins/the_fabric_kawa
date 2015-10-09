@@ -143,7 +143,7 @@
          (volvox-rotator (RotateControl 0.0 0.0 0.0))
          (volvox-centroid-rotator (RotateControl 0.0 0.0 0.0)))
     (*:setLocalTranslation volvox-centroid 0.0 0.0 0.0)
-    (*:setLocalTranslation volvox 16000 0.0 16000.0)
+    (*:setLocalTranslation volvox 8000 0.0 16000.0)
     (*:addControl volvox-centroid volvox-centroid-rotator)
     (*:addControl volvox volvox-rotator)
     (*:attachChild jupiter-pivot jupiter)

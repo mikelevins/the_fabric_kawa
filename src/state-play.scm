@@ -90,7 +90,7 @@
     (*:setLocalTranslation camera-node (Vector3f 0 0 40))
     (*:lookAt camera-node (*:getLocalTranslation model) Vector3f:UNIT_Y)
     (*:setFrustumFar camera 100000)
-    (*:setLocalTranslation model (Vector3f 0.0 1995.0 24970.0))
+    (*:setLocalTranslation model (Vector3f 0.0 1000.0 40000.0))
     (set! state:location location)
     (set! state:location-nameplate location-nameplate)
     (set! state:action-bar action-bar)
