@@ -39,6 +39,7 @@
 
 (require data-assets)
 (require view-rotatecontrol)
+(require view-location-volvox)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -107,31 +108,6 @@
     rings-pivot))
 
 ;;; ---------------------------------------------------------------------
-;;; landscape elements
-;;; ---------------------------------------------------------------------
-
-;;; an orbital city near Jupiter belonging to the Caretakers
-(define (make-volvox)
-  (let* ((pivot (Node "Volvox City"))
-         (sphere::Sphere (Sphere 32 32 128))
-         (sphere-geom::Geometry (Geometry "Sphere" sphere))
-         (bucket RenderQueue:Bucket)
-         (asset-manager (get-asset-manager))
-         (sphere-mat::Material (Material asset-manager "Common/MatDefs/Misc/Unshaded.j3md"))
-         (sphere-color (ColorRGBA 0.0 1.0 0.0 0.5))
-         (sphere-glow-color (ColorRGBA 1 1 1 0.5))
-         (blendMode RenderState:BlendMode))
-    (*:setColor sphere-mat "Color" sphere-color)
-    (*:setColor sphere-mat "GlowColor" sphere-glow-color)
-    (*:setBlendMode (*:getAdditionalRenderState sphere-mat) blendMode:Alpha)
-    (*:setMaterial sphere-geom sphere-mat)
-    (*:setQueueBucket sphere-geom bucket:Transparent)
-    (*:setLocalTranslation sphere-geom 0.0 0.0 0.0)
-    (*:setLocalTranslation pivot 0.0 0.0 0.0)
-    (*:attachChild pivot sphere-geom)
-    pivot))
-
-;;; ---------------------------------------------------------------------
 ;;; the locations
 ;;; ---------------------------------------------------------------------
 
@@ -160,14 +136,14 @@
   (make-celestial-body "Io" 1024 0.025))
 
 (define (make-jupiter)
-  (let* ((jupiter (make-celestial-body "Jupiter" 4096 0.05))
+  (let* ((jupiter (make-celestial-body "Jupiter" 8192 0.010))
          (jupiter-pivot::Node (Node "Jupiter"))
          (volvox (make-volvox))
          (volvox-centroid (Node "Volvox Centroid"))
-         (volvox-rotator (RotateControl 0.0 0.0 0.15))
-         (volvox-centroid-rotator (RotateControl 0.0 0.0 0.0015)))
+         (volvox-rotator (RotateControl 0.0 0.0 0.0))
+         (volvox-centroid-rotator (RotateControl 0.0 0.0 0.0)))
     (*:setLocalTranslation volvox-centroid 0.0 0.0 0.0)
-    (*:setLocalTranslation volvox 8000 0.0 0.0)
+    (*:setLocalTranslation volvox 16000 0.0 16000.0)
     (*:addControl volvox-centroid volvox-centroid-rotator)
     (*:addControl volvox volvox-rotator)
     (*:attachChild jupiter-pivot jupiter)

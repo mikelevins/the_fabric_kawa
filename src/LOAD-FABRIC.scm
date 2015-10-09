@@ -60,6 +60,5 @@
 ;;; (activate-pick-character-state)
 ;;; (activate-pick-location-state)
 ;;; (activate-play-state)
-;;; (teleport "Earth")
+;;; (teleport "Callisto")
 ;;; (stop-client)
-
