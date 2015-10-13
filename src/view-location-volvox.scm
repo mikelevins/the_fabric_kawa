@@ -16,6 +16,7 @@
 (import (only (com jme3 math FastMath) PI))
 
 (import (class com.jme3.asset AssetManager))
+(import (class com.jme3.effect ParticleEmitter ParticleMesh))
 (import (class com.jme3.material Material))
 (import (class com.jme3.material RenderState))
 (import (class com.jme3.math ColorRGBA Quaternion Vector3f))
@@ -44,6 +45,11 @@
 ;;; an orbital city near Jupiter belonging to the Caretakers
 (define (make-volvox-cell)
   (let* ((pivot (Node "Volvox Cell"))
+         (asset-manager::AssetManager (get-asset-manager))
+         (emitter::ParticleEmitter (ParticleEmitter "Smoke" ParticleMesh:Type:Triangle 32))
+         (emitter-mat::Material (Material asset-manager "Common/MatDefs/Misc/Particle.j3md"))
+         (emitter-start-color::ColorRGBA (ColorRGBA 0.3 0.8 0.3 0.4))
+         (emitter-end-color::ColorRGBA (ColorRGBA 0.3 0.6 0.8 0.2))
          ;; sphere0 -- the central enclosing sphere
          (sphere0-geom::Geometry (make-sphere 256 (ColorRGBA 0.0 1.0 0.0 0.5)(ColorRGBA 0.5 0.5 0.5 0.5)))
          ;; sphere00 -- the center of the center
@@ -108,6 +114,26 @@
     (*:setLocalTranslation sphere060-geom 0.0 -168.0 0.0)
 
     ;; the whole assembly
+    (*:setTexture emitter-mat "Texture" (*:loadTexture asset-manager "Effects/Smoke/Smoke.png"))
+    (*:setMaterial emitter emitter-mat)
+    (*:setImagesX emitter 15)
+    (*:setImagesY emitter 1)
+    (*:setEndColor emitter emitter-end-color)
+    (*:setStartColor emitter emitter-start-color)
+    (*:setInitialVelocity (*:getParticleInfluencer emitter)
+                          (Vector3f 2 1.4 1.6))
+    (*:setNumParticles emitter 64)
+    (*:setParticlesPerSec emitter 64)
+    (*:setSelectRandomImage emitter #t)
+    (*:setRandomAngle emitter #t)
+    (*:setStartSize emitter 32)
+    (*:setEndSize emitter 256)
+    (*:setGravity emitter 0 0 0)
+    (*:setLowLife emitter 64)
+    (*:setHighLife emitter 256)
+    (*:setVelocityVariation (*:getParticleInfluencer emitter) 2)
+    (*:attachChild pivot emitter)
+
     pivot))
 
 ;;; an orbital city near Jupiter belonging to the Caretakers
