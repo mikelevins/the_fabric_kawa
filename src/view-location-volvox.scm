@@ -49,7 +49,7 @@
          (emitter::ParticleEmitter (ParticleEmitter "Smoke" ParticleMesh:Type:Triangle 32))
          (emitter-mat::Material (Material asset-manager "Common/MatDefs/Misc/Particle.j3md"))
          (emitter-start-color::ColorRGBA (ColorRGBA 0.3 0.8 0.3 0.4))
-         (emitter-end-color::ColorRGBA (ColorRGBA 0.3 0.6 0.8 0.2))
+         (emitter-end-color::ColorRGBA (ColorRGBA 0.2 0.5 0.5 0.2))
          ;; sphere0 -- the central enclosing sphere
          (sphere0-geom::Geometry (make-sphere 256 (ColorRGBA 0.0 1.0 0.0 0.5)(ColorRGBA 0.5 0.5 0.5 0.5)))
          ;; sphere00 -- the center of the center
@@ -129,8 +129,8 @@
     (*:setStartSize emitter 32)
     (*:setEndSize emitter 256)
     (*:setGravity emitter 0 0 0)
-    (*:setLowLife emitter 64)
-    (*:setHighLife emitter 256)
+    (*:setLowLife emitter 32)
+    (*:setHighLife emitter 128)
     (*:setVelocityVariation (*:getParticleInfluencer emitter) 2)
     (*:attachChild pivot emitter)
 
