@@ -20,6 +20,7 @@
 (require data-assets)
 (require model-rect)
 (require model-character)
+(require view-rotatecontrol)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -226,7 +227,9 @@
          (glow-color (ColorRGBA 0.9 0.8 0.7 0.9))
          (pivot (Node "CharacterWeapon"))
          (pivot0 (Node "ModulePivot0"))
-         (pivot1 (Node "ModulePivot1")))
+         (pivot1 (Node "ModulePivot1"))
+         (rotator0::RotateControl (RotateControl 0 0 1))
+         (rotator1::RotateControl (RotateControl 0 0 -1)))
     (*:setColor turrets-mat "Color" color)
     (*:setColor turrets-mat "GlowColor" glow-color)
     (let* ((blendMode RenderState:BlendMode))
@@ -266,7 +269,9 @@
       (*:attachChild pivot0 geom1)
       (*:attachChild pivot1 geom2)
       (*:attachChild pivot1 geom3)
+      (*:addControl pivot0 rotator0)
       (*:attachChild pivot pivot0)
+      (*:addControl pivot1 rotator1)
       (*:attachChild pivot pivot1)
       pivot)))
 
