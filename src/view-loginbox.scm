@@ -54,7 +54,7 @@
                 (pwdigest (text->digest pw (compute-random-salt)))
                 (pwhash (car pwdigest))
                 (pwsalt (cdr pwdigest)))
-           (set! client:user user)
+           (set! client:current-user user)
            (set! client:username username)
            (set! client:password-hash pwhash)
            (set! client:password-salt pwsalt)))))
