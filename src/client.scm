@@ -38,6 +38,7 @@
 
 (require data-assets)
 (require data-config)
+(require data-sexp)
 (require data-users)
 (require model-character)
 (require model-rect)

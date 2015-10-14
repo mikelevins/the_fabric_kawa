@@ -6,7 +6,8 @@
 (require client)
 
 (the-client (make-client))
-((the-client):start)
+(let ((client::FabricClient (the-client)))
+  (client:start))
 
 
 

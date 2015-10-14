@@ -125,11 +125,37 @@
           fork="true">
       <classpath refid="library.class.path"/>
       <arg line="-C
-                 message.scm
+                 version.scm
+                 util-random.scm
+                 util-bytes.scm
+                 util-lists.scm
+                 util-crypt.scm
+                 data-file.scm
+                 data-config.scm
+                 data-names.scm
                  data-sexp.scm
+                 data-users.scm
                  model-character.scm
+                 model-namegen.scm
                  model-user.scm
+                 model-rect.scm
                  state.scm
+                 state-transition.scm
+                 state-login.scm
+                 state-create-character.scm
+                 state-pick-character.scm
+                 state-pick-location.scm
+                 state-play.scm
+                 view-alert.scm
+                 view-faction-picker.scm
+                 listener-message-client.scm
+                 message.scm
+                 message-activate-login.scm
+                 message-activate-create-character.scm
+                 message-activate-pick-character.scm
+                 message-activate-pick-location.scm
+                 message-activate-play.scm
+                 view-client-error.scm
                  client.scm
                  TheFabric.scm
                  "/>
