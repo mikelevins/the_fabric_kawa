@@ -68,6 +68,7 @@
 (import (class com.jme3.app SimpleApplication))
 (import (class com.jme3.app.state AbstractAppState AppStateManager))
 (import (class com.jme3.asset AssetManager))
+(import (class com.jme3.input FlyByCamera))
 (import (class com.jme3.input InputManager KeyInput MouseInput))
 (import (class com.jme3.input.controls ActionListener AnalogListener
           KeyTrigger MouseAxisTrigger MouseButtonTrigger))
@@ -126,14 +127,16 @@
     (*:addProcessor viewport filter-processor)))
 
 (define (init-client app::FabricClient)
-  (begin (load-client-configuration)
-         (set! app:message-listener (FabricClientMessageListener app))
-         (*:setEnabled (*:getFlyByCamera app) #f)
-         (set! app:screen (Screen app))
-         (setup-inputs app)
-         (setup-lighting app)
-         (activate-transition-state)
-         #!void))
+  (let ((flycam::FlyByCamera (*:getFlyByCamera app)))
+    (*:setEnabled flycam #f)
+    (load-client-configuration)
+    (set! app:message-listener (FabricClientMessageListener app))
+    (*:setEnabled (*:getFlyByCamera app) #f)
+    (set! app:screen (Screen app))
+    (setup-inputs app)
+    (setup-lighting app)
+    (activate-transition-state)
+    #!void))
 
 (define (make-client #!key
                      (client::FabricClient (FabricClient))
