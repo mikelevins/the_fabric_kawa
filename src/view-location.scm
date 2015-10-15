@@ -40,6 +40,7 @@
 (require data-assets)
 (require view-rotatecontrol)
 (require view-location-volvox)
+(require view-location-adlivun)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports
@@ -188,7 +189,20 @@
     pivot))
 
 (define (make-sedna)
-  (make-celestial-body "Sedna" 1024 0.025))
+  (let* ((sedna (make-celestial-body "Sedna" 1024 0.025))
+         (sedna-pivot::Node (Node "Sedna"))
+         (adlivun (make-adlivun))
+         (adlivun-centroid (Node "Adlivun Centroid"))
+         (adlivun-rotator (RotateControl 0.0 -0.009 0.0))
+         (adlivun-centroid-rotator (RotateControl 0.0 0.0 0.0)))
+    (*:setLocalTranslation adlivun-centroid 0.0 0.0 0.0)
+    (*:setLocalTranslation adlivun 2000 0.0 2000.0)
+    (*:addControl adlivun-centroid adlivun-centroid-rotator)
+    (*:addControl adlivun adlivun-rotator)
+    (*:attachChild sedna-pivot sedna)
+    (*:attachChild sedna-pivot adlivun-centroid)
+    (*:attachChild adlivun-centroid adlivun)
+    sedna-pivot))
 
 (define (make-tethys)
   (make-celestial-body "Tethys" 1024 0.025))

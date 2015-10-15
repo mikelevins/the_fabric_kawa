@@ -54,11 +54,11 @@
 ;;; ---------------------------------------------------------------------
 ;;; evaluate these expressions to create and run the Fabric client
 
-;;; (start-client "Jupiter")
+;;; (start-client "Sedna")
 ;;; (activate-login-state)
 ;;; (activate-create-character-state)
 ;;; (activate-pick-character-state)
 ;;; (activate-pick-location-state)
 ;;; (activate-play-state)
-;;; (teleport "Callisto")
+;;; (teleport "Sedna")
 ;;; (stop-client)
