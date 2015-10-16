@@ -137,7 +137,7 @@
 
     pivot))
 
-;;; an orbital city near Jupiter belonging to the Caretakers
+;;; an orbital city near Sedna belonging to the Abjurers
 (define (make-adlivun)
   (let* ((pivot (Node "Adlivun City"))
          (rotator::RotateControl (RotateControl 0 0.03 0))
