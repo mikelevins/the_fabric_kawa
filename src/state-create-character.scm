@@ -21,6 +21,7 @@
 (require data-assets)
 (require model-character)
 (require model-namegen)
+(require model-rect)
 (require view-faction-nameplate)
 (require view-faction-picker)
 (require view-armor-model)
@@ -41,7 +42,7 @@
 ;;; ---------------------------------------------------------------------
 
 (import (class com.jme3.app.state AbstractAppState AppStateManager))
-(import (class com.jme3.math Vector3f))
+(import (class com.jme3.math Vector2f Vector3f))
 (import (class com.jme3.scene Node))
 (import (class com.jme3.renderer Camera))
 (import (class gnu.mapping Symbol))
@@ -95,7 +96,10 @@
          (name-generator (make-name-generator state screen))
          (character-acceptor (make-character-acceptor state screen))
          (char::FabricCharacter (make-fabric-character (blank-fabric-name)))
-         (character-nameplate::Label (make-character-nameplate screen))
+         (picker-rect (compute-faction-picker-rect screen))
+         (nameplate-pos (Vector2f (+ 16 (get-left picker-rect)(get-width picker-rect))
+                                  (+ -56 (get-top picker-rect)(get-height picker-rect))))
+         (character-nameplate::Label (make-character-nameplate screen nameplate-pos))
          (model::Node (blank-character-model))
          (root-node::Node (*:getRootNode client)))
     (set! state:faction-nameplate faction-nameplate)

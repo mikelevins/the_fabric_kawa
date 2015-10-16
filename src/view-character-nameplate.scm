@@ -35,11 +35,10 @@
 ;;; character nameplate
 ;;; ---------------------------------------------------------------------
 
-(define (make-character-nameplate screen::Screen)
-  (let* ((rect (compute-action-bar-rect screen))
-         (Align BitmapFont:Align)
-         (nameplate-left (get-left rect))
-         (nameplate-top (+ (get-height rect) 16))
+(define (make-character-nameplate screen::Screen position::Vector2f)
+  (let* ((Align BitmapFont:Align)
+         (nameplate-left (*:getX position))
+         (nameplate-top (*:getY position))
          (character-nameplate (Label screen "CharacterNameplate"
                                      (Vector2f nameplate-left nameplate-top)
                                      (Vector2f 1200 40))))

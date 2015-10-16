@@ -18,6 +18,7 @@
 (require client)
 (require data-assets)
 (require model-namegen)
+(require model-rect)
 (require state)
 (require view-action-bar)
 (require view-camera-movement)
@@ -32,7 +33,7 @@
 ;;; ---------------------------------------------------------------------
 
 (import (class com.jme3.app.state AbstractAppState AppStateManager))
-(import (class com.jme3.math Vector3f))
+(import (class com.jme3.math Vector2f Vector3f))
 (import (class com.jme3.renderer Camera))
 (import (class com.jme3.scene CameraNode Geometry Node Spatial))
 (import (class com.jme3.scene.control CameraControl))
@@ -64,12 +65,16 @@
 
 (define (%play-state-initialize state::PlayState)
   (let* ((client::FabricClient (the-client))
+         (screen::Screen client:screen)
          (user::FabricUser client:current-user)
          (character::FabricCharacter (current-character))
          (character-name (if (eqv? #!null character)
                              ""
                              (fabric-name->string character:name)))
-         (character-nameplate::Label (make-character-nameplate client:screen))
+         (bar-rect (compute-action-bar-rect screen))
+         (nameplate-pos (Vector2f (get-left bar-rect)
+                                  (+ (get-height bar-rect) 16)))
+         (character-nameplate::Label (make-character-nameplate screen nameplate-pos))
          (model::Node (make-character-model character))
          (gui-node::Node (*:getGuiNode client))
          (screen::Screen client:screen)
