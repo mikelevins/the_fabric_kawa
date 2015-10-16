@@ -196,7 +196,7 @@
          (adlivun-rotator (RotateControl 0.0 -0.009 0.0))
          (adlivun-centroid-rotator (RotateControl 0.0 0.0 0.0)))
     (*:setLocalTranslation adlivun-centroid 0.0 0.0 0.0)
-    (*:setLocalTranslation adlivun 2000 0.0 2000.0)
+    (*:setLocalTranslation adlivun -3500 0.0 2500.0)
     (*:addControl adlivun-centroid adlivun-centroid-rotator)
     (*:addControl adlivun adlivun-rotator)
     (*:attachChild sedna-pivot sedna)
