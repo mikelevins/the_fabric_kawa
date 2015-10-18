@@ -12,6 +12,8 @@
  make-volvox)
 
 (require data-assets)
+(require model-character)
+(require view-character-model)
 (require view-rotatecontrol)
 
 (import (only (com jme3 math FastMath) PI))
@@ -138,9 +140,9 @@
     pivot))
 
 ;;; an orbital city near Jupiter belonging to the Caretakers
-(define (make-volvox)
-  (let* ((pivot (Node "Volvox City"))
-         (rotator::RotateControl (RotateControl 0 0 0.05))
+(define (make-volvox-pod rotate-speed)
+  (let* ((pivot (Node "Volvox Pod"))
+         (rotator::RotateControl (RotateControl 0 rotate-speed 0))
          (cell0::Node (make-volvox-cell))
          (cell1::Node (make-volvox-cell))
          (cell2::Node (make-volvox-cell))
@@ -165,4 +167,16 @@
     (*:attachChild pivot cell6)
     (*:setLocalTranslation cell6 0.0 -512.0 0.0)    
     (*:addControl pivot rotator)
+    pivot))
+
+(define (make-volvox)
+  (let* ((pivot (Node "Volvox City"))
+         (pod0::Node (make-volvox-pod 0.025))
+         (pod1::Node (make-volvox-pod 0.020)))
+    (*:setLocalTranslation pivot 0.0 0.0 0.0)
+    (*:setLocalTranslation pod0 0.0 0.0 0.0)
+    (*:attachChild pivot pod0)
+    (*:setLocalTranslation pod1 0.0 0.0 0.0)
+    (*:attachChild pivot pod1)
+    (*:setLocalTranslation pod1 144.0 -1500.0 0.0)
     pivot))
