@@ -18,6 +18,7 @@
 (require model-namegen)
 (require model-character)
 (require state)
+(require class-CreateCharacterState)
 (require state-create-character)
 (require view-character-model)
 (require view-name-generator)

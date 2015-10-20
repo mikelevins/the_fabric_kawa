@@ -9,7 +9,14 @@
 ;;;; ***********************************************************************
 
 (module-export
- CreateCharacterState
+ %create-character-state-cleanup
+ %create-character-state-initialize
+ %create-character-state-initialized?
+ %create-character-state-attached
+ %create-character-state-detached
+ %create-character-state-handle-analog-event
+ %create-character-state-handle-action-event
+ %create-character-state-enabled?
  set-character-armor!
  set-character-augment!
  set-character-weapon!)
@@ -22,6 +29,7 @@
 (require model-character)
 (require model-namegen)
 (require model-rect)
+(require class-CreateCharacterState)
 (require view-faction-nameplate)
 (require view-faction-picker)
 (require view-armor-model)
@@ -142,43 +150,7 @@
   ;;; TODO: implement event handling
   #!void)
 
-(define-simple-class CreateCharacterState (FabricClientState)
-  ;; slots
-  (character-under-construction init: #!null)
-  (character-model init: #!null)
-  (character-armor init: #!null)
-  (character-augment init: #!null)
-  (character-weapon init: #!null)
-  (armor-model init: #!null)
-  (augment-model init: #!null)
-  (weapon-model init: #!null)
-  (caretakers-button init: #!null)
-  (rogues-button init: #!null)
-  (abjurers-button init: #!null)
-  (faction-nameplate init: #!null)
-  (faction-picker init: #!null)
-  (armor-picker init: #!null)
-  (augment-picker init: #!null)
-  (weapon-picker init: #!null)
-  (name-generator init: #!null)
-  (character-acceptor init: #!null)
-  (character-nameplate init: #!null)
-  ;; methods
-  ((cleanup) (%create-character-state-cleanup (this)))
-  ((initialize state-manager::AppStateManager app::FabricClient)
-   (begin (invoke-special FabricClientState (this) 'initialize state-manager app)
-          (set! app:state (this))
-          (%create-character-state-initialize (this))))
-  ((isEnabled) (%create-character-state-enabled? (this)))
-  ((isInitialized) (%create-character-state-initialized? (this)))
-  ((stateAttached state-manager::AppStateManager)
-   (%create-character-state-attached (this) state-manager))
-  ((stateDetached state-manager::AppStateManager)
-   (%create-character-state-detached (this) state-manager))
-  ((handleAnalogEvent name value tpf)
-   (%create-character-state-handle-analog-event (this) name value tpf))
-  ((handleActionEvent name key-pressed? tpf)
-   (%create-character-state-handle-action-event (this) name key-pressed? tpf)))
+
 
 (define (set-character-armor! state::CreateCharacterState armor-name::Symbol)
   (let ((previous-model state:armor-model)

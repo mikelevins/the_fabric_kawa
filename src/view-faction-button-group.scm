@@ -13,6 +13,7 @@
 
 (require util-color)
 (require state)
+(require class-CreateCharacterState)
 (require state-create-character)
 (require model-character)
 (require view-character-model)

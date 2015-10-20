@@ -17,6 +17,7 @@
 ;;; ---------------------------------------------------------------------
 
 (require state)
+(require class-CreateCharacterState)
 (require state-create-character)
 (require model-rect)
 (require view-faction-button-group)

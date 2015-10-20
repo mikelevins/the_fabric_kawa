@@ -13,6 +13,7 @@
 
 (require state)
 (require model-character)
+(require class-CreateCharacterState)
 (require state-create-character)
 (require client)
 

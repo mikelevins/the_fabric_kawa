@@ -9,11 +9,11 @@
 ;;;; ***********************************************************************
 
 (module-export
- make-adlivun
- make-pyramid)
+ make-adlivun)
 
 (require data-assets)
 (require view-rotatecontrol)
+(require view-shapes)
 
 (import (only (com jme3 math FastMath) PI))
 
@@ -28,60 +28,10 @@
 (import (class com.jme3.texture Texture))
 (import (class java.lang Class))
 
-(define (make-pyramid radius color::ColorRGBA glow-color::ColorRGBA)
-  (let* ((asset-manager (get-asset-manager))
-         (blendMode RenderState:BlendMode)
-         (bucket RenderQueue:Bucket)
-         (pyramid::Dome (Dome 2 4 radius))
-         (pyramid-geom::Geometry (Geometry "Pyramid" pyramid))
-         (pyramid-mat::Material (Material asset-manager "Common/MatDefs/Misc/Unshaded.j3md"))
-         (pyramid-color (ColorRGBA 1.0 0.0 0.0 0.5))
-         (pyramid-glow-color (ColorRGBA 0.5 0.5 0.5 0.5)))
-    (*:setColor pyramid-mat "Color" color)
-    (*:setColor pyramid-mat "GlowColor" glow-color)
-    (*:setBlendMode (*:getAdditionalRenderState pyramid-mat) blendMode:Alpha)
-    (*:setMaterial pyramid-geom pyramid-mat)
-    (*:setQueueBucket pyramid-geom bucket:Transparent)
-    pyramid-geom))
-
-
-(define (make-crystal radius color::ColorRGBA glow-color::ColorRGBA)
-  (let* ((asset-manager (get-asset-manager))
-         (pivot (Node "Pyramid"))
-         (blendMode RenderState:BlendMode)
-         (bucket RenderQueue:Bucket)
-         (pyramid0::Dome (Dome 2 4 radius))
-         (pyramid1::Dome (Dome 2 4 radius))
-         (pyramid0-geom::Geometry (Geometry "Pyramid0" pyramid0))
-         (pyramid1-geom::Geometry (Geometry "Pyramid1" pyramid1))
-         (rotation::Quaternion (Quaternion))
-         (pitch-axis (Vector3f 1 0 0))
-         (pyramid-mat::Material (Material asset-manager "Common/MatDefs/Misc/Unshaded.j3md"))
-         (pyramid-color (ColorRGBA 1.0 0.0 0.0 0.5))
-         (pyramid-glow-color (ColorRGBA 0.5 0.5 0.5 0.5)))
-    (*:setColor pyramid-mat "Color" color)
-    (*:setColor pyramid-mat "GlowColor" glow-color)
-    (*:setBlendMode (*:getAdditionalRenderState pyramid-mat) blendMode:Alpha)
-    (*:setMaterial pyramid0-geom pyramid-mat)
-    (*:setMaterial pyramid1-geom pyramid-mat)
-    (*:setQueueBucket pyramid0-geom bucket:Transparent)
-    (*:setQueueBucket pyramid1-geom bucket:Transparent)
-    (*:attachChild pivot pyramid0-geom)
-    (*:setLocalTranslation pyramid0-geom 0.0 0.0 0.0)    
-    (*:attachChild pivot pyramid1-geom)
-    (*:setLocalTranslation pyramid1-geom 0.0 0.0 0.0)
-    (*:fromAngleAxis rotation PI pitch-axis)
-    (*:setLocalRotation pyramid1-geom rotation)
-    pivot))
-
 ;;; an orbital city near Jupiter belonging to the Caretakers
 (define (make-adlivun-cell)
   (let* ((pivot (Node "Adlivun Cell"))
          (asset-manager::AssetManager (get-asset-manager))
-         (emitter::ParticleEmitter (ParticleEmitter "Smoke" ParticleMesh:Type:Triangle 32))
-         (emitter-mat::Material (Material asset-manager "Common/MatDefs/Misc/Particle.j3md"))
-         (emitter-start-color::ColorRGBA (ColorRGBA 0.6 0.2 0.1 0.4))
-         (emitter-end-color::ColorRGBA (ColorRGBA 0.3 0.0 0.0 0.2))
          ;; crystal0 -- the central enclosing crystal
          (crystal0-geom::Node (make-crystal 256.0 (ColorRGBA 1.0 0.0 0.0 0.5)(ColorRGBA 0.5 0.5 0.5 0.5)))
          ;; crystal00 -- the center of the center
@@ -146,26 +96,6 @@
     (*:setLocalTranslation crystal060-geom 0.0 -168.0 0.0)
 
     ;; the whole assembly
-    (*:setTexture emitter-mat "Texture" (*:loadTexture asset-manager "Effects/Smoke/Smoke.png"))
-    (*:setMaterial emitter emitter-mat)
-    (*:setImagesX emitter 15)
-    (*:setImagesY emitter 1)
-    (*:setEndColor emitter emitter-end-color)
-    (*:setStartColor emitter emitter-start-color)
-    (*:setInitialVelocity (*:getParticleInfluencer emitter)
-                          (Vector3f 0 6 3))
-    (*:setNumParticles emitter 64)
-    (*:setParticlesPerSec emitter 64)
-    (*:setSelectRandomImage emitter #t)
-    (*:setRandomAngle emitter #t)
-    (*:setStartSize emitter 16)
-    (*:setEndSize emitter 256)
-    (*:setGravity emitter 0 2 0)
-    (*:setLowLife emitter 16)
-    (*:setHighLife emitter 32)
-    (*:setVelocityVariation (*:getParticleInfluencer emitter) 2)
-    (*:attachChild pivot emitter)
-
     pivot))
 
 ;;; an orbital city near Sedna belonging to the Abjurers
@@ -177,9 +107,11 @@
          (cell2::Node (make-adlivun-cell))
          (cell3::Node (make-adlivun-cell))
          (cell4::Node (make-adlivun-cell))
-         (cell6::Node (make-adlivun-cell)))
+         (cell6::Node (make-adlivun-cell))
+         (cell7::Node (make-adlivun-cell))
+         (obelisk0::Node (make-double-obelisk 16 1024 (ColorRGBA 0.5 0.0 0.0 0.8)(ColorRGBA 0.5 0.5 0.5 0.5)))
+         (obelisk1::Node (make-double-obelisk 16 768 (ColorRGBA 0.5 0.0 0.0 0.8)(ColorRGBA 0.5 0.5 0.5 0.5))))
     (*:setLocalTranslation pivot 0.0 0.0 0.0)
-    
     (*:attachChild pivot cell0)
     (*:setLocalTranslation cell0 0.0 0.0 0.0)    
     (*:attachChild pivot cell1)
@@ -192,5 +124,11 @@
     (*:setLocalTranslation cell4 0.0 0.0 512.0)    
     (*:attachChild pivot cell6)
     (*:setLocalTranslation cell6 0.0 -512.0 0.0)    
+    (*:attachChild pivot cell7)
+    (*:setLocalTranslation cell6 1024.0 0.0 0.0)    
+    (*:attachChild pivot obelisk0)
+    (*:setLocalTranslation obelisk0 0.0 0.0 0.0)
+    (*:attachChild pivot obelisk1)
+    (*:setLocalTranslation obelisk1 1024.0 0.0 0.0)
     (*:addControl pivot rotator)
     pivot))

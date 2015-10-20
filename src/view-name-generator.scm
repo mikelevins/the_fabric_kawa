@@ -19,6 +19,7 @@
 (require state)
 (require state-create-character)
 (require model-rect)
+(require class-CreateCharacterState)
 (require view-faction-picker)
 (require view-armor-picker)
 (require view-random-name-button)

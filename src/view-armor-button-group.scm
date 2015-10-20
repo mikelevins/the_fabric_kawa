@@ -12,6 +12,7 @@
  ArmorButtonGroup)
 
 (require state)
+(require class-CreateCharacterState)
 (require state-create-character)
 (require model-character)
 

@@ -22,6 +22,7 @@
 (require model-user)
 (require client)
 (require state)
+(require class-CreateCharacterState)
 (require state-create-character)
 (require view-alert)
 

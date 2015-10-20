@@ -32,6 +32,7 @@
 (require state)
 (require state-transition)
 (require state-login)
+(require class-CreateCharacterState)
 (require state-create-character)
 (require state-pick-character)
 (require state-pick-location)
@@ -54,7 +55,7 @@
 ;;; ---------------------------------------------------------------------
 ;;; evaluate these expressions to create and run the Fabric client
 
-;;; (start-client "Jupiter")
+;;; (start-client "Sedna")
 ;;; (activate-login-state)
 ;;; (activate-create-character-state)
 ;;; (activate-pick-character-state)

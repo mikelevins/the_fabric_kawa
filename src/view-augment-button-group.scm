@@ -12,6 +12,7 @@
  AugmentButtonGroup)
 
 (require client)
+(require class-CreateCharacterState)
 (require state-create-character)
 (require model-character)
 

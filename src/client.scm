@@ -45,6 +45,7 @@
 (require model-user)
 (require state)
 (require state-login)
+(require class-CreateCharacterState)
 (require state-create-character)
 (require state-pick-character)
 (require state-pick-location)
