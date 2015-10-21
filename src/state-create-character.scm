@@ -121,7 +121,6 @@
     (set! state:character-nameplate character-nameplate)
     (set! state:character-model model)
     (screen:addElement faction-nameplate)
-    (faction-nameplate:setText "Faction: None Chosen")
     (screen:addElement faction-picker)
     (screen:addElement armor-picker)
     (screen:addElement weapon-picker)
@@ -129,7 +128,6 @@
     (screen:addElement name-generator)
     (screen:addElement character-acceptor)
     (screen:addElement character-nameplate)
-    (character-nameplate:setText "")
     (gui-node:addControl screen)
     (camera:setLocation (Vector3f 0.0 0.0 20.0))
     (camera:lookAtDirection (Vector3f 0.0 0.0 -1.0) (Vector3f 0.0 1.0 0.0))
@@ -149,7 +147,6 @@
 (define (%create-character-state-handle-action-event state name key-pressed? tpf)
   ;;; TODO: implement event handling
   #!void)
-
 
 
 (define (set-character-armor! state::CreateCharacterState armor-name::Symbol)

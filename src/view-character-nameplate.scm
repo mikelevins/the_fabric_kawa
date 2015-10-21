@@ -41,11 +41,11 @@
          (nameplate-top (*:getY position))
          (character-nameplate (Label screen "CharacterNameplate"
                                      (Vector2f nameplate-left nameplate-top)
-                                     (Vector2f 1200 40))))
-    (*:setText character-nameplate "")
-    (*:setTextAlign character-nameplate Align:Left)
-    (*:setFont character-nameplate "Interface/Fonts/Laconic30.fnt")
-    (*:setFontSize character-nameplate 30)
-    (*:setFontColor character-nameplate ColorRGBA:Green)
+                                     (Vector2f 1200 40)
+                                     text: ""
+                                     textAlign: Align:Left
+                                     fontSize: 30
+                                     fontColor: ColorRGBA:Green
+                                     font:  "Interface/Fonts/Laconic30.fnt")))
     character-nameplate))
 

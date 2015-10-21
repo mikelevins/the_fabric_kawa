@@ -35,8 +35,11 @@
 (import (class tonegod.gui.core Screen))
 
 ;;; ---------------------------------------------------------------------
-;;; 
+;;; module variables
 ;;; ---------------------------------------------------------------------
+
+(define Align BitmapFont:Align)
+(define VAlign BitmapFont:VAlign)
 
 ;;; (compute-cannon-button-origin screen::Screen)
 ;;; ---------------------------------------------------------------------
@@ -70,7 +73,11 @@
 (define (make-cannon-button screen::Screen)
   (RadioButton screen "CannonButton"
                (compute-cannon-button-origin screen)
-               (compute-cannon-button-size screen)))
+               (compute-cannon-button-size screen)
+               text: "Cannon"
+               fontSize: 20
+               textAlign: Align:Center
+               textVAlign: VAlign:Bottom))
 
 
 ;;; (compute-impulse-button-origin screen::Screen)
@@ -105,8 +112,11 @@
 (define (make-impulse-button screen::Screen)
   (RadioButton screen "ImpulseButton"
                (compute-impulse-button-origin screen)
-               (compute-impulse-button-size screen)))
-
+               (compute-impulse-button-size screen)
+               text: "Impulse"
+               fontSize: 20
+               textAlign: Align:Center
+               textVAlign: VAlign:Bottom))
 
 ;;; (compute-malware-button-origin screen::Screen)
 ;;; ---------------------------------------------------------------------
@@ -140,8 +150,11 @@
 (define (make-malware-button screen::Screen)
   (RadioButton screen "MalwareButton"
                (compute-malware-button-origin screen)
-               (compute-malware-button-size screen)))
-
+               (compute-malware-button-size screen)
+               text: "Malware"
+               fontSize: 20
+               textAlign: Align:Center
+               textVAlign: VAlign:Bottom))
 
 ;;; (compute-bots-button-origin screen::Screen)
 ;;; ---------------------------------------------------------------------
@@ -175,7 +188,11 @@
 (define (make-bots-button screen::Screen)
   (RadioButton screen "BotsButton"
                (compute-bots-button-origin screen)
-               (compute-bots-button-size screen)))
+               (compute-bots-button-size screen)
+               text: "Bots"
+               fontSize: 20
+               textAlign: Align:Center
+               textVAlign: VAlign:Bottom))
 
 (define (compute-weapon-picker-rect screen::Screen)
   (let* ((faction-rect (compute-faction-picker-rect screen))
@@ -194,52 +211,31 @@
          (valign BitmapFont:VAlign)
          (win (Window screen "WeaponPicker"
                       (Vector2f (get-left rect)(get-top rect))
-                      (Vector2f (get-width rect)(get-height rect))))
-         (weapons-group::WeaponButtonGroup (WeaponButtonGroup screen "WeaponGroup"))
+                      (Vector2f (get-width rect)(get-height rect))
+                      windowTitle: "Choose your weapon:"))
+         (weapons-group::WeaponButtonGroup (WeaponButtonGroup screen "WeaponGroup" state: state))
          (cannon-button (make-cannon-button screen))
          (impulse-button (make-impulse-button screen))
          (malware-button (make-malware-button screen))
          (bots-button (make-bots-button screen)))
-    (win:setWindowTitle "Choose your weapon:")
-    (set! weapons-group:state state)
     ;; cannon button
     (cannon-button:setButtonIcon 96 96 "Interface/cannon-weapon-icon96.png")
-    (cannon-button:setButtonPressedInfo "Interface/cannon-weapon-icon96.png"
-                            (ColorRGBA 0.0 1.0 0.0 1.0))
-    (cannon-button:setText "Cannon")
-    (cannon-button:setTextAlign align:Center)
-    (cannon-button:setTextVAlign valign:Bottom)
-    (cannon-button:setFontSize 20)
+    (cannon-button:setButtonPressedInfo "Interface/cannon-weapon-icon96.png" (ColorRGBA 0.0 1.0 0.0 1.0))
     (weapons-group:addButton cannon-button)
     (win:addChild cannon-button)
     ;; impulse button
     (impulse-button:setButtonIcon 96 96 "Interface/impulse-weapon-icon96.png")
-    (impulse-button:setButtonPressedInfo "Interface/impulse-weapon-icon96.png"
-                          (ColorRGBA 0.0 1.0 0.0 1.0))
-    (impulse-button:setText "Impulse")
-    (impulse-button:setTextAlign align:Center)
-    (impulse-button:setTextVAlign valign:Bottom)
-    (impulse-button:setFontSize 20)
+    (impulse-button:setButtonPressedInfo "Interface/impulse-weapon-icon96.png" (ColorRGBA 0.0 1.0 0.0 1.0))
     (weapons-group:addButton impulse-button)
     (win:addChild impulse-button)
     ;; malware button
     (malware-button:setButtonIcon 96 96 "Interface/malware-weapon-icon96.png")
-    (malware-button:setButtonPressedInfo "Interface/malware-weapon-icon96.png"
-                          (ColorRGBA 0.0 1.0 0.0 1.0))
-    (malware-button:setText "Malware")
-    (malware-button:setTextAlign align:Center)
-    (malware-button:setTextVAlign valign:Bottom)
-    (malware-button:setFontSize 20)
+    (malware-button:setButtonPressedInfo "Interface/malware-weapon-icon96.png" (ColorRGBA 0.0 1.0 0.0 1.0))
     (weapons-group:addButton malware-button)
     (win:addChild malware-button)
     ;; bots button
     (bots-button:setButtonIcon 96 96 "Interface/bots-weapon-icon96.png")
-    (bots-button:setButtonPressedInfo "Interface/bots-weapon-icon96.png"
-                          (ColorRGBA 0.0 1.0 0.0 1.0))
-    (bots-button:setText "Bots")
-    (bots-button:setTextAlign align:Center)
-    (bots-button:setTextVAlign valign:Bottom)
-    (bots-button:setFontSize 20)
+    (bots-button:setButtonPressedInfo "Interface/bots-weapon-icon96.png" (ColorRGBA 0.0 1.0 0.0 1.0))
     (weapons-group:addButton bots-button)
     (win:addChild bots-button)
     win))
