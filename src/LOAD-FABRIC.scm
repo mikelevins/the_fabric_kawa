@@ -61,5 +61,5 @@
 ;;; (activate-pick-character-state)
 ;;; (activate-pick-location-state)
 ;;; (activate-play-state)
-;;; (teleport "Sedna")
+;;; (teleport "Jupiter")
 ;;; (stop-client)
