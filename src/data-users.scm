@@ -43,7 +43,7 @@
                (user-sexp (read-file load-path))
                (user (s-expression->object user-sexp)))
           (hash-table-set! (users) username user)
-          (set! client:user user)
+          (set! client:current-user user)
           user)
         #!null)))
 
