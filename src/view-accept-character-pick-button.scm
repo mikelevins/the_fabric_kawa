@@ -14,7 +14,8 @@
 
 (require client)
 (require state-pick-character)
-
+(require model-user)
+(require model-character)
 
 ;;; ---------------------------------------------------------------------
 ;;; Java imports

@@ -19,6 +19,8 @@
 (require data-assets)
 (require model-namegen)
 (require model-rect)
+(require model-character)
+(require model-user)
 (require state)
 (require view-action-bar)
 (require view-camera-movement)

@@ -17,6 +17,7 @@
 ;;; ---------------------------------------------------------------------
 
 (require data-assets)
+(require model-character)
 (require state)
 (require client)
 

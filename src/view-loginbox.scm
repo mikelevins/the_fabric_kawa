@@ -19,6 +19,7 @@
 
 (require util-crypt)
 (require data-users)
+(require model-user)
 (require model-rect)
 (require state)
 (require client)

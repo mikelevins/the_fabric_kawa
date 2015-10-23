@@ -19,6 +19,7 @@
 (require data-assets)
 (require state)
 (require client)
+(require model-character)
 (require view-character-picker)
 (require view-character-pick-acceptor)
 

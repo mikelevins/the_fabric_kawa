@@ -23,6 +23,7 @@
 (require model-namegen)
 (require model-rect)
 (require model-user)
+(require model-character)
 (require view-character-picker-group)
 (require view-character-picker-button)
 (require view-character-pick-acceptor)

@@ -59,7 +59,6 @@
 ;;; (activate-login-state)
 ;;; (activate-create-character-state)
 ;;; (activate-pick-character-state)
-;;; (activate-pick-location-state)
 ;;; (activate-play-state)
 ;;; (teleport "Sedna")
 ;;; (stop-client)
