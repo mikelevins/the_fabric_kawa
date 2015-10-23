@@ -10,6 +10,7 @@
 
 (module-export
  FabricUser
+ get-default-user
  make-fabric-user
  user-add-character!)
 
@@ -56,3 +57,15 @@
         (set! user:characters
               (cons character user:characters))
         character)))
+
+(define default-user (make-parameter #f))
+
+(define (get-default-user)
+  (or (default-user)
+      (let* ((u (make-fabric-user username: "fabric"
+                                  characters: (list (make-random-character)
+                                                    (make-random-character)
+                                                    (make-random-character)
+                                                    (make-random-character)))))
+        (default-user u)
+        (default-user))))

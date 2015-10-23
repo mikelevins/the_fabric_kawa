@@ -57,7 +57,8 @@
            (set! client:current-user user)
            (set! client:username username)
            (set! client:password-hash pwhash)
-           (set! client:password-salt pwsalt)))))
+           (set! client:password-salt pwsalt)
+           (activate-pick-character-state)))))
   ((onButtonCancelPressed evt::MouseButtonEvent toggle::boolean)
    (*:stop app)))
 

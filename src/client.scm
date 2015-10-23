@@ -136,7 +136,7 @@
     (set! app:screen (Screen app))
     (setup-inputs app)
     (setup-lighting app)
-    (activate-transition-state)
+    (activate-login-state)
     #!void))
 
 (define (make-client #!key

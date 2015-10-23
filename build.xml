@@ -142,6 +142,7 @@
                  state.scm
                  state-transition.scm
                  state-login.scm
+                 class-CreateCharacterState.scm
                  state-create-character.scm
                  state-pick-character.scm
                  state-pick-location.scm

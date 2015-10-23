@@ -232,6 +232,7 @@
   (make-celestial-body "Venus" 2048 0.025))
 
 (define (make-location name::String)
+  (format #t "~%name == ~S" name)
   (cond
    ((string=? name "Callisto")(make-callisto))
    ((string=? name "Dione")(make-dione))

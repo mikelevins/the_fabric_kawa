@@ -15,6 +15,7 @@
  save-user)
 
 (require parameters)
+(require model-user)
 (require data-config)
 (require data-file)
 (require data-sexp)
@@ -46,11 +47,15 @@
           user)
         #!null)))
 
+;;; TODO: the default user "fabric" is used for demos
+;;; it should not exist in a released version of the Fabric
 (define (get-user username::String)
-  (let ((found (hash-table-ref/default (users) username #!null)))
-    (if (eqv? #!null found)
-        (load-user username)
-        found)))
+  (if (string=? "fabric" username)
+      (get-default-user)
+      (let ((found (hash-table-ref/default (users) username #!null)))
+        (if (eqv? #!null found)
+            (load-user username)
+            found))))
 
 (define (get-users-path)
   (let ((conf-path (get-configuration-path)))

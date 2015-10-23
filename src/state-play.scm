@@ -148,7 +148,9 @@
   ;; slots
   (character-model::Node init: #!null)
   (character-nameplate::Label init: #!null)
-  (location::Spatial init: #!null)
+  ;; TODO: initializing this to Jupiter is for demo purposes;
+  ;;       should implement the location picker instead
+  (location::Spatial init: #!null) 
   (location-nameplate::Label init: #!null)
   (sky::Geometry init: #!null)
   (action-bar::Panel init: #!null)
