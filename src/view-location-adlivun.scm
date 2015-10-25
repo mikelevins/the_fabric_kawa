@@ -107,7 +107,7 @@
          (mat::Material (Material asset-manager "Common/MatDefs/Misc/Particle.j3md"))
          (start-color::ColorRGBA (ColorRGBA 0.6 0.2 0.0 0.9))
          (end-color::ColorRGBA (ColorRGBA 0.3 0.1 0.0 0.1))
-         (rotator::RotateControl (RotateControl 0 0.05 0))
+         (rotator::RotateControl (RotateControl 0 0.01 0))
          (cell0::Node (make-adlivun-cell))
          (cell1::Node (make-adlivun-cell))
          (cell2::Node (make-adlivun-cell))
