@@ -55,10 +55,16 @@
 ;;; ---------------------------------------------------------------------
 ;;; evaluate these expressions to create and run the Fabric client
 
-;;; (start-client "Sedna" show-settings: #f)
+;;; (start-client "Jupiter" show-settings: #f)
 ;;; (activate-login-state)
 ;;; (activate-create-character-state)
 ;;; (activate-pick-character-state)
 ;;; (activate-play-state)
 ;;; (teleport "Sedna")
 ;;; (stop-client)
+
+;;; for getting around quickly
+;;; (set! (the-client):state:speed 6000)
+
+;;; for looking at small features
+;;; (set! (the-client):state:speed 300)
