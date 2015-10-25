@@ -53,7 +53,11 @@
         (begin (format #t "No user chosen; you must log in first!")
                (activate-login-state))
         (begin (set-current-character! picked-character)
-               (activate-play-state)))))
+               ;; BUG: if we are in the PlayState then this button
+               ;; remains active and reactivates the PlayState
+               ;; at unpredictable moments, causing a reset
+               (when (eq? state client:state)
+                 (activate-play-state))))))
 
 (define (make-accept-character-pick-button  screen::Screen state::PickCharacterState)
   (let* ((button-width 144)
