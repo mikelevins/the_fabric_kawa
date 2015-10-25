@@ -147,8 +147,8 @@
 
 (define (make-volvox)
   (let* ((pivot (Node "Volvox City"))
-         (pod0::Node (make-volvox-pod 0.025))
-         (pod1::Node (make-volvox-pod 0.020)))
+         (pod0::Node (make-volvox-pod 0.0))
+         (pod1::Node (make-volvox-pod 0.01)))
     (*:setLocalTranslation pivot 0.0 0.0 0.0)
     (*:setLocalTranslation pod0 0.0 0.0 0.0)
     (*:attachChild pivot pod0)

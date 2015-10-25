@@ -67,4 +67,4 @@
 ;;; (set! (the-client):state:speed 6000)
 
 ;;; for looking at small features
-;;; (set! (the-client):state:speed 300)
+;;; (set! (the-client):state:speed 100)
