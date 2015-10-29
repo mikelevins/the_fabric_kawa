@@ -55,7 +55,7 @@
 ;;; ---------------------------------------------------------------------
 ;;; evaluate these expressions to create and run the Fabric client
 
-;;; (start-client "Jupiter" show-settings: #f record-video: #t)
+;;; (start-client "Jupiter" show-settings: #f record-video: #f)
 ;;; (activate-login-state)
 ;;; (activate-create-character-state)
 ;;; (activate-pick-character-state)
@@ -64,7 +64,7 @@
 ;;; (stop-client)
 
 ;;; for getting around quickly
-;;; (set! (the-client):state:speed 6000)
+;;; (set! (the-client):state:speed 4000)
 
 ;;; for looking at small features
-;;; (set! (the-client):state:speed 100)aa
+;;; (set! (the-client):state:speed 200)
