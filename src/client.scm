@@ -67,7 +67,7 @@
 (import (only (com jme3 input MouseInput) AXIS_X AXIS_Y))
 
 (import (class com.jme3.app SimpleApplication))
-(import (class com.jme3.app.state AbstractAppState AppStateManager))
+(import (class com.jme3.app.state AbstractAppState AppStateManager VideoRecorderAppState))
 (import (class com.jme3.asset AssetManager))
 (import (class com.jme3.input FlyByCamera))
 (import (class com.jme3.input InputManager KeyInput MouseInput))
@@ -141,6 +141,7 @@
 
 (define (make-client #!key
                      (client::FabricClient (FabricClient))
+                     (mgr::AppStateManager (*:getStateManager client))
                      (settings::AppSettings (AppSettings #t))
                      (screen-width 1920)
                      (screen-height 1200)
@@ -150,7 +151,8 @@
                      (show-settings #t)
                      (show-statistics #f)
                      (pause-on-lost-focus #f)
-                     (grab-mouse #f))
+                     (grab-mouse #f)
+                     (record-video #f))
   (*:setResolution settings screen-width screen-height)
   (*:setTitle settings title)
   (*:setSettingsDialogImage settings settings-image)
@@ -160,6 +162,8 @@
   (*:setDisplayStatView client show-statistics)
   (*:setPauseOnLostFocus client pause-on-lost-focus)
   (Mouse:setGrabbed grab-mouse)
+  (when record-video
+    (mgr:attach (VideoRecorderAppState)))
   client)
 
 ;;; ---------------------------------------------------------------------
@@ -312,8 +316,11 @@
     (set-current-character! (car chars))
     (set-current-location! location)))
 
-(define (start-client location::String #!key (show-settings #f))
-  (the-client (make-client show-settings: show-settings))
+(define (start-client location::String
+                      #!key
+                      (show-settings #f)
+                      (record-video #f))
+  (the-client (make-client show-settings: show-settings record-video: record-video))
   (*:start (as FabricClient (the-client)))
   (init-defaults location))
 
