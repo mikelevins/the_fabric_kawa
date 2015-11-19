@@ -17,5 +17,11 @@ This repository contains the full source code of The Fabric. Sibling repositorie
 
 ## LICENSE
 
-The Fabric is copyright 2012-2015 by mikel evins. The source code is licensed under the Apache 2.0 license. Fabric assets are copyright 1994-2015 by mikel evins.
+The Fabric is copyright 2012-2015 by mikel evins.
+
+The source code is licensed under the Apache 2.0 license:
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Fabric assets are copyright 1994-2015 by mikel evins.
 
