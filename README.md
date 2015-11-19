@@ -1,99 +1,21 @@
-# The Fabric #
+# The Fabric
+A persistent, networked, multiplayer, science-fiction roleplaying game
 
-## How to Develop ##
+## Overview
 
-All Fabric development is currently done on Mac OS X, though the
-Fabric itself is portable code that doesn't depend on OS X. The
-development setup assumes the use of OS X at the moment, though; if
-you want to develop for the Fabric on Windows or Linux instead,
-contact [mikel](mailto:mevins@me.com) to coordinate any changes in the
-project that might be needed.
+The Fabric is a science-fiction roleplaying game for multiple players set in a far-future version of our solar system. In The Fabric's game world, human civilization has spread throughout the solar system and grown in population and complexity. At the same time, robots and computing machinery have evolved even faster. The setting for the game is a vast cyberspace network that surrounds and permeates the physical solar system. Players control artificial intelligences that live in that cyberspace.
 
-### 1. Install Git ###
+The Fabric is a multiplayer sandbox roleplaying game with theme-park elements. In other words, the basic design is intended to provide a rich simulated world with open-ended opportunities for exploration, commerce, diplomacy, war, crime, and punishment. At the same time, structured missions and story arcs are provided to enable new and inexperienced players to learn the ropes and gain enough experience to choose the playstyles that suit them best.
 
-If git is not already installed on your system, follow the
-instructions here:
+## Status
 
-http://git-scm.com/
+The Fabric is at a pre-alpha stage of development. Many basic parts of the game's infrastructure are working, and some surface features as well, but other systems still need a lot of work. It's not yet playable, unless you just want to tour the future solar system and visit cities and other parts of the landscape that are under construction.
 
-### 2. Get the Fabric ###
+The Fabric was presented by Per Bothner to the JavaOne conference in San Francisco in October of 2015 as an example of a nontrivial JVM application written using Per's Kawa Scheme compiler. The presentation included two brief gameplay demos and an hour-long discussion of how Kawa Scheme made it possible for a single programmer to get so much of the infrastructure working in a short time.
 
-Using git, clone the Fabric sources to your machine. The Fabric's git
-repo is [Here ](https://bitbucket.org/mikelevins/the_fabric). If you're
-going to be pushing changes back to the repo you'll need to contact
-[mikel](mailto:mevins@me.com) and give him a public key for ssh that
-can be added to the git repo to allow you to push.
+This repository contains the full source code of The Fabric. Sibling repositories contain the art assets, library binaries, and design documents.
 
-Put the Fabric repo some place convenient on your development machine.
+## LICENSE
 
-### 3. Install and Configure Emacs ###
-
-Emacs is an essential part of the Fabric development environment.
-
-#### A. Get Emacs
-
-For Mac OS X the recommended Emacs version is
-[Aquamacs](http://aquamacs).
-
-Alternatively, you can use [Carbon Emacs](http://emacsformacosx.com/)
-or [GNU Emacs](http://www.gnu.org/software/emacs/).
-
-#### B. Configure Emacs ####
-
-Add the following lines to your Emacs startup file ("~/.emacs" or "~/.emacs.d/init.el"):
-
-    (load "~/<fabric path>/emacs/fabric.el")
-    (load "~/<fabric path>/emacs/quack.el")
-
-You must change the `"<fabric path>"` part of the pathname strings to
-correctly identify where you put the fabric project.
-
-#### C. Check the Permissions of the Kawa Script ####
-
-Check to make sure that the `kawa` script has execute permissions.
-
-Emacs uses a script named `the_fabric/bin/kawa` to launch the Scheme
-process we use for compiling and running the game engine. Sometimes
-revision-control software fails to set permissions correctly.  You
-need to check to ensure that `kawa` has permission to run.
-
-A. Open a terminal window and change directory to 
-
-    ~/<fabric path>/bin
-
-For the `<fabric path>` portion of the pathname, substitute the directory where you put the Fabric project.
-
-In the terminal window, execute
-
-    ls -l
-    
-Check the permissions displayed for the `kawa` file. You should see
-this:
-
--rwxr-xr-x   1 *username*  *group*  *size* *date* kawa*
-
-...where *username* and *group* are your username and group, and
-*size*, and *date* are whatever they happen to be. If you don't see
-the 'x' characters in the permissions field on the left, or if the
-asterisk (*) doesn't appear at the end of the name "kawa", then the
-script is not executable, and you need to fix it.
-
-In that case, change the permissions by running this command at the
-terminal prompt:
-
-    chmod +x kawa
-
-The script should now have permission to execute.
-
-#### D. Launch a Session ####
-
-Everything should now be set up and ready to run. The next step is to
-set the setup to make sure it works.
-
-1. Launch Emacs
-2. With an Emacs window active, type Meta-x fab. (If you don't know what this means, read [this explanation of M-x](https://www.gnu.org/software/emacs/manual/html_node/emacs/M_002dx.html). If everything is set up correctly, you should see a new buffer open in Emacs and display the `#|kawa|#` prompt.
-
-Congratulations; you're ready to develop the Fabric.
-
-
+The Fabric is copyright 2012-2015 by mikel evins. The source code is licensed under the Apache 2.0 license. Fabric assets are copyright 1994-2015 by mikel evins.
 
