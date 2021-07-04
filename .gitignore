@@ -13,3 +13,4 @@
 /src2/liblwjgl.dylib
 
 /src2/openal.dylib
+*.dylib

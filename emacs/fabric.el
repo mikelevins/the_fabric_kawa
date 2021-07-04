@@ -19,7 +19,7 @@
 ;;; setup site-specific variables
 ;;; ---------------------------------------------------------------------
 
-;;; (load "/usr/local/fabric/the_fabric/emacs/fabric.el")
+;;; (load "/Users/mikel/Workshop/src/the_fabric/emacs/fabric.el")
 
 ;;; find this file
 (defvar $this-file-path nil)
@@ -75,7 +75,8 @@
 ;;; run the fabric Scheme environment in quack mode
 (defun run-the-fabric ()
   (interactive)
-  (require 'quack)
+  ;;(require 'quack)
+  (require 'cmuscheme)
   (let ((scheme-program-name $fabric-kawa-script))
     (setenv "FABRIC_ROOT" $fabric-root)
     (run-scheme scheme-program-name)))
