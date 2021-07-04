@@ -126,6 +126,9 @@
                                    (list-fill (- 8 part-count) 0)))))
     (FabricName (apply int[] indexes))))
 
+;;; (fabric-name->string (generate-fabric-name part-count: 3))
+;;; (let loop ((count 0)(nm (fabric-name->string (generate-fabric-name part-count: 3)))) (if (> count 99) #f (begin (newline)(display nm)(loop (+ 1 count)(fabric-name->string (generate-fabric-name part-count: 3))))))
+
 (define (generate-mech-name)
   (let* ((num-byte (+ 1 (random-integer 254)))
          (surname-byte (+ 1 (random-integer 254)))
